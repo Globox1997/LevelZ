@@ -1,0 +1,8 @@
+{
+  "commands.playerstats.changed": "stats got changed",
+  "text.autoconfig.levelz.title": "LevelZ Config",
+  "text.autoconfig.levelz.option.hardMode": "Hard Mode",
+
+  "item.levelz.locked.tooltip": "§cLocked",
+  "item.levelz.farming.tooltip": "Farming level %d required"
+}

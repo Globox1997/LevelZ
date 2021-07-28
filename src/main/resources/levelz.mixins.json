@@ -1,0 +1,33 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.levelz.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "player.ServerPlayerEntityMixin",
+    "player.PlayerEntityMixin",
+    "player.PlayerManagerMixin",
+    "entity.LivingEntityMixin",
+    "entity.SheepEntityMixin",
+    "entity.SnowGolemEntityMixin",
+    "entity.MooshroomEntityMixin",
+    "block.OreBlockMixin",
+    "block.BeehiveBlockMixin",
+    "block.PumpkinBlockMixin",
+    "block.AbstractBlockMixin",
+    "block.BlockMixin",
+    "item.HoeItemMixin",
+    "item.BowItemMixin",
+    "misc.AnvilScreenHandlerMixin"
+  ],
+  "client": [
+    "player.ClientPlayerEntityMixin",
+    "player.InGameHudMixin",
+    "player.MinecraftClientMixin",
+    "item.ItemMixin",
+    "item.ItemStackMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
