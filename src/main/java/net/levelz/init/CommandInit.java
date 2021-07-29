@@ -144,6 +144,9 @@ public class CommandInit {
                     serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue((double) playerStatsManager.getLevel("luck") / 20D);
                 }
             }
+            // If mining level gets reduced, empty list has to be made
+            playerStatsManager.unlockedBlocks.clear();
+
             PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, serverPlayerEntity);
         }
         source.sendFeedback(new TranslatableText("commands.playerstats.changed"), true);

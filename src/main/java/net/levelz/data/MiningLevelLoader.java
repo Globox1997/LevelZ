@@ -16,6 +16,7 @@ import net.levelz.init.LevelJsonInit;
 import net.minecraft.block.Block;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
 
 public class MiningLevelLoader implements SimpleSynchronousResourceReloadListener {
@@ -30,26 +31,63 @@ public class MiningLevelLoader implements SimpleSynchronousResourceReloadListene
     public void reload(ResourceManager manager) {
         for (Identifier id : manager.findResources("level", path -> path.endsWith(".json"))) {
             try {
+
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
-                LevelJsonInit.MINING_LEVEL_LIST.add(data.get("level").getAsInt());
 
-                List<Block> BLOCK_LIST = new ArrayList<Block>();
-                // for (int i = 0; i < data.size(); i++) {
-                // if (data.has("block")) {
-                // BLOCK_LIST.add((Block) Registry.BLOCK.get(new Identifier(data.get("block").getAsString())));
-                // }
-                // }
-                for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
-                    BLOCK_LIST.add((Block) Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())));
+                // int index = LevelJsonInit.MINING_LEVEL_LIST.indexOf(data.get("level").getAsInt()); // Get rt index; doesnt have it
+
+                // System.out.println(index + "::" + LevelJsonInit.MINING_LEVEL_LIST);
+
+                if (LevelJsonInit.MINING_LEVEL_LIST.contains(data.get("level").getAsInt())) {
+                    if (JsonHelper.getBoolean(data, "replace", false)) {
+                        // LevelJsonInit.MINING_LEVEL_LIST.remove(index);
+                        int index = LevelJsonInit.MINING_LEVEL_LIST.indexOf(data.get("level").getAsInt());
+                        LevelJsonInit.MINING_LEVEL_LIST.remove(index);
+                        LevelJsonInit.MINING_BLOCK_LIST.remove(index);
+                        fillLists(data, false);
+                    } else {
+                        fillLists(data, true);
+
+                    }
+                } else {
+                    fillLists(data, false);
                 }
-                // BLOCK_LIST.add((Block) Registry.BLOCK.get(new Identifier(data.get("block").getAsString())));
-                LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
-                System.out.println(LevelJsonInit.MINING_BLOCK_LIST);
+                // LevelJsonInit.MINING_LEVEL_LIST.add(data.get("level").getAsInt());
+
+                // List<Block> BLOCK_LIST = new ArrayList<Block>();
+                // for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
+                // BLOCK_LIST.add((Block) Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())));
+                // }
+                // LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
+
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
+        // System.out.println(LevelJsonInit.MINING_BLOCK_LIST + "::" + LevelJsonInit.MINING_LEVEL_LIST);
     }
 
+    private void fillLists(JsonObject data, boolean addToExisting) {
+        List<Block> BLOCK_LIST = new ArrayList<Block>();
+        for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
+            BLOCK_LIST.add((Block) Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())));
+        }
+        if (addToExisting) {
+            // LevelJsonInit.MINING_LEVEL_LIST.add(data.get("level").getAsInt());
+            int index = LevelJsonInit.MINING_LEVEL_LIST.indexOf(data.get("level").getAsInt());
+            // LevelJsonInit.MINING_LEVEL_LIST.get(LevelJsonInit.MINING_LEVEL_LIST.indexOf(o));
+            for (int u = 0; u < BLOCK_LIST.size(); u++) {
+                LevelJsonInit.MINING_BLOCK_LIST.get(index).add(BLOCK_LIST.get(u));
+            }
+
+            // LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
+        } else {
+            LevelJsonInit.MINING_LEVEL_LIST.add(data.get("level").getAsInt());
+            LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
+        }
+
+        // LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
+    }
+    // Check for level 0 blocks
 }

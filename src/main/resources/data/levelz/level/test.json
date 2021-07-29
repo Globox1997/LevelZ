@@ -1,4 +1,5 @@
 {
+    "replace": false,
     "level": 3,
     "block": [
         "minecraft:dirt",

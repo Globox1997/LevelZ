@@ -2,7 +2,7 @@
     "replace": false,
     "level": 6,
     "block": [
-        "minecraft:sand",
-        "minecraft:emerald_ore"
+        "minecraft:iron_ore",
+        "minecraft:coal_ore"
     ]
 }

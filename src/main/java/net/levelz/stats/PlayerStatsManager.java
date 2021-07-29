@@ -1,6 +1,10 @@
 package net.levelz.stats;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.AnvilBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.SmithingTableBlock;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,6 +33,9 @@ public class PlayerStatsManager {
     private int farmingLevel;
     private int buildingLevel;
     private int skillPoints;
+    // Other
+    public List<Block> unlockedBlocks = new ArrayList<Block>();
+    // public List<Block> unlockedBlocks = new ArrayList<Block>();
 
     // public void add(int thirst) {
     // this.thirstLevel = Math.min(thirst + this.thirstLevel, 20);
@@ -62,9 +69,7 @@ public class PlayerStatsManager {
     // Smithing level 15 caps anvil xp at 30
     // Farm level 5 enables shears use
     // Farm level 5 enables hoe item use
-    // Mining level 0-4 20%slower,
-
-    // Check where block drops are called
+    // Mining level 0-4 ca 20%slower, unlocks blocks via datapack
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {

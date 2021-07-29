@@ -3,6 +3,7 @@ package net.levelz.network;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.init.LevelJsonInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.network.PacketByteBuf;
@@ -34,6 +35,18 @@ public class PlayerStatsServerPacket {
                     player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + 0.2D);
                 } else if (stat.equals("luck")) {
                     player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + 0.05D);
+                } else if (stat.equals("mining")) {
+                    syncUnlockedBlockList(playerStatsManager);
+                    // for (int i = 0; i < LevelJsonInit.MINING_LEVEL_LIST.size(); i++) {
+                    // if (LevelJsonInit.MINING_LEVEL_LIST.get(i) < playerStatsManager.getLevel("mining")) {
+                    // for (int u = 0; u < LevelJsonInit.MINING_BLOCK_LIST.get(i).size(); u++) {
+                    // if (!playerStatsManager.unlockedBlocks.contains(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u))) {
+                    // playerStatsManager.unlockedBlocks.add(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u));
+                    // }
+                    // }
+                    // }
+                    // }
+
                 }
             }
         });
@@ -70,6 +83,23 @@ public class PlayerStatsServerPacket {
 
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LEVEL_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
+
+        // Set on server
+        System.out.println("WriteSkillPacket");
+        syncUnlockedBlockList(playerStatsManager);
+    }
+
+    public static void syncUnlockedBlockList(PlayerStatsManager playerStatsManager) {
+        for (int i = 0; i < LevelJsonInit.MINING_LEVEL_LIST.size(); i++) {
+            if (LevelJsonInit.MINING_LEVEL_LIST.get(i) <= playerStatsManager.getLevel("mining")) {
+                for (int u = 0; u < LevelJsonInit.MINING_BLOCK_LIST.get(i).size(); u++) {
+                    if (!playerStatsManager.unlockedBlocks.contains(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u))) {
+                        System.out.println("Add to List:" + LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u));
+                        playerStatsManager.unlockedBlocks.add(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u));
+                    }
+                }
+            }
+        }
     }
 
 }

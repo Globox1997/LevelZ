@@ -89,6 +89,9 @@ public class PlayerStatsClientPacket {
         playerStatsManager.setLevel("mining", buf.readInt());
         playerStatsManager.setLevel("farming", buf.readInt());
         playerStatsManager.setLevel("building", buf.readInt());
+        // Set unlocked block list
+        playerStatsManager.unlockedBlocks.clear();
+        PlayerStatsServerPacket.syncUnlockedBlockList(playerStatsManager);
     }
 
 }

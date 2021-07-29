@@ -8,7 +8,9 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
+import net.levelz.init.LevelJsonInit;
 import net.levelz.network.PlayerStatsClientPacket;
+import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -217,6 +219,17 @@ public class LevelzGui extends LightweightGuiDescription {
                 });
                 miningButton.setOnClick(() -> {
                         PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "mining");
+                        // Not sure if I can use the serverpacket class here
+                        PlayerStatsServerPacket.syncUnlockedBlockList(playerStatsManager);
+                        // for (int i = 0; i < LevelJsonInit.MINING_LEVEL_LIST.size(); i++) {
+                        // if (LevelJsonInit.MINING_LEVEL_LIST.get(i) < playerStatsManager.getLevel("mining")) {
+                        // for (int u = 0; u < LevelJsonInit.MINING_BLOCK_LIST.get(i).size(); u++) {
+                        // if (!playerStatsManager.unlockedBlocks.contains(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u))) {
+                        // playerStatsManager.unlockedBlocks.add(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u));
+                        // }
+                        // }
+                        // }
+                        // }
                         setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton,
                                         farmingButton, buildingButton, playerStatsManager);
                 });

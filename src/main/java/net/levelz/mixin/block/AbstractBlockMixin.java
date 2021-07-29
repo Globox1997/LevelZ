@@ -8,7 +8,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.init.ConfigInit;
 import net.levelz.init.LevelJsonInit;
+import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,38 +22,20 @@ import net.minecraft.world.WorldView;
 @Mixin(AbstractBlock.class)
 public class AbstractBlockMixin {
 
-    // public boolean canReplace(ItemPlacementContext context) {
-    // return this.getBlock().canReplace(this.asBlockState(), context);
-    // }
-
-    // @Inject(method = "canPlaceAt", at = @At(value = "TAIL"))
-    // private void canPlaceAtMixin(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> info) {
-    // System.out.println("test");
-    // }
-
-    // @Deprecated
-    // public boolean canReplace(BlockState state, ItemPlacementContext context) {
-    // return this.material.isReplaceable() && (context.getStack().isEmpty() || !context.getStack().isOf(this.asItem()));
-    // }
-
-    // @Inject(method = "calcBlockBreakingDelta", at = @At(value = "TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    // private void calcBlockBreakingDeltaMixin(BlockState state, PlayerEntity player, BlockView world, BlockPos pos, CallbackInfoReturnable<Float> info, float f, int i) {
-    // System.out.println(f + "::" + i + "::" + player.getBlockBreakingSpeed(state));
-    // if (((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("mining") < 5) {
-    // info.setReturnValue(player.getBlockBreakingSpeed(state) / f / (float) i);
-    // }
-    // }
-
-    @ModifyVariable(method = "calcBlockBreakingDelta", at = @At(value = "TAIL"), ordinal = 0)
+    @ModifyVariable(method = "calcBlockBreakingDelta", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getBlockBreakingSpeed(Lnet/minecraft/block/BlockState;)F"), ordinal = 0)
     private int calcBlockBreakingDeltaMixin(int original, BlockState state, PlayerEntity player, BlockView world, BlockPos pos) {
-        int playerMiningLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("mining");
-        for (int i = 0; i < LevelJsonInit.MINING_LEVEL_LIST.size(); i++) {
-
-        }
-        if (playerMiningLevel < 5) {
-            return (int) (original * 0.8F);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+        int playerMiningLevel = playerStatsManager.getLevel("mining");
+        if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
+            if (!playerStatsManager.unlockedBlocks.contains(state.getBlock())) {
+                // System.out.print("X:" + (int) (original * 100.1F));
+                return (int) (original * 2F);// 0.3F is enough I guess
+            } else if (playerMiningLevel < 5) {
+                // System.out.print("I:" + (int) (original * (0.8F + playerMiningLevel * 0.0475F)));
+                return (int) (original * (1.2F - playerMiningLevel * 0.0475F));
+            } else
+                return original;
         } else
             return original;
     }
-    // BlockState state, PlayerEntity player, BlockView world, BlockPos pos,
 }
