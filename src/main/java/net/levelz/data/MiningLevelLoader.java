@@ -68,26 +68,36 @@ public class MiningLevelLoader implements SimpleSynchronousResourceReloadListene
         // System.out.println(LevelJsonInit.MINING_BLOCK_LIST + "::" + LevelJsonInit.MINING_LEVEL_LIST);
     }
 
+    // private void fillLists(JsonObject data, boolean addToExisting) {
+    // List<Block> BLOCK_LIST = new ArrayList<Block>();
+    // for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
+    // BLOCK_LIST.add((Block) Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())));
+    // }
+    // if (addToExisting) {
+    // int index = LevelJsonInit.MINING_LEVEL_LIST.indexOf(data.get("level").getAsInt());
+    // for (int u = 0; u < BLOCK_LIST.size(); u++) {
+    // LevelJsonInit.MINING_BLOCK_LIST.get(index).add(BLOCK_LIST.get(u));
+    // }
+    // } else {
+    // LevelJsonInit.MINING_LEVEL_LIST.add(data.get("level").getAsInt());
+    // LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
+    // }
+    // }
+
     private void fillLists(JsonObject data, boolean addToExisting) {
-        List<Block> BLOCK_LIST = new ArrayList<Block>();
+        List<Integer> BLOCK_ID_LIST = new ArrayList<Integer>();
         for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
-            BLOCK_LIST.add((Block) Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())));
+            BLOCK_ID_LIST.add(Registry.BLOCK.getRawId(Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString()))));
         }
         if (addToExisting) {
-            // LevelJsonInit.MINING_LEVEL_LIST.add(data.get("level").getAsInt());
             int index = LevelJsonInit.MINING_LEVEL_LIST.indexOf(data.get("level").getAsInt());
-            // LevelJsonInit.MINING_LEVEL_LIST.get(LevelJsonInit.MINING_LEVEL_LIST.indexOf(o));
-            for (int u = 0; u < BLOCK_LIST.size(); u++) {
-                LevelJsonInit.MINING_BLOCK_LIST.get(index).add(BLOCK_LIST.get(u));
+            for (int u = 0; u < BLOCK_ID_LIST.size(); u++) {
+                LevelJsonInit.MINING_BLOCK_LIST.get(index).add(BLOCK_ID_LIST.get(u));
             }
-
-            // LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
         } else {
             LevelJsonInit.MINING_LEVEL_LIST.add(data.get("level").getAsInt());
-            LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
+            LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_ID_LIST);
         }
-
-        // LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
     }
-    // Check for level 0 blocks
+
 }

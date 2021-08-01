@@ -15,12 +15,14 @@ import net.levelz.init.LevelJsonInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.TntBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(Block.class)
@@ -45,8 +47,9 @@ public class BlockMixin {
                 // info.cancel();
                 // }
                 // System.out.println(playerStatsManager.unlockedBlocks);
-                System.out.println(Block.getRawIdFromState(state));
-                if (!playerStatsManager.unlockedBlocks.contains(state.getBlock())) {
+                System.out.println(Block.getRawIdFromState(state) + "::" + Registry.BLOCK.getRawId(state.getBlock()));
+                // Registry.BLOCK.getRawId(state.getBlock());
+                if (playerStatsManager.lockedBlockIds.contains(Registry.BLOCK.getRawId(state.getBlock()))) {
                     info.cancel();
                 }
             }

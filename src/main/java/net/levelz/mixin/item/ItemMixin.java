@@ -10,14 +10,25 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.block.FarmlandBlock;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ArmorMaterials;
+import net.minecraft.item.BowItem;
+import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.ElytraItem;
+import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.ShieldItem;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.TridentItem;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 

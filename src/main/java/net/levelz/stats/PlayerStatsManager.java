@@ -3,6 +3,8 @@ package net.levelz.stats;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.init.ConfigInit;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SmithingTableBlock;
@@ -34,8 +36,8 @@ public class PlayerStatsManager {
     private int buildingLevel;
     private int skillPoints;
     // Other
-    public List<Block> unlockedBlocks = new ArrayList<Block>();
     // public List<Block> unlockedBlocks = new ArrayList<Block>();
+    public List<Integer> lockedBlockIds = new ArrayList<Integer>();
 
     // public void add(int thirst) {
     // this.thirstLevel = Math.min(thirst + this.thirstLevel, 20);
@@ -60,16 +62,27 @@ public class PlayerStatsManager {
     // Luck increases loot value by 5% per level
     // Archery increases range damage by 0.2 per level
     // Strength increases meele damage by 0.2 per level
+    // Strength unlocks weapons by material level
     // Defense increases armor by 0.2 per level
+    // Defense unlocks shield at lvl 5
+    // Defense unlocks armor by lvl
     // Health increases HP by 1 per level
     // Agility increases speed by 0.001 per level
     // Agility decreases fall damage by 1 per 4 level
+    // Agility unlocks elytra at lvl 10
     // Trade decreases prices by x per level
     // Smithing deceases anvil xp price by 2.5% per level
     // Smithing level 15 caps anvil xp at 30
     // Farm level 5 enables shears use
-    // Farm level 5 enables hoe item use
+    // Farm level 1 enables hoe item use
+    // Farm level 8 enables flint and steel
     // Mining level 0-4 ca 20%slower, unlocks blocks via datapack
+    // Mining unlocks tools by material level
+    // Archery unlocks trident at lvl 16
+    // Archery unlocks bow at lvl 1
+    // Archery unlocks crossbow at lvl 8
+
+    // Boats, Minecart
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {
@@ -217,6 +230,17 @@ public class PlayerStatsManager {
         } else {
             return this.overallLevel >= 30 ? 112 + (this.overallLevel - 30) * 9 : 37 + this.overallLevel * 3;
         }
+    }
+
+    // Maybe central usage
+    public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, String string, int level) {
+        int playerLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel(string);
+        if (playerLevel < ConfigInit.CONFIG.maxLevel) {
+            if (playerLevel < level) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

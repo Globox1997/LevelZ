@@ -1,16 +1,5 @@
 package net.levelz.mixin.player;
 
-import net.levelz.network.PlayerStatsServerPacket;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FarmlandBlock;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.HungerManager;
-import net.minecraft.item.BowItem;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -20,7 +9,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.network.PlayerStatsServerPacket;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FarmlandBlock;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.HungerManager;
+import net.minecraft.item.BowItem;
+import net.minecraft.item.SwordItem;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -85,6 +88,36 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0)
     private float attackMixinTwo(float original) {
         return isCrit ? original * 1.2F : original;
+    }
+
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 0)
+    private float attackMixinThree(float original) {
+        PlayerEntity playerEntity = (PlayerEntity) (Object) this;
+        if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem) {
+            int playerStrengthLevel = playerStatsManager.getLevel("strength");
+            if (playerStrengthLevel < ConfigInit.CONFIG.maxLevel) {
+                int itemMaterialLevel = ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().getMiningLevel() * 4;
+                if (itemMaterialLevel > playerStrengthLevel) {
+                    return original - ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
+                }
+            }
+        }
+        return original;
+    }
+
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 1)
+    private float attackMixinFour(float original) {
+        PlayerEntity playerEntity = (PlayerEntity) (Object) this;
+        if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem) {
+            int playerStrengthLevel = playerStatsManager.getLevel("strength");
+            if (playerStrengthLevel < ConfigInit.CONFIG.maxLevel) {
+                int itemMaterialLevel = ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().getMiningLevel() * 4;
+                if (itemMaterialLevel > playerStrengthLevel) {
+                    return 0;
+                }
+            }
+        }
+        return original;
     }
 
     @Override

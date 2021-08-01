@@ -36,7 +36,7 @@ public class PlayerStatsServerPacket {
                 } else if (stat.equals("luck")) {
                     player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + 0.05D);
                 } else if (stat.equals("mining")) {
-                    syncUnlockedBlockList(playerStatsManager);
+                    syncLockedBlockList(playerStatsManager);
                     // for (int i = 0; i < LevelJsonInit.MINING_LEVEL_LIST.size(); i++) {
                     // if (LevelJsonInit.MINING_LEVEL_LIST.get(i) < playerStatsManager.getLevel("mining")) {
                     // for (int u = 0; u < LevelJsonInit.MINING_BLOCK_LIST.get(i).size(); u++) {
@@ -86,16 +86,18 @@ public class PlayerStatsServerPacket {
 
         // Set on server
         System.out.println("WriteSkillPacket");
-        syncUnlockedBlockList(playerStatsManager);
+        syncLockedBlockList(playerStatsManager);
     }
 
-    public static void syncUnlockedBlockList(PlayerStatsManager playerStatsManager) {
+    public static void syncLockedBlockList(PlayerStatsManager playerStatsManager) {
+        playerStatsManager.lockedBlockIds.clear();
+
         for (int i = 0; i < LevelJsonInit.MINING_LEVEL_LIST.size(); i++) {
-            if (LevelJsonInit.MINING_LEVEL_LIST.get(i) <= playerStatsManager.getLevel("mining")) {
+            if (LevelJsonInit.MINING_LEVEL_LIST.get(i) > playerStatsManager.getLevel("mining")) {
                 for (int u = 0; u < LevelJsonInit.MINING_BLOCK_LIST.get(i).size(); u++) {
-                    if (!playerStatsManager.unlockedBlocks.contains(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u))) {
+                    if (!playerStatsManager.lockedBlockIds.contains(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u))) {
                         System.out.println("Add to List:" + LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u));
-                        playerStatsManager.unlockedBlocks.add(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u));
+                        playerStatsManager.lockedBlockIds.add(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u));
                     }
                 }
             }

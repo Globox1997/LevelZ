@@ -4,5 +4,10 @@
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
 
   "item.levelz.locked.tooltip": "§cLocked",
-  "item.levelz.farming.tooltip": "Farming level %d required"
+  "item.levelz.farming.tooltip": "Farming level %d required",
+  "item.levelz.mining.tooltip": "Mining level %d required",
+  "item.levelz.strength.tooltip": "Strength level %d required",
+  "item.levelz.archery.tooltip": "Archery level %d required",
+  "item.levelz.defense.tooltip": "Defense level %d required",
+  "item.levelz.agility.tooltip": "Agility level %d required"
 }

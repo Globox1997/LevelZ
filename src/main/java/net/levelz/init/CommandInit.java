@@ -145,7 +145,7 @@ public class CommandInit {
                 }
             }
             // If mining level gets reduced, empty list has to be made
-            playerStatsManager.unlockedBlocks.clear();
+            // playerStatsManager.lockedBlockIds.clear();
 
             PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, serverPlayerEntity);
         }

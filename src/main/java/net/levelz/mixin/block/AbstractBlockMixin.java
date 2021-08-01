@@ -12,10 +12,12 @@ import net.levelz.init.ConfigInit;
 import net.levelz.init.LevelJsonInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
 
@@ -27,7 +29,7 @@ public class AbstractBlockMixin {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
         int playerMiningLevel = playerStatsManager.getLevel("mining");
         if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
-            if (!playerStatsManager.unlockedBlocks.contains(state.getBlock())) {
+            if (playerStatsManager.lockedBlockIds.contains(Registry.BLOCK.getRawId(state.getBlock()))) {
                 // System.out.print("X:" + (int) (original * 100.1F));
                 return (int) (original * 2F);// 0.3F is enough I guess
             } else if (playerMiningLevel < 5) {

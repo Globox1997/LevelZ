@@ -15,6 +15,7 @@ public class MinecraftClientMixin {
 
     @Inject(method = "doItemUse", at = @At(value = "HEAD"), cancellable = true)
     private void doItemUseMixin(CallbackInfo info) {
-
+        System.out.println("TEST");
     }
+    // Maybe mixin to ClientPlayerInteractionManager at public ActionResult interactBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult) {
 }

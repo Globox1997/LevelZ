@@ -7,26 +7,22 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.MiningToolItem;
 import net.minecraft.util.ActionResult;
 
-@Mixin(HoeItem.class)
-public class HoeItemMixin {
+@Mixin(FlintAndSteelItem.class)
+public class FlintAndSteelItemMixin {
 
-    @Inject(method = "useOnBlock", at = @At(value = "INVOKE", target = "Ljava/util/function/Predicate;test(Ljava/lang/Object;)Z"), cancellable = true)
+    @Inject(method = "useOnBlock", at = @At(value = "HEAD"), cancellable = true)
     private void useOnBlockMixin(ItemUsageContext context, CallbackInfoReturnable<ActionResult> info) {
         if (!context.getPlayer().isCreative()) {
             int playerFarmingLevel = ((PlayerStatsManagerAccess) context.getPlayer()).getPlayerStatsManager(context.getPlayer()).getLevel("farming");
             if (playerFarmingLevel < ConfigInit.CONFIG.maxLevel) {
-                ItemStack itemStack = context.getStack();
-                if (playerFarmingLevel < 1 || ((MiningToolItem) itemStack.getItem()).getMaterial().getMiningLevel() * 4 > playerFarmingLevel) {
+                if (playerFarmingLevel < 8) {
                     info.setReturnValue(ActionResult.FAIL);
                 }
             }
         }
     }
-
 }

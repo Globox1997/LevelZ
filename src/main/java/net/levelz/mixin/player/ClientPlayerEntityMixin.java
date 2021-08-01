@@ -3,6 +3,8 @@ package net.levelz.mixin.player;
 import com.mojang.authlib.GameProfile;
 
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.tag.FabricTag;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.api.EnvType;
 
 import net.minecraft.client.MinecraftClient;
@@ -14,6 +16,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.StatHandler;
+import net.minecraft.tag.Tag;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

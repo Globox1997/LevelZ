@@ -7,6 +7,8 @@
     "player.ServerPlayerEntityMixin",
     "player.PlayerEntityMixin",
     "player.PlayerManagerMixin",
+    "player.PlayerInventoryMixin",
+    "player.PlayerScreenHandlerMixin",
     "entity.LivingEntityMixin",
     "entity.SheepEntityMixin",
     "entity.SnowGolemEntityMixin",
@@ -18,7 +20,17 @@
     "block.BlockMixin",
     "item.HoeItemMixin",
     "item.BowItemMixin",
-    "misc.AnvilScreenHandlerMixin"
+    "item.MiningToolItemMixin",
+    "item.FlintAndSteelItemMixin",
+    "item.TridentItemMixin",
+    "item.CrossbowItemMixin",
+    "item.ArmorItemMixin",
+    "item.ShieldItemMixin",
+    "item.ElytraItemMixin",
+    "misc.AnvilScreenHandlerMixin",
+    "misc.ExplosionMixin",
+    "misc.LivingEntityMixin",
+    "misc.ScreenHandlerMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
