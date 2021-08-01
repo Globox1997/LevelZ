@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.levelz.data.MiningLevelLoader;
 import net.minecraft.resource.ResourceType;
 
-public class LevelJsonInit {
+public class JsonReaderInit {
 
     // public static final List<List<Block>> MINING_BLOCK_LIST = new ArrayList<>();
     public static final List<List<Integer>> MINING_BLOCK_LIST = new ArrayList<>();

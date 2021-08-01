@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
-import net.levelz.init.LevelJsonInit;
+import net.levelz.init.JsonReaderInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;

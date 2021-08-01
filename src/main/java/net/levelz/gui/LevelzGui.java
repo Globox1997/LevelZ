@@ -8,7 +8,7 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
-import net.levelz.init.LevelJsonInit;
+import net.levelz.init.JsonReaderInit;
 import net.levelz.network.PlayerStatsClientPacket;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;

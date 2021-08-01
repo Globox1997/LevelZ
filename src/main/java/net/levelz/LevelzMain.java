@@ -3,7 +3,7 @@ package net.levelz;
 import net.fabricmc.api.ModInitializer;
 import net.levelz.init.CommandInit;
 import net.levelz.init.ConfigInit;
-import net.levelz.init.LevelJsonInit;
+import net.levelz.init.JsonReaderInit;
 import net.levelz.network.PlayerStatsServerPacket;
 
 public class LevelzMain implements ModInitializer {
@@ -12,7 +12,7 @@ public class LevelzMain implements ModInitializer {
     public void onInitialize() {
         CommandInit.init();
         ConfigInit.init();
-        LevelJsonInit.init();
+        JsonReaderInit.init();
         PlayerStatsServerPacket.init();
     }
 }
