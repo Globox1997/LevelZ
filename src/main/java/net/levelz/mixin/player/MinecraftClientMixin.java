@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.api.Environment;
+import net.levelz.init.JsonReaderInit;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 

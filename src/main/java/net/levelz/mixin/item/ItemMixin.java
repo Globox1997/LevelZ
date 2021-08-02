@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.block.FarmlandBlock;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterials;
 import net.minecraft.item.BowItem;

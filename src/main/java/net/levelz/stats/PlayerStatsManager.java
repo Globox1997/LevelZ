@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
+import net.levelz.init.JsonReaderInit;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SmithingTableBlock;
@@ -82,7 +83,8 @@ public class PlayerStatsManager {
     // Archery unlocks bow at lvl 1
     // Archery unlocks crossbow at lvl 8
 
-    // Boats, Minecart
+    // Boats, Minecart, Luck lvl - fishing?
+    // Farmer unlocks more entity interaction like milk
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {
@@ -234,6 +236,9 @@ public class PlayerStatsManager {
 
     // Maybe central usage
     public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, String string, int level) {
+        // JsonReaderInit.MINING_BLOCK_LIST.
+        // JsonReaderInit.itemUnlockerList.indexOf(string);
+        // JsonReaderInit.itemUnlockerList.
         int playerLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel(string);
         if (playerLevel < ConfigInit.CONFIG.maxLevel) {
             if (playerLevel < level) {

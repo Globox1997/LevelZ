@@ -85,19 +85,19 @@ public class PlayerStatsServerPacket {
         serverPlayerEntity.networkHandler.sendPacket(packet);
 
         // Set on server
-        System.out.println("WriteSkillPacket");
+        // System.out.println("WriteSkillPacket");
         syncLockedBlockList(playerStatsManager);
     }
 
     public static void syncLockedBlockList(PlayerStatsManager playerStatsManager) {
         playerStatsManager.lockedBlockIds.clear();
 
-        for (int i = 0; i < JsonReaderInit.MINING_LEVEL_LIST.size(); i++) {
-            if (JsonReaderInit.MINING_LEVEL_LIST.get(i) > playerStatsManager.getLevel("mining")) {
-                for (int u = 0; u < JsonReaderInit.MINING_BLOCK_LIST.get(i).size(); u++) {
-                    if (!playerStatsManager.lockedBlockIds.contains(JsonReaderInit.MINING_BLOCK_LIST.get(i).get(u))) {
-                        System.out.println("Add to List:" + JsonReaderInit.MINING_BLOCK_LIST.get(i).get(u));
-                        playerStatsManager.lockedBlockIds.add(JsonReaderInit.MINING_BLOCK_LIST.get(i).get(u));
+        for (int i = 0; i < JsonReaderInit.miningLevelList.size(); i++) {
+            if (JsonReaderInit.miningLevelList.get(i) > playerStatsManager.getLevel("mining")) {
+                for (int u = 0; u < JsonReaderInit.miningBlockList.get(i).size(); u++) {
+                    if (!playerStatsManager.lockedBlockIds.contains(JsonReaderInit.miningBlockList.get(i).get(u))) {
+                        // System.out.println("Add to List:" + JsonReaderInit.miningBlockList.get(i).get(u));
+                        playerStatsManager.lockedBlockIds.add(JsonReaderInit.miningBlockList.get(i).get(u));
                     }
                 }
             }
