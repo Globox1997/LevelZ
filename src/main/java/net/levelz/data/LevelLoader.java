@@ -69,24 +69,51 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
-                // if (data.get("item").getAsString().equals("minecraft:elytra")) {
                 ArrayList<Object> list = LevelLists.getList(data.get("item").getAsString());
-                if (!LevelLists.elytraList.isEmpty()) {
-                    if (JsonHelper.getBoolean(data, "replace", false)) {
-                        LevelLists.elytraList.clear();
-                    } else {
-                        LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
-                        continue;
+                if (data.get("item").getAsString().equals("minecraft:armor") || data.get("item").getAsString().equals("minecraft:tool") || data.get("item").getAsString().equals("minecraft:hoe")) {
+                    if (list.contains(data.get("material").getAsString())) {
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            int removeLines = list.indexOf(data.get("material").getAsString());
+                            for (int i = 0; i < 4; i++) {
+                                list.remove(removeLines);
+                            }
+                        } else {
+                            if (!(boolean) list.get(list.indexOf(data.get("material")) + 3)) {
+                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                            }
+                            continue;
+                        }
+                    }
+                    list.add(data.get("material").getAsString());
+                    list.add(data.get("skill").getAsString());
+                    list.add(data.get("level").getAsInt());
+                    list.add(JsonHelper.getBoolean(data, "replace", false));
+                } else {
+                    if (!list.isEmpty()) {
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            list.clear();
+                        } else {
+                            if (!(boolean) list.get(2)) {
+                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                            }
+                            continue;
+                        }
+                    }
+                    list.add(data.get("skill").getAsString());
+                    list.add(data.get("level").getAsInt());
+                    list.add(JsonHelper.getBoolean(data, "replace", false));
+                    // Test for bow?
+                    if (data.get("bonus") != null) {
+                        list.add(data.get("bonus").getAsFloat());
                     }
                 }
-                LevelLists.elytraList.add(data.get("skill").getAsString());
-                LevelLists.elytraList.add(data.get("level").getAsInt());
-                // }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
         System.out.println(LevelLists.elytraList);
+        System.out.println(LevelLists.armorList);
+        System.out.println(LevelLists.bowList);
         // Test here
     }
 

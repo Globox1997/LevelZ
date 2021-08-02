@@ -6,7 +6,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
+import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShieldItem;
@@ -19,11 +20,8 @@ public class ShieldItemMixin {
 
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setCurrentHand(Lnet/minecraft/util/Hand;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private void useMixin(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack) {
-        if (!user.isCreative()) {
-            int playerDefenseLevel = ((PlayerStatsManagerAccess) user).getPlayerStatsManager(user).getLevel("defense");
-            if (playerDefenseLevel < 5) {
-                info.setReturnValue(TypedActionResult.fail(itemStack));
-            }
+        if (!PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.shieldList, null, true)) {
+            info.setReturnValue(TypedActionResult.fail(itemStack));
         }
     }
 }

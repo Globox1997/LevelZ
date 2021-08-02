@@ -85,6 +85,9 @@ public class PlayerStatsManager {
 
     // Boats, Minecart, Luck lvl - fishing?
     // Farmer unlocks more entity interaction like milk
+    // Crossbow dmg
+
+    // Wood, Stone, Iron,Gold, Diamond, Netherite
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {
@@ -234,14 +237,32 @@ public class PlayerStatsManager {
         }
     }
 
-    // Maybe central usage
-    public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, List<Object> list) {
-        int playerLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel(list.get(0).toString());
-        if (playerLevel < ConfigInit.CONFIG.maxLevel) {
-            if (playerLevel < (int) list.get(1)) {
-                return false;
+    // Datapack order for objects in json file is important!!
+    public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, List<Object> list, String string, boolean creativeRequired) {
+        if (!playerEntity.isCreative() || !creativeRequired) {
+            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
+            int playerLevel = 0;
+            int maxLevel = ConfigInit.CONFIG.maxLevel;
+            if (string != null) {
+                if (list.contains(string)) {
+                    playerLevel = playerStatsManager.getLevel(list.get(list.indexOf(string) + 1).toString());
+                    if (playerLevel < maxLevel) {
+                        if (playerLevel < (int) list.get(list.indexOf(string) + 2)) {
+                            return false;
+                        }
+                    }
+                } else
+                    System.out.println("Couldn't find " + string + " list");
+            } else {
+                playerLevel = playerStatsManager.getLevel(list.get(0).toString());
+                if (playerLevel < maxLevel) {
+                    if (playerLevel < (int) list.get(1)) {
+                        return false;
+                    }
+                }
             }
         }
+
         return true;
     }
 

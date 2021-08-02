@@ -1,5 +1,6 @@
 package net.levelz.mixin.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.fabricmc.api.EnvType;
@@ -41,6 +43,7 @@ public class ItemStackMixin {
         if (player != null) {
             ItemStack stack = (ItemStack) (Object) this;
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+            ArrayList<Object> levelList = new ArrayList<Object>();
 
             if (stack.isIn(FabricToolTags.SHEARS) && playerStatsManager.getLevel("farming") < 5) {
                 list.add(new TranslatableText("item.levelz.farming.tooltip", 5).formatted(Formatting.GRAY));
@@ -48,14 +51,19 @@ public class ItemStackMixin {
             } else if (stack.getItem() == Items.WOODEN_HOE && playerStatsManager.getLevel("farming") < 1) {
                 list.add(new TranslatableText("item.levelz.farming.tooltip", 1).formatted(Formatting.GRAY));
                 list.add(new TranslatableText("item.levelz.locked.tooltip"));
-            } else if (stack.isIn(FabricToolTags.AXES) || stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS) || stack.isIn(FabricToolTags.HOES)) {
-                int playerMiningLevel = playerStatsManager.getLevel("mining");
-                if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
-                    int itemMiningLevel = ((MiningToolItem) stack.getItem()).getMaterial().getMiningLevel() * 4;
-                    if (itemMiningLevel > playerMiningLevel) {
-                        list.add(new TranslatableText("item.levelz.mining.tooltip", itemMiningLevel).formatted(Formatting.GRAY));
-                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
-                    }
+            } else if (stack.isIn(FabricToolTags.AXES) || stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS)) {
+                levelList = LevelLists.toolList;
+                String material = ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
+                    list.add(new TranslatableText("item.levelz.mining.tooltip", levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
+            } else if (stack.isIn(FabricToolTags.HOES)) {
+                levelList = LevelLists.hoeList;
+                String material = ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
+                    list.add(new TranslatableText("item.levelz.farming.tooltip", levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
             } else if (stack.getItem() == Items.FLINT_AND_STEEL && playerStatsManager.getLevel("farming") < 8) {
                 list.add(new TranslatableText("item.levelz.farming.tooltip", 8).formatted(Formatting.GRAY));
@@ -79,14 +87,21 @@ public class ItemStackMixin {
                 list.add(new TranslatableText("item.levelz.archery.tooltip", 8).formatted(Formatting.GRAY));
                 list.add(new TranslatableText("item.levelz.locked.tooltip"));
             } else if (stack.getItem() instanceof ArmorItem) {
-                int playerDefenseLevel = playerStatsManager.getLevel("defense");
-                if (playerDefenseLevel < ConfigInit.CONFIG.maxLevel) {
-                    int itemMaterialLevel = (int) (((ArmorItem) stack.getItem()).getMaterial().getEnchantability() / 2.5F);
-                    if (itemMaterialLevel > playerDefenseLevel) {
-                        list.add(new TranslatableText("item.levelz.defense.tooltip", itemMaterialLevel).formatted(Formatting.GRAY));
-                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
-                    }
+
+                levelList = LevelLists.armorList;
+                String material = ((ArmorItem) stack.getItem()).getMaterial().getName();
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
+                    list.add(new TranslatableText("item.levelz.defense.tooltip", levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
+                // int playerDefenseLevel = playerStatsManager.getLevel("defense");
+                // if (playerDefenseLevel < ConfigInit.CONFIG.maxLevel) {
+                // int itemMaterialLevel = (int) (((ArmorItem) stack.getItem()).getMaterial().getEnchantability() / 2.5F);
+                // if (itemMaterialLevel > playerDefenseLevel) {
+                // list.add(new TranslatableText("item.levelz.defense.tooltip", itemMaterialLevel).formatted(Formatting.GRAY));
+                // list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                // }
+                // }
             } else if (stack.getItem() instanceof ShieldItem && playerStatsManager.getLevel("defense") < 5) {
                 list.add(new TranslatableText("item.levelz.defense.tooltip", 5).formatted(Formatting.GRAY));
                 list.add(new TranslatableText("item.levelz.locked.tooltip"));

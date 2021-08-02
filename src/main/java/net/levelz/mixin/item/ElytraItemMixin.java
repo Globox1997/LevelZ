@@ -20,7 +20,7 @@ public class ElytraItemMixin {
 
     @Inject(method = "use", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private void useMixin(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack) {
-        if (!user.isCreative() && PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.elytraList)) {
+        if (PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.elytraList, null, true)) {
             info.setReturnValue(TypedActionResult.fail(itemStack));
         }
     }

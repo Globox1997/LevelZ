@@ -72,16 +72,10 @@ public class ScreenHandlerMixin {
     private void internalOnSlotClickQuickMixin(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo info) {
         if (!player.isCreative()) {
             ItemStack itemStack = this.slots.get(slotIndex).getStack();
-            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
-            if (itemStack.getItem() instanceof ArmorItem) {
-                int playerDefenseLevel = playerStatsManager.getLevel("defense");
-                if (playerDefenseLevel < ConfigInit.CONFIG.maxLevel) {
-                    int itemMaterialLevel = (int) (((ArmorItem) itemStack.getItem()).getMaterial().getEnchantability() / 2.5F);
-                    if (itemMaterialLevel > playerDefenseLevel) {
-                        info.cancel();
-                    }
-                }
-            } else if (cursorStack.getItem() == Items.ELYTRA && PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList)) {
+            if (itemStack.getItem() instanceof ArmorItem
+                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName(), true)) {
+                info.cancel();
+            } else if (cursorStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
                 info.cancel();
             }
         }

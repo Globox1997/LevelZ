@@ -21,7 +21,6 @@
     "block.BlockMixin",
     "item.HoeItemMixin",
     "item.BowItemMixin",
-    "item.MiningToolItemMixin",
     "item.FlintAndSteelItemMixin",
     "item.TridentItemMixin",
     "item.CrossbowItemMixin",

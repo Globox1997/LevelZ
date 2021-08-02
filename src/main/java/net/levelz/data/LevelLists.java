@@ -24,6 +24,7 @@ public class LevelLists {
     public static final ArrayList<Object> hoeList = new ArrayList<Object>();
     public static final ArrayList<Object> shieldList = new ArrayList<Object>();
     public static final ArrayList<Object> tridentList = new ArrayList<Object>();
+    public static final ArrayList<Object> toolList = new ArrayList<Object>();
     // Misc
     public static final ArrayList<Object> anvilList = new ArrayList<Object>();
     public static final ArrayList<Object> explosionList = new ArrayList<Object>();
@@ -49,6 +50,8 @@ public class LevelLists {
             return shieldList;
         case "minecraft:trident":
             return tridentList;
+        case "minecraft:tool":
+            return toolList;
         default:
             return new ArrayList<Object>();
         }
