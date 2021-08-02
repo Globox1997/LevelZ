@@ -3,8 +3,6 @@ package net.levelz.data;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +12,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.levelz.init.JsonReaderInit;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -32,14 +29,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
     public void reload(ResourceManager manager) {
         for (Identifier id : manager.findResources("mining", path -> path.endsWith(".json"))) {
             try {
-
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
-
-                // int index = LevelJsonInit.MINING_LEVEL_LIST.indexOf(data.get("level").getAsInt()); // Get rt index; doesnt have it
-
-                // System.out.println(index + "::" + LevelJsonInit.MINING_LEVEL_LIST);
-
                 if (LevelLists.miningLevelList.contains(data.get("level").getAsInt())) {
                     if (JsonHelper.getBoolean(data, "replace", false)) {
                         int index = LevelLists.miningLevelList.indexOf(data.get("level").getAsInt());
@@ -53,14 +44,6 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 } else {
                     fillMiningLists(data, false);
                 }
-                // LevelJsonInit.MINING_LEVEL_LIST.add(data.get("level").getAsInt());
-
-                // List<Block> BLOCK_LIST = new ArrayList<Block>();
-                // for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
-                // BLOCK_LIST.add((Block) Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())));
-                // }
-                // LevelJsonInit.MINING_BLOCK_LIST.add(BLOCK_LIST);
-
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
@@ -107,6 +90,50 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                         list.add(data.get("bonus").getAsFloat());
                     }
                 }
+            } catch (Exception e) {
+                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+            }
+        }
+        for (Identifier id : manager.findResources("block", path -> path.endsWith(".json"))) {
+            try {
+                InputStream stream = manager.getResource(id).getInputStream();
+                JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
+                ArrayList<Object> list = LevelLists.getList(data.get("block").getAsString());
+                if (!list.isEmpty()) {
+                    if (JsonHelper.getBoolean(data, "replace", false)) {
+                        list.clear();
+                    } else {
+                        if (!(boolean) list.get(2)) {
+                            LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                        }
+                        continue;
+                    }
+                }
+                list.add(data.get("skill").getAsString());
+                list.add(data.get("level").getAsInt());
+                list.add(JsonHelper.getBoolean(data, "replace", false));
+            } catch (Exception e) {
+                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+            }
+        }
+        for (Identifier id : manager.findResources("entity", path -> path.endsWith(".json"))) {
+            try {
+                InputStream stream = manager.getResource(id).getInputStream();
+                JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
+                ArrayList<Object> list = LevelLists.getList(data.get("entity").getAsString());
+                if (!list.isEmpty()) {
+                    if (JsonHelper.getBoolean(data, "replace", false)) {
+                        list.clear();
+                    } else {
+                        if (!(boolean) list.get(2)) {
+                            LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                        }
+                        continue;
+                    }
+                }
+                list.add(data.get("skill").getAsString());
+                list.add(data.get("level").getAsInt());
+                list.add(JsonHelper.getBoolean(data, "replace", false));
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }

@@ -5,7 +5,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
+import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,14 +21,14 @@ public class BeehiveBlockMixin {
 
     @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/PlayerEntity;DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V", ordinal = 0), cancellable = true)
     private void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
-        if (!player.isCreative() && ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("farming") < 5) {
+        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.beehiveList, null, true)) {
             info.setReturnValue(ActionResult.FAIL);
         }
     }
 
     @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"), cancellable = true)
     private void onUseSecondMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
-        if (!player.isCreative() && ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("farming") < 5) {
+        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.beehiveList, null, true)) {
             info.setReturnValue(ActionResult.FAIL);
         }
     }

@@ -13,8 +13,8 @@ public class LevelLists {
     public static final ArrayList<Object> mooshroomList = new ArrayList<Object>();
     public static final ArrayList<Object> sheepList = new ArrayList<Object>();
     public static final ArrayList<Object> snowGolemList = new ArrayList<Object>();
-    public static final ArrayList<Object> villagerList = new ArrayList<Object>();
-    public static final ArrayList<Object> livingEntityList = new ArrayList<Object>();
+    // public static final ArrayList<Object> villagerList = new ArrayList<Object>();
+    // public static final ArrayList<Object> livingEntityList = new ArrayList<Object>();
     // Item
     public static final ArrayList<Object> elytraList = new ArrayList<Object>();
     public static final ArrayList<Object> armorList = new ArrayList<Object>();
@@ -52,6 +52,18 @@ public class LevelLists {
             return tridentList;
         case "minecraft:tool":
             return toolList;
+        case "minecraft:beehive":
+            return beehiveList;
+        case "minecraft:pumpkin":
+            return pumpkinList;
+        case "minecraft:cow":
+            return cowList;
+        case "minecraft:mooshroom":
+            return mooshroomList;
+        case "minecraft:sheep":
+            return sheepList;
+        case "minecraft:snowgolem":
+            return snowGolemList;
         default:
             return new ArrayList<Object>();
         }

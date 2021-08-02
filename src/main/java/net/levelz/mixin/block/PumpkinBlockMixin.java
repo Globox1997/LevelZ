@@ -5,7 +5,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
+import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PumpkinBlock;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,7 +21,7 @@ public class PumpkinBlockMixin {
 
     @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"), cancellable = true)
     private void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
-        if (!player.isCreative() && ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("farming") < 5) {
+        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.pumpkinList, null, true)) {
             info.setReturnValue(ActionResult.FAIL);
         }
     }

@@ -9,9 +9,7 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
-import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,24 +44,11 @@ public class ScreenHandlerMixin {
     private void internalOnSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo info) {
         if (8 - MobEntity.getPreferredEquipmentSlot(cursorStack).getEntitySlotId() == slotIndex && this.slots.get(slotIndex).toString().contains("PlayerScreenHandler")
                 && this.slots.get(slotIndex).canInsert(cursorStack)) {
-            if (!player.isCreative()) {
-                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
-                if (cursorStack.getItem() instanceof ArmorItem) {
-                    int playerDefenseLevel = playerStatsManager.getLevel("defense");
-                    if (playerDefenseLevel < ConfigInit.CONFIG.maxLevel) {
-                        int itemMaterialLevel = (int) (((ArmorItem) cursorStack.getItem()).getMaterial().getEnchantability() / 2.5F);
-                        if (itemMaterialLevel > playerDefenseLevel) {
-                            info.cancel();
-                        }
-                    }
-                } else if (cursorStack.getItem() == Items.ELYTRA) {
-                    int playerAgilityLevel = playerStatsManager.getLevel("agility");
-                    if (playerAgilityLevel < ConfigInit.CONFIG.maxLevel) {
-                        if (10 > playerAgilityLevel) {
-                            info.cancel();
-                        }
-                    }
-                }
+            if (cursorStack.getItem() instanceof ArmorItem
+                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName(), true)) {
+                info.cancel();
+            } else if (cursorStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
+                info.cancel();
             }
         }
     }
