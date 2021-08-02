@@ -53,7 +53,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
                 ArrayList<Object> list = LevelLists.getList(data.get("item").getAsString());
-                if (data.get("item").getAsString().equals("minecraft:armor") || data.get("item").getAsString().equals("minecraft:tool") || data.get("item").getAsString().equals("minecraft:hoe")) {
+                if (data.get("item").getAsString().equals("minecraft:armor") || data.get("item").getAsString().equals("minecraft:tool") || data.get("item").getAsString().equals("minecraft:hoe")
+                        || data.get("item").getAsString().equals("minecraft:sword")) {
                     if (list.contains(data.get("material").getAsString())) {
                         if (JsonHelper.getBoolean(data, "replace", false)) {
                             int removeLines = list.indexOf(data.get("material").getAsString());

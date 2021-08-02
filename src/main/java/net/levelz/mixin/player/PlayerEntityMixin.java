@@ -5,22 +5,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.init.ConfigInit;
+import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.network.PlayerStatsServerPacket;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FarmlandBlock;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.HungerManager;
-import net.minecraft.item.BowItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
@@ -33,11 +25,6 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
     private final PlayerStatsManager playerStatsManager = new PlayerStatsManager();
 
     private boolean isCrit;
-
-    // @Inject(method = "getBlockBreakingSpeed", at = @At(value = "HEAD"))
-    // private void getBlockBreakingSpeedMixin(BlockState block, CallbackInfoReturnable<Float> info) {
-
-    // }
 
     @Inject(method = "readCustomDataFromNbt", at = @At(value = "TAIL"))
     public void readCustomDataFromNbtMixin(NbtCompound tag, CallbackInfo info) {
@@ -93,14 +80,9 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 0)
     private float attackMixinThree(float original) {
         PlayerEntity playerEntity = (PlayerEntity) (Object) this;
-        if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem) {
-            int playerStrengthLevel = playerStatsManager.getLevel("strength");
-            if (playerStrengthLevel < ConfigInit.CONFIG.maxLevel) {
-                int itemMaterialLevel = ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().getMiningLevel() * 4;
-                if (itemMaterialLevel > playerStrengthLevel) {
-                    return original - ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
-                }
-            }
+        if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, LevelLists.swordList,
+                ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
+            return original - ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
         }
         return original;
     }
@@ -108,14 +90,9 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 1)
     private float attackMixinFour(float original) {
         PlayerEntity playerEntity = (PlayerEntity) (Object) this;
-        if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem) {
-            int playerStrengthLevel = playerStatsManager.getLevel("strength");
-            if (playerStrengthLevel < ConfigInit.CONFIG.maxLevel) {
-                int itemMaterialLevel = ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().getMiningLevel() * 4;
-                if (itemMaterialLevel > playerStrengthLevel) {
-                    return 0;
-                }
-            }
+        if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, LevelLists.swordList,
+                ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
+            return 0;
         }
         return original;
     }
