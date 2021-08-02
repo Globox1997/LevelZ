@@ -3,7 +3,7 @@ package net.levelz.network;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.init.JsonReaderInit;
+import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.network.PacketByteBuf;
@@ -92,12 +92,12 @@ public class PlayerStatsServerPacket {
     public static void syncLockedBlockList(PlayerStatsManager playerStatsManager) {
         playerStatsManager.lockedBlockIds.clear();
 
-        for (int i = 0; i < JsonReaderInit.miningLevelList.size(); i++) {
-            if (JsonReaderInit.miningLevelList.get(i) > playerStatsManager.getLevel("mining")) {
-                for (int u = 0; u < JsonReaderInit.miningBlockList.get(i).size(); u++) {
-                    if (!playerStatsManager.lockedBlockIds.contains(JsonReaderInit.miningBlockList.get(i).get(u))) {
+        for (int i = 0; i < LevelLists.miningLevelList.size(); i++) {
+            if (LevelLists.miningLevelList.get(i) > playerStatsManager.getLevel("mining")) {
+                for (int u = 0; u < LevelLists.miningBlockList.get(i).size(); u++) {
+                    if (!playerStatsManager.lockedBlockIds.contains(LevelLists.miningBlockList.get(i).get(u))) {
                         // System.out.println("Add to List:" + JsonReaderInit.miningBlockList.get(i).get(u));
-                        playerStatsManager.lockedBlockIds.add(JsonReaderInit.miningBlockList.get(i).get(u));
+                        playerStatsManager.lockedBlockIds.add(LevelLists.miningBlockList.get(i).get(u));
                     }
                 }
             }

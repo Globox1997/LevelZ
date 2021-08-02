@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.mob.MobEntity;
@@ -80,13 +81,8 @@ public class ScreenHandlerMixin {
                         info.cancel();
                     }
                 }
-            } else if (cursorStack.getItem() == Items.ELYTRA) {
-                int playerAgilityLevel = playerStatsManager.getLevel("agility");
-                if (playerAgilityLevel < ConfigInit.CONFIG.maxLevel) {
-                    if (10 > playerAgilityLevel) {
-                        info.cancel();
-                    }
-                }
+            } else if (cursorStack.getItem() == Items.ELYTRA && PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList)) {
+                info.cancel();
             }
         }
     }

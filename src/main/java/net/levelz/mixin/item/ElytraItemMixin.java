@@ -6,7 +6,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
+import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
@@ -19,11 +20,8 @@ public class ElytraItemMixin {
 
     @Inject(method = "use", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private void useMixin(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack) {
-        if (!user.isCreative()) {
-            int playerArcheryLevel = ((PlayerStatsManagerAccess) user).getPlayerStatsManager(user).getLevel("agility");
-            if (playerArcheryLevel < 10) {
-                info.setReturnValue(TypedActionResult.fail(itemStack));
-            }
+        if (!user.isCreative() && PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.elytraList)) {
+            info.setReturnValue(TypedActionResult.fail(itemStack));
         }
     }
 }

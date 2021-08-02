@@ -30,7 +30,6 @@
     "item.ElytraItemMixin",
     "misc.AnvilScreenHandlerMixin",
     "misc.ExplosionMixin",
-    "misc.LivingEntityMixin",
     "misc.ScreenHandlerMixin"
   ],
   "client": [

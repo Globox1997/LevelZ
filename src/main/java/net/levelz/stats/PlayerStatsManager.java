@@ -235,13 +235,10 @@ public class PlayerStatsManager {
     }
 
     // Maybe central usage
-    public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, String string, int level) {
-        // JsonReaderInit.MINING_BLOCK_LIST.
-        // JsonReaderInit.itemUnlockerList.indexOf(string);
-        // JsonReaderInit.itemUnlockerList.
-        int playerLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel(string);
+    public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, List<Object> list) {
+        int playerLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel(list.get(0).toString());
         if (playerLevel < ConfigInit.CONFIG.maxLevel) {
-            if (playerLevel < level) {
+            if (playerLevel < (int) list.get(1)) {
                 return false;
             }
         }
