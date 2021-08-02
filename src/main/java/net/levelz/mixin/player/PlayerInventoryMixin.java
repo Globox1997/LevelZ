@@ -35,7 +35,6 @@ public class PlayerInventoryMixin {
         ItemStack itemStack = this.main.get(this.selectedSlot);
         if (itemStack.getItem() instanceof MiningToolItem && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.toolList,
                 ((MiningToolItem) this.main.get(this.selectedSlot).getItem()).getMaterial().toString().toLowerCase(), true)) {
-            System.out.println("BREAK");
             info.setReturnValue(1.0F);
         }
     }

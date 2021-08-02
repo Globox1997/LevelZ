@@ -88,6 +88,7 @@ public class PlayerStatsManager {
     // Crossbow dmg
 
     // Wood, Stone, Iron,Gold, Diamond, Netherite
+    // Shovel pathing unlock
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {
