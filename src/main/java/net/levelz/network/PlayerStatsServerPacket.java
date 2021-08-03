@@ -37,16 +37,8 @@ public class PlayerStatsServerPacket {
                     player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + 0.05D);
                 } else if (stat.equals("mining")) {
                     syncLockedBlockList(playerStatsManager);
-                    // for (int i = 0; i < LevelJsonInit.MINING_LEVEL_LIST.size(); i++) {
-                    // if (LevelJsonInit.MINING_LEVEL_LIST.get(i) < playerStatsManager.getLevel("mining")) {
-                    // for (int u = 0; u < LevelJsonInit.MINING_BLOCK_LIST.get(i).size(); u++) {
-                    // if (!playerStatsManager.unlockedBlocks.contains(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u))) {
-                    // playerStatsManager.unlockedBlocks.add(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u));
-                    // }
-                    // }
-                    // }
-                    // }
-
+                } else if (stat.equals("alchemy")) {
+                    syncLockedBrewingItemList(playerStatsManager);
                 }
             }
         });
@@ -79,7 +71,7 @@ public class PlayerStatsServerPacket {
         buf.writeInt(playerStatsManager.getLevel("smithing"));
         buf.writeInt(playerStatsManager.getLevel("mining"));
         buf.writeInt(playerStatsManager.getLevel("farming"));
-        buf.writeInt(playerStatsManager.getLevel("building"));
+        buf.writeInt(playerStatsManager.getLevel("alchemy"));
 
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LEVEL_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
@@ -87,17 +79,29 @@ public class PlayerStatsServerPacket {
         // Set on server
         // System.out.println("WriteSkillPacket");
         syncLockedBlockList(playerStatsManager);
+        syncLockedBrewingItemList(playerStatsManager);
     }
 
     public static void syncLockedBlockList(PlayerStatsManager playerStatsManager) {
         playerStatsManager.lockedBlockIds.clear();
-
         for (int i = 0; i < LevelLists.miningLevelList.size(); i++) {
             if (LevelLists.miningLevelList.get(i) > playerStatsManager.getLevel("mining")) {
                 for (int u = 0; u < LevelLists.miningBlockList.get(i).size(); u++) {
                     if (!playerStatsManager.lockedBlockIds.contains(LevelLists.miningBlockList.get(i).get(u))) {
-                        // System.out.println("Add to List:" + JsonReaderInit.miningBlockList.get(i).get(u));
                         playerStatsManager.lockedBlockIds.add(LevelLists.miningBlockList.get(i).get(u));
+                    }
+                }
+            }
+        }
+    }
+
+    public static void syncLockedBrewingItemList(PlayerStatsManager playerStatsManager) {
+        playerStatsManager.lockedbrewingItemIds.clear();
+        for (int i = 0; i < LevelLists.brewingLevelList.size(); i++) {
+            if (LevelLists.brewingLevelList.get(i) > playerStatsManager.getLevel("brewing")) {
+                for (int u = 0; u < LevelLists.brewingItemList.get(i).size(); u++) {
+                    if (!playerStatsManager.lockedbrewingItemIds.contains(LevelLists.brewingItemList.get(i).get(u))) {
+                        playerStatsManager.lockedbrewingItemIds.add(LevelLists.brewingItemList.get(i).get(u));
                     }
                 }
             }

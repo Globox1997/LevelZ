@@ -4,18 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
-import net.levelz.init.JsonReaderInit;
-import net.minecraft.block.AnvilBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.SmithingTableBlock;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.SmithingScreenHandler;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.MathHelper;
 
 public class PlayerStatsManager {
     // Level
@@ -34,11 +26,12 @@ public class PlayerStatsManager {
     private int smithingLevel;
     private int miningLevel;
     private int farmingLevel;
-    private int buildingLevel;
+    private int alchemyLevel;
     private int skillPoints;
     // Other
     // public List<Block> unlockedBlocks = new ArrayList<Block>();
     public List<Integer> lockedBlockIds = new ArrayList<Integer>();
+    public List<Integer> lockedbrewingItemIds = new ArrayList<Integer>();
 
     // public void add(int thirst) {
     // this.thirstLevel = Math.min(thirst + this.thirstLevel, 20);
@@ -83,12 +76,11 @@ public class PlayerStatsManager {
     // Archery unlocks bow at lvl 1
     // Archery unlocks crossbow at lvl 8
 
-    // Boats, Minecart, Luck lvl - fishing?
-    // Farmer unlocks more entity interaction like milk
-    // Crossbow dmg
-
+    // Alchemy stuff
     // Wood, Stone, Iron,Gold, Diamond, Netherite
-    // Shovel pathing unlock
+
+    // Locked block list
+    // Locked list gui
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {
@@ -109,7 +101,7 @@ public class PlayerStatsManager {
             this.smithingLevel = tag.getInt("SmithingLevel");
             this.miningLevel = tag.getInt("MiningLevel");
             this.farmingLevel = tag.getInt("FarmingLevel");
-            this.buildingLevel = tag.getInt("BuildingLevel");
+            this.alchemyLevel = tag.getInt("AlchemyLevel");
 
         }
     }
@@ -132,7 +124,7 @@ public class PlayerStatsManager {
         tag.putInt("SmithingLevel", this.smithingLevel);
         tag.putInt("MiningLevel", this.miningLevel);
         tag.putInt("FarmingLevel", this.farmingLevel);
-        tag.putInt("BuildingLevel", this.buildingLevel);
+        tag.putInt("AlchemyLevel", this.alchemyLevel);
 
     }
 
@@ -174,8 +166,8 @@ public class PlayerStatsManager {
         case "farming":
             this.farmingLevel = level;
             break;
-        case "building":
-            this.buildingLevel = level;
+        case "alchemy":
+            this.alchemyLevel = level;
             break;
         case "points":
             this.skillPoints = level;
@@ -211,8 +203,8 @@ public class PlayerStatsManager {
             return this.miningLevel;
         case "farming":
             return this.farmingLevel;
-        case "building":
-            return this.buildingLevel;
+        case "alchemy":
+            return this.alchemyLevel;
         case "points":
             return this.skillPoints;
         default:
@@ -265,6 +257,44 @@ public class PlayerStatsManager {
         }
 
         return true;
+    }
+
+    public static boolean listContainsItemOrBlock(PlayerEntity playerEntity, int id, boolean isBlock) {
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
+        if (isBlock) {
+            int playerMiningLevel = playerStatsManager.getLevel("mining");
+            if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
+                if (playerStatsManager.lockedBlockIds.contains(id)) {
+                    return true;
+                }
+            }
+        } else {
+            int playerBrewingLevel = playerStatsManager.getLevel("alchemy");
+            if (playerBrewingLevel < ConfigInit.CONFIG.maxLevel) {
+                if (playerStatsManager.lockedbrewingItemIds.contains(id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static int getUnlockLevel(int id, boolean isBlock) {
+        if (isBlock) {
+            for (int i = 0; i < LevelLists.miningBlockList.size(); i++) {
+                if (LevelLists.miningBlockList.get(i).contains(id)) {
+                    return LevelLists.miningLevelList.get(i);
+                }
+            }
+            return 0;
+        } else {
+            for (int i = 0; i < LevelLists.brewingItemList.size(); i++) {
+                if (LevelLists.brewingItemList.get(i).contains(id)) {
+                    return LevelLists.brewingLevelList.get(i);
+                }
+            }
+            return 0;
+        }
     }
 
 }

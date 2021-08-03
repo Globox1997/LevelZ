@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class ZWSprite extends WSprite {
-    //    private Text text;
+    // private Text text;
     private List<OrderedText> text = Lists.newArrayList();
 
     public ZWSprite(Identifier image, float u1, float v1, float u2, float v2) {
@@ -29,7 +29,7 @@ public class ZWSprite extends WSprite {
     @Override
     @Environment(EnvType.CLIENT)
     public void addTooltip(TooltipBuilder tooltip) {
-//        tooltip.add(list.get(0));
+        // tooltip.add(list.get(0));
         for (int i = 0; i < text.size(); i++) {
             tooltip.add(text.get(i));
         }

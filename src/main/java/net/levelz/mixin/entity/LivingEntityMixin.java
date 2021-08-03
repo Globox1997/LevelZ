@@ -17,7 +17,6 @@ public class LivingEntityMixin {
         if (source == DamageSource.FALL && (Object) this instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) (Object) this;
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
-            // System.out.println(original);
             return original + playerStatsManager.getLevel("agility") / 4;
         } else
             return original;

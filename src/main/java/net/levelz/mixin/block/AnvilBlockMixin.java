@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
-import net.minecraft.block.BeehiveBlock;
+import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
@@ -19,24 +19,16 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-@Mixin(BeehiveBlock.class)
-public class BeehiveBlockMixin {
+@Mixin(AnvilBlock.class)
+public class AnvilBlockMixin {
 
-    @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/PlayerEntity;DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V", ordinal = 0), cancellable = true)
+    @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;openHandledScreen(Lnet/minecraft/screen/NamedScreenHandlerFactory;)Ljava/util/OptionalInt;"), cancellable = true)
     private void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
-        ArrayList<Object> levelList = LevelLists.beehiveList;
+        ArrayList<Object> levelList = LevelLists.anvilList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
             player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
             info.setReturnValue(ActionResult.FAIL);
         }
     }
 
-    @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"), cancellable = true)
-    private void onUseSecondMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
-        ArrayList<Object> levelList = LevelLists.beehiveList;
-        if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
-            info.setReturnValue(ActionResult.FAIL);
-        }
-    }
 }

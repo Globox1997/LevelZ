@@ -16,11 +16,18 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.fabricmc.api.EnvType;
+import net.minecraft.block.AnvilBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.BowItem;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.ElytraItem;
+import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -31,6 +38,7 @@ import net.minecraft.item.TridentItem;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.registry.Registry;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ItemStack.class)
@@ -53,6 +61,39 @@ public class ItemStackMixin {
             ItemStack stack = (ItemStack) (Object) this;
             ArrayList<Object> levelList = new ArrayList<Object>();
 
+            // Block
+            if (stack.getItem() instanceof BlockItem) {
+                Block block = ((BlockItem) stack.getItem()).getBlock();
+                if (block instanceof AnvilBlock) {
+                    levelList = LevelLists.anvilList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.BEEHIVE) {
+                    levelList = LevelLists.beehiveList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.BREWING_STAND) {
+                    levelList = LevelLists.brewingStandList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.ENCHANTING_TABLE) {
+                    levelList = LevelLists.enchantingTableList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.BLOCK.getRawId(block), true)) {
+                    list.add(new TranslatableText("item.levelz.mining.tooltip", PlayerStatsManager.getUnlockLevel(Registry.BLOCK.getRawId(block), true)).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
+            } else
+            // Item
             if (stack.isIn(FabricToolTags.SHEARS)) {
                 levelList = LevelLists.sheepList;
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
@@ -75,18 +116,18 @@ public class ItemStackMixin {
                             .formatted(Formatting.GRAY));
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
-            } else if (stack.getItem() == Items.FLINT_AND_STEEL) {
-                levelList = LevelLists.flintAndSteelList;
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
-                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
-                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
-                }
             } else if (stack.isIn(FabricToolTags.SWORDS)) {
                 levelList = LevelLists.swordList;
                 String material = ((SwordItem) stack.getItem()).getMaterial().toString().toLowerCase();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
                             .formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
+            } else if (stack.getItem() == Items.FLINT_AND_STEEL) {
+                levelList = LevelLists.flintAndSteelList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
             } else if (stack.getItem() instanceof BowItem) {
@@ -121,12 +162,27 @@ public class ItemStackMixin {
                     list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
-            } else if (stack.getItem() == Items.ELYTRA) {
+            } else if (stack.getItem() instanceof ElytraItem) {
                 levelList = LevelLists.elytraList;
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
+            } else if (stack.getItem() instanceof BucketItem) {
+                levelList = LevelLists.bucketList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
+            } else if (stack.getItem() instanceof FishingRodItem) {
+                levelList = LevelLists.fishingList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
+            } else if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(stack.getItem()), false)) {
+                list.add(new TranslatableText("item.levelz.alchemy.tooltip", PlayerStatsManager.getUnlockLevel(Registry.ITEM.getRawId(stack.getItem()), false)).formatted(Formatting.GRAY));
+                list.add(new TranslatableText("item.levelz.locked.tooltip"));
             }
         }
     }

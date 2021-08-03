@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
+import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.network.PlayerStatsServerPacket;
 
@@ -58,7 +59,7 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
 
     @Redirect(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"))
     private void addExhaustion(HungerManager hungerManager, float exhaustion) {
-        exhaustion *= 1.1F - ((float) playerStatsManager.getLevel("stamina") * 0.02F);
+        exhaustion *= ConfigInit.CONFIG.staminaBase - ((float) playerStatsManager.getLevel("stamina") * ConfigInit.CONFIG.staminaBonus);
         hungerManager.addExhaustion(exhaustion);
     }
 

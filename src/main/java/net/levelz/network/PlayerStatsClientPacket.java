@@ -88,10 +88,11 @@ public class PlayerStatsClientPacket {
         playerStatsManager.setLevel("smithing", buf.readInt());
         playerStatsManager.setLevel("mining", buf.readInt());
         playerStatsManager.setLevel("farming", buf.readInt());
-        playerStatsManager.setLevel("building", buf.readInt());
+        playerStatsManager.setLevel("alchemy", buf.readInt());
         // Set unlocked block list
         // playerStatsManager.lockedBlockIds.clear();
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
+        PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
     }
 
 }

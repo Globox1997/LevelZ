@@ -86,7 +86,6 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     list.add(data.get("skill").getAsString());
                     list.add(data.get("level").getAsInt());
                     list.add(JsonHelper.getBoolean(data, "replace", false));
-                    // Test for bow?
                     if (data.get("bonus") != null) {
                         list.add(data.get("bonus").getAsFloat());
                     }
@@ -139,9 +138,34 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
+        for (Identifier id : manager.findResources("brewing", path -> path.endsWith(".json"))) {
+            try {
+                InputStream stream = manager.getResource(id).getInputStream();
+                JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
+                if (LevelLists.brewingLevelList.contains(data.get("level").getAsInt())) {
+                    if (JsonHelper.getBoolean(data, "replace", false)) {
+                        int index = LevelLists.brewingLevelList.indexOf(data.get("level").getAsInt());
+                        LevelLists.brewingLevelList.remove(index);
+                        LevelLists.brewingItemList.remove(index);
+                        fillBrewingLists(data, false);
+                    } else {
+                        fillBrewingLists(data, true);
+
+                    }
+                } else {
+                    fillBrewingLists(data, false);
+                }
+            } catch (Exception e) {
+                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+            }
+        }
         System.out.println(LevelLists.elytraList);
         System.out.println(LevelLists.armorList);
         System.out.println(LevelLists.bowList);
+        System.out.println("Brewing Item List: " + LevelLists.brewingItemList);
+        System.out.println("Brewing Level List: " + LevelLists.brewingLevelList);
+        System.out.println("Mining Block List: " + LevelLists.miningBlockList);
+        System.out.println("Mining Level List: " + LevelLists.miningLevelList);
         // Test here
     }
 
@@ -158,6 +182,22 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         } else {
             LevelLists.miningLevelList.add(data.get("level").getAsInt());
             LevelLists.miningBlockList.add(blockIdList);
+        }
+    }
+
+    private void fillBrewingLists(JsonObject data, boolean addToExisting) {
+        List<Integer> itemIdList = new ArrayList<Integer>();
+        for (int i = 0; i < data.getAsJsonArray("item").size(); i++) {
+            itemIdList.add(Registry.ITEM.getRawId(Registry.ITEM.get(new Identifier(data.getAsJsonArray("item").get(i).getAsString()))));
+        }
+        if (addToExisting) {
+            int index = LevelLists.brewingLevelList.indexOf(data.get("level").getAsInt());
+            for (int u = 0; u < itemIdList.size(); u++) {
+                LevelLists.brewingItemList.get(index).add(itemIdList.get(u));
+            }
+        } else {
+            LevelLists.brewingLevelList.add(data.get("level").getAsInt());
+            LevelLists.brewingItemList.add(itemIdList);
         }
     }
 

@@ -1,8 +1,5 @@
 package net.levelz.mixin.block;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -11,12 +8,9 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
-import net.levelz.init.JsonReaderInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.TntBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,21 +28,6 @@ public class BlockMixin {
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) (PlayerEntity) entity).getPlayerStatsManager((PlayerEntity) entity);
             int playerMiningLevel = playerStatsManager.getLevel("mining");
             if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
-                // List<Block> blocks = new ArrayList<Block>();
-                // for (int i = 0; i < LevelJsonInit.MINING_LEVEL_LIST.size(); i++) {
-                // if (LevelJsonInit.MINING_LEVEL_LIST.get(i) < playerMiningLevel) {
-                // for (int u = 0; u < LevelJsonInit.MINING_BLOCK_LIST.get(i).size(); u++) {
-                // blocks.add(LevelJsonInit.MINING_BLOCK_LIST.get(i).get(u));
-                // }
-                // }
-                // TntBlock
-                // }
-                // if (!blocks.contains(state.getBlock())) {
-                // info.cancel();
-                // }
-                // System.out.println(playerStatsManager.unlockedBlocks);
-                System.out.println(Block.getRawIdFromState(state) + "::" + Registry.BLOCK.getRawId(state.getBlock()));
-                // Registry.BLOCK.getRawId(state.getBlock());
                 if (playerStatsManager.lockedBlockIds.contains(Registry.BLOCK.getRawId(state.getBlock()))) {
                     info.cancel();
                 }

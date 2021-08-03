@@ -1,25 +1,18 @@
 package net.levelz.mixin.block;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
-import net.levelz.init.JsonReaderInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldView;
 
 @Mixin(AbstractBlock.class)
 public class AbstractBlockMixin {
@@ -30,10 +23,8 @@ public class AbstractBlockMixin {
         int playerMiningLevel = playerStatsManager.getLevel("mining");
         if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
             if (playerStatsManager.lockedBlockIds.contains(Registry.BLOCK.getRawId(state.getBlock()))) {
-                // System.out.print("X:" + (int) (original * 100.1F));
-                return (int) (original * 2F);// 0.3F is enough I guess
+                return (int) (original * 2F);
             } else if (playerMiningLevel < 5) {
-                // System.out.print("I:" + (int) (original * (0.8F + playerMiningLevel * 0.0475F)));
                 return (int) (original * (1.2F - playerMiningLevel * 0.0475F));
             } else
                 return original;

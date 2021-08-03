@@ -9,5 +9,11 @@
   "item.levelz.strength.tooltip": "Strength level %d required",
   "item.levelz.archery.tooltip": "Archery level %d required",
   "item.levelz.defense.tooltip": "Defense level %d required",
-  "item.levelz.agility.tooltip": "Agility level %d required"
+  "item.levelz.agility.tooltip": "Agility level %d required",
+  "item.levelz.smithing.tooltip": "Smithing level %d required",
+  "item.levelz.alchemy.tooltip": "Alchemy level %d required",
+  "item.levelz.health.tooltip": "Health level %d required",
+  "item.levelz.stamina.tooltip": "Stamina level %d required",
+  "item.levelz.luck.tooltip": "Luck level %d required",
+  "item.levelz.trade.tooltip": "Trade level %d required"
 }
