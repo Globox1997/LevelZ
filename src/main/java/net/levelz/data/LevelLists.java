@@ -11,6 +11,16 @@ public class LevelLists {
     public static final ArrayList<Object> anvilList = new ArrayList<Object>();
     public static final ArrayList<Object> brewingStandList = new ArrayList<Object>();
     public static final ArrayList<Object> enchantingTableList = new ArrayList<Object>();
+    public static final ArrayList<Object> smithingTableList = new ArrayList<Object>();
+    public static final ArrayList<Object> grindstoneList = new ArrayList<Object>();
+    public static final ArrayList<Object> loomList = new ArrayList<Object>();
+    public static final ArrayList<Object> smokerList = new ArrayList<Object>();
+    public static final ArrayList<Object> blastFurnaceList = new ArrayList<Object>();
+    public static final ArrayList<Object> cartographyList = new ArrayList<Object>();
+    public static final ArrayList<Object> barrelList = new ArrayList<Object>();
+    public static final ArrayList<Object> composterList = new ArrayList<Object>();
+    public static final ArrayList<Object> lecternList = new ArrayList<Object>();
+    public static final ArrayList<Object> stonecutterList = new ArrayList<Object>();
     // Entity
     public static final ArrayList<Object> cowList = new ArrayList<Object>();
     public static final ArrayList<Object> mooshroomList = new ArrayList<Object>();
@@ -76,6 +86,26 @@ public class LevelLists {
             return brewingStandList;
         case "minecraft:enchanting":
             return enchantingTableList;
+        case "minecraft:smithing":
+            return smithingTableList;
+        case "minecraft:grindstone":
+            return grindstoneList;
+        case "minecraft:loom":
+            return loomList;
+        case "minecraft:smoker":
+            return smokerList;
+        case "minecraft:blastfurnace":
+            return blastFurnaceList;
+        case "minecraft:cartography":
+            return cartographyList;
+        case "minecraft:barrel":
+            return barrelList;
+        case "minecraft:composter":
+            return composterList;
+        case "minecraft:lectern":
+            return lecternList;
+        case "minecraft:stonecutter":
+            return stonecutterList;
         // Entity
         case "minecraft:cow":
             return cowList;

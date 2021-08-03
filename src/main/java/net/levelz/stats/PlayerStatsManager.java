@@ -75,8 +75,8 @@ public class PlayerStatsManager {
     // Archery unlocks trident at lvl 16
     // Archery unlocks bow at lvl 1
     // Archery unlocks crossbow at lvl 8
+    // Alchemy unlocks brewing stuff
 
-    // Alchemy stuff
     // Wood, Stone, Iron,Gold, Diamond, Netherite
 
     // Locked block list

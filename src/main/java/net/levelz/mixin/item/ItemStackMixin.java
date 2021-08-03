@@ -44,17 +44,6 @@ import net.minecraft.util.registry.Registry;
 @Mixin(ItemStack.class)
 public class ItemStackMixin {
 
-    // private void addTooltip(PlayerEntity playerEntity, List<Object> levelList, List<Text> list, boolean material) {
-    // if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, null, false)) {
-    // if(material){
-
-    // }else{
-    // list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
-    // }
-    // list.add(new TranslatableText("item.levelz.locked.tooltip"));
-    // }
-    // }
-
     @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;appendTooltip(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/client/item/TooltipContext;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void getTooltipMixin(@Nullable PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> info, List<Text> list, int i) {
         if (player != null) {
