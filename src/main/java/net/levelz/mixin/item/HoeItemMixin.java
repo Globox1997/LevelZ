@@ -21,8 +21,10 @@ public class HoeItemMixin {
     @Inject(method = "useOnBlock", at = @At(value = "INVOKE", target = "Ljava/util/function/Predicate;test(Ljava/lang/Object;)Z"), cancellable = true)
     private void useOnBlockMixin(ItemUsageContext context, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.hoeList;
-        if (!PlayerStatsManager.playerLevelisHighEnough(context.getPlayer(), levelList, ((MiningToolItem) context.getStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
-            context.getPlayer().sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+        String material = ((MiningToolItem) context.getStack().getItem()).getMaterial().toString().toLowerCase();
+        if (!PlayerStatsManager.playerLevelisHighEnough(context.getPlayer(), levelList, material, true)) {
+            context.getPlayer().sendMessage(
+                    new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString()), true);
             info.setReturnValue(ActionResult.FAIL);
         }
     }

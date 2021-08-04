@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
+import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,9 +39,11 @@ public class CrossbowItemMixin {
     private static void createArrowMixin(World world, LivingEntity entity, ItemStack crossbow, ItemStack arrow, CallbackInfoReturnable<PersistentProjectileEntity> info, ArrowItem arrowItem,
             PersistentProjectileEntity persistentProjectileEntity) {
         if (entity instanceof PlayerEntity) {
-            PlayerEntity playerEntity = (PlayerEntity) entity;
-            persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage()
-                    + (double) ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("archery") * (Float) LevelLists.crossbowList.get(3));
+            int archeryLevel = ((PlayerStatsManagerAccess) (PlayerEntity) entity).getPlayerStatsManager((PlayerEntity) entity).getLevel("archery");
+            persistentProjectileEntity
+                    .setDamage(persistentProjectileEntity.getDamage() + archeryLevel == ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > entity.world.random.nextFloat()
+                            ? persistentProjectileEntity.getDamage() * 2D
+                            : (double) archeryLevel * (float) LevelLists.crossbowList.get(3));
         }
 
     }

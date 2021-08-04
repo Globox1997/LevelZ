@@ -24,5 +24,6 @@ public class FlintAndSteelItemMixin {
             context.getPlayer().sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
             info.setReturnValue(ActionResult.FAIL);
         }
+
     }
 }

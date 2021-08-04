@@ -4,7 +4,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
@@ -12,7 +14,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.network.PlayerStatsServerPacket;
-
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.item.SwordItem;
 import net.minecraft.sound.SoundEvents;
@@ -23,8 +25,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin implements PlayerStatsManagerAccess {
-    private final PlayerStatsManager playerStatsManager = new PlayerStatsManager();
 
+    private final PlayerStatsManager playerStatsManager = new PlayerStatsManager();
+    private final PlayerEntity playerEntity = (PlayerEntity) (Object) this;
     private boolean isCrit;
 
     @Inject(method = "readCustomDataFromNbt", at = @At(value = "TAIL"))
@@ -45,7 +48,6 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
             playerStatsManager.levelProgress = (playerStatsManager.levelProgress - 1.0F) * (float) playerStatsManager.getNextLevelExperience();
             playerStatsManager.addExperienceLevels(1);
             playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
-            PlayerEntity playerEntity = (PlayerEntity) (Object) this;
             if (playerEntity instanceof ServerPlayerEntity) {
                 PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) playerEntity);
             }
@@ -65,7 +67,7 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), ordinal = 2)
     private boolean attackMixin(boolean original) {
-        if (((PlayerEntity) (Object) this).world.random.nextFloat() < (float) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckCritBonus) {
+        if (playerEntity.world.random.nextFloat() < (float) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckCritBonus) {
             isCrit = true;
             return true;
         } else
@@ -75,12 +77,14 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0)
     private float attackMixinTwo(float original) {
-        return isCrit ? original * ConfigInit.CONFIG.critDmgBonus : original;
+        if (playerStatsManager.getLevel("strength") == ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.world.random.nextFloat()) {
+            return original * 2F;
+        } else
+            return isCrit ? original * ConfigInit.CONFIG.critDmgBonus : original;
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 0)
     private float attackMixinThree(float original) {
-        PlayerEntity playerEntity = (PlayerEntity) (Object) this;
         if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, LevelLists.swordList,
                 ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
             return original - ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
@@ -90,12 +94,21 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 1)
     private float attackMixinFour(float original) {
-        PlayerEntity playerEntity = (PlayerEntity) (Object) this;
         if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, LevelLists.swordList,
                 ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
             return 0;
         }
         return original;
+    }
+
+    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;dropShoulderEntities()V", shift = Shift.AFTER), cancellable = true)
+    private void damageMixin(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
+        if (playerStatsManager.getLevel("defense") == ConfigInit.CONFIG.maxLevel && source.getAttacker() != null && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.defenseReflectChance) {
+            source.getAttacker().damage(source, amount);
+        }
+        if (playerStatsManager.getLevel("agility") == ConfigInit.CONFIG.maxLevel && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.movementMissChance) {
+            info.setReturnValue(false);
+        }
     }
 
     @Override

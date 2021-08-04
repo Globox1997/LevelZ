@@ -42,7 +42,7 @@ import net.minecraft.util.registry.Registry;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ItemStack.class)
-public class ItemStackMixin {
+public class ItemStackClientMixin {
 
     @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;appendTooltip(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/client/item/TooltipContext;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void getTooltipMixin(@Nullable PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> info, List<Text> list, int i) {
@@ -155,8 +155,16 @@ public class ItemStackMixin {
                     list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
-            } else if (stack.isIn(FabricToolTags.AXES) || stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS)) {
+            } else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS)) {
                 levelList = LevelLists.toolList;
+                String material = ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
+                            .formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
+            } else if (stack.isIn(FabricToolTags.AXES)) {
+                levelList = LevelLists.axeList;
                 String material = ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())

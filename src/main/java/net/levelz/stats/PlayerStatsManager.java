@@ -83,6 +83,8 @@ public class PlayerStatsManager {
     // Locked list gui
 
     // Show unlock lvl at enchanting table screen
+    // Bone meal
+    // Remove dmg to tools when unable to use
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {
@@ -261,6 +263,7 @@ public class PlayerStatsManager {
         return true;
     }
 
+    // 1 = block, 2 = alchemy, 3 = ?
     public static boolean listContainsItemOrBlock(PlayerEntity playerEntity, int id, boolean isBlock) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
         if (isBlock) {

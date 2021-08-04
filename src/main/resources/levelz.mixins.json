@@ -31,6 +31,7 @@
     "block.LecternBlockMixin",
     "block.StonecutterBlockMixin",
     "block.AbstractCauldronBlockMixin",
+    "block.CropBlockMixin",
     "item.HoeItemMixin",
     "item.BowItemMixin",
     "item.FlintAndSteelItemMixin",
@@ -43,6 +44,8 @@
     "item.FishingRodItemMixin",
     "item.AliasedBlockItemMixin",
     "item.GlassBottleItemMixin",
+    "item.ItemStackServerMixin",
+    "item.PotionItemMixin",
     "misc.AnvilScreenHandlerMixin",
     "misc.ExplosionMixin",
     "misc.ScreenHandlerMixin",
@@ -52,7 +55,7 @@
   "client": [
     "player.ClientPlayerEntityMixin",
     "player.InGameHudMixin",
-    "item.ItemStackMixin"
+    "item.ItemStackClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -33,11 +33,18 @@ public class LevelzConfig implements ConfigData {
     public double healthBonus = 1D;
     public double movementBase = 0.09D;
     public double movementBonus = 0.001D;
+    @Comment("Chance of damage misses player at max lvl")
+    public float movementMissChance = 0.05F;
+    @Comment("Reduces fall damage")
     public float movementFallBonus = 0.25F;
     public double attackBase = 1D;
     public double attackBonus = 0.2D;
+    @Comment("Chance of double meele damage at max lvl")
+    public float attackDoubleDamageChance = 0.03F;
     public double defenseBase = 0D;
     public double defenseBonus = 0.2D;
+    @Comment("Chance of damage reflection at max lvl")
+    public float defenseReflectChance = 0.05F;
     public double luckBase = 0D;
     public double luckBonus = 0.05D;
     public float luckCritBonus = 0.01F;
@@ -46,5 +53,17 @@ public class LevelzConfig implements ConfigData {
     public float staminaBonus = 0.02F;
     public float staminaHealthBonus = 0.05F;
     public double tradeBonus = 0.2D;
-    public float smithingCostBonus = 0.025F;
+    public float smithingCostBonus = 0.015F;
+    @Comment("Chance of no tool damage")
+    public float smithingToolChance = 0.01F;
+    @Comment("Chance of no xp usage on anvil at max lvl")
+    public float smithingAnvilChance = 0.1F;
+    @Comment("Min level to get chance of more crops drop")
+    public int farmingBase = 10;
+    @Comment("Chance of more crops drop")
+    public float farmingChanceBonus = 0.01F;
+    @Comment("Chance of drinking potion with double value at max lvl")
+    public float alchemyPotionChance = 0.05F;
+    @Comment("Chance of double range damage at max lvl")
+    public float archeryDoubleDamageChance = 0.05F;
 }

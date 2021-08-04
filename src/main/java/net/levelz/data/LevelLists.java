@@ -38,6 +38,7 @@ public class LevelLists {
     public static final ArrayList<Object> tridentList = new ArrayList<Object>();
     public static final ArrayList<Object> toolList = new ArrayList<Object>();
     public static final ArrayList<Object> swordList = new ArrayList<Object>();
+    public static final ArrayList<Object> axeList = new ArrayList<Object>();
     public static final ArrayList<Object> bucketList = new ArrayList<Object>();
     public static final ArrayList<Object> fishingList = new ArrayList<Object>();
     public static final ArrayList<Object> dragonBreathList = new ArrayList<Object>();
@@ -82,6 +83,8 @@ public class LevelLists {
             return dragonBreathList;
         case "minecraft:totem_of_undying":
             return totemList;
+        case "minecraft:axe":
+            return axeList;
         // Block
         case "minecraft:beehive":
             return beehiveList;
