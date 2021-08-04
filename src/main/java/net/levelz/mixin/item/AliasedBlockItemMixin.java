@@ -14,6 +14,8 @@ public abstract class AliasedBlockItemMixin extends BlockItem {
         super(block, settings);
     }
 
+    // MH
+
     @Override
     public ActionResult place(ItemPlacementContext context) {
         return super.place(context);

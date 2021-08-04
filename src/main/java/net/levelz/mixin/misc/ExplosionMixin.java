@@ -10,8 +10,6 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -36,12 +34,8 @@ public class ExplosionMixin {
     private BlockState affectWorldMixin(BlockState original) {
         if (this.entity != null) {
             if (this.entity instanceof TntEntity && ((TntEntity) this.entity).getCausingEntity() != null && ((TntEntity) this.entity).getCausingEntity() instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) ((TntEntity) this.entity).getCausingEntity();
-                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
-                if (playerStatsManager.getLevel("mining") < ConfigInit.CONFIG.maxLevel) {
-                    if (playerStatsManager.lockedBlockIds.contains(Registry.BLOCK.getRawId(original.getBlock()))) {
-                        return Blocks.AIR.getDefaultState();
-                    }
+                if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) ((TntEntity) this.entity).getCausingEntity(), Registry.BLOCK.getRawId(original.getBlock()), true)) {
+                    return Blocks.AIR.getDefaultState();
                 }
             }
         }

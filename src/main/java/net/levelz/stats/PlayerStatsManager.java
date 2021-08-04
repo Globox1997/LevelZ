@@ -29,7 +29,6 @@ public class PlayerStatsManager {
     private int alchemyLevel;
     private int skillPoints;
     // Other
-    // public List<Block> unlockedBlocks = new ArrayList<Block>();
     public List<Integer> lockedBlockIds = new ArrayList<Integer>();
     public List<Integer> lockedbrewingItemIds = new ArrayList<Integer>();
 
@@ -79,8 +78,11 @@ public class PlayerStatsManager {
 
     // Wood, Stone, Iron,Gold, Diamond, Netherite
 
+    // Extra blocks tooltip
     // Locked block list
     // Locked list gui
+
+    // Show unlock lvl at enchanting table screen
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {

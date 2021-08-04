@@ -5,9 +5,6 @@ import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -15,7 +12,6 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class ZWSprite extends WSprite {
-    // private Text text;
     private List<OrderedText> text = Lists.newArrayList();
 
     public ZWSprite(Identifier image, float u1, float v1, float u2, float v2) {
@@ -29,7 +25,6 @@ public class ZWSprite extends WSprite {
     @Override
     @Environment(EnvType.CLIENT)
     public void addTooltip(TooltipBuilder tooltip) {
-        // tooltip.add(list.get(0));
         for (int i = 0; i < text.size(); i++) {
             tooltip.add(text.get(i));
         }

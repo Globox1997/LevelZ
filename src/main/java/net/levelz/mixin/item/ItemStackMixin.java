@@ -77,6 +77,72 @@ public class ItemStackMixin {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
                         list.add(new TranslatableText("item.levelz.locked.tooltip"));
                     }
+                } else if (block == Blocks.CAULDRON) {
+                    levelList = LevelLists.cauldronList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.BARREL) {
+                    levelList = LevelLists.barrelList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.BLAST_FURNACE) {
+                    levelList = LevelLists.blastFurnaceList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.CARTOGRAPHY_TABLE) {
+                    levelList = LevelLists.cartographyList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.COMPOSTER) {
+                    levelList = LevelLists.composterList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.GRINDSTONE) {
+                    levelList = LevelLists.grindstoneList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.LECTERN) {
+                    levelList = LevelLists.lecternList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.LOOM) {
+                    levelList = LevelLists.loomList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.SMITHING_TABLE) {
+                    levelList = LevelLists.smithingTableList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.SMOKER) {
+                    levelList = LevelLists.smokerList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else if (block == Blocks.STONECUTTER) {
+                    levelList = LevelLists.stonecutterList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
                 } else if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.BLOCK.getRawId(block), true)) {
                     list.add(new TranslatableText("item.levelz.mining.tooltip", PlayerStatsManager.getUnlockLevel(Registry.BLOCK.getRawId(block), true)).formatted(Formatting.GRAY));
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));
@@ -115,6 +181,18 @@ public class ItemStackMixin {
                 }
             } else if (stack.getItem() == Items.FLINT_AND_STEEL) {
                 levelList = LevelLists.flintAndSteelList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
+            } else if (stack.getItem() == Items.GLASS_BOTTLE) {
+                levelList = LevelLists.dragonBreathList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
+            } else if (stack.getItem() == Items.TOTEM_OF_UNDYING) {
+                levelList = LevelLists.totemList;
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));

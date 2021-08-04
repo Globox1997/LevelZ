@@ -3,6 +3,8 @@ package net.levelz.mixin.entity;
 import java.util.Iterator;
 
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.init.ConfigInit;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,7 +31,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
             Iterator<TradeOffer> var5 = this.getOffers().iterator();
             while (var5.hasNext()) {
                 TradeOffer tradeOffer2 = (TradeOffer) var5.next();
-                int k = (int) Math.floor((0.3D + 0.0625D * (double) ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("trade") / 5D)
+                int k = (int) Math.floor((0.3D + 0.0625D * (double) ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("trade") * ConfigInit.CONFIG.tradeBonus)
                         * (double) tradeOffer2.getOriginalFirstBuyItem().getCount());
                 tradeOffer2.increaseSpecialPrice(-Math.max(k, 1));
             }

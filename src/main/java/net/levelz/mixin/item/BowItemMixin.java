@@ -39,6 +39,6 @@ public class BowItemMixin {
     private void onStoppedUsingMixin(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, boolean bl, ItemStack itemStack, int i,
             float f, boolean bl2, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity, int j) {
         persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage()
-                + (double) ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("archery") * (Float) LevelLists.bowList.get(4));
+                + (double) ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("archery") * (Float) LevelLists.bowList.get(3));
     }
 }

@@ -65,7 +65,7 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), ordinal = 2)
     private boolean attackMixin(boolean original) {
-        if (((PlayerEntity) (Object) this).world.random.nextFloat() < (float) playerStatsManager.getLevel("luck") / 100F) {
+        if (((PlayerEntity) (Object) this).world.random.nextFloat() < (float) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckCritBonus) {
             isCrit = true;
             return true;
         } else
@@ -75,7 +75,7 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0)
     private float attackMixinTwo(float original) {
-        return isCrit ? original * 1.2F : original;
+        return isCrit ? original * ConfigInit.CONFIG.critDmgBonus : original;
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 0)

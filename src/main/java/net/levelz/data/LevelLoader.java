@@ -86,6 +86,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     list.add(data.get("skill").getAsString());
                     list.add(data.get("level").getAsInt());
                     list.add(JsonHelper.getBoolean(data, "replace", false));
+                    // Bow,Crossbow
                     if (data.get("bonus") != null) {
                         list.add(data.get("bonus").getAsFloat());
                     }
@@ -112,6 +113,12 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 list.add(data.get("skill").getAsString());
                 list.add(data.get("level").getAsInt());
                 list.add(JsonHelper.getBoolean(data, "replace", false));
+                // EnchantingTable
+                if (data.get("enchanting") != null) {
+                    for (int i = 0; i < data.getAsJsonArray("enchanting").size(); i++) {
+                        list.add(data.get("enchanting").getAsJsonArray().get(i).getAsInt());
+                    }
+                }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
@@ -166,6 +173,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         System.out.println("Brewing Level List: " + LevelLists.brewingLevelList);
         System.out.println("Mining Block List: " + LevelLists.miningBlockList);
         System.out.println("Mining Level List: " + LevelLists.miningLevelList);
+        System.out.println(LevelLists.enchantingTableList);
         // Test here
     }
 

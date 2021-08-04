@@ -1,25 +1,17 @@
 package net.levelz.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
-import io.github.cottonmc.cotton.gui.widget.WWidget;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.gui.hud.InGameHud;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public class LevelzScreen extends CottonClientScreen {

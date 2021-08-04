@@ -6,8 +6,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,12 +23,8 @@ public class BlockMixin {
     @Inject(method = "Lnet/minecraft/block/Block;dropStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getDroppedStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)Ljava/util/List;"), cancellable = true)
     private static void dropStacksMixin(BlockState state, World world, BlockPos pos, @Nullable BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfo info) {
         if (entity instanceof PlayerEntity) {
-            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) (PlayerEntity) entity).getPlayerStatsManager((PlayerEntity) entity);
-            int playerMiningLevel = playerStatsManager.getLevel("mining");
-            if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
-                if (playerStatsManager.lockedBlockIds.contains(Registry.BLOCK.getRawId(state.getBlock()))) {
-                    info.cancel();
-                }
+            if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) entity, Registry.BLOCK.getRawId(state.getBlock()), true)) {
+                info.cancel();
             }
         }
     }

@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.init.ConfigInit;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -19,6 +20,6 @@ public class HungerManagerMixin {
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;heal(F)V", ordinal = 1))
     private void updateMixin(PlayerEntity player, CallbackInfo info) {
-        player.heal((float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("stamina") / 20F);
+        player.heal((float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("stamina") * ConfigInit.CONFIG.staminaHealthBonus);
     }
 }

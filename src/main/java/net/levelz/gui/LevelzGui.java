@@ -7,6 +7,7 @@ import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.network.PlayerStatsClientPacket;
 import net.levelz.network.PlayerStatsServerPacket;
@@ -111,19 +112,40 @@ public class LevelzGui extends LightweightGuiDescription {
         ZWSprite alchemyIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 11F / 16F, 1F / 16F, 12F / 16F, 2F / 16F);
         // Skill sprite tooltip
         healthIcon.addText("Increases Health");
+        healthIcon.addText("+" + ConfigInit.CONFIG.healthBonus + " Hp per lvl");
         strengthIcon.addText("Increases Melee Damage");
+        strengthIcon.addText("+" + ConfigInit.CONFIG.attackBonus + " Dmg per lvl");
+        strengthIcon.addText("Unlocks Swords"); // Swords list?
         agilityIcon.addText("Increases Movement Speed");
+        agilityIcon.addText("+" + ConfigInit.CONFIG.movementBonus + " Spd per lvl");
         agilityIcon.addText("Decreases Fall Damage");
+        agilityIcon.addText("-" + ConfigInit.CONFIG.movementFallBonus + " Def per lvl");
         defenseIcon.addText("Increases Protection");
-        staminaIcon.addText("Increases Food Saturation");
+        defenseIcon.addText("+" + ConfigInit.CONFIG.defenseBonus + " Def per lvl");
+        defenseIcon.addText("Unlocks Armor");
+        staminaIcon.addText("Decreases Exhaustion");
+        staminaIcon.addText("-" + ConfigInit.CONFIG.staminaBonus * 100F + " % per lvl");
+        staminaIcon.addText("Increases Health Regeneration");
+        staminaIcon.addText("+" + ConfigInit.CONFIG.staminaHealthBonus * 100F + " % per lvl");
         luckIcon.addText("Increases Loot Value");
-        archeryIcon.addText("Increases Range Damage");
+        luckIcon.addText("+" + ConfigInit.CONFIG.luckBonus * 100D + " % per lvl");
+        luckIcon.addText("Increases Crit Chance");
+        luckIcon.addText("+" + ConfigInit.CONFIG.luckCritBonus * 100F + " % per lvl");
+        luckIcon.addText("Critical hit does " + ConfigInit.CONFIG.critDmgBonus * 100F + " % extra dmg");
+        archeryIcon.addText("Increases Bow Damage");
+        archeryIcon.addText("+" + LevelLists.bowList.get(3) + " Dmg per lvl");
+        archeryIcon.addText("Increases Crossbow Damage");
+        archeryIcon.addText("+" + LevelLists.crossbowList.get(3) + " Dmg per lvl");
+        archeryIcon.addText("Unlocks Archery Items"); // Archery list?
         tradeIcon.addText("Decreases Trade Price");
+        tradeIcon.addText("-" + ConfigInit.CONFIG.tradeBonus * 100D + " % per lvl");
         smithingIcon.addText("Decreases Smithing XP Price");
-        miningIcon.addText("Unlocks Mining Sources");
-        miningIcon.addText("Increases Mining Speed");
-        farmingIcon.addText("Unlocks Farming Sources");
-        alchemyIcon.addText("Unlocks Alchemy Sources");
+        smithingIcon.addText("-" + ConfigInit.CONFIG.smithingCostBonus * 100F + " % per lvl");
+        smithingIcon.addText("Unlocks Smithing Items");
+        miningIcon.addText("Unlocks Tools");
+        miningIcon.addText("Unlocks Mining Sources"); // Mining list?
+        farmingIcon.addText("Unlocks Farming Items");
+        alchemyIcon.addText("Unlocks Alchemy Sources"); // Alchemy list?
 
         root.add(healthIcon, 15, 90, 16, 16);
         root.add(strengthIcon, 15, 110, 16, 16);

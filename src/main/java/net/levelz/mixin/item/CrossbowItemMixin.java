@@ -40,7 +40,7 @@ public class CrossbowItemMixin {
         if (entity instanceof PlayerEntity) {
             PlayerEntity playerEntity = (PlayerEntity) entity;
             persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage()
-                    + (double) ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("archery") * (Float) LevelLists.crossbowList.get(4));
+                    + (double) ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("archery") * (Float) LevelLists.crossbowList.get(3));
         }
 
     }

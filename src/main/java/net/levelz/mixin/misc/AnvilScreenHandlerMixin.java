@@ -30,7 +30,7 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 
     @Inject(method = "Lnet/minecraft/screen/AnvilScreenHandler;updateResult()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/Property;set(I)V", shift = At.Shift.AFTER))
     public void updateResultMixin(CallbackInfo info) {
-        int levelCost = this.levelCost.get() * (1 - smithingLevel / 40);
+        int levelCost = this.levelCost.get() * (int) (1F - smithingLevel * ConfigInit.CONFIG.smithingCostBonus);
         if (levelCost > 30 && smithingLevel >= (int) ConfigInit.CONFIG.maxLevel * 0.75F) {
             this.levelCost.set(30);
         } else

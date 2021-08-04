@@ -21,6 +21,7 @@ public class LevelLists {
     public static final ArrayList<Object> composterList = new ArrayList<Object>();
     public static final ArrayList<Object> lecternList = new ArrayList<Object>();
     public static final ArrayList<Object> stonecutterList = new ArrayList<Object>();
+    public static final ArrayList<Object> cauldronList = new ArrayList<Object>();
     // Entity
     public static final ArrayList<Object> cowList = new ArrayList<Object>();
     public static final ArrayList<Object> mooshroomList = new ArrayList<Object>();
@@ -39,6 +40,8 @@ public class LevelLists {
     public static final ArrayList<Object> swordList = new ArrayList<Object>();
     public static final ArrayList<Object> bucketList = new ArrayList<Object>();
     public static final ArrayList<Object> fishingList = new ArrayList<Object>();
+    public static final ArrayList<Object> dragonBreathList = new ArrayList<Object>();
+    public static final ArrayList<Object> totemList = new ArrayList<Object>();
     // Misc
     public static final ArrayList<Object> explosionList = new ArrayList<Object>();
     // Player
@@ -73,8 +76,12 @@ public class LevelLists {
             return swordList;
         case "minecraft:bucket":
             return bucketList;
-        case "minecraft:fishing":
+        case "minecraft:fishing_rod":
             return fishingList;
+        case "minecraft:dragon_breath":
+            return dragonBreathList;
+        case "minecraft:totem_of_undying":
+            return totemList;
         // Block
         case "minecraft:beehive":
             return beehiveList;
@@ -106,6 +113,8 @@ public class LevelLists {
             return lecternList;
         case "minecraft:stonecutter":
             return stonecutterList;
+        case "minecraft:cauldron":
+            return cauldronList;
         // Entity
         case "minecraft:cow":
             return cowList;

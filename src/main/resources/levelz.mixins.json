@@ -30,6 +30,7 @@
     "block.ComposterBlockMixin",
     "block.LecternBlockMixin",
     "block.StonecutterBlockMixin",
+    "block.AbstractCauldronBlockMixin",
     "item.HoeItemMixin",
     "item.BowItemMixin",
     "item.FlintAndSteelItemMixin",
@@ -41,10 +42,12 @@
     "item.BucketItemMixin",
     "item.FishingRodItemMixin",
     "item.AliasedBlockItemMixin",
+    "item.GlassBottleItemMixin",
     "misc.AnvilScreenHandlerMixin",
     "misc.ExplosionMixin",
     "misc.ScreenHandlerMixin",
-    "misc.BrewingStandScreenHandlerMixin"
+    "misc.BrewingStandScreenHandlerMixin",
+    "misc.EnchantmentScreenHandlerMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
