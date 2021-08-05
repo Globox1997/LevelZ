@@ -3,6 +3,7 @@ package net.levelz.data;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -39,7 +40,6 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                         fillMiningLists(data, false);
                     } else {
                         fillMiningLists(data, true);
-
                     }
                 } else {
                     fillMiningLists(data, false);
@@ -166,6 +166,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
+        sortLists(LevelLists.miningLevelList, LevelLists.miningBlockList);
         System.out.println(LevelLists.elytraList);
         System.out.println(LevelLists.armorList);
         System.out.println(LevelLists.bowList);
@@ -174,6 +175,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         System.out.println("Mining Block List: " + LevelLists.miningBlockList);
         System.out.println("Mining Level List: " + LevelLists.miningLevelList);
         System.out.println(LevelLists.enchantingTableList);
+
         // Test here
     }
 
@@ -207,6 +209,26 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             LevelLists.brewingLevelList.add(data.get("level").getAsInt());
             LevelLists.brewingItemList.add(itemIdList);
         }
+    }
+
+    private void sortLists(List<Integer> levelList, List<List<Integer>> objectList) {
+
+        // Can't init new list with old cause old one will get linked???
+        List<Integer> sortedLevelList = new ArrayList<>();
+        sortedLevelList.addAll(levelList);
+        List<List<Integer>> sortedObjectList = new ArrayList<>();
+        sortedLevelList.sort(Comparator.naturalOrder());
+
+        for (int i = 0; i < levelList.size(); i++) {
+            sortedObjectList.add(i, objectList.get(levelList.indexOf(sortedLevelList.get(i))));
+        }
+        // System.out.println(sortedObjectList);
+
+        // LevelLists.miningLevelList = sortedLevelList;
+        // LevelLists.miningBlockList = sortedObjectList;
+        levelList = sortedLevelList;
+        objectList = sortedObjectList;
+
     }
 
 }
