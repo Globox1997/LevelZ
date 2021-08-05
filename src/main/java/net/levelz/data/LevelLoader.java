@@ -20,6 +20,8 @@ import net.minecraft.util.registry.Registry;
 
 public class LevelLoader implements SimpleSynchronousResourceReloadListener {
     private static final Logger LOGGER = LogManager.getLogger();
+    private List<List<Integer>> objectList = new ArrayList<>();
+    private List<Integer> levelList = new ArrayList<>();
 
     @Override
     public Identifier getFabricId() {
@@ -32,22 +34,25 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
-                if (LevelLists.miningLevelList.contains(data.get("level").getAsInt())) {
+                if (levelList.contains(data.get("level").getAsInt())) {
                     if (JsonHelper.getBoolean(data, "replace", false)) {
-                        int index = LevelLists.miningLevelList.indexOf(data.get("level").getAsInt());
-                        LevelLists.miningLevelList.remove(index);
-                        LevelLists.miningBlockList.remove(index);
-                        fillMiningLists(data, false);
+                        int index = levelList.indexOf(data.get("level").getAsInt());
+                        levelList.remove(index);
+                        objectList.remove(index);
+                        fillLists(data, false, 1);
                     } else {
-                        fillMiningLists(data, true);
+                        fillLists(data, true, 1);
                     }
                 } else {
-                    fillMiningLists(data, false);
+                    fillLists(data, false, 1);
                 }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
+        // Fill mining list
+        sortAndFillLists(levelList, objectList, 1);
+
         for (Identifier id : manager.findResources("item", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
@@ -95,6 +100,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
+
         for (Identifier id : manager.findResources("block", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
@@ -123,6 +129,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
+
         for (Identifier id : manager.findResources("entity", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
@@ -145,28 +152,31 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
+
         for (Identifier id : manager.findResources("brewing", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
-                if (LevelLists.brewingLevelList.contains(data.get("level").getAsInt())) {
+                if (levelList.contains(data.get("level").getAsInt())) {
                     if (JsonHelper.getBoolean(data, "replace", false)) {
-                        int index = LevelLists.brewingLevelList.indexOf(data.get("level").getAsInt());
-                        LevelLists.brewingLevelList.remove(index);
-                        LevelLists.brewingItemList.remove(index);
-                        fillBrewingLists(data, false);
+                        int index = levelList.indexOf(data.get("level").getAsInt());
+                        levelList.remove(index);
+                        objectList.remove(index);
+                        fillLists(data, false, 2);
                     } else {
-                        fillBrewingLists(data, true);
+                        fillLists(data, true, 2);
 
                     }
                 } else {
-                    fillBrewingLists(data, false);
+                    fillLists(data, false, 2);
                 }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
-        sortLists(LevelLists.miningLevelList, LevelLists.miningBlockList);
+        // Fill brewing list
+        sortAndFillLists(levelList, objectList, 2);
+
         System.out.println(LevelLists.elytraList);
         System.out.println(LevelLists.armorList);
         System.out.println(LevelLists.bowList);
@@ -179,55 +189,49 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         // Test here
     }
 
-    private void fillMiningLists(JsonObject data, boolean addToExisting) {
-        List<Integer> blockIdList = new ArrayList<Integer>();
-        for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
-            blockIdList.add(Registry.BLOCK.getRawId(Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString()))));
+    private void fillLists(JsonObject data, boolean addToExisting, int type) {
+        List<Integer> idList = new ArrayList<Integer>();
+        if (type == 1) {
+            for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
+                idList.add(Registry.BLOCK.getRawId(Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString()))));
+            }
+        } else if (type == 2) {
+            for (int i = 0; i < data.getAsJsonArray("item").size(); i++) {
+                idList.add(Registry.ITEM.getRawId(Registry.ITEM.get(new Identifier(data.getAsJsonArray("item").get(i).getAsString()))));
+            }
         }
+
         if (addToExisting) {
-            int index = LevelLists.miningLevelList.indexOf(data.get("level").getAsInt());
-            for (int u = 0; u < blockIdList.size(); u++) {
-                LevelLists.miningBlockList.get(index).add(blockIdList.get(u));
+            int index = levelList.indexOf(data.get("level").getAsInt());
+            for (int u = 0; u < idList.size(); u++) {
+                objectList.get(index).add(idList.get(u));
             }
         } else {
-            LevelLists.miningLevelList.add(data.get("level").getAsInt());
-            LevelLists.miningBlockList.add(blockIdList);
+            levelList.add(data.get("level").getAsInt());
+            objectList.add(idList);
         }
     }
 
-    private void fillBrewingLists(JsonObject data, boolean addToExisting) {
-        List<Integer> itemIdList = new ArrayList<Integer>();
-        for (int i = 0; i < data.getAsJsonArray("item").size(); i++) {
-            itemIdList.add(Registry.ITEM.getRawId(Registry.ITEM.get(new Identifier(data.getAsJsonArray("item").get(i).getAsString()))));
-        }
-        if (addToExisting) {
-            int index = LevelLists.brewingLevelList.indexOf(data.get("level").getAsInt());
-            for (int u = 0; u < itemIdList.size(); u++) {
-                LevelLists.brewingItemList.get(index).add(itemIdList.get(u));
+    // type: 1 = mining; 2 = brewing
+    private void sortAndFillLists(List<Integer> levelList, List<List<Integer>> objectList, int type) {
+        if (type != 0) {
+            if (type == 1) {
+                LevelLists.miningLevelList.addAll(levelList);
+                LevelLists.miningLevelList.sort(Comparator.naturalOrder());
+                for (int i = 0; i < levelList.size(); i++) {
+                    LevelLists.miningBlockList.add(i, objectList.get(levelList.indexOf(LevelLists.miningLevelList.get(i))));
+                }
+            } else if (type == 2) {
+                System.out.println("Check:" + levelList);
+                LevelLists.brewingLevelList.addAll(levelList);
+                LevelLists.brewingLevelList.sort(Comparator.naturalOrder());
+                for (int i = 0; i < levelList.size(); i++) {
+                    LevelLists.brewingItemList.add(i, objectList.get(levelList.indexOf(LevelLists.brewingLevelList.get(i))));
+                }
             }
-        } else {
-            LevelLists.brewingLevelList.add(data.get("level").getAsInt());
-            LevelLists.brewingItemList.add(itemIdList);
+            this.objectList.clear();
+            this.levelList.clear();
         }
-    }
-
-    private void sortLists(List<Integer> levelList, List<List<Integer>> objectList) {
-
-        // Can't init new list with old cause old one will get linked???
-        List<Integer> sortedLevelList = new ArrayList<>();
-        sortedLevelList.addAll(levelList);
-        List<List<Integer>> sortedObjectList = new ArrayList<>();
-        sortedLevelList.sort(Comparator.naturalOrder());
-
-        for (int i = 0; i < levelList.size(); i++) {
-            sortedObjectList.add(i, objectList.get(levelList.indexOf(sortedLevelList.get(i))));
-        }
-        // System.out.println(sortedObjectList);
-
-        // LevelLists.miningLevelList = sortedLevelList;
-        // LevelLists.miningBlockList = sortedObjectList;
-        levelList = sortedLevelList;
-        objectList = sortedObjectList;
 
     }
 
