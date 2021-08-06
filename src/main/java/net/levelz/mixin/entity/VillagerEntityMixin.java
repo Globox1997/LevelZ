@@ -8,6 +8,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -62,6 +64,15 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
                         * (double) tradeOffer2.getOriginalFirstBuyItem().getCount());
                 tradeOffer2.increaseSpecialPrice(-Math.max(k, 1));
             }
+        }
+    }
+
+    @Inject(method = "setAttacker", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;handleInteraction(Lnet/minecraft/entity/EntityInteraction;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/InteractionObserver;)V"))
+    private void setAttackerMixin(@Nullable LivingEntity attacker, CallbackInfo info) {
+        if (attacker != null && attacker instanceof PlayerEntity && ConfigInit.CONFIG.tradeReputation
+                && ((PlayerStatsManagerAccess) (PlayerEntity) attacker).getPlayerStatsManager((PlayerEntity) attacker).getLevel("trade") == ConfigInit.CONFIG.maxLevel) {
+            super.setAttacker(attacker);
+            info.cancel();
         }
     }
 
