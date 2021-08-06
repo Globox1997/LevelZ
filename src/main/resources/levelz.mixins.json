@@ -13,6 +13,7 @@
     "entity.SnowGolemEntityMixin",
     "entity.MooshroomEntityMixin",
     "entity.CowEntityMixin",
+    "entity.TntEntityMixin",
     "block.BeehiveBlockMixin",
     "block.PumpkinBlockMixin",
     "block.AbstractBlockMixin",
