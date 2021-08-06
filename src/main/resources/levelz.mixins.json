@@ -14,6 +14,7 @@
     "entity.MooshroomEntityMixin",
     "entity.CowEntityMixin",
     "entity.TntEntityMixin",
+    "entity.AnimalEntityMixin",
     "block.BeehiveBlockMixin",
     "block.PumpkinBlockMixin",
     "block.AbstractBlockMixin",
