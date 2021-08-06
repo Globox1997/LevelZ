@@ -15,6 +15,8 @@
     "entity.CowEntityMixin",
     "entity.TntEntityMixin",
     "entity.AnimalEntityMixin",
+    "entity.WanderingTraderEntityMixin",
+    "entity.VillagerEntityMixin",
     "block.BeehiveBlockMixin",
     "block.PumpkinBlockMixin",
     "block.AbstractBlockMixin",

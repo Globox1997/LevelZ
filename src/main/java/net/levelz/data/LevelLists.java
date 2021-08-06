@@ -27,6 +27,8 @@ public class LevelLists {
     public static final ArrayList<Object> mooshroomList = new ArrayList<Object>();
     public static final ArrayList<Object> sheepList = new ArrayList<Object>();
     public static final ArrayList<Object> snowGolemList = new ArrayList<Object>();
+    public static final ArrayList<Object> wanderingTraderList = new ArrayList<Object>();
+    public static final ArrayList<Object> villagerList = new ArrayList<Object>();
     // Item
     public static final ArrayList<Object> elytraList = new ArrayList<Object>();
     public static final ArrayList<Object> armorList = new ArrayList<Object>();
@@ -127,6 +129,10 @@ public class LevelLists {
             return sheepList;
         case "minecraft:snowgolem":
             return snowGolemList;
+        case "minecraft:wanderingtrader":
+            return wanderingTraderList;
+        case "minecraft:villager":
+            return villagerList;
         default:
             return new ArrayList<Object>();
         }

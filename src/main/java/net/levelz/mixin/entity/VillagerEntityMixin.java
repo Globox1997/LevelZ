@@ -1,13 +1,18 @@
 package net.levelz.mixin.entity;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
+import net.levelz.stats.PlayerStatsManager;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.entity.EntityType;
@@ -15,6 +20,9 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.world.World;
 
@@ -24,9 +32,18 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         super(entityType, world);
     }
 
-    @Inject(method = "prepareRecipesFor", at = @At(value = "TAIL"))
-    private void prepareRecipesForMixin(PlayerEntity player, CallbackInfo info) {
+    @Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/VillagerEntity;beginTradeWith(Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
+    private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+        ArrayList<Object> levelList = LevelLists.villagerList;
+        if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
+            this.sayNo();
+            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+            info.setReturnValue(ActionResult.FAIL);
+        }
+    }
 
+    @Inject(method = "prepareOffersFor", at = @At(value = "TAIL"))
+    private void prepareOffersForMixin(PlayerEntity player, CallbackInfo info) {
         if (!player.hasStatusEffect(StatusEffects.HERO_OF_THE_VILLAGE)) {
             Iterator<TradeOffer> var5 = this.getOffers().iterator();
             while (var5.hasNext()) {
@@ -36,5 +53,9 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
                 tradeOffer2.increaseSpecialPrice(-Math.max(k, 1));
             }
         }
+    }
+
+    @Shadow
+    private void sayNo() {
     }
 }
