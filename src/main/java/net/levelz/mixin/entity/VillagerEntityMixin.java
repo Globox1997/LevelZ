@@ -11,6 +11,7 @@ import net.levelz.stats.PlayerStatsManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,6 +41,15 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
             player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
             info.setReturnValue(ActionResult.FAIL);
         }
+    }
+
+    @ModifyVariable(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), ordinal = 0)
+    private int afterUsing(int original) {
+        if (this.getCurrentCustomer() != null) {
+            return original + (int) (((PlayerStatsManagerAccess) this.getCurrentCustomer()).getPlayerStatsManager(this.getCurrentCustomer()).getLevel("trade")
+                    * (float) LevelLists.wanderingTraderList.get(3));
+        } else
+            return original;
     }
 
     @Inject(method = "prepareOffersFor", at = @At(value = "TAIL"))
