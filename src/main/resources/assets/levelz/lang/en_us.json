@@ -1,5 +1,9 @@
 {
   "commands.playerstats.changed": "stats got changed",
+
+  "category.levelz.keybind": "LevelZ Keybinds",
+  "key.levelz.openskillscreen":"Skill Screen",
+
   "text.autoconfig.levelz.title": "LevelZ Config",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",
@@ -44,5 +48,17 @@
   "item.levelz.health.tooltip": "Health level %d required",
   "item.levelz.stamina.tooltip": "Stamina level %d required",
   "item.levelz.luck.tooltip": "Luck level %d required",
-  "item.levelz.trade.tooltip": "Trade level %d required"
+  "item.levelz.trade.tooltip": "Trade level %d required",
+
+  "block.levelz.locked.tooltip": "§cLocked",
+  "block.levelz.locked_with_level.tooltip": "Locked %d",
+
+  "text.levelz.level": "Level %d",
+  "text.levelz.lockedList": " Locked Mining List",
+
+  "container.levelz.enchant": "Tier %d unlocks at %s level %d",
+
+  "config.waila.plugin_levelz": "LevelZ",
+  "config.waila.plugin_levelz.mineable_info": "Mineable Info",
+  "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info"
 }
