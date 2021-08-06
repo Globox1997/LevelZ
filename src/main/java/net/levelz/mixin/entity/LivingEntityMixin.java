@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
@@ -12,18 +14,19 @@ import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin {
+public abstract class LivingEntityMixin {
 
     @ModifyVariable(method = "applyEnchantmentsToDamage", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getProtectionAmount(Ljava/lang/Iterable;Lnet/minecraft/entity/damage/DamageSource;)I", shift = At.Shift.AFTER), ordinal = 0)
     private int applyEnchantmentsToDamageMixin(int original, DamageSource source, float amount) {
         if (source == DamageSource.FALL && (Object) this instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) (Object) this;
-            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
-            return (int) (original + playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementFallBonus);
+            return (int) (original + ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("agility") * ConfigInit.CONFIG.movementFallBonus);
         } else
             return original;
     }
@@ -38,6 +41,21 @@ public class LivingEntityMixin {
             }
         }
         return original;
+    }
+
+    @Inject(method = "tryUseTotem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/Hand;values()[Lnet/minecraft/util/Hand;"), cancellable = true)
+    private void tryUseTotemMixin(DamageSource source, CallbackInfoReturnable<Boolean> info) {
+        if ((Object) this instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) (Object) this;
+            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("luck") == ConfigInit.CONFIG.maxLevel
+                    && player.world.random.nextFloat() < ConfigInit.CONFIG.luckSurviveChance) {
+                player.setHealth(1.0F);
+                player.clearStatusEffects();
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 600, 0));
+                info.setReturnValue(true);
+            }
+        }
     }
 
 }
