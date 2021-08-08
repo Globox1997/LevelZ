@@ -15,7 +15,7 @@ public class KeyInit {
 
     public static void init() {
         // Keybinds
-        screenKey = new KeyBinding("key.adventurez.activatearmor", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "category.adventurez.keybind");
+        screenKey = new KeyBinding("key.levelz.openskillscreen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "category.levelz.keybind");
 
         // Registering
         KeyBindingHelper.registerKeyBinding(screenKey);
