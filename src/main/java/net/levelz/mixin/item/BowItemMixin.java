@@ -43,6 +43,6 @@ public class BowItemMixin {
         persistentProjectileEntity
                 .setDamage(persistentProjectileEntity.getDamage() + archeryLevel == ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > world.random.nextFloat()
                         ? persistentProjectileEntity.getDamage() * 2D
-                        : (double) archeryLevel * (float) LevelLists.bowList.get(3));
+                        : (double) archeryLevel * ConfigInit.CONFIG.archeryBowExtraDamage);
     }
 }

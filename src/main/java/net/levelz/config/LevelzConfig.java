@@ -7,22 +7,19 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name = "levelz")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class LevelzConfig implements ConfigData {
-    // @Comment("Holder")
-    // public int test1 = 0;
-    // public int test2 = 0;
-    // public int test3 = 0;
-    // public int test4 = 0;
+    public int test1 = 0;
+    public int test2 = 0;
+    public int test3 = 0;
+    public int test4 = 0;
 
-    // public int test5 = 0;
-    // public int test6 = 0;
-    // public int test7 = 0;
-    // public int test8 = 0;
+    public int test5 = 0;
+    public int test6 = 0;
+    public int test7 = 0;
+    public int test8 = 0;
 
     // public float floattest8 = 28.125F;
     // public float floattest8x = 28.125F;
 
-    // public int xpanelsize = 0;
-    // public int ypanelsize = 0;
     public int maxLevel = 20;
     @Comment("If true will reset stats on death")
     public boolean hardMode = false;
@@ -31,6 +28,8 @@ public class LevelzConfig implements ConfigData {
     @Comment("Attribute values - Bonus for each lvl")
     public double healthBase = 6D;
     public double healthBonus = 1D;
+    @Comment("Absorption Bonus at max lvl")
+    public float healthAbsorptionBonus = 6F;
     public double movementBase = 0.09D;
     public double movementBonus = 0.001D;
     @Comment("Chance of damage misses player at max lvl")
@@ -48,11 +47,17 @@ public class LevelzConfig implements ConfigData {
     public double luckBase = 0D;
     public double luckBonus = 0.05D;
     public float luckCritBonus = 0.01F;
+    @Comment("Chance of not dying at max lvl")
+    public float luckSurviveChance = 0.5F;
     public float critDmgBonus = 0.2F;
     public float staminaBase = 1.1F;
     public float staminaBonus = 0.02F;
     public float staminaHealthBonus = 0.05F;
+    @Comment("Food is more nutritious at max lvl")
+    public float staminaFoodBonus = 0.3F;
     public double tradeBonus = 0.2D;
+    @Comment("Disables bad reputation possibility at max lvl")
+    public boolean tradeReputation = true;
     public float smithingCostBonus = 0.015F;
     @Comment("Chance of no tool damage")
     public float smithingToolChance = 0.01F;
@@ -62,8 +67,15 @@ public class LevelzConfig implements ConfigData {
     public int farmingBase = 10;
     @Comment("Chance of more crops drop")
     public float farmingChanceBonus = 0.01F;
+    @Comment("Breeding twin chance at max lvl")
+    public float farmingTwinChance = 0.2F;
     @Comment("Chance of drinking potion with double value at max lvl")
     public float alchemyPotionChance = 0.05F;
+    public float archeryBowExtraDamage = 0.2F;
+    public float archeryCrossbowExtraDamage = 0.2F;
     @Comment("Chance of double range damage at max lvl")
     public float archeryDoubleDamageChance = 0.05F;
+    @Comment("Tnt power increase at max lvl")
+    public float miningTntBonus = 0.5F;
+
 }
