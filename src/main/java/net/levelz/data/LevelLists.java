@@ -46,13 +46,14 @@ public class LevelLists {
     public static final ArrayList<Object> dragonBreathList = new ArrayList<Object>();
     public static final ArrayList<Object> totemList = new ArrayList<Object>();
     // Misc
-    public static final ArrayList<Object> explosionList = new ArrayList<Object>();
+    public static final List<ArrayList<Object>> listOfAllLists = new ArrayList<>();
     // Player
     public static final List<List<Integer>> miningBlockList = new ArrayList<>();
     public static final List<Integer> miningLevelList = new ArrayList<>();
 
     public static final List<List<Integer>> brewingItemList = new ArrayList<>();
     public static final List<Integer> brewingLevelList = new ArrayList<>();
+    public static final List<Object> potionList = new ArrayList<>();
 
     public static ArrayList<Object> getList(String string) {
         switch (string) {

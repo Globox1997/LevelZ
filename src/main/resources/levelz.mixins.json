@@ -54,7 +54,8 @@
     "misc.ExplosionMixin",
     "misc.ScreenHandlerMixin",
     "misc.BrewingStandScreenHandlerMixin",
-    "misc.EnchantmentScreenHandlerMixin"
+    "misc.EnchantmentScreenHandlerMixin",
+    "misc.BrewingRecipeRegistryMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
