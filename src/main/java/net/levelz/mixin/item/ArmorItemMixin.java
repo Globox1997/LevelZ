@@ -9,9 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
-import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -31,27 +29,20 @@ public class ArmorItemMixin {
     @Inject(method = "dispenseArmor", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;getPreferredEquipmentSlot(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/entity/EquipmentSlot;"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private static void dispenseArmorMixin(BlockPointer pointer, ItemStack armor, CallbackInfoReturnable<Boolean> info, BlockPos blockPos, List<LivingEntity> list, LivingEntity livingEntity) {
         if (livingEntity instanceof PlayerEntity && armor.getItem() instanceof ArmorItem) {
-            PlayerEntity playerEntity = (PlayerEntity) livingEntity;
-            if (!playerEntity.isCreative()) {
-                int playerDefenseLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("defense");
-
-                if (playerDefenseLevel < ConfigInit.CONFIG.maxLevel) {
-                    if ((int) (((ArmorItem) armor.getItem()).getMaterial().getEnchantability() / 2.5F) > playerDefenseLevel) {
-                        info.setReturnValue(false);
-                    }
-                }
+            ArrayList<Object> levelList = LevelLists.armorList;
+            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, ((ArmorItem) (Object) armor.getItem()).getMaterial().getName(), true)) {
+                info.setReturnValue(false);
             }
-
         }
-
     }
 
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;equipStack(Lnet/minecraft/entity/EquipmentSlot;Lnet/minecraft/item/ItemStack;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private void useMixin(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack, EquipmentSlot equipmentSlot,
             ItemStack itemStack2) {
         ArrayList<Object> levelList = LevelLists.armorList;
-        if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, ((ArmorItem) (Object) this).getMaterial().getName(), true)) {
-            user.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+        String string = ((ArmorItem) (Object) this).getMaterial().getName();
+        if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
+            user.sendMessage(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)), true);
             info.setReturnValue(TypedActionResult.fail(itemStack));
         }
     }
