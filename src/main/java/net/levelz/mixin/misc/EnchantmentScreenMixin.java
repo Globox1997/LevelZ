@@ -36,15 +36,14 @@ public abstract class EnchantmentScreenMixin extends HandledScreen<EnchantmentSc
         int i = (this.width - this.backgroundWidth) / 2;
         int j = (this.height - this.backgroundHeight) / 2;
         RenderSystem.setShaderTexture(0, LevelzGui.GUI_ICONS);
-
-        if (this.isPointWithinBounds(176, 0, 11, 11, (double) mouseX, (double) mouseY)) {
-            this.drawTexture(matrices, i + 176, j, 11, 64, 11, 11);
+        if (this.isPointWithinBounds(176, 0, 11, 13, (double) mouseX, (double) mouseY)) {
+            this.drawTexture(matrices, i + 176, j, 33, 64, 11, 13);
             List<Text> list = Lists.newArrayList();
             list.add((new TranslatableText("container.levelz.enchant", 1, LevelLists.enchantingTableList.get(0), LevelLists.enchantingTableList.get(3))).formatted(Formatting.WHITE));
             list.add((new TranslatableText("container.levelz.enchant", 2, LevelLists.enchantingTableList.get(0), LevelLists.enchantingTableList.get(4))).formatted(Formatting.WHITE));
             list.add((new TranslatableText("container.levelz.enchant", 3, LevelLists.enchantingTableList.get(0), LevelLists.enchantingTableList.get(5))).formatted(Formatting.WHITE));
             this.renderTooltip(matrices, list, mouseX, mouseY);
         } else
-            this.drawTexture(matrices, i + 176, j, 0, 64, 11, 11);
+            this.drawTexture(matrices, i + 176, j, 22, 64, 11, 13);
     }
 }
