@@ -16,9 +16,12 @@ import net.levelz.stats.PlayerStatsManager;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
+import net.minecraft.item.FoodComponent;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -108,6 +111,15 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
         }
         if (playerStatsManager.getLevel("agility") == ConfigInit.CONFIG.maxLevel && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.movementMissChance) {
             info.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "eatFood", at = @At(value = "HEAD"))
+    private void eatFoodMixin(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
+        if (stack.getItem().isFood() && playerStatsManager.getLevel("stamina") == ConfigInit.CONFIG.maxLevel) {
+            FoodComponent foodComponent = stack.getItem().getFoodComponent();
+            float multiplier = ConfigInit.CONFIG.staminaFoodBonus;
+            playerEntity.getHungerManager().add((int) (foodComponent.getHunger() * multiplier), foodComponent.getSaturationModifier() * multiplier);
         }
     }
 
