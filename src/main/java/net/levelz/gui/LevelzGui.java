@@ -6,6 +6,8 @@ import io.github.cottonmc.cotton.gui.widget.WDynamicLabel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
@@ -21,7 +23,11 @@ import net.minecraft.util.Identifier;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+@Environment(EnvType.CLIENT)
 public class LevelzGui extends LightweightGuiDescription {
+
+    public static final Identifier GUI_ICONS = new Identifier("levelz:textures/gui/icons.png");
+
     public LevelzGui(PlayerEntity playerEntity) {
 
         WPlainPanel root = new WPlainPanel();
@@ -29,21 +35,21 @@ public class LevelzGui extends LightweightGuiDescription {
         root.setSize(200, 200);
         // Top label
         WLabel topLlabel = new WLabel(new LiteralText(playerEntity.getName().getString() + " Skills"), 0xFFFFFF);
-        root.add(topLlabel, 80, 5);
+        root.add(topLlabel, 80, 7);
         // Small icons
-        WSprite lifeIcon = new WSprite(new Identifier("levelz:textures/gui/icons.png"), 0F, 0F, 1F / 28.2865F, 1F / 28.2865F);
-        WSprite protectionIcon = new WSprite(new Identifier("levelz:textures/gui/icons.png"), 1F / 28.2865F, 0F, 2F / 28.305F, 1F / 28.2865F);
-        WSprite speedIcon = new WSprite(new Identifier("levelz:textures/gui/icons.png"), 2F / 28.2865F, 0F, 3F / 28.355F, 1F / 28.2865F);
-        WSprite damageIcon = new WSprite(new Identifier("levelz:textures/gui/icons.png"), 3F / 28.2865F, 0F, 4F / 28.4F, 1F / 28.2865F);
-        WSprite foodIcon = new WSprite(new Identifier("levelz:textures/gui/icons.png"), 4F / 28.2865F, 0F, 5F / 28.4F, 1F / 28.2865F);
-        WSprite fortuneIcon = new WSprite(new Identifier("levelz:textures/gui/icons.png"), 5F / 28.2865F, 0F, 6F / 28.2865F, 1F / 28.2865F);
+        WSprite lifeIcon = new WSprite(GUI_ICONS, 0F, 0F, 1F / 28.2865F, 1F / 28.2865F);
+        WSprite protectionIcon = new WSprite(GUI_ICONS, 1F / 28.2865F, 0F, 2F / 28.305F, 1F / 28.2865F);
+        WSprite speedIcon = new WSprite(GUI_ICONS, 2F / 28.2865F, 0F, 3F / 28.355F, 1F / 28.2865F);
+        WSprite damageIcon = new WSprite(GUI_ICONS, 3F / 28.2865F, 0F, 4F / 28.4F, 1F / 28.2865F);
+        WSprite foodIcon = new WSprite(GUI_ICONS, 4F / 28.2865F, 0F, 5F / 28.4F, 1F / 28.2865F);
+        WSprite fortuneIcon = new WSprite(GUI_ICONS, 5F / 28.2865F, 0F, 6F / 28.2865F, 1F / 28.2865F);
 
-        root.add(lifeIcon, 58, 15, 10, 10);
-        root.add(protectionIcon, 58, 28, 10, 10);
-        root.add(damageIcon, 108, 15, 10, 10);
-        root.add(speedIcon, 108, 28, 10, 10);
-        root.add(foodIcon, 155, 15, 10, 10);
-        root.add(fortuneIcon, 155, 28, 10, 10);
+        root.add(lifeIcon, 58, 21, 10, 10);
+        root.add(protectionIcon, 58, 34, 10, 10);
+        root.add(damageIcon, 108, 21, 10, 10);
+        root.add(speedIcon, 108, 34, 10, 10);
+        root.add(foodIcon, 155, 21, 10, 10);
+        root.add(fortuneIcon, 155, 34, 10, 10);
 
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
         // Small icon labels
@@ -62,12 +68,12 @@ public class LevelzGui extends LightweightGuiDescription {
         WDynamicLabel nextLevel = new WDynamicLabel(
                 () -> "XP " + (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()) + " / " + playerStatsManager.getNextLevelExperience());
 
-        root.add(lifeLabel, 74, 16);
-        root.add(protectionLabel, 74, 30);
-        root.add(damageLabel, 124, 16);
-        root.add(speedLabel, 124, 30);
-        root.add(foodLabel, 171, 16);
-        root.add(fortuneLabel, 171, 30);
+        root.add(lifeLabel, 74, 22);
+        root.add(protectionLabel, 74, 36);
+        root.add(damageLabel, 124, 22);
+        root.add(speedLabel, 124, 36);
+        root.add(foodLabel, 171, 22);
+        root.add(fortuneLabel, 171, 36);
         root.add(overallLevel, 72, 51);
         root.add(skillPoints, 130, 51);
         root.add(nextLevel, 95, 70);
@@ -97,32 +103,34 @@ public class LevelzGui extends LightweightGuiDescription {
         root.add(miningLabel, 129, 155);
         root.add(farmingLabel, 129, 175);
         root.add(alchemyLabel, 129, 195);
+
         // Skill sprites
-        ZWSprite healthIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 0F, 1F / 16F, 1F / 16F, 2F / 16F);
-        ZWSprite strengthIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 1F / 16F, 1F / 16F, 2F / 16F, 2F / 16F);
-        ZWSprite agilityIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 2F / 16F, 1F / 16F, 3F / 16F, 2F / 16F);
-        ZWSprite defenseIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 3F / 16F, 1F / 16F, 4F / 16F, 2F / 16F);
-        ZWSprite staminaIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 4F / 16F, 1F / 16F, 5F / 16F, 2F / 16F);
-        ZWSprite luckIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 5F / 16F, 1F / 16F, 6F / 16F, 2F / 16F);
-        ZWSprite archeryIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 6F / 16F, 1F / 16F, 7F / 16F, 2F / 16F);
-        ZWSprite tradeIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 7F / 16F, 1F / 16F, 8F / 16F, 2F / 16F);
-        ZWSprite smithingIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 8F / 16F, 1F / 16F, 9F / 16F, 2F / 16F);
-        ZWSprite miningIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 9F / 16F, 1F / 16F, 10F / 16F, 2F / 16F);
-        ZWSprite farmingIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 10F / 16F, 1F / 16F, 11F / 16F, 2F / 16F);
-        ZWSprite alchemyIcon = new ZWSprite(new Identifier("levelz:textures/gui/icons.png"), 11F / 16F, 1F / 16F, 12F / 16F, 2F / 16F);
+        ZWSprite healthIcon = new ZWSprite("health", GUI_ICONS, 0F, 1F / 16F, 1F / 16F, 2F / 16F);
+        ZWSprite strengthIcon = new ZWSprite("strength", GUI_ICONS, 1F / 16F, 1F / 16F, 2F / 16F, 2F / 16F);
+        ZWSprite agilityIcon = new ZWSprite("agility", GUI_ICONS, 2F / 16F, 1F / 16F, 3F / 16F, 2F / 16F);
+        ZWSprite defenseIcon = new ZWSprite("defense", GUI_ICONS, 3F / 16F, 1F / 16F, 4F / 16F, 2F / 16F);
+        ZWSprite staminaIcon = new ZWSprite("stamina", GUI_ICONS, 4F / 16F, 1F / 16F, 5F / 16F, 2F / 16F);
+        ZWSprite luckIcon = new ZWSprite("luck", GUI_ICONS, 5F / 16F, 1F / 16F, 6F / 16F, 2F / 16F);
+        ZWSprite archeryIcon = new ZWSprite("archery", GUI_ICONS, 6F / 16F, 1F / 16F, 7F / 16F, 2F / 16F);
+        ZWSprite tradeIcon = new ZWSprite("trade", GUI_ICONS, 7F / 16F, 1F / 16F, 8F / 16F, 2F / 16F);
+        ZWSprite smithingIcon = new ZWSprite("smithing", GUI_ICONS, 8F / 16F, 1F / 16F, 9F / 16F, 2F / 16F);
+        ZWSprite miningIcon = new ZWSprite("mining", GUI_ICONS, 9F / 16F, 1F / 16F, 10F / 16F, 2F / 16F);
+        ZWSprite farmingIcon = new ZWSprite("farming", GUI_ICONS, 10F / 16F, 1F / 16F, 11F / 16F, 2F / 16F);
+        ZWSprite alchemyIcon = new ZWSprite("alchemy", GUI_ICONS, 11F / 16F, 1F / 16F, 12F / 16F, 2F / 16F);
+
         // Skill sprite tooltip
         healthIcon.addText("Increases Health");
         healthIcon.addText("+" + ConfigInit.CONFIG.healthBonus + " Hp per lvl");
         strengthIcon.addText("Increases Melee Damage");
         strengthIcon.addText("+" + ConfigInit.CONFIG.attackBonus + " Dmg per lvl");
-        strengthIcon.addText("Unlocks Swords"); // Swords list?
+        strengthIcon.addText("Unlocks Swords");
         agilityIcon.addText("Increases Movement Speed");
         agilityIcon.addText("+" + ConfigInit.CONFIG.movementBonus + " Spd per lvl");
         agilityIcon.addText("Decreases Fall Damage");
         agilityIcon.addText("-" + ConfigInit.CONFIG.movementFallBonus + " Def per lvl");
         defenseIcon.addText("Increases Protection");
         defenseIcon.addText("+" + ConfigInit.CONFIG.defenseBonus + " Def per lvl");
-        defenseIcon.addText("Unlocks Armor");
+        defenseIcon.addText("Unlocks Armor Items");
         staminaIcon.addText("Decreases Exhaustion");
         staminaIcon.addText("-" + ConfigInit.CONFIG.staminaBonus * 100F + " % per lvl");
         staminaIcon.addText("Increases Health Regeneration");
@@ -136,16 +144,17 @@ public class LevelzGui extends LightweightGuiDescription {
         archeryIcon.addText("+" + LevelLists.bowList.get(3) + " Dmg per lvl");
         archeryIcon.addText("Increases Crossbow Damage");
         archeryIcon.addText("+" + LevelLists.crossbowList.get(3) + " Dmg per lvl");
-        archeryIcon.addText("Unlocks Archery Items"); // Archery list?
+        archeryIcon.addText("Unlocks Archery Items");
         tradeIcon.addText("Decreases Trade Price");
         tradeIcon.addText("-" + ConfigInit.CONFIG.tradeBonus * 100D + " % per lvl");
         smithingIcon.addText("Decreases Smithing XP Price");
         smithingIcon.addText("-" + ConfigInit.CONFIG.smithingCostBonus * 100F + " % per lvl");
         smithingIcon.addText("Unlocks Smithing Items");
         miningIcon.addText("Unlocks Tools");
-        miningIcon.addText("Unlocks Mining Sources"); // Mining list?
+        miningIcon.addText("Unlocks Mining Sources");
+        farmingIcon.addText("Increases Harvest Chance at lvl 10+");
         farmingIcon.addText("Unlocks Farming Items");
-        alchemyIcon.addText("Unlocks Alchemy Sources"); // Alchemy list?
+        alchemyIcon.addText("Unlocks Alchemy Items");
 
         root.add(healthIcon, 15, 90, 16, 16);
         root.add(strengthIcon, 15, 110, 16, 16);
@@ -159,32 +168,38 @@ public class LevelzGui extends LightweightGuiDescription {
         root.add(miningIcon, 105, 150, 16, 16);
         root.add(farmingIcon, 105, 170, 16, 16);
         root.add(alchemyIcon, 105, 190, 16, 16);
-        // Skill buttons
-        WButton healthButton = new WButton(new LiteralText("+"));
-        WButton strengthButton = new WButton(new LiteralText("+"));
-        WButton agilityButton = new WButton(new LiteralText("+"));
-        WButton defenseButton = new WButton(new LiteralText("+"));
-        WButton staminaButton = new WButton(new LiteralText("+"));
-        WButton luckButton = new WButton(new LiteralText("+"));
-        WButton archeryButton = new WButton(new LiteralText("+"));
-        WButton tradeButton = new WButton(new LiteralText("+"));
-        WButton smithingButton = new WButton(new LiteralText("+"));
-        WButton miningButton = new WButton(new LiteralText("+"));
-        WButton farmingButton = new WButton(new LiteralText("+"));
-        WButton alchemyButton = new WButton(new LiteralText("+"));
 
-        root.add(healthButton, 77, 89, 16, 16);
-        root.add(strengthButton, 77, 109, 16, 16);
-        root.add(agilityButton, 77, 129, 16, 16);
-        root.add(defenseButton, 77, 149, 16, 16);
-        root.add(staminaButton, 77, 169, 16, 16);
-        root.add(luckButton, 77, 189, 16, 16);
-        root.add(archeryButton, 167, 89, 16, 16);
-        root.add(tradeButton, 167, 109, 16, 16);
-        root.add(smithingButton, 167, 129, 16, 16);
-        root.add(miningButton, 167, 149, 16, 16);
-        root.add(farmingButton, 167, 169, 16, 16);
-        root.add(alchemyButton, 167, 189, 16, 16);
+        // Info button
+        ZWSprite infoIcon = new ZWSprite(true);
+        infoIcon.addText("Click on skill sprites for more info");
+        root.add(infoIcon, 178, 73, 11, 13);
+
+        // Skill buttons
+        ZWButton healthButton = new ZWButton();
+        ZWButton strengthButton = new ZWButton();
+        ZWButton agilityButton = new ZWButton();
+        ZWButton defenseButton = new ZWButton();
+        ZWButton staminaButton = new ZWButton();
+        ZWButton luckButton = new ZWButton();
+        ZWButton archeryButton = new ZWButton();
+        ZWButton tradeButton = new ZWButton();
+        ZWButton smithingButton = new ZWButton();
+        ZWButton miningButton = new ZWButton();
+        ZWButton farmingButton = new ZWButton();
+        ZWButton alchemyButton = new ZWButton();
+
+        root.add(healthButton, 77, 91);
+        root.add(strengthButton, 77, 111);
+        root.add(agilityButton, 77, 131);
+        root.add(defenseButton, 77, 151);
+        root.add(staminaButton, 77, 171);
+        root.add(luckButton, 77, 191);
+        root.add(archeryButton, 167, 91);
+        root.add(tradeButton, 167, 111);
+        root.add(smithingButton, 167, 131);
+        root.add(miningButton, 167, 151);
+        root.add(farmingButton, 167, 171);
+        root.add(alchemyButton, 167, 191);
         // Button mechanic
         setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton, farmingButton, alchemyButton,
                 playerStatsManager);

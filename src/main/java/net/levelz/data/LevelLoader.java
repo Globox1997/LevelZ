@@ -148,6 +148,9 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 list.add(data.get("skill").getAsString());
                 list.add(data.get("level").getAsInt());
                 list.add(JsonHelper.getBoolean(data, "replace", false));
+                if (data.get("bonus") != null) {
+                    list.add(data.get("bonus").getAsFloat());
+                }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
@@ -177,16 +180,17 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         // Fill brewing list
         sortAndFillLists(levelList, objectList, 2);
 
-        System.out.println(LevelLists.elytraList);
-        System.out.println(LevelLists.armorList);
-        System.out.println(LevelLists.bowList);
-        System.out.println("Brewing Item List: " + LevelLists.brewingItemList);
-        System.out.println("Brewing Level List: " + LevelLists.brewingLevelList);
-        System.out.println("Mining Block List: " + LevelLists.miningBlockList);
-        System.out.println("Mining Level List: " + LevelLists.miningLevelList);
-        System.out.println(LevelLists.enchantingTableList);
+        // System.out.println(LevelLists.elytraList);
+        // System.out.println(LevelLists.armorList);
+        // System.out.println(LevelLists.bowList);
+        // System.out.println("Brewing Item List: " + LevelLists.brewingItemList);
+        // System.out.println("Brewing Level List: " + LevelLists.brewingLevelList);
+        // System.out.println("Mining Block List: " + LevelLists.miningBlockList);
+        // System.out.println("Mining Level List: " + LevelLists.miningLevelList);
+        // System.out.println(LevelLists.enchantingTableList);
 
         // Test here
+        addAllInOneList();
     }
 
     private void fillLists(JsonObject data, boolean addToExisting, int type) {
@@ -222,7 +226,6 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     LevelLists.miningBlockList.add(i, objectList.get(levelList.indexOf(LevelLists.miningLevelList.get(i))));
                 }
             } else if (type == 2) {
-                System.out.println("Check:" + levelList);
                 LevelLists.brewingLevelList.addAll(levelList);
                 LevelLists.brewingLevelList.sort(Comparator.naturalOrder());
                 for (int i = 0; i < levelList.size(); i++) {
@@ -233,6 +236,46 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             this.levelList.clear();
         }
 
+    }
+
+    private void addAllInOneList() {
+        LevelLists.listOfAllLists.add(LevelLists.anvilList);
+        LevelLists.listOfAllLists.add(LevelLists.armorList);
+        LevelLists.listOfAllLists.add(LevelLists.axeList);
+        LevelLists.listOfAllLists.add(LevelLists.barrelList);
+        LevelLists.listOfAllLists.add(LevelLists.beehiveList);
+        LevelLists.listOfAllLists.add(LevelLists.blastFurnaceList);
+        LevelLists.listOfAllLists.add(LevelLists.bowList);
+        LevelLists.listOfAllLists.add(LevelLists.brewingStandList);
+        LevelLists.listOfAllLists.add(LevelLists.bucketList);
+        LevelLists.listOfAllLists.add(LevelLists.cartographyList);
+        LevelLists.listOfAllLists.add(LevelLists.cauldronList);
+        LevelLists.listOfAllLists.add(LevelLists.composterList);
+        LevelLists.listOfAllLists.add(LevelLists.cowList);
+        LevelLists.listOfAllLists.add(LevelLists.crossbowList);
+        LevelLists.listOfAllLists.add(LevelLists.dragonBreathList);
+        LevelLists.listOfAllLists.add(LevelLists.elytraList);
+        LevelLists.listOfAllLists.add(LevelLists.enchantingTableList);
+        LevelLists.listOfAllLists.add(LevelLists.fishingList);
+        LevelLists.listOfAllLists.add(LevelLists.flintAndSteelList);
+        LevelLists.listOfAllLists.add(LevelLists.grindstoneList);
+        LevelLists.listOfAllLists.add(LevelLists.hoeList);
+        LevelLists.listOfAllLists.add(LevelLists.lecternList);
+        LevelLists.listOfAllLists.add(LevelLists.loomList);
+        LevelLists.listOfAllLists.add(LevelLists.mooshroomList);
+        LevelLists.listOfAllLists.add(LevelLists.pumpkinList);
+        LevelLists.listOfAllLists.add(LevelLists.sheepList);
+        LevelLists.listOfAllLists.add(LevelLists.shieldList);
+        LevelLists.listOfAllLists.add(LevelLists.smithingTableList);
+        LevelLists.listOfAllLists.add(LevelLists.smokerList);
+        LevelLists.listOfAllLists.add(LevelLists.snowGolemList);
+        LevelLists.listOfAllLists.add(LevelLists.stonecutterList);
+        LevelLists.listOfAllLists.add(LevelLists.swordList);
+        LevelLists.listOfAllLists.add(LevelLists.toolList);
+        LevelLists.listOfAllLists.add(LevelLists.totemList);
+        LevelLists.listOfAllLists.add(LevelLists.tridentList);
+        LevelLists.listOfAllLists.add(LevelLists.villagerList);
+        LevelLists.listOfAllLists.add(LevelLists.wanderingTraderList);
     }
 
 }

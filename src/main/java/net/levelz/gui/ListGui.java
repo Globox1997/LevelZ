@@ -1,54 +1,102 @@
 package net.levelz.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.text.WordUtils;
+
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WGridPanel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
-import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.fabric.api.util.TriState;
 import net.levelz.data.LevelLists;
-import net.levelz.init.ConfigInit;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.PotionItem;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtil;
+import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ListGui extends LightweightGuiDescription {
 
-    public ListGui() {
+    public ListGui(String name) {
         WPlainPanel root = new WPlainPanel();
         setRootPanel(root);
-        root.setSize(200, ConfigInit.CONFIG.test5);
+        root.setSize(200, 215);
 
-        WGridPanel gridPanel = new WGridPanel();
-        gridPanel.setSize(200, 1000);
-        gridPanel.add(new WLabel(new TranslatableText("text.levelz.lockedList")), 0, 0);
+        root.add(new WLabel(new TranslatableText("text.levelz.locked_list", WordUtils.capitalize(name))), 6, 7);
 
-        WScrollPanel scrollPanel = new WScrollPanel(gridPanel);
+        WPlainPanel plainPanel = new WPlainPanel();
+
+        WScrollPanel scrollPanel = new WScrollPanel(plainPanel);
         scrollPanel.setScrollingHorizontally(TriState.FALSE);
 
-        // 9 blocks next to each other
-        int gridYSpace = 1;
-        for (int u = 0; u < LevelLists.miningLevelList.size(); u++) {
-            gridPanel.add(new WLabel(new TranslatableText("text.levelz.level", LevelLists.miningLevelList.get(u))), 0, gridYSpace);// 1
-            // int listSize = LevelLists.miningBlockList.get(u).size();
+        List<Integer> levelList = new ArrayList<>();
+        List<List<Integer>> ObjectList = new ArrayList<>();
+        boolean isBlock = false;
+        if (name == "mining") {
+            levelList = LevelLists.miningLevelList;
+            ObjectList = LevelLists.miningBlockList;
+            isBlock = true;
+        } else if (name == "alchemy") {
+            levelList = LevelLists.brewingLevelList;
+            ObjectList = LevelLists.brewingItemList;
+        }
+
+        // 9 objects next to each other
+        int gridYSpace = 10;
+        for (int u = 0; u < levelList.size(); u++) {
+
+            plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", levelList.get(u))), 0, gridYSpace);
             int listSplitter = 0;
             int gridXSpace = 0;
-            for (int k = 0; k < LevelLists.miningBlockList.get(u).size(); k++) {
-                Identifier identifier = Registry.BLOCK.getId(Registry.BLOCK.get(LevelLists.miningBlockList.get(u).get(k)));
-                String test = "minecraft:textures/block/" + identifier.getPath() + ".png";
-                gridPanel.add(new WSprite(new Identifier(test)), gridXSpace, gridYSpace + 1, 1, 1); // 2,3
-                gridXSpace++;
+            gridYSpace += 16;
+
+            for (int k = 0; k < ObjectList.get(u).size(); k++) {
+                ZWSprite zwSprite;
+                if (isBlock) {
+                    Block block = Registry.BLOCK.get(ObjectList.get(u).get(k));
+                    Identifier identifier = Registry.BLOCK.getId(block);
+                    String blockIdentifier = "minecraft:textures/block/" + identifier.getPath() + ".png";
+                    zwSprite = new ZWSprite(new Identifier(blockIdentifier));
+                    zwSprite.addText(block.getName().getString());
+                } else {
+                    Item item = Registry.ITEM.get(ObjectList.get(u).get(k));
+                    Identifier identifier = Registry.ITEM.getId(item);
+                    String itemIdentifier = "minecraft:textures/item/" + identifier.getPath() + ".png";
+                    zwSprite = new ZWSprite(new Identifier(itemIdentifier));
+                    zwSprite.addText(item.getName().getString());
+
+                    if (BrewingRecipeRegistry.isValidIngredient(item.getDefaultStack()) && LevelLists.potionList.contains(item)) {
+                        int index = LevelLists.potionList.indexOf(item);
+                        Potion potion = (Potion) LevelLists.potionList.get(index + 1);
+                        ItemStack stack = PotionUtil.setPotion(new ItemStack(Items.POTION), potion);
+                        zwSprite.addText("Ingredient for " + new TranslatableText(((PotionItem) PotionUtil.setPotion(stack, potion).getItem()).getTranslationKey(stack)).getString());
+                    }
+
+                }
+                plainPanel.add(zwSprite, gridXSpace, gridYSpace, 16, 16);
+                gridXSpace += 18;
                 listSplitter++;
-                if (listSplitter % 3 == 0) {
-                    gridYSpace++;
+                if (listSplitter % 9 == 0 || k == ObjectList.get(u).size() - 1) {
+                    gridYSpace += 18;
                     gridXSpace = 0;
                 }
             }
-            gridYSpace += 2;//
+            gridYSpace += 8;
         }
+        if (gridYSpace < 200) {
+            scrollPanel.setScrollingVertically(TriState.FALSE);
+        }
+        plainPanel.setSize(200, gridYSpace);
 
-        root.add(scrollPanel, ConfigInit.CONFIG.test3, ConfigInit.CONFIG.test4, ConfigInit.CONFIG.test1, ConfigInit.CONFIG.test2);
+        root.add(scrollPanel, 10, 20, 180, 185);
         root.validate(this);
     }
 }
