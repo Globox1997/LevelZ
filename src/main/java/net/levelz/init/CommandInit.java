@@ -1,7 +1,6 @@
 package net.levelz.init;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.network.PlayerStatsServerPacket;
@@ -23,50 +22,50 @@ public class CommandInit {
             dispatcher.register((CommandManager.literal("playerstats").requires((serverCommandSource) -> {
                 return serverCommandSource.hasPermissionLevel(3);
             })).then(CommandManager.argument("targets", EntityArgumentType.players())
-                    .then(CommandManager.literal("level").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "level",
+                    .then(CommandManager.literal("level").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "level",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("points").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "points",
+                    }))).then(CommandManager.literal("points").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "points",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("health").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "health",
+                    }))).then(CommandManager.literal("health").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "health",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("strength").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "strength",
+                    }))).then(CommandManager.literal("strength").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "strength",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("agility").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "agility",
+                    }))).then(CommandManager.literal("agility").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "agility",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("defense").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "defense",
+                    }))).then(CommandManager.literal("defense").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "defense",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("stamina").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "stamina",
+                    }))).then(CommandManager.literal("stamina").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "stamina",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("luck").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "luck",
+                    }))).then(CommandManager.literal("luck").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "luck",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("archery").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "archery",
+                    }))).then(CommandManager.literal("archery").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "archery",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("trade").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "trade",
+                    }))).then(CommandManager.literal("trade").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "trade",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("smithing").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "smithing",
+                    }))).then(CommandManager.literal("smithing").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "smithing",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("mining").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "mining",
+                    }))).then(CommandManager.literal("mining").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "mining",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("farming").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "farming",
+                    }))).then(CommandManager.literal("farming").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "farming",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("alchemy").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "alchemy",
+                    }))).then(CommandManager.literal("alchemy").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "alchemy",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
-                    }))).then(CommandManager.literal("progress").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "progress",
+                    }))).then(CommandManager.literal("progress").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "progress",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
                     })))));
         });
