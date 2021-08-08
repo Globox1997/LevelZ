@@ -19,58 +19,6 @@ import java.util.Iterator;
 public class CommandInit {
 
     public static void init() {
-        // CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-        // dispatcher.register((CommandManager.literal("playerstats").requires((serverCommandSource) -> {
-        // return serverCommandSource.hasPermissionLevel(3);
-        // })).then(((CommandManager.argument("targets", EntityArgumentType.players())
-        // .then(CommandManager.literal("level").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "level",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("points").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "points",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // })))).then(CommandManager.literal("health").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "health",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // })))).then(CommandManager.literal("strength").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "strength",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("agility").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "agility",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("defense").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "defense",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("stamina").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "stamina",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("luck").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "luck",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("archery").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "archery",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("trade").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "trade",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("smithing").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "smithing",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("mining").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "mining",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("farming").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "farming",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("building").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "building",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // }))).then(CommandManager.literal("progress").then((RequiredArgumentBuilder) CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-        // return executeSkillCommand((ServerCommandSource) commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "progress",
-        // IntegerArgumentType.getInteger(commandContext, "level"));
-        // })))));
-        // });
-
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             dispatcher.register((CommandManager.literal("playerstats").requires((serverCommandSource) -> {
                 return serverCommandSource.hasPermissionLevel(3);
@@ -135,16 +83,21 @@ public class CommandInit {
             } else {
                 playerStatsManager.setLevel(skill, i);
                 if (skill.equals("health")) {
-                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(6D + playerStatsManager.getLevel("health"));
+                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                            .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);
                     serverPlayerEntity.setHealth(serverPlayerEntity.getMaxHealth());
                 } else if (skill.equals("strength")) {
-                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(1D + (double) playerStatsManager.getLevel("strength") / 5D);
+                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                            .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getLevel("strength") * ConfigInit.CONFIG.attackBonus);
                 } else if (skill.equals("agility")) {
-                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(0.09D + (double) playerStatsManager.getLevel("agility") / 1000D);
-                } else if (skill.equals("defence")) {
-                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue((double) playerStatsManager.getLevel("defense") / 5D);
+                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                            .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
+                } else if (skill.equals("defense")) {
+                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
+                            .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getLevel("defense") * ConfigInit.CONFIG.defenseBonus);
                 } else if (skill.equals("luck")) {
-                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue((double) playerStatsManager.getLevel("luck") / 20D);
+                    serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
+                            .setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
                 }
             }
             PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, serverPlayerEntity);

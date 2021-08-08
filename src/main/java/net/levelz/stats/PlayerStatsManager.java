@@ -32,23 +32,6 @@ public class PlayerStatsManager {
     public List<Integer> lockedBlockIds = new ArrayList<Integer>();
     public List<Integer> lockedbrewingItemIds = new ArrayList<Integer>();
 
-    // public void add(int thirst) {
-    // this.thirstLevel = Math.min(thirst + this.thirstLevel, 20);
-    // }
-
-    // public void update(PlayerEntity player) {
-    // }
-
-    // Health
-    // Strength
-    // Defense
-    // Agility (chance of no damage)
-    // Speed (walking speed)
-    // Regeneration
-    // Critical hit
-    // Level bar#
-    // Farm skill disables/enables farming + wool
-
     // Stamina reduces 2% exhaustion per level
     // Stamina increases regeneration by 5% per level
     // Luck increases crit chance by 1% per level
@@ -77,14 +60,6 @@ public class PlayerStatsManager {
     // Alchemy unlocks brewing stuff
 
     // Wood, Stone, Iron,Gold, Diamond, Netherite
-
-    // Extra blocks tooltip
-    // Locked block list
-    // Locked list gui
-
-    // Show unlock lvl at enchanting table screen
-    // Bone meal
-    // Remove dmg to tools when unable to use
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {
@@ -234,7 +209,6 @@ public class PlayerStatsManager {
         }
     }
 
-    // Datapack order for objects in json file is important!!
     public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, List<Object> list, String string, boolean creativeRequired) {
         if (!playerEntity.isCreative() || !creativeRequired) {
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);

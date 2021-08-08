@@ -80,7 +80,7 @@ public class PlayerStatsClientPacket {
         playerStatsManager.setLevel("health", buf.readInt());
         playerStatsManager.setLevel("strength", buf.readInt());
         playerStatsManager.setLevel("agility", buf.readInt());
-        playerStatsManager.setLevel("defence", buf.readInt());
+        playerStatsManager.setLevel("defense", buf.readInt());
         playerStatsManager.setLevel("stamina", buf.readInt());
         playerStatsManager.setLevel("luck", buf.readInt());
         playerStatsManager.setLevel("archery", buf.readInt());
@@ -89,8 +89,7 @@ public class PlayerStatsClientPacket {
         playerStatsManager.setLevel("mining", buf.readInt());
         playerStatsManager.setLevel("farming", buf.readInt());
         playerStatsManager.setLevel("alchemy", buf.readInt());
-        // Set unlocked block list
-        // playerStatsManager.lockedBlockIds.clear();
+        // Set unlocked list
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
     }

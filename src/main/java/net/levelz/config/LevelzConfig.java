@@ -56,6 +56,7 @@ public class LevelzConfig implements ConfigData {
     @Comment("Food is more nutritious at max lvl")
     public float staminaFoodBonus = 0.3F;
     public double tradeBonus = 0.2D;
+    public float tradeXPBonus = 0.5F;
     @Comment("Disables bad reputation possibility at max lvl")
     public boolean tradeReputation = true;
     public float smithingCostBonus = 0.015F;

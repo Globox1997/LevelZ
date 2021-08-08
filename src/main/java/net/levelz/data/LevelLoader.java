@@ -63,11 +63,11 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     if (list.contains(data.get("material").getAsString())) {
                         if (JsonHelper.getBoolean(data, "replace", false)) {
                             int removeLines = list.indexOf(data.get("material").getAsString());
-                            for (int i = 0; i < 4; i++) {
+                            for (int i = 0; i < 5; i++) {
                                 list.remove(removeLines);
                             }
                         } else {
-                            if (!(boolean) list.get(list.indexOf(data.get("material")) + 3)) {
+                            if (!(boolean) list.get(list.indexOf(data.get("material")) + 4)) {
                                 LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
                             }
                             continue;
@@ -76,13 +76,14 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     list.add(data.get("material").getAsString());
                     list.add(data.get("skill").getAsString());
                     list.add(data.get("level").getAsInt());
+                    list.add(data.get("item").getAsString());
                     list.add(JsonHelper.getBoolean(data, "replace", false));
                 } else {
                     if (!list.isEmpty()) {
                         if (JsonHelper.getBoolean(data, "replace", false)) {
                             list.clear();
                         } else {
-                            if (!(boolean) list.get(2)) {
+                            if (!(boolean) list.get(3)) {
                                 LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
                             }
                             continue;
@@ -90,11 +91,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     }
                     list.add(data.get("skill").getAsString());
                     list.add(data.get("level").getAsInt());
+                    list.add(data.get("item").getAsString());
                     list.add(JsonHelper.getBoolean(data, "replace", false));
-                    // Bow,Crossbow
-                    if (data.get("bonus") != null) {
-                        list.add(data.get("bonus").getAsFloat());
-                    }
                 }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
@@ -110,7 +108,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     if (JsonHelper.getBoolean(data, "replace", false)) {
                         list.clear();
                     } else {
-                        if (!(boolean) list.get(2)) {
+                        if (!(boolean) list.get(3)) {
                             LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
                         }
                         continue;
@@ -118,6 +116,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 }
                 list.add(data.get("skill").getAsString());
                 list.add(data.get("level").getAsInt());
+                list.add(data.get("block").getAsString());
                 list.add(JsonHelper.getBoolean(data, "replace", false));
                 // EnchantingTable
                 if (data.get("enchanting") != null) {
@@ -139,7 +138,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     if (JsonHelper.getBoolean(data, "replace", false)) {
                         list.clear();
                     } else {
-                        if (!(boolean) list.get(2)) {
+                        if (!(boolean) list.get(3)) {
                             LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
                         }
                         continue;
@@ -147,10 +146,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 }
                 list.add(data.get("skill").getAsString());
                 list.add(data.get("level").getAsInt());
+                list.add(data.get("entity").getAsString());
                 list.add(JsonHelper.getBoolean(data, "replace", false));
-                if (data.get("bonus") != null) {
-                    list.add(data.get("bonus").getAsFloat());
-                }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }

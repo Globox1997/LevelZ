@@ -31,7 +31,7 @@ public class PlayerStatsServerPacket {
                     player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + 0.2D);
                 } else if (stat.equals("agility")) {
                     player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + 0.001D);
-                } else if (stat.equals("defence")) {
+                } else if (stat.equals("defense")) {
                     player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + 0.2D);
                 } else if (stat.equals("luck")) {
                     player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + 0.05D);
@@ -63,7 +63,7 @@ public class PlayerStatsServerPacket {
         buf.writeInt(playerStatsManager.getLevel("health"));
         buf.writeInt(playerStatsManager.getLevel("strength"));
         buf.writeInt(playerStatsManager.getLevel("agility"));
-        buf.writeInt(playerStatsManager.getLevel("defence"));
+        buf.writeInt(playerStatsManager.getLevel("defense"));
         buf.writeInt(playerStatsManager.getLevel("stamina"));
         buf.writeInt(playerStatsManager.getLevel("luck"));
         buf.writeInt(playerStatsManager.getLevel("archery"));
@@ -77,7 +77,6 @@ public class PlayerStatsServerPacket {
         serverPlayerEntity.networkHandler.sendPacket(packet);
 
         // Set on server
-        // System.out.println("WriteSkillPacket");
         syncLockedBlockList(playerStatsManager);
         syncLockedBrewingItemList(playerStatsManager);
     }
@@ -98,7 +97,7 @@ public class PlayerStatsServerPacket {
     public static void syncLockedBrewingItemList(PlayerStatsManager playerStatsManager) {
         playerStatsManager.lockedbrewingItemIds.clear();
         for (int i = 0; i < LevelLists.brewingLevelList.size(); i++) {
-            if (LevelLists.brewingLevelList.get(i) > playerStatsManager.getLevel("brewing")) {
+            if (LevelLists.brewingLevelList.get(i) > playerStatsManager.getLevel("alchemy")) {
                 for (int u = 0; u < LevelLists.brewingItemList.get(i).size(); u++) {
                     if (!playerStatsManager.lockedbrewingItemIds.contains(LevelLists.brewingItemList.get(i).get(u))) {
                         playerStatsManager.lockedbrewingItemIds.add(LevelLists.brewingItemList.get(i).get(u));

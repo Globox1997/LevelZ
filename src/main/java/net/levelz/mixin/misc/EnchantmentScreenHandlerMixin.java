@@ -46,21 +46,21 @@ public abstract class EnchantmentScreenHandlerMixin {
             ItemStack itemStack = inventory.getStack(0);
             if (!itemStack.isEmpty() && itemStack.isEnchantable()) {
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerInventory.player).getPlayerStatsManager(playerInventory.player);
-                int playerAlchemyLevel = playerStatsManager.getLevel("alchemy");
+                int playerAlchemyLevel = playerStatsManager.getLevel(LevelLists.enchantingTableList.get(0).toString());
                 if (playerAlchemyLevel < ConfigInit.CONFIG.maxLevel) {
-                    if (playerAlchemyLevel < (int) LevelLists.enchantingTableList.get(3)) {
+                    if (playerAlchemyLevel < (int) LevelLists.enchantingTableList.get(4)) {
                         for (int i = 0; i < 3; ++i) {
                             this.enchantmentPower[i] = 0;
                             this.enchantmentId[i] = -1;
                             this.enchantmentLevel[i] = -1;
                         }
-                    } else if (playerAlchemyLevel < (int) LevelLists.enchantingTableList.get(4)) {
+                    } else if (playerAlchemyLevel < (int) LevelLists.enchantingTableList.get(5)) {
                         for (int i = 1; i < 3; ++i) {
                             this.enchantmentPower[i] = 0;
                             this.enchantmentId[i] = -1;
                             this.enchantmentLevel[i] = -1;
                         }
-                    } else if (playerAlchemyLevel < (int) LevelLists.enchantingTableList.get(5)) {
+                    } else if (playerAlchemyLevel < (int) LevelLists.enchantingTableList.get(6)) {
                         this.enchantmentPower[2] = 0;
                         this.enchantmentId[2] = -1;
                         this.enchantmentLevel[2] = -1;

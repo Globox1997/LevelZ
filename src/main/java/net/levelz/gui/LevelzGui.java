@@ -9,7 +9,6 @@ import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.network.PlayerStatsClientPacket;
 import net.levelz.network.PlayerStatsServerPacket;
@@ -18,6 +17,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.SwordItem;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 import java.math.BigDecimal;
@@ -141,9 +141,9 @@ public class LevelzGui extends LightweightGuiDescription {
         luckIcon.addText("+" + ConfigInit.CONFIG.luckCritBonus * 100F + " % per lvl");
         luckIcon.addText("Critical hit does " + ConfigInit.CONFIG.critDmgBonus * 100F + " % extra dmg");
         archeryIcon.addText("Increases Bow Damage");
-        archeryIcon.addText("+" + LevelLists.bowList.get(3) + " Dmg per lvl");
+        archeryIcon.addText("+" + ConfigInit.CONFIG.archeryBowExtraDamage + " Dmg per lvl");
         archeryIcon.addText("Increases Crossbow Damage");
-        archeryIcon.addText("+" + LevelLists.crossbowList.get(3) + " Dmg per lvl");
+        archeryIcon.addText("+" + ConfigInit.CONFIG.archeryCrossbowExtraDamage + " Dmg per lvl");
         archeryIcon.addText("Unlocks Archery Items");
         tradeIcon.addText("Decreases Trade Price");
         tradeIcon.addText("-" + ConfigInit.CONFIG.tradeBonus * 100D + " % per lvl");
@@ -170,8 +170,8 @@ public class LevelzGui extends LightweightGuiDescription {
         root.add(alchemyIcon, 105, 190, 16, 16);
 
         // Info button
-        ZWSprite infoIcon = new ZWSprite(true);
-        infoIcon.addText("Click on skill sprites for more info");
+        ZWSprite infoIcon = new ZWSprite(1);
+        infoIcon.addText(new TranslatableText("text.levelz.more_info").getString());
         root.add(infoIcon, 178, 73, 11, 13);
 
         // Skill buttons

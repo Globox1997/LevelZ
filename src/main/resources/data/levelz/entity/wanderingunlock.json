@@ -2,6 +2,5 @@
     "replace": false,
     "skill": "trade",
     "level": 5,
-    "entity": "minecraft:wanderingtrader",
-    "bonus": 1.0
+    "entity": "minecraft:wanderingtrader"
 }

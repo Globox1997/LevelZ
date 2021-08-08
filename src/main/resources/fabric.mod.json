@@ -35,5 +35,11 @@
   },
   "suggests": {
     "another-mod": "*"
+  },
+  "custom": {
+    "waila:plugins": {
+      "id": "levelz:plugin",
+      "initializer": "net.levelz.waila.LevelWailaPlugin"
+    }
   }
 }

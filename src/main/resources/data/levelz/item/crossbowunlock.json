@@ -2,6 +2,5 @@
     "replace": false,
     "skill": "archery",
     "level": 8,
-    "item": "minecraft:crossbow",
-    "bonus": 0.2
+    "item": "minecraft:crossbow"
 }

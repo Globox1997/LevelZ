@@ -1,5 +1,6 @@
 package net.levelz.gui;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -11,7 +12,6 @@ import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import net.fabricmc.fabric.api.util.TriState;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 
 public class InfoGui extends LightweightGuiDescription {
@@ -28,80 +28,228 @@ public class InfoGui extends LightweightGuiDescription {
         WScrollPanel scrollPanel = new WScrollPanel(plainPanel);
         scrollPanel.setScrollingHorizontally(TriState.FALSE);
 
-        // root.add(new WLabel(new TranslatableText("text.levelz.general_info")), ConfigInit.CONFIG.test1, ConfigInit.CONFIG.test2);
-        int gridYSpace = 0;
-        for (int i = 0; i < LevelLists.listOfAllLists.size(); i++) {
-            if (LevelLists.listOfAllLists.get(i).get(0).toString().equals(name)) {
-                // gridYSpace += 16;
-                // gridXSpace += 18;
-                // System.out.println("Other stuff");
-                // root.add(new WLabel(new TranslatableText("text.levelz.lock_info", LevelLists.listOfAllLists.get(i).get(0).toString(), LevelLists.listOfAllLists.get(i).get(2))),
-                // ConfigInit.CONFIG.test1, ConfigInit.CONFIG.test2 + gridYSpace);
-            } else if (LevelLists.listOfAllLists.get(i).get(1).toString().equals(name)) {
-                for (int u = 0; u < LevelLists.listOfAllLists.get(i).size(); u++) { // 0;4;8
-                    if (u % 4 == 0) {
-                        plainPanel.add(new WLabel(new TranslatableText("text.levelz.lock_info", LevelLists.listOfAllLists.get(i).get(u).toString(), LevelLists.listOfAllLists.get(i).get(u + 2))),
-                                ConfigInit.CONFIG.test1, ConfigInit.CONFIG.test2 + gridYSpace);
-                        gridYSpace += ConfigInit.CONFIG.test5;
-                    }
-                }
-                // Tool and other list things
-                // System.out.println("TOOL and stuff");
+        int gridYSpace = 4;
 
-                // gridXSpace += 18;
-            }
-        }
+        TranslatableText translatableText1 = new TranslatableText("");
+        TranslatableText translatableText1B = new TranslatableText("");
+        TranslatableText translatableText2A = new TranslatableText("");
+        TranslatableText translatableText2B = new TranslatableText("");
+        TranslatableText translatableText3A = new TranslatableText("");
+        TranslatableText translatableText3B = new TranslatableText("");
+        TranslatableText translatableText6A = new TranslatableText("");
+        TranslatableText translatableText6B = new TranslatableText("");
 
-        // plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", levelList.get(u))), 0, gridYSpace);
-
-        String maxLevelString = "";
         switch (name) {
         case "health":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.healthAbsorptionBonus + " when full life";
+            translatableText1 = new TranslatableText("text.levelz.health_info_1", ConfigInit.CONFIG.healthBase);
+            translatableText2A = new TranslatableText("text.levelz.health_info_2_1", ConfigInit.CONFIG.healthBonus);
+            translatableText2B = new TranslatableText("text.levelz.health_info_2_2", ConfigInit.CONFIG.healthBonus);
+            translatableText6A = new TranslatableText("text.levelz.health_max_lvl_1", ConfigInit.CONFIG.healthAbsorptionBonus);
+            translatableText6B = new TranslatableText("text.levelz.health_max_lvl_2", ConfigInit.CONFIG.healthAbsorptionBonus);
             break;
         case "strength":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.attackDoubleDamageChance + "% chance to deal double damage with meele weapons";
+            translatableText1 = new TranslatableText("text.levelz.strength_info_1", ConfigInit.CONFIG.attackBase);
+            translatableText2A = new TranslatableText("text.levelz.strength_info_2_1", ConfigInit.CONFIG.attackBonus);
+            translatableText2B = new TranslatableText("text.levelz.strength_info_2_2", ConfigInit.CONFIG.attackBonus);
+            translatableText6A = new TranslatableText("text.levelz.strength_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.attackDoubleDamageChance * 100F));
+            translatableText6B = new TranslatableText("text.levelz.strength_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.attackDoubleDamageChance * 100F));
             break;
         case "agility":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.movementMissChance + "% chance to evade an enemy attack";
+            translatableText1 = new TranslatableText("text.levelz.agility_info_1", ConfigInit.CONFIG.movementBase);
+            translatableText2A = new TranslatableText("text.levelz.agility_info_2_1", ConfigInit.CONFIG.movementBonus);
+            translatableText2B = new TranslatableText("text.levelz.agility_info_2_2", ConfigInit.CONFIG.movementBonus);
+            translatableText3A = new TranslatableText("text.levelz.agility_info_3_1", ConfigInit.CONFIG.movementFallBonus);
+            translatableText3B = new TranslatableText("text.levelz.agility_info_3_2", ConfigInit.CONFIG.movementFallBonus);
+            translatableText6A = new TranslatableText("text.levelz.agility_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.movementMissChance * 100F));
+            translatableText6B = new TranslatableText("text.levelz.agility_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.movementMissChance * 100F));
             break;
         case "defense":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.defenseReflectChance + "% chance to reflect an enemy attack";
+            translatableText1 = new TranslatableText("text.levelz.defense_info_1", ConfigInit.CONFIG.defenseBase);
+            translatableText2A = new TranslatableText("text.levelz.defense_info_2_1", ConfigInit.CONFIG.defenseBonus);
+            translatableText2B = new TranslatableText("text.levelz.defense_info_2_2", ConfigInit.CONFIG.defenseBonus);
+            translatableText6A = new TranslatableText("text.levelz.defense_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.defenseReflectChance * 100F));
+            translatableText6B = new TranslatableText("text.levelz.defense_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.defenseReflectChance * 100F));
             break;
         case "stamina":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.staminaFoodBonus + "% bonus on food value";
+            translatableText1 = new TranslatableText("text.levelz.stamina_info_1", ConfigInit.CONFIG.staminaBase);
+            translatableText2A = new TranslatableText("text.levelz.stamina_info_2_1", ConfigInit.CONFIG.staminaBonus);
+            translatableText2B = new TranslatableText("text.levelz.stamina_info_2_2", ConfigInit.CONFIG.staminaBonus);
+            translatableText3A = new TranslatableText("text.levelz.stamina_info_3_1", ConfigInit.CONFIG.staminaHealthBonus);
+            translatableText3B = new TranslatableText("text.levelz.stamina_info_3_2", ConfigInit.CONFIG.staminaHealthBonus);
+            translatableText6A = new TranslatableText("text.levelz.stamina_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.staminaFoodBonus * 100F));
+            translatableText6B = new TranslatableText("text.levelz.stamina_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.staminaFoodBonus * 100F));
             break;
         case "luck":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.luckSurviveChance + "% chance to survive a death scenario";
+            translatableText1 = new TranslatableText("text.levelz.luck_info_1", ConfigInit.CONFIG.luckBase);
+            translatableText1B = new TranslatableText("text.levelz.luck_info_1_2");
+            translatableText2A = new TranslatableText("text.levelz.luck_info_2_1", ConfigInit.CONFIG.luckBonus);
+            translatableText2B = new TranslatableText("text.levelz.luck_info_2_2", ConfigInit.CONFIG.luckBonus);
+            translatableText3A = new TranslatableText("text.levelz.luck_info_3_1", ConfigInit.CONFIG.luckCritBonus);
+            translatableText3B = new TranslatableText("text.levelz.luck_info_3_2", ConfigInit.CONFIG.luckCritBonus);
+            translatableText6A = new TranslatableText("text.levelz.luck_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.luckSurviveChance * 100F));
+            translatableText6B = new TranslatableText("text.levelz.luck_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.luckSurviveChance * 100F));
             break;
         case "archery":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.archeryDoubleDamageChance + "% chance to deal double damage with range weapons";
+            translatableText2A = new TranslatableText("text.levelz.archery_info_2_1", ConfigInit.CONFIG.archeryBowExtraDamage);
+            translatableText2B = new TranslatableText("text.levelz.archery_info_2_2", ConfigInit.CONFIG.archeryBowExtraDamage);
+            translatableText3A = new TranslatableText("text.levelz.archery_info_3_1", ConfigInit.CONFIG.archeryCrossbowExtraDamage);
+            translatableText3B = new TranslatableText("text.levelz.archery_info_3_2", ConfigInit.CONFIG.archeryCrossbowExtraDamage);
+            translatableText6A = new TranslatableText("text.levelz.archery_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.archeryDoubleDamageChance * 100F));
+            translatableText6B = new TranslatableText("text.levelz.archery_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.archeryDoubleDamageChance * 100F));
             break;
         case "trade":
-            if (ConfigInit.CONFIG.tradeReputation) {
-                maxLevelString = "Player gains reputation by villagers and can't lose it";
-            }
+            translatableText2A = new TranslatableText("text.levelz.trade_info_2_1", ConfigInit.CONFIG.tradeXPBonus);
+            translatableText2B = new TranslatableText("text.levelz.trade_info_2_2", ConfigInit.CONFIG.tradeXPBonus);
+            translatableText3A = new TranslatableText("text.levelz.trade_info_3_1", ConfigInit.CONFIG.tradeBonus);
+            translatableText3B = new TranslatableText("text.levelz.trade_info_3_2", ConfigInit.CONFIG.tradeBonus);
+            translatableText6A = new TranslatableText("text.levelz.trade_max_lvl_1", ConfigInit.CONFIG.tradeReputation);
+            translatableText6B = new TranslatableText("text.levelz.trade_max_lvl_2", ConfigInit.CONFIG.tradeReputation);
             break;
         case "smithing":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.smithingAnvilChance + "% chance to regain used anvil experience";
+            translatableText2A = new TranslatableText("text.levelz.smithing_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingToolChance * 100F));
+            translatableText2B = new TranslatableText("text.levelz.smithing_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingToolChance * 100F));
+            translatableText3A = new TranslatableText("text.levelz.smithing_info_3_1", ConfigInit.CONFIG.smithingCostBonus);
+            translatableText3B = new TranslatableText("text.levelz.smithing_info_3_2", ConfigInit.CONFIG.smithingCostBonus);
+            translatableText6A = new TranslatableText("text.levelz.smithing_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
+            translatableText6B = new TranslatableText("text.levelz.smithing_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
             break;
         case "mining":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.miningTntBonus + "% tnt power increase";
+            translatableText1 = new TranslatableText("text.levelz.mining_info_1");
+            translatableText6A = new TranslatableText("text.levelz.mining_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
+            translatableText6B = new TranslatableText("text.levelz.mining_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
+
+            ZWSprite miningListIcon = new ZWSprite(2);
+            root.add(miningListIcon, ConfigInit.CONFIG.test2, ConfigInit.CONFIG.test3, 12, 9);
+
             break;
         case "farming":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.farmingTwinChance + "% chance to breed twins";
+            translatableText2A = new TranslatableText("text.levelz.farming_info_2_1", ConfigInit.CONFIG.farmingBase);
+            translatableText2B = new TranslatableText("text.levelz.farming_info_2_2", ConfigInit.CONFIG.farmingBase);
+            translatableText3A = new TranslatableText("text.levelz.farming_info_3_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingChanceBonus * 100F));
+            translatableText3B = new TranslatableText("text.levelz.farming_info_3_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingChanceBonus * 100F));
+            translatableText6A = new TranslatableText("text.levelz.farming_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingTwinChance * 100F));
+            translatableText6B = new TranslatableText("text.levelz.farming_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingTwinChance * 100F));
             break;
         case "alchemy":
-            maxLevelString = "Player gains " + ConfigInit.CONFIG.alchemyPotionChance + "% chance to get double effect value when drinking potions";
+            translatableText1 = new TranslatableText("text.levelz.alchemy_info_1");
+            translatableText6A = new TranslatableText("text.levelz.alchemy_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
+            translatableText6B = new TranslatableText("text.levelz.alchemy_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
+
+            ZWSprite alchemyListIcon = new ZWSprite(3);
+            root.add(alchemyListIcon, ConfigInit.CONFIG.test2, ConfigInit.CONFIG.test3, 12, 9);
+
             break;
         default:
-            maxLevelString = "";
             break;
         }
 
-        plainPanel.add(new WLabel(new LiteralText(maxLevelString)), ConfigInit.CONFIG.test3, ConfigInit.CONFIG.test4);
+        if (!translatableText1.equals(new TranslatableText(""))) {
+            plainPanel.add(new WLabel(translatableText1), 0, gridYSpace);
+            gridYSpace += 14;
+        }
+        if (!translatableText1B.equals(new TranslatableText(""))) {
+            plainPanel.add(new WLabel(translatableText1B), 0, gridYSpace);
+            gridYSpace += 14;
+        }
+        if (!translatableText2A.equals(new TranslatableText(""))) {
+            plainPanel.add(new WLabel(translatableText2A), 0, gridYSpace);
+            if (!translatableText2B.equals(new TranslatableText(""))) {
+                gridYSpace += 10;
+                plainPanel.add(new WLabel(translatableText2B), 0, gridYSpace);
+            }
+            gridYSpace += 14;
+        }
+        if (!translatableText3A.equals(new TranslatableText(""))) {
+            plainPanel.add(new WLabel(translatableText3A), 0, gridYSpace);
+            if (!translatableText3B.equals(new TranslatableText(""))) {
+                gridYSpace += 10;
+                plainPanel.add(new WLabel(translatableText3B), 0, gridYSpace);
+            }
+            gridYSpace += 14;
+        }
 
-        if (gridYSpace < 200) {
+        // Special Item
+        // 0: material, 1: skill, 2: level, 3: info, 4: boolean
+        // Other
+        // 0: skill, 1: level, 2: info, 3: boolean
+
+        ArrayList<Object> unlockSkillList = new ArrayList<Object>();
+
+        // Fill skill list
+        for (int i = 0; i < LevelLists.listOfAllLists.size(); i++) {
+            if (LevelLists.listOfAllLists.get(i).get(0).toString().equals(name)) {
+                unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(1));
+                unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(2));
+                unlockSkillList.add(null);
+            } else if (LevelLists.listOfAllLists.get(i).get(1).toString().equals(name)) {
+                for (int k = 0; k < LevelLists.listOfAllLists.get(i).size(); k += 5) {
+                    unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(2 + k));
+                    unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(3 + k));
+                    unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(0 + k));
+                }
+            }
+        }
+        // Sort list
+        ArrayList<Object> sortedUnlockSkillList = new ArrayList<Object>();
+        // If I set j = 0 it will include 0 level unlocks!
+        for (int j = 1; j <= ConfigInit.CONFIG.maxLevel; j++) {
+            for (int o = 0; o < unlockSkillList.size(); o += 3) {
+                if (unlockSkillList.get(o).equals(j)) {
+                    if (!sortedUnlockSkillList.contains(unlockSkillList.get(o))) {
+                        sortedUnlockSkillList.add(unlockSkillList.get(o));
+                    }
+                    sortedUnlockSkillList.add(unlockSkillList.get(o + 1));
+                    sortedUnlockSkillList.add(unlockSkillList.get(o + 2));
+                }
+            }
+        }
+
+        boolean hasLvlMaxUnlock = false;
+        gridYSpace += 10;
+        plainPanel.add(new WLabel(new TranslatableText("text.levelz.general_info")), 0, gridYSpace);
+        gridYSpace += 16;
+        // level, object, info, object, info,..., level,...
+
+        for (int u = 0; u < sortedUnlockSkillList.size(); u++) {
+            if (sortedUnlockSkillList.get(u) != null && sortedUnlockSkillList.get(u).getClass() == Integer.class) {
+                plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", sortedUnlockSkillList.get(u))), 0, gridYSpace);
+                gridYSpace += 16;
+                for (int g = 1; g < sortedUnlockSkillList.size() - u; g += 2) {
+                    if (sortedUnlockSkillList.get(u + g).getClass() == Integer.class) {
+                        break;
+                    }
+                    String string = sortedUnlockSkillList.get(u + g).toString();
+                    string = string.replace("minecraft:", "");
+                    if (sortedUnlockSkillList.get(u + g + 1) != null) {
+                        String otherString = sortedUnlockSkillList.get(u + g + 1).toString();
+                        plainPanel.add(new WLabel(new TranslatableText("text.levelz.object_info_2", WordUtils.capitalize(otherString), WordUtils.capitalize(string))), 10, gridYSpace);
+                    } else
+                        plainPanel.add(new WLabel(new TranslatableText("text.levelz.object_info_1", WordUtils.capitalize(string))), 10, gridYSpace);
+
+                    gridYSpace += 16;
+                }
+                gridYSpace += 4;
+                if (sortedUnlockSkillList.get(u).equals(ConfigInit.CONFIG.maxLevel)) {
+                    hasLvlMaxUnlock = true;
+                }
+            }
+
+        }
+
+        if (!hasLvlMaxUnlock) {
+            plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", ConfigInit.CONFIG.maxLevel)), 0, gridYSpace);
+        } else {
+            gridYSpace -= 16;
+        }
+        if (!translatableText6A.equals(new TranslatableText(""))) {
+            gridYSpace += 16;
+            plainPanel.add(new WLabel(translatableText6A), 0, gridYSpace);
+            if (!translatableText6B.equals(new TranslatableText(""))) {
+                gridYSpace += 10;
+                plainPanel.add(new WLabel(translatableText6B), 0, gridYSpace);
+            }
+        }
+        if (gridYSpace <= 180) {
             scrollPanel.setScrollingVertically(TriState.FALSE);
         }
         plainPanel.setSize(200, gridYSpace);
