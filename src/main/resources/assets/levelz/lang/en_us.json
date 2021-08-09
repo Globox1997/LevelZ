@@ -149,6 +149,51 @@
   "text.levelz.alchemy_max_lvl_1": "Player gains %d%% chance to get",
   "text.levelz.alchemy_max_lvl_2": "double potion effects",
 
+  "spritetip.levelz.health_skill": "Health",
+  "spritetip.levelz.health_skill_info": "Increases HP",
+
+  "spritetip.levelz.strength_skill": "Strength",
+  "spritetip.levelz.strength_skill_info_1": "Increases Melee Damage",
+  "spritetip.levelz.strength_skill_info_2": "Unlocks Swords",
+
+  "spritetip.levelz.agility_skill": "Agility",
+  "spritetip.levelz.agility_skill_info_1": "Increases Movement Speed",
+  "spritetip.levelz.agility_skill_info_2": "Decreases Fall Damage",
+
+  "spritetip.levelz.defense_skill": "Defense",
+  "spritetip.levelz.defense_skill_info_1": "Increases Protection",
+  "spritetip.levelz.defense_skill_info_2": "Unlocks Armor Items",
+
+  "spritetip.levelz.stamina_skill": "Stamina",
+  "spritetip.levelz.stamina_skill_info_1": "Decreases Exhaustion",
+  "spritetip.levelz.stamina_skill_info_2": "Increases Health Regeneration",
+
+  "spritetip.levelz.luck_skill": "Luck",
+  "spritetip.levelz.luck_skill_info_1": "Increases Loot Value",
+  "spritetip.levelz.luck_skill_info_2": "Increases Crit Chance",
+
+  "spritetip.levelz.archery_skill": "Archery",
+  "spritetip.levelz.archery_skill_info_1": "Increases Bow Damage",
+  "spritetip.levelz.archery_skill_info_2": "Increases Crossbow Damage",
+  "spritetip.levelz.archery_skill_info_3": "Unlocks Archery Items",
+
+  "spritetip.levelz.trade_skill": "Trade",
+  "spritetip.levelz.trade_skill_info": "Decreases Trade Price",
+
+  "spritetip.levelz.smithing_skill": "Smithing",
+  "spritetip.levelz.smithing_skill_info_1": "Decreases Smithing XP Price",
+  "spritetip.levelz.smithing_skill_info_2": "Unlocks Smithing Items",
+
+  "spritetip.levelz.mining_skill": "Mining",
+  "spritetip.levelz.mining_skill_info_1": "Unlocks Tools",
+  "spritetip.levelz.mining_skill_info_2": "Unlocks Mining Sources",
+
+  "spritetip.levelz.farming_skill": "Farming",
+  "spritetip.levelz.farming_skill_info": "Unlocks Farming Items",
+
+  "spritetip.levelz.alchemy_skill": "Alchemy",
+  "spritetip.levelz.alchemy_skill_info": "Unlocks Alchemy Items",
+
   "container.levelz.enchant": "Tier %d unlocks at %s level %d",
 
   "config.waila.plugin_levelz": "LevelZ",

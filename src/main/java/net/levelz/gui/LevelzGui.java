@@ -119,42 +119,50 @@ public class LevelzGui extends LightweightGuiDescription {
         ZWSprite alchemyIcon = new ZWSprite("alchemy", GUI_ICONS, 11F / 16F, 1F / 16F, 12F / 16F, 2F / 16F);
 
         // Skill sprite tooltip
-        healthIcon.addText("Increases Health");
-        healthIcon.addText("+" + ConfigInit.CONFIG.healthBonus + " Hp per lvl");
-        strengthIcon.addText("Increases Melee Damage");
-        strengthIcon.addText("+" + ConfigInit.CONFIG.attackBonus + " Dmg per lvl");
-        strengthIcon.addText("Unlocks Swords");
-        agilityIcon.addText("Increases Movement Speed");
-        agilityIcon.addText("+" + ConfigInit.CONFIG.movementBonus + " Spd per lvl");
-        agilityIcon.addText("Decreases Fall Damage");
-        agilityIcon.addText("-" + ConfigInit.CONFIG.movementFallBonus + " Def per lvl");
-        defenseIcon.addText("Increases Protection");
-        defenseIcon.addText("+" + ConfigInit.CONFIG.defenseBonus + " Def per lvl");
-        defenseIcon.addText("Unlocks Armor Items");
-        staminaIcon.addText("Decreases Exhaustion");
-        staminaIcon.addText("-" + ConfigInit.CONFIG.staminaBonus * 100F + " % per lvl");
-        staminaIcon.addText("Increases Health Regeneration");
-        staminaIcon.addText("+" + ConfigInit.CONFIG.staminaHealthBonus * 100F + " % per lvl");
-        luckIcon.addText("Increases Loot Value");
-        luckIcon.addText("+" + ConfigInit.CONFIG.luckBonus * 100D + " % per lvl");
-        luckIcon.addText("Increases Crit Chance");
-        luckIcon.addText("+" + ConfigInit.CONFIG.luckCritBonus * 100F + " % per lvl");
-        luckIcon.addText("Critical hit does " + ConfigInit.CONFIG.critDmgBonus * 100F + " % extra dmg");
-        archeryIcon.addText("Increases Bow Damage");
-        archeryIcon.addText("+" + ConfigInit.CONFIG.archeryBowExtraDamage + " Dmg per lvl");
-        archeryIcon.addText("Increases Crossbow Damage");
-        archeryIcon.addText("+" + ConfigInit.CONFIG.archeryCrossbowExtraDamage + " Dmg per lvl");
-        archeryIcon.addText("Unlocks Archery Items");
-        tradeIcon.addText("Decreases Trade Price");
-        tradeIcon.addText("-" + ConfigInit.CONFIG.tradeBonus * 100D + " % per lvl");
-        smithingIcon.addText("Decreases Smithing XP Price");
-        smithingIcon.addText("-" + ConfigInit.CONFIG.smithingCostBonus * 100F + " % per lvl");
-        smithingIcon.addText("Unlocks Smithing Items");
-        miningIcon.addText("Unlocks Tools");
-        miningIcon.addText("Unlocks Mining Sources");
-        farmingIcon.addText("Increases Harvest Chance at lvl 10+");
-        farmingIcon.addText("Unlocks Farming Items");
-        alchemyIcon.addText("Unlocks Alchemy Items");
+        healthIcon.addText(new TranslatableText("spritetip.levelz.health_skill").getString());
+        healthIcon.addText(new TranslatableText("spritetip.levelz.health_skill_info").getString());
+
+        strengthIcon.addText(new TranslatableText("spritetip.levelz.strength_skill").getString());
+        strengthIcon.addText(new TranslatableText("spritetip.levelz.strength_skill_info_1").getString());
+        strengthIcon.addText(new TranslatableText("spritetip.levelz.strength_skill_info_2").getString());
+
+        agilityIcon.addText(new TranslatableText("spritetip.levelz.agility_skill").getString());
+        agilityIcon.addText(new TranslatableText("spritetip.levelz.agility_skill_info_1").getString());
+        agilityIcon.addText(new TranslatableText("spritetip.levelz.agility_skill_info_2").getString());
+
+        defenseIcon.addText(new TranslatableText("spritetip.levelz.defense_skill").getString());
+        defenseIcon.addText(new TranslatableText("spritetip.levelz.defense_skill_info_1").getString());
+        defenseIcon.addText(new TranslatableText("spritetip.levelz.defense_skill_info_2").getString());
+
+        staminaIcon.addText(new TranslatableText("spritetip.levelz.stamina_skill").getString());
+        staminaIcon.addText(new TranslatableText("spritetip.levelz.stamina_skill_info_1").getString());
+        staminaIcon.addText(new TranslatableText("spritetip.levelz.stamina_skill_info_2").getString());
+
+        luckIcon.addText(new TranslatableText("spritetip.levelz.luck_skill").getString());
+        luckIcon.addText(new TranslatableText("spritetip.levelz.luck_skill_info_1").getString());
+        luckIcon.addText(new TranslatableText("spritetip.levelz.luck_skill_info_2").getString());
+
+        archeryIcon.addText(new TranslatableText("spritetip.levelz.archery_skill").getString());
+        archeryIcon.addText(new TranslatableText("spritetip.levelz.archery_skill_info_1").getString());
+        archeryIcon.addText(new TranslatableText("spritetip.levelz.archery_skill_info_2").getString());
+        archeryIcon.addText(new TranslatableText("spritetip.levelz.archery_skill_info_3").getString());
+
+        tradeIcon.addText(new TranslatableText("spritetip.levelz.trade_skill").getString());
+        tradeIcon.addText(new TranslatableText("spritetip.levelz.trade_skill_info").getString());
+
+        smithingIcon.addText(new TranslatableText("spritetip.levelz.smithing_skill").getString());
+        smithingIcon.addText(new TranslatableText("spritetip.levelz.smithing_skill_info_1").getString());
+        smithingIcon.addText(new TranslatableText("spritetip.levelz.smithing_skill_info_2").getString());
+
+        miningIcon.addText(new TranslatableText("spritetip.levelz.mining_skill").getString());
+        miningIcon.addText(new TranslatableText("spritetip.levelz.mining_skill_info_1").getString());
+        miningIcon.addText(new TranslatableText("spritetip.levelz.mining_skill_info_2").getString());
+
+        farmingIcon.addText(new TranslatableText("spritetip.levelz.farming_skill").getString());
+        farmingIcon.addText(new TranslatableText("spritetip.levelz.farming_skill_info").getString());
+
+        alchemyIcon.addText(new TranslatableText("spritetip.levelz.alchemy_skill").getString());
+        alchemyIcon.addText(new TranslatableText("spritetip.levelz.alchemy_skill_info").getString());
 
         root.add(healthIcon, 15, 90, 16, 16);
         root.add(strengthIcon, 15, 110, 16, 16);

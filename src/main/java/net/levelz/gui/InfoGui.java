@@ -119,7 +119,7 @@ public class InfoGui extends LightweightGuiDescription {
             translatableText6B = new TranslatableText("text.levelz.mining_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
 
             ZWSprite miningListIcon = new ZWSprite(2);
-            root.add(miningListIcon, ConfigInit.CONFIG.test2, ConfigInit.CONFIG.test3, 12, 9);
+            root.add(miningListIcon, 180, 7, 12, 9);
 
             break;
         case "farming":
@@ -136,7 +136,7 @@ public class InfoGui extends LightweightGuiDescription {
             translatableText6B = new TranslatableText("text.levelz.alchemy_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
 
             ZWSprite alchemyListIcon = new ZWSprite(3);
-            root.add(alchemyListIcon, ConfigInit.CONFIG.test2, ConfigInit.CONFIG.test3, 12, 9);
+            root.add(alchemyListIcon, 180, 7, 12, 9);
 
             break;
         default:
@@ -220,6 +220,7 @@ public class InfoGui extends LightweightGuiDescription {
                     }
                     String string = sortedUnlockSkillList.get(u + g).toString();
                     string = string.replace("minecraft:", "");
+                    string = string.replace("_", " ");
                     if (sortedUnlockSkillList.get(u + g + 1) != null) {
                         String otherString = sortedUnlockSkillList.get(u + g + 1).toString();
                         plainPanel.add(new WLabel(new TranslatableText("text.levelz.object_info_2", WordUtils.capitalize(otherString), WordUtils.capitalize(string))), 10, gridYSpace);

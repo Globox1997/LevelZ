@@ -11,7 +11,6 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import net.fabricmc.fabric.api.util.TriState;
 import net.levelz.data.LevelLists;
-import net.levelz.init.ConfigInit;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,7 +33,7 @@ public class ListGui extends LightweightGuiDescription {
         root.add(new WLabel(new TranslatableText("text.levelz.locked_list", WordUtils.capitalize(name))), 6, 7);
 
         ZWSprite infoIcon = new ZWSprite(name == "mining" ? 4 : 5);
-        root.add(infoIcon, ConfigInit.CONFIG.test2, ConfigInit.CONFIG.test3, 12, 9);
+        root.add(infoIcon, 180, 7, 12, 9);
 
         WPlainPanel plainPanel = new WPlainPanel();
 
