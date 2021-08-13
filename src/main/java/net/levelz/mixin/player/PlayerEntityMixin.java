@@ -1,5 +1,6 @@
 package net.levelz.mixin.player;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -9,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.levelz.access.PlayerDropAccess;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
@@ -22,16 +24,20 @@ import net.minecraft.item.SwordItem;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 @Mixin(PlayerEntity.class)
-public class PlayerEntityMixin implements PlayerStatsManagerAccess {
+public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAccess {
 
     private final PlayerStatsManager playerStatsManager = new PlayerStatsManager();
     private final PlayerEntity playerEntity = (PlayerEntity) (Object) this;
     private boolean isCrit;
+    private int killedMobsInChunk;
+    @Nullable
+    private Chunk killedMobChunk;
 
     @Inject(method = "readCustomDataFromNbt", at = @At(value = "TAIL"))
     public void readCustomDataFromNbtMixin(NbtCompound tag, CallbackInfo info) {
@@ -126,6 +132,21 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess {
     @Override
     public PlayerStatsManager getPlayerStatsManager(PlayerEntity player) {
         return this.playerStatsManager;
+    }
+
+    @Override
+    public void increaseKilledMobStat(Chunk chunk) {
+        if (killedMobChunk != null && killedMobChunk == chunk) {
+            killedMobsInChunk++;
+        } else {
+            killedMobChunk = chunk;
+            killedMobsInChunk = 0;
+        }
+    }
+
+    @Override
+    public boolean allowMobDrop() {
+        return killedMobsInChunk >= 5 ? false : true;
     }
 
 }

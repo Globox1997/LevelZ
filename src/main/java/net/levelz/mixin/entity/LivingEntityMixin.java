@@ -2,25 +2,43 @@ package net.levelz.mixin.entity;
 
 import java.util.ArrayList;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.levelz.access.PlayerDropAccess;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin {
+public abstract class LivingEntityMixin extends Entity {
+
+    @Shadow
+    protected int playerHitTimer;
+
+    @Shadow
+    @Nullable
+    protected PlayerEntity attackingPlayer;
+
+    public LivingEntityMixin(EntityType<?> type, World world) {
+        super(type, world);
+    }
 
     @ModifyVariable(method = "applyEnchantmentsToDamage", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getProtectionAmount(Ljava/lang/Iterable;Lnet/minecraft/entity/damage/DamageSource;)I", shift = At.Shift.AFTER), ordinal = 0)
     private int applyEnchantmentsToDamageMixin(int original, DamageSource source, float amount) {
@@ -55,6 +73,20 @@ public abstract class LivingEntityMixin {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 600, 0));
                 info.setReturnValue(true);
             }
+        }
+    }
+
+    @Inject(method = "drop", at = @At(value = "HEAD"), cancellable = true)
+    protected void dropMixin(DamageSource source, CallbackInfo info) {
+        if (attackingPlayer != null && this.playerHitTimer > 0 && !((PlayerDropAccess) attackingPlayer).allowMobDrop()) {
+            info.cancel();
+        }
+    }
+
+    @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;drop(Lnet/minecraft/entity/damage/DamageSource;)V"))
+    private void onDeathMixin(DamageSource source, CallbackInfo info) {
+        if (attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.CONFIG.disableMobFarms) {
+            ((PlayerDropAccess) attackingPlayer).increaseKilledMobStat(this.world.getChunk(this.getBlockPos()));
         }
     }
 

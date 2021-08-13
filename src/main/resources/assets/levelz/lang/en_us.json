@@ -6,6 +6,7 @@
 
   "text.autoconfig.levelz.title": "LevelZ Config",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
+  "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",
   "text.autoconfig.levelz.option.resetCurrentXP": "Reset Current Experience",
   "text.autoconfig.levelz.option.healthBase": "Health Base",
@@ -29,6 +30,7 @@
   "text.autoconfig.levelz.option.staminaBase": "Stamina Base",
   "text.autoconfig.levelz.option.staminaBonus": "Stamina Bonus",
   "text.autoconfig.levelz.option.staminaHealthBonus": "Stamina Regeneration Bonus",
+  "text.autoconfig.levelz.option.staminaFoodBonus": "Stamina Food Bonus",
   "text.autoconfig.levelz.option.tradeBonus": "Trade Bonus",
   "text.autoconfig.levelz.option.tradeXPBonus": "Trade XP Bonus",
   "text.autoconfig.levelz.option.tradeReputation": "Trading Villager Bad Reputation",
