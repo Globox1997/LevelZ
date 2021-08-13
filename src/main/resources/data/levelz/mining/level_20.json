@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"level": 20,
+	"block": [
+		"minecraft:ancient_debris",
+		"minecraft:netherite_block",
+		"minecraft:lodestone"
+	]
+}

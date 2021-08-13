@@ -1,7 +1,7 @@
 {
     "replace": false,
     "skill": "defense",
-    "level": 12,
+    "level": 16,
     "item": "minecraft:armor",
     "material": "diamond"
 }

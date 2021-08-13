@@ -1,9 +1,0 @@
-{
-    "replace": false,
-    "level": 3,
-    "block": [
-        "minecraft:dirt",
-        "minecraft:diamond_ore",
-        "minecraft:grass_block"
-    ]
-}

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "level": 12,
+  "block": [
+    "minecraft:lapis_ore",
+    "minecraft:lapis_block",
+    "minecraft:deepslate_lapis_ore"
+  ]
+}

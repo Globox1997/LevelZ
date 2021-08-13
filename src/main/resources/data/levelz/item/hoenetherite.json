@@ -1,7 +1,7 @@
 {
     "replace": false,
     "skill": "farming",
-    "level": 16,
+    "level": 20,
     "item": "minecraft:hoe",
     "material": "netherite"
 }

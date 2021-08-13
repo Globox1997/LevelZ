@@ -1,0 +1,11 @@
+{
+	"replace": false,
+	"level": 16,
+	"block": [
+		"minecraft:diamond_ore",
+		"minecraft:diamond_block",
+		"minecraft:deepslate_diamond_ore",
+		"minecraft:obsidian",
+		"minecraft:crying_obsidian"
+	]
+}

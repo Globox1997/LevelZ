@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "level": 10,
+    "block": [
+        "minecraft:emerald_ore",
+        "minecraft:emerald_block",
+        "minecraft:deepslate_emerald_ore"
+    ]
+}

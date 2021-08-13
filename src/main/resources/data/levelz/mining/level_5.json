@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "level": 5,
+    "block": [
+        "minecraft:coal_ore",
+        "minecraft:coal_block",
+        "minecraft:deepslate_coal_ore"
+    ]
+}

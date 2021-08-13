@@ -1,0 +1,13 @@
+{
+	"replace": false,
+	"level": 7,
+	"block": [
+		"minecraft:gold_ore",
+		"minecraft:gold_block",
+		"minecraft:deepslate_gold_ore",
+		"minecraft:raw_gold_block",
+		"minecraft:blue_ice",
+		"minecraft:ice",
+		"minecraft:packed_ice"
+	]
+}

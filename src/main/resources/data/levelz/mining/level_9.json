@@ -1,0 +1,11 @@
+{
+	"replace": false,
+	"level": 9,
+	"block": [
+		"minecraft:redstone_ore",
+		"minecraft:redstone_block",
+		"minecraft:deepslate_redstone_ore",
+		"minecraft:piston",
+		"minecraft:sticky_piston"
+	]
+}
