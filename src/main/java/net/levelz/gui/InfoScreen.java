@@ -24,7 +24,7 @@ public class InfoScreen extends CottonClientScreen {
             this.onClose();
             return true;
         } else if (KeyInit.screenKey.matchesKey(ch, keyCode)) {
-            this.client.setScreen(new LevelzScreen(new LevelzGui(client.player)));
+            this.client.setScreen(new LevelzScreen(new LevelzGui(client)));
             return true;
         } else
             return super.keyPressed(ch, keyCode, modifiers);

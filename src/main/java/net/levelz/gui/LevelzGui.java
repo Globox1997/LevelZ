@@ -13,6 +13,7 @@ import net.levelz.init.ConfigInit;
 import net.levelz.network.PlayerStatsClientPacket;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.SwordItem;
@@ -28,7 +29,8 @@ public class LevelzGui extends LightweightGuiDescription {
 
     public static final Identifier GUI_ICONS = new Identifier("levelz:textures/gui/icons.png");
 
-    public LevelzGui(PlayerEntity playerEntity) {
+    public LevelzGui(MinecraftClient client) {
+        PlayerEntity playerEntity = client.player;
 
         WPlainPanel root = new WPlainPanel();
         setRootPanel(root);
@@ -105,18 +107,18 @@ public class LevelzGui extends LightweightGuiDescription {
         root.add(alchemyLabel, 129, 195);
 
         // Skill sprites
-        ZWSprite healthIcon = new ZWSprite("health", GUI_ICONS, 0F, 1F / 16F, 1F / 16F, 2F / 16F);
-        ZWSprite strengthIcon = new ZWSprite("strength", GUI_ICONS, 1F / 16F, 1F / 16F, 2F / 16F, 2F / 16F);
-        ZWSprite agilityIcon = new ZWSprite("agility", GUI_ICONS, 2F / 16F, 1F / 16F, 3F / 16F, 2F / 16F);
-        ZWSprite defenseIcon = new ZWSprite("defense", GUI_ICONS, 3F / 16F, 1F / 16F, 4F / 16F, 2F / 16F);
-        ZWSprite staminaIcon = new ZWSprite("stamina", GUI_ICONS, 4F / 16F, 1F / 16F, 5F / 16F, 2F / 16F);
-        ZWSprite luckIcon = new ZWSprite("luck", GUI_ICONS, 5F / 16F, 1F / 16F, 6F / 16F, 2F / 16F);
-        ZWSprite archeryIcon = new ZWSprite("archery", GUI_ICONS, 6F / 16F, 1F / 16F, 7F / 16F, 2F / 16F);
-        ZWSprite tradeIcon = new ZWSprite("trade", GUI_ICONS, 7F / 16F, 1F / 16F, 8F / 16F, 2F / 16F);
-        ZWSprite smithingIcon = new ZWSprite("smithing", GUI_ICONS, 8F / 16F, 1F / 16F, 9F / 16F, 2F / 16F);
-        ZWSprite miningIcon = new ZWSprite("mining", GUI_ICONS, 9F / 16F, 1F / 16F, 10F / 16F, 2F / 16F);
-        ZWSprite farmingIcon = new ZWSprite("farming", GUI_ICONS, 10F / 16F, 1F / 16F, 11F / 16F, 2F / 16F);
-        ZWSprite alchemyIcon = new ZWSprite("alchemy", GUI_ICONS, 11F / 16F, 1F / 16F, 12F / 16F, 2F / 16F);
+        ZWSprite healthIcon = new ZWSprite("health", GUI_ICONS, client, 0F, 1F / 16F, 1F / 16F, 2F / 16F);
+        ZWSprite strengthIcon = new ZWSprite("strength", GUI_ICONS, client, 1F / 16F, 1F / 16F, 2F / 16F, 2F / 16F);
+        ZWSprite agilityIcon = new ZWSprite("agility", GUI_ICONS, client, 2F / 16F, 1F / 16F, 3F / 16F, 2F / 16F);
+        ZWSprite defenseIcon = new ZWSprite("defense", GUI_ICONS, client, 3F / 16F, 1F / 16F, 4F / 16F, 2F / 16F);
+        ZWSprite staminaIcon = new ZWSprite("stamina", GUI_ICONS, client, 4F / 16F, 1F / 16F, 5F / 16F, 2F / 16F);
+        ZWSprite luckIcon = new ZWSprite("luck", GUI_ICONS, client, 5F / 16F, 1F / 16F, 6F / 16F, 2F / 16F);
+        ZWSprite archeryIcon = new ZWSprite("archery", GUI_ICONS, client, 6F / 16F, 1F / 16F, 7F / 16F, 2F / 16F);
+        ZWSprite tradeIcon = new ZWSprite("trade", GUI_ICONS, client, 7F / 16F, 1F / 16F, 8F / 16F, 2F / 16F);
+        ZWSprite smithingIcon = new ZWSprite("smithing", GUI_ICONS, client, 8F / 16F, 1F / 16F, 9F / 16F, 2F / 16F);
+        ZWSprite miningIcon = new ZWSprite("mining", GUI_ICONS, client, 9F / 16F, 1F / 16F, 10F / 16F, 2F / 16F);
+        ZWSprite farmingIcon = new ZWSprite("farming", GUI_ICONS, client, 10F / 16F, 1F / 16F, 11F / 16F, 2F / 16F);
+        ZWSprite alchemyIcon = new ZWSprite("alchemy", GUI_ICONS, client, 11F / 16F, 1F / 16F, 12F / 16F, 2F / 16F);
 
         // Skill sprite tooltip
         healthIcon.addText(new TranslatableText("spritetip.levelz.health_skill").getString());
@@ -178,7 +180,7 @@ public class LevelzGui extends LightweightGuiDescription {
         root.add(alchemyIcon, 105, 190, 16, 16);
 
         // Info button
-        ZWSprite infoIcon = new ZWSprite(1);
+        ZWSprite infoIcon = new ZWSprite("info", null, 1);
         infoIcon.addText(new TranslatableText("text.levelz.more_info").getString());
         root.add(infoIcon, 178, 73, 11, 13);
 

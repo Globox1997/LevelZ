@@ -23,7 +23,7 @@ public class KeyInit {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (screenKey.wasPressed()) {
                 if (!keyBoolean) {
-                    client.setScreen(new LevelzScreen(new LevelzGui(client.player)));
+                    client.setScreen(new LevelzScreen(new LevelzGui(client)));
                 }
                 keyBoolean = true;
             } else
