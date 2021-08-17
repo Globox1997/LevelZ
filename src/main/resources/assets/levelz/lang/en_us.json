@@ -40,10 +40,12 @@
   "text.autoconfig.levelz.option.farmingBase": "Farming Base",
   "text.autoconfig.levelz.option.farmingChanceBonus": "Farming Chance Bonus",
   "text.autoconfig.levelz.option.alchemyPotionChance": "Alchemy Potion Chance",
+  "text.autoconfig.levelz.option.alchemyEnchantmentChance": "Alchemy Enchantment Chance",
   "text.autoconfig.levelz.option.archeryBowExtraDamage": "Archery Bow Extra Damage",
   "text.autoconfig.levelz.option.archeryCrossbowExtraDamage": "Archery Crossbow Extra Damage",
   "text.autoconfig.levelz.option.archeryDoubleDamageChance": "Archery Double Damage Chance",
   "text.autoconfig.levelz.option.miningTntBonus": "Minint Tnt Blast Bonus",
+  "text.autoconfig.levelz.option.miningOreChance": "Minint Ore Extra Chance",
   "text.autoconfig.levelz.option.farmingTwinChance": "Farming Twin Chance",
 
   "item.levelz.locked.tooltip": "§cLocked",

@@ -55,7 +55,8 @@
     "misc.ScreenHandlerMixin",
     "misc.BrewingStandScreenHandlerMixin",
     "misc.EnchantmentScreenHandlerMixin",
-    "misc.BrewingRecipeRegistryMixin"
+    "misc.BrewingRecipeRegistryMixin",
+    "misc.EnchantmentHelperMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
