@@ -14,7 +14,6 @@ repositories {
     maven { url "https://server.bbkr.space/artifactory/libs-release" }
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/" }
-    //maven { url "https://www.cursemaven.com" }
     maven { url "https://bai.jfrog.io/artifactory/maven" }
 }
 
@@ -35,9 +34,6 @@ dependencies {
     }
     // Wthit
     modCompileOnly modRuntime("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
-	// modCompileOnly modRuntime('curse.maven:wthit-440979:3401714'){
-	// 	exclude(group: "net.fabricmc.fabric-api")
-	// }
 }
 
 
