@@ -8,6 +8,8 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class LevelzConfig implements ConfigData {
     public int maxLevel = 20;
+    @Comment("If bonus chest world setting is enabled")
+    public int startPoints = 5;
     @Comment("If true will reset stats on death")
     public boolean hardMode = false;
     public boolean resetCurrentXP = true;

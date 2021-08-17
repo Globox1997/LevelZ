@@ -8,6 +8,7 @@
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",
+  "text.autoconfig.levelz.option.startPoints": "Start Points",
   "text.autoconfig.levelz.option.resetCurrentXP": "Reset Current Experience",
   "text.autoconfig.levelz.option.healthBase": "Health Base",
   "text.autoconfig.levelz.option.healthBonus": "Health Bonus",
