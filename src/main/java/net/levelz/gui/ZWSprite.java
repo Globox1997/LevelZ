@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 
 import org.jetbrains.annotations.Nullable;
 
-import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
@@ -60,7 +59,7 @@ public class ZWSprite extends WSprite {
             } else if (type == 2) {
                 identifier = new Identifier("levelz:textures/gui/clicked_list_icon.png");
             }
-            ScreenDrawing.texturedRect(matrices, x, y, getWidth(), getHeight(), new Texture(identifier), tint);
+            paintFrame(matrices, x, y, new Texture(identifier));
         } else
             super.paint(matrices, x, y, mouseX, mouseY);
     }
