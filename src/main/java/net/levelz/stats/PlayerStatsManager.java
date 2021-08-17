@@ -8,6 +8,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.MathHelper;
 
 public class PlayerStatsManager {
     // Level
@@ -201,12 +202,9 @@ public class PlayerStatsManager {
         }
     }
 
+    // Recommend to use https://www.geogebra.org/graphing
     public int getNextLevelExperience() {
-        if (this.overallLevel >= 50) {
-            return 300 + (this.overallLevel - 30) * 18;
-        } else {
-            return this.overallLevel >= 30 ? 112 + (this.overallLevel - 30) * 9 : 37 + this.overallLevel * 3;
-        }
+        return (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * MathHelper.square(this.overallLevel));
     }
 
     public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, List<Object> list, String string, boolean creativeRequired) {

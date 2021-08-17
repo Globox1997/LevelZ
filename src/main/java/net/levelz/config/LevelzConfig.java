@@ -1,19 +1,30 @@
 package net.levelz.config;
 
 import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 @Config(name = "levelz")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class LevelzConfig implements ConfigData {
+    @ConfigEntry.Category("level_setting")
     public int maxLevel = 20;
-    @Comment("If bonus chest world setting is enabled")
+    @ConfigEntry.Category("level_setting")
+    @Comment("Applies if bonus chest world setting is enabled")
     public int startPoints = 5;
+    @ConfigEntry.Category("level_setting")
     @Comment("If true will reset stats on death")
     public boolean hardMode = false;
+    @ConfigEntry.Category("level_setting")
     public boolean resetCurrentXP = true;
+    @ConfigEntry.Category("level_setting")
     public boolean disableMobFarms = true;
+    @ConfigEntry.Category("level_setting")
+    public int xpBaseCost = 50;
+    @ConfigEntry.Category("level_setting")
+    @Comment("XP equation: lvl^2 * multiplicator + base")
+    public float xpCostMultiplicator = 0.1F;
     @Comment("Attribute values - Bonus for each lvl")
     public double healthBase = 6D;
     public double healthBonus = 1D;
