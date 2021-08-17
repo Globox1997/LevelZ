@@ -8,8 +8,9 @@
     "Globox_Z"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/levelz",
+    "sources": "https://github.com/Globox1997/LevelZ",
+    "issues": "https://github.com/Globox1997/LevelZ/issues"
   },
   "license": "GPLv3",
   "icon": "assets/levelz/icon.png",
