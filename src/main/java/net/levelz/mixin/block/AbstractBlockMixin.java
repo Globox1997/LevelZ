@@ -23,7 +23,7 @@ public class AbstractBlockMixin {
         int playerMiningLevel = playerStatsManager.getLevel("mining");
         if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
             if (playerStatsManager.lockedBlockIds.contains(Registry.BLOCK.getRawId(state.getBlock()))) {
-                return (int) (original * 2F);
+                return (int) (original * ConfigInit.CONFIG.miningLockedMultiplicator);
             } else if (playerMiningLevel < 5) {
                 return (int) (original * (1.2F - playerMiningLevel * 0.0475F));
             } else

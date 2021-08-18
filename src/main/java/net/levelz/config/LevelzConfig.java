@@ -82,5 +82,7 @@ public class LevelzConfig implements ConfigData {
     public float miningOreChance = 0.01F;
     @Comment("Tnt power increase at max lvl")
     public float miningTntBonus = 0.5F;
+    @Comment("Locked blocks break slower factor")
+    public float miningLockedMultiplicator = 2.0F;
 
 }
