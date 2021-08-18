@@ -31,7 +31,6 @@ public class HungerManagerMixin {
     private void updateAbsorptionMixin(PlayerEntity player, CallbackInfo info) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
         if (player.getMaxHealth() <= player.getHealth() && player.getAbsorptionAmount() <= 0.0F && playerStatsManager.getLevel("health") == ConfigInit.CONFIG.maxLevel) {
-
             player.setAbsorptionAmount(ConfigInit.CONFIG.healthAbsorptionBonus);
         }
     }
