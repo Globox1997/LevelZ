@@ -36,6 +36,7 @@
     "block.StonecutterBlockMixin",
     "block.AbstractCauldronBlockMixin",
     "block.CropBlockMixin",
+    "block.AbstractBlockStateMixin",
     "item.HoeItemMixin",
     "item.BowItemMixin",
     "item.FlintAndSteelItemMixin",
@@ -56,7 +57,8 @@
     "misc.BrewingStandScreenHandlerMixin",
     "misc.EnchantmentScreenHandlerMixin",
     "misc.BrewingRecipeRegistryMixin",
-    "misc.EnchantmentHelperMixin"
+    "misc.EnchantmentHelperMixin",
+    "misc.ServerPlayerInteractionManagerMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
