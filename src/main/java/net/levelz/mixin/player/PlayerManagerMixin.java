@@ -35,9 +35,12 @@ public class PlayerManagerMixin {
 
     @Inject(method = "onPlayerConnect", at = @At(value = "TAIL"))
     private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
-        if (loadPlayerData(player) == null && server != null && server.getSaveProperties().getGeneratorOptions().hasBonusChest()) {
+        if (loadPlayerData(player) == null) {
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
-            playerStatsManager.setLevel("points", ConfigInit.CONFIG.startPoints);
+            if (server != null && server.getSaveProperties().getGeneratorOptions().hasBonusChest()) {
+                playerStatsManager.setLevel("points", ConfigInit.CONFIG.startPoints);
+            }
+            PlayerStatsServerPacket.writeS2CListPacket(player);
             PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, player);
         }
     }

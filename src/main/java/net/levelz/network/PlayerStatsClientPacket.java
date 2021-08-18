@@ -1,8 +1,13 @@
 package net.levelz.network;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
+import net.levelz.data.LevelLoader;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,6 +56,20 @@ public class PlayerStatsClientPacket {
                 });
             }
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.LIST_PACKET, (client, handler, buf, sender) -> {
+            if (client.player != null) {
+                executeListPacket(buf);
+            } else {
+                PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
+                while (buf.isReadable()) {
+                    newBuffer.writeString(buf.readString());
+                }
+                client.execute(() -> {
+                    executeListPacket(newBuffer);
+                });
+            }
+        });
     }
 
     public static void writeC2SIncreaseLevelPacket(PlayerStatsManager playerStatsManager, String string) {
@@ -92,6 +111,57 @@ public class PlayerStatsClientPacket {
         // Set unlocked list
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
+    }
+
+    private static void executeListPacket(PacketByteBuf buf) {
+        ArrayList<String> list = new ArrayList<>();
+        while (buf.isReadable()) {
+            list.add(buf.readString());
+        }
+        for (int i = 0; i < list.size(); i++) {
+            String listName = list.get(i).toString();
+            if (LevelLists.getListNames().contains(listName)) {
+                int count = 2;
+                int negativeCount = -2;
+                if (listName.equals("minecraft:armor") || listName.equals("minecraft:tool") || listName.equals("minecraft:hoe") || listName.equals("minecraft:sword")
+                        || listName.equals("minecraft:axe"))
+                    negativeCount--;
+                if (listName.equals("minecraft:enchanting")) {
+                    count = 5;
+                }
+                for (int u = negativeCount; u < count; u++) {
+                    addToList(listName, list.get(i + u));
+                }
+            } else if (listName.equals("mining:level")) {
+                List<Integer> blockList = new ArrayList<>();
+                LevelLists.miningLevelList.add(Integer.parseInt(list.get(i + 1)));
+                for (int u = i + 2; u < list.size(); u++) {
+                    if (list.get(u).equals("mining:level") || list.get(u).equals("brewing:level"))
+                        break;
+                    blockList.add(Integer.parseInt(list.get(u)));
+                }
+                LevelLists.miningBlockList.add(blockList);
+            } else if (listName.equals("brewing:level")) {
+                List<Integer> itemList = new ArrayList<>();
+                LevelLists.brewingLevelList.add(Integer.parseInt(list.get(i + 1)));
+                for (int u = i + 2; u < list.size(); u++) {
+                    if (list.get(u).equals("brewing:level"))
+                        break;
+                    itemList.add(Integer.parseInt(list.get(u)));
+                }
+                LevelLists.brewingItemList.add(itemList);
+            }
+        }
+        LevelLoader.addAllInOneList();
+    }
+
+    private static void addToList(String listName, String object) {
+        if (object.matches("-?(0|[1-9]\\d*)")) {
+            LevelLists.getList(listName).add(Integer.parseInt(object));
+        } else if (object.equals("false") || object.equals("true")) {
+            LevelLists.getList(listName).add(Boolean.parseBoolean(object));
+        } else
+            LevelLists.getList(listName).add(object);
     }
 
 }

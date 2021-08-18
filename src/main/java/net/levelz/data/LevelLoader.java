@@ -19,7 +19,7 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
 
 public class LevelLoader implements SimpleSynchronousResourceReloadListener {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger("LevelZ");
     private List<List<Integer>> objectList = new ArrayList<>();
     private List<Integer> levelList = new ArrayList<>();
 
@@ -30,6 +30,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
 
     @Override
     public void reload(ResourceManager manager) {
+        clearEveryList();
         for (Identifier id : manager.findResources("mining", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
@@ -177,16 +178,6 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         // Fill brewing list
         sortAndFillLists(levelList, objectList, 2);
 
-        // System.out.println(LevelLists.elytraList);
-        // System.out.println(LevelLists.armorList);
-        // System.out.println(LevelLists.bowList);
-        // System.out.println("Brewing Item List: " + LevelLists.brewingItemList);
-        // System.out.println("Brewing Level List: " + LevelLists.brewingLevelList);
-        // System.out.println("Mining Block List: " + LevelLists.miningBlockList);
-        // System.out.println("Mining Level List: " + LevelLists.miningLevelList);
-        // System.out.println(LevelLists.enchantingTableList);
-
-        // Test here
         addAllInOneList();
     }
 
@@ -235,7 +226,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
 
     }
 
-    private void addAllInOneList() {
+    public static void addAllInOneList() {
         LevelLists.listOfAllLists.add(LevelLists.anvilList);
         LevelLists.listOfAllLists.add(LevelLists.armorList);
         LevelLists.listOfAllLists.add(LevelLists.axeList);
@@ -273,6 +264,52 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.listOfAllLists.add(LevelLists.tridentList);
         LevelLists.listOfAllLists.add(LevelLists.villagerList);
         LevelLists.listOfAllLists.add(LevelLists.wanderingTraderList);
+    }
+
+    private void clearEveryList() {
+        LevelLists.anvilList.clear();
+        LevelLists.armorList.clear();
+        LevelLists.axeList.clear();
+        LevelLists.barrelList.clear();
+        LevelLists.beehiveList.clear();
+        LevelLists.blastFurnaceList.clear();
+        LevelLists.bowList.clear();
+        LevelLists.brewingStandList.clear();
+        LevelLists.bucketList.clear();
+        LevelLists.cartographyList.clear();
+        LevelLists.cauldronList.clear();
+        LevelLists.composterList.clear();
+        LevelLists.cowList.clear();
+        LevelLists.crossbowList.clear();
+        LevelLists.dragonBreathList.clear();
+        LevelLists.elytraList.clear();
+        LevelLists.enchantingTableList.clear();
+        LevelLists.fishingList.clear();
+        LevelLists.flintAndSteelList.clear();
+        LevelLists.grindstoneList.clear();
+        LevelLists.hoeList.clear();
+        LevelLists.lecternList.clear();
+        LevelLists.loomList.clear();
+        LevelLists.mooshroomList.clear();
+        LevelLists.pumpkinList.clear();
+        LevelLists.sheepList.clear();
+        LevelLists.shieldList.clear();
+        LevelLists.smithingTableList.clear();
+        LevelLists.smokerList.clear();
+        LevelLists.snowGolemList.clear();
+        LevelLists.stonecutterList.clear();
+        LevelLists.swordList.clear();
+        LevelLists.toolList.clear();
+        LevelLists.totemList.clear();
+        LevelLists.tridentList.clear();
+        LevelLists.villagerList.clear();
+        LevelLists.wanderingTraderList.clear();
+
+        LevelLists.miningBlockList.clear();
+        LevelLists.miningLevelList.clear();
+        LevelLists.brewingItemList.clear();
+        LevelLists.brewingLevelList.clear();
+        LevelLists.potionList.clear();
     }
 
 }

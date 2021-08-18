@@ -138,4 +138,47 @@ public class LevelLists {
             return new ArrayList<Object>();
         }
     }
+
+    // Used for datapack to client sync (can't get filled inside the LevelLoader)
+    public static ArrayList<String> getListNames() {
+        ArrayList<String> listNames = new ArrayList<String>();
+        listNames.add("minecraft:elytra");
+        listNames.add("minecraft:armor");
+        listNames.add("minecraft:bow");
+        listNames.add("minecraft:crossbow");
+        listNames.add("minecraft:flint_and_steel");
+        listNames.add("minecraft:hoe");
+        listNames.add("minecraft:shield");
+        listNames.add("minecraft:trident");
+        listNames.add("minecraft:tool");
+        listNames.add("minecraft:sword");
+        listNames.add("minecraft:bucket");
+        listNames.add("minecraft:fishing_rod");
+        listNames.add("minecraft:dragon_breath");
+        listNames.add("minecraft:totem_of_undying");
+        listNames.add("minecraft:axe");
+        listNames.add("minecraft:beehive");
+        listNames.add("minecraft:pumpkin");
+        listNames.add("minecraft:anvil");
+        listNames.add("minecraft:brewing");
+        listNames.add("minecraft:enchanting");
+        listNames.add("minecraft:smithing");
+        listNames.add("minecraft:grindstone");
+        listNames.add("minecraft:loom");
+        listNames.add("minecraft:smoker");
+        listNames.add("minecraft:blastfurnace");
+        listNames.add("minecraft:cartography");
+        listNames.add("minecraft:barrel");
+        listNames.add("minecraft:composter");
+        listNames.add("minecraft:lectern");
+        listNames.add("minecraft:stonecutter");
+        listNames.add("minecraft:cauldron");
+        listNames.add("minecraft:cow");
+        listNames.add("minecraft:mooshroom");
+        listNames.add("minecraft:sheep");
+        listNames.add("minecraft:snowgolem");
+        listNames.add("minecraft:wanderingtrader");
+        listNames.add("minecraft:villager");
+        return listNames;
+    }
 }

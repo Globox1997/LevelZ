@@ -1,5 +1,7 @@
 package net.levelz.network;
 
+import java.util.ArrayList;
+
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
@@ -16,6 +18,7 @@ public class PlayerStatsServerPacket {
     public static final Identifier STATS_INCREASE_PACKET = new Identifier("levelz", "player_increase_stats");
     public static final Identifier XP_PACKET = new Identifier("levelz", "player_level_xp");
     public static final Identifier LEVEL_PACKET = new Identifier("levelz", "player_level_stats");
+    public static final Identifier LIST_PACKET = new Identifier("levelz", "unlocking_list");
 
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
@@ -73,12 +76,12 @@ public class PlayerStatsServerPacket {
         buf.writeInt(playerStatsManager.getLevel("farming"));
         buf.writeInt(playerStatsManager.getLevel("alchemy"));
 
-        CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LEVEL_PACKET, buf);
-        serverPlayerEntity.networkHandler.sendPacket(packet);
-
         // Set on server
         syncLockedBlockList(playerStatsManager);
         syncLockedBrewingItemList(playerStatsManager);
+
+        CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LEVEL_PACKET, buf);
+        serverPlayerEntity.networkHandler.sendPacket(packet);
     }
 
     public static void syncLockedBlockList(PlayerStatsManager playerStatsManager) {
@@ -105,6 +108,33 @@ public class PlayerStatsServerPacket {
                 }
             }
         }
+    }
+
+    public static void writeS2CListPacket(ServerPlayerEntity serverPlayerEntity) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        for (int i = 0; i < LevelLists.getListNames().size(); i++) {
+            String listName = LevelLists.getListNames().get(i);
+            ArrayList<Object> list = LevelLists.getList(listName);
+            for (int u = 0; u < list.size(); u++) {
+                buf.writeString(list.get(u).toString());
+            }
+        }
+        for (int k = 0; k < LevelLists.miningLevelList.size(); k++) {
+            buf.writeString("mining:level");
+            buf.writeString(LevelLists.miningLevelList.get(k).toString());
+            for (int u = 0; u < LevelLists.miningBlockList.get(k).size(); u++) {
+                buf.writeString(LevelLists.miningBlockList.get(k).get(u).toString());
+            }
+        }
+        for (int k = 0; k < LevelLists.brewingLevelList.size(); k++) {
+            buf.writeString("brewing:level");
+            buf.writeString(LevelLists.brewingLevelList.get(k).toString());
+            for (int u = 0; u < LevelLists.brewingItemList.get(k).size(); u++) {
+                buf.writeString(LevelLists.brewingItemList.get(k).get(u).toString());
+            }
+        }
+        CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LIST_PACKET, buf);
+        serverPlayerEntity.networkHandler.sendPacket(packet);
     }
 
 }
