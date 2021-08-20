@@ -34,6 +34,11 @@ dependencies {
     }
     // Wthit
     modCompileOnly modRuntime("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
+    // REI
+    modCompileOnly modRuntime("me.shedaniel:RoughlyEnoughItems-fabric:6.0.268-alpha"){
+       exclude(group: "net.fabricmc.fabric-api")
+       exclude(group: "me.shedaniel.cloth")
+   }
 }
 
 
