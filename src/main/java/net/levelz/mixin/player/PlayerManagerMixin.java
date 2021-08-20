@@ -35,13 +35,15 @@ public class PlayerManagerMixin {
 
     @Inject(method = "onPlayerConnect", at = @At(value = "TAIL"))
     private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
-        if (loadPlayerData(player) == null) {
-            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
-            if (server != null && server.getSaveProperties().getGeneratorOptions().hasBonusChest()) {
-                playerStatsManager.setLevel("points", ConfigInit.CONFIG.startPoints);
-            }
-            PlayerStatsServerPacket.writeS2CListPacket(player);
-            PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, player);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+        boolean isFirstTimeJoin = loadPlayerData(player) == null;
+        if (isFirstTimeJoin && server != null && server.getSaveProperties().getGeneratorOptions().hasBonusChest()) {
+            playerStatsManager.setLevel("points", ConfigInit.CONFIG.startPoints);
+        }
+        PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, player);
+        PlayerStatsServerPacket.writeS2CListPacket(player);
+        if (isFirstTimeJoin) {
+            player.setHealth(player.getMaxHealth());
         }
     }
 

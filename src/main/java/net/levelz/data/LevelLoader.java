@@ -266,7 +266,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.listOfAllLists.add(LevelLists.wanderingTraderList);
     }
 
-    private void clearEveryList() {
+    public static void clearEveryList() {
         LevelLists.anvilList.clear();
         LevelLists.armorList.clear();
         LevelLists.axeList.clear();

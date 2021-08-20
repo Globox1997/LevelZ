@@ -8,8 +8,11 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.data.LevelLoader;
+import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
@@ -59,14 +62,14 @@ public class PlayerStatsClientPacket {
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.LIST_PACKET, (client, handler, buf, sender) -> {
             if (client.player != null) {
-                executeListPacket(buf);
+                executeListPacket(buf, client.player);
             } else {
                 PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
                 while (buf.isReadable()) {
                     newBuffer.writeString(buf.readString());
                 }
                 client.execute(() -> {
-                    executeListPacket(newBuffer);
+                    executeListPacket(newBuffer, client.player);
                 });
             }
         });
@@ -113,7 +116,8 @@ public class PlayerStatsClientPacket {
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
     }
 
-    private static void executeListPacket(PacketByteBuf buf) {
+    private static void executeListPacket(PacketByteBuf buf, ClientPlayerEntity player) {
+        LevelLoader.clearEveryList();
         ArrayList<String> list = new ArrayList<>();
         while (buf.isReadable()) {
             list.add(buf.readString());
@@ -153,6 +157,16 @@ public class PlayerStatsClientPacket {
             }
         }
         LevelLoader.addAllInOneList();
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+        player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);
+        player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
+        player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getLevel("strength") * ConfigInit.CONFIG.attackBonus);
+        player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getLevel("defense") * ConfigInit.CONFIG.defenseBonus);
+        player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
+        PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
+        PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
     }
 
     private static void addToList(String listName, String object) {
