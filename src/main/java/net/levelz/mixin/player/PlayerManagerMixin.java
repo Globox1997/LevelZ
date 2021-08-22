@@ -81,7 +81,7 @@ public class PlayerManagerMixin {
             serverPlayerStatsManager.setLevel("smithing", playerStatsManager.getLevel("smithing"));
             serverPlayerStatsManager.setLevel("mining", playerStatsManager.getLevel("mining"));
             serverPlayerStatsManager.setLevel("farming", playerStatsManager.getLevel("farming"));
-            serverPlayerStatsManager.setLevel("building", playerStatsManager.getLevel("building"));
+            serverPlayerStatsManager.setLevel("alchemy", playerStatsManager.getLevel("alchemy"));
         }
     }
 
