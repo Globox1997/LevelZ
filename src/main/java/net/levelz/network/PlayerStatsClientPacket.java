@@ -156,6 +156,7 @@ public class PlayerStatsClientPacket {
                 LevelLists.brewingItemList.add(itemList);
             }
         }
+        LevelLists.listOfAllLists.clear();
         LevelLoader.addAllInOneList();
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
         player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);

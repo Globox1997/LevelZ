@@ -16,6 +16,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.network.PlayerStatsServerPacket;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.item.FoodComponent;
@@ -42,6 +43,8 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
     @Inject(method = "readCustomDataFromNbt", at = @At(value = "TAIL"))
     public void readCustomDataFromNbtMixin(NbtCompound tag, CallbackInfo info) {
         this.playerStatsManager.readNbt(tag);
+        playerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At(value = "TAIL"))

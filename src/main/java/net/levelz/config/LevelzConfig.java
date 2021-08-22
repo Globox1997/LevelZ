@@ -30,6 +30,7 @@ public class LevelzConfig implements ConfigData {
     public double healthBonus = 1D;
     @Comment("Absorption Bonus at max lvl")
     public float healthAbsorptionBonus = 6F;
+    @Comment("Levelz Screen Multiplies it by 10")
     public double movementBase = 0.09D;
     public double movementBonus = 0.001D;
     @Comment("Chance of damage misses player at max lvl")

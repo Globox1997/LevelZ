@@ -9,6 +9,7 @@ import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.network.PlayerStatsClientPacket;
 import net.levelz.network.PlayerStatsServerPacket;
@@ -55,16 +56,17 @@ public class LevelzGui extends LightweightGuiDescription {
 
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
         // Small icon labels
-        WDynamicLabel lifeLabel = new WDynamicLabel(() -> "" + playerEntity.getMaxHealth());
-        WDynamicLabel protectionLabel = new WDynamicLabel(() -> "" + playerEntity.getAttributeValue(EntityAttributes.GENERIC_ARMOR));
-        WDynamicLabel damageLabel = new WDynamicLabel(() -> "" + (playerEntity.getMainHandStack().getItem() instanceof SwordItem
-                && ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().getMiningLevel() * 4 <= playerStatsManager.getLevel("strength")
+        WDynamicLabel lifeLabel = new WDynamicLabel(() -> "" + Math.round(playerEntity.getHealth()));
+        WDynamicLabel protectionLabel = new WDynamicLabel(
+                () -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_ARMOR)).setScale(2, RoundingMode.HALF_DOWN).floatValue());
+        WDynamicLabel damageLabel = new WDynamicLabel(() -> "" + (playerEntity.getMainHandStack().getItem() instanceof SwordItem && PlayerStatsManager.playerLevelisHighEnough(playerEntity,
+                LevelLists.swordList, ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), false)
                         ? ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage()
                         : 0 + playerEntity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE)));
         WDynamicLabel speedLabel = new WDynamicLabel(
-                () -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED)).setScale(3, RoundingMode.HALF_DOWN).floatValue());
-        WDynamicLabel foodLabel = new WDynamicLabel(() -> "" + playerEntity.getHungerManager().getFoodLevel());
-        WDynamicLabel fortuneLabel = new WDynamicLabel(() -> "" + playerEntity.getAttributeValue(EntityAttributes.GENERIC_LUCK));
+                () -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 10D).setScale(2, RoundingMode.HALF_DOWN).floatValue());
+        WDynamicLabel foodLabel = new WDynamicLabel(() -> "" + Math.round(playerEntity.getHungerManager().getFoodLevel()));
+        WDynamicLabel fortuneLabel = new WDynamicLabel(() -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_LUCK)).setScale(2, RoundingMode.HALF_DOWN).floatValue());
         WDynamicLabel overallLevel = new WDynamicLabel(() -> "Level " + playerStatsManager.getLevel("level"));
         WDynamicLabel skillPoints = new WDynamicLabel(() -> "Points " + playerStatsManager.getLevel("points"));
         WDynamicLabel nextLevel = new WDynamicLabel(
@@ -218,25 +220,28 @@ public class LevelzGui extends LightweightGuiDescription {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "health");
             setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton, farmingButton,
                     alchemyButton, playerStatsManager);
-            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + 1D);
+            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                    .setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus);
         });
         strengthButton.setOnClick(() -> {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "strength");
             setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton, farmingButton,
                     alchemyButton, playerStatsManager);
-            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + 0.2D);
+            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                    .setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus);
         });
         agilityButton.setOnClick(() -> {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "agility");
             setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton, farmingButton,
                     alchemyButton, playerStatsManager);
-            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + 0.001D);
+            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                    .setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus);
         });
         defenseButton.setOnClick(() -> {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "defense");
             setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton, farmingButton,
                     alchemyButton, playerStatsManager);
-            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + 0.2D);
+            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus);
         });
         staminaButton.setOnClick(() -> {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "stamina");
@@ -247,7 +252,7 @@ public class LevelzGui extends LightweightGuiDescription {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "luck");
             setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton, farmingButton,
                     alchemyButton, playerStatsManager);
-            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + 0.05D);
+            playerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(playerEntity.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus);
         });
         archeryButton.setOnClick(() -> {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "archery");
@@ -266,7 +271,6 @@ public class LevelzGui extends LightweightGuiDescription {
         });
         miningButton.setOnClick(() -> {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "mining");
-            // Not sure if I can use the serverpacket class here
             PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
             setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton, farmingButton,
                     alchemyButton, playerStatsManager);
