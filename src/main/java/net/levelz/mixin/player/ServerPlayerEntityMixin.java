@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ServerPlayerEntityMixin {
     PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) this).getPlayerStatsManager((PlayerEntity) (Object) this);
     private int syncedLevelExperience = -99999999;
+    private boolean syncTeleportStats = false;
 
     @Inject(method = "<init>", at = @At(value = "TAIL"))
     private void initMixin(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo info) {
@@ -50,13 +51,16 @@ public class ServerPlayerEntityMixin {
         if (playerStatsManager.totalLevelExperience != this.syncedLevelExperience) {
             this.syncedLevelExperience = playerStatsManager.totalLevelExperience;
             PlayerStatsServerPacket.writeS2CXPPacket(playerStatsManager, ((ServerPlayerEntity) (Object) this));
+            if (this.syncTeleportStats) {
+                PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
+                this.syncTeleportStats = false;
+            }
         }
     }
 
     @Nullable
     @Inject(method = "moveToWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;syncedExperience:I", ordinal = 0))
     private void moveToWorldMixin(ServerWorld destination, CallbackInfoReturnable<Entity> info) {
-
         PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
     }
 
@@ -65,9 +69,9 @@ public class ServerPlayerEntityMixin {
         PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
     }
 
-    @Inject(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setWorld(Lnet/minecraft/server/world/ServerWorld;)V"))
-    void teleportMixin(ServerWorld targetWorld, double x, double y, double z, float yaw, float pitch, CallbackInfo info) {
-        PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
+    @Inject(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;sendPlayerStatus(Lnet/minecraft/server/network/ServerPlayerEntity;)V"))
+    private void teleportMixin(ServerWorld targetWorld, double x, double y, double z, float yaw, float pitch, CallbackInfo info) {
+        this.syncTeleportStats = true;
     }
 
 }
