@@ -1,5 +1,7 @@
 package net.levelz.mixin.player;
 
+import java.util.ArrayList;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,9 +21,13 @@ import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.FoodComponent;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -97,18 +103,33 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 0)
     private float attackMixinThree(float original) {
-        if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, LevelLists.swordList,
-                ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
-            return original - ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
-        }
-        return original;
+        return getUnlockedDamage(original, false);
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 1)
     private float attackMixinFour(float original) {
-        if (!playerEntity.isCreative() && playerEntity.getMainHandStack().getItem() instanceof SwordItem && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, LevelLists.swordList,
-                ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
-            return 0;
+        return getUnlockedDamage(original, true);
+    }
+
+    private float getUnlockedDamage(float original, boolean zero) {
+        boolean isSword = false;
+        if (playerEntity.getMainHandStack().getItem() instanceof ToolItem) {
+            ArrayList<Object> levelList = new ArrayList<Object>();
+            if (playerEntity.getMainHandStack().getItem() instanceof SwordItem) {
+                levelList = LevelLists.swordList;
+                isSword = true;
+            } else if (playerEntity.getMainHandStack().getItem() instanceof AxeItem)
+                levelList = LevelLists.axeList;
+            else if (playerEntity.getMainHandStack().getItem() instanceof HoeItem)
+                levelList = LevelLists.hoeList;
+            else
+                levelList = LevelLists.toolList;
+            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
+                if (isSword)
+                    return zero ? 0 : original - ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
+                else
+                    return zero ? 0 : original - ((MiningToolItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
+            }
         }
         return original;
     }

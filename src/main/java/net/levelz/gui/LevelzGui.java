@@ -17,13 +17,18 @@ import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 
 @Environment(EnvType.CLIENT)
 public class LevelzGui extends LightweightGuiDescription {
@@ -59,10 +64,7 @@ public class LevelzGui extends LightweightGuiDescription {
         WDynamicLabel lifeLabel = new WDynamicLabel(() -> "" + Math.round(playerEntity.getHealth()));
         WDynamicLabel protectionLabel = new WDynamicLabel(
                 () -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_ARMOR)).setScale(2, RoundingMode.HALF_DOWN).floatValue());
-        WDynamicLabel damageLabel = new WDynamicLabel(() -> "" + (playerEntity.getMainHandStack().getItem() instanceof SwordItem && PlayerStatsManager.playerLevelisHighEnough(playerEntity,
-                LevelLists.swordList, ((SwordItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), false)
-                        ? ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage()
-                        : 0 + playerEntity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE)));
+        WDynamicLabel damageLabel = new WDynamicLabel(() -> "" + getDamageLabel(playerStatsManager, client.player));
         WDynamicLabel speedLabel = new WDynamicLabel(
                 () -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 10D).setScale(2, RoundingMode.HALF_DOWN).floatValue());
         WDynamicLabel foodLabel = new WDynamicLabel(() -> "" + Math.round(playerEntity.getHungerManager().getFoodLevel()));
@@ -305,6 +307,32 @@ public class LevelzGui extends LightweightGuiDescription {
         wButton10.setEnabled(enoughPoints && playerStatsManager.getLevel("mining") < ConfigInit.CONFIG.maxLevel);
         wButton11.setEnabled(enoughPoints && playerStatsManager.getLevel("farming") < ConfigInit.CONFIG.maxLevel);
         wButton12.setEnabled(enoughPoints && playerStatsManager.getLevel("alchemy") < ConfigInit.CONFIG.maxLevel);
+    }
+
+    private String getDamageLabel(PlayerStatsManager playerStatsManager, PlayerEntity playerEntity) {
+        float damage = 0.0F;
+        boolean isSword = false;
+        if (playerEntity.getMainHandStack().getItem() instanceof ToolItem) {
+            ArrayList<Object> levelList = new ArrayList<Object>();
+            if (playerEntity.getMainHandStack().getItem() instanceof SwordItem) {
+                levelList = LevelLists.swordList;
+                isSword = true;
+            } else if (playerEntity.getMainHandStack().getItem() instanceof AxeItem)
+                levelList = LevelLists.axeList;
+            else if (playerEntity.getMainHandStack().getItem() instanceof HoeItem)
+                levelList = LevelLists.hoeList;
+            else
+                levelList = LevelLists.toolList;
+            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), false)) {
+                if (isSword)
+                    damage = ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
+                else
+                    damage = ((MiningToolItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
+            }
+
+        }
+        damage += playerEntity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        return "" + BigDecimal.valueOf(damage).setScale(2, RoundingMode.HALF_DOWN).floatValue();
     }
 
 }
