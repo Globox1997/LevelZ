@@ -60,19 +60,22 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
 
     @Inject(method = "addExperience", at = @At(value = "TAIL"))
     public void addExperienceMixin(int experience, CallbackInfo info) {
-        playerStatsManager.levelProgress += (float) experience / (float) playerStatsManager.getNextLevelExperience();
-        playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
-        while (playerStatsManager.levelProgress >= 1.0F) {
-            playerStatsManager.levelProgress = (playerStatsManager.levelProgress - 1.0F) * (float) playerStatsManager.getNextLevelExperience();
-            playerStatsManager.addExperienceLevels(1);
-            playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
-            if (playerEntity instanceof ServerPlayerEntity) {
-                PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) playerEntity);
-            }
-            if (playerStatsManager.overallLevel > 0 && playerStatsManager.overallLevel % 5 == 0) {
-                float f = playerStatsManager.overallLevel > 30 ? 1.0F : (float) playerStatsManager.overallLevel / 30.0F;
-                playerEntity.world.playSound((PlayerEntity) null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(),
-                        f * 0.75F, 1.0F);
+        boolean isEndLvl = this.playerStatsManager.isMaxLevel();
+        if (!isEndLvl) {
+            playerStatsManager.levelProgress += (float) experience / (float) playerStatsManager.getNextLevelExperience();
+            playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
+            while (playerStatsManager.levelProgress >= 1.0F && !isEndLvl) {
+                playerStatsManager.levelProgress = (playerStatsManager.levelProgress - 1.0F) * (float) playerStatsManager.getNextLevelExperience();
+                playerStatsManager.addExperienceLevels(1);
+                playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
+                if (playerEntity instanceof ServerPlayerEntity) {
+                    PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) playerEntity);
+                }
+                if (playerStatsManager.overallLevel > 0 && playerStatsManager.overallLevel % 10 == 0) {
+                    float f = playerStatsManager.overallLevel > 30 ? 1.0F : (float) playerStatsManager.overallLevel / 30.0F;
+                    playerEntity.world.playSound((PlayerEntity) null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP,
+                            playerEntity.getSoundCategory(), f * 0.75F, 1.0F);
+                }
             }
         }
     }

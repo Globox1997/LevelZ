@@ -202,8 +202,15 @@ public class PlayerStatsManager {
         }
     }
 
+    public boolean isMaxLevel() {
+        return this.overallLevel >= ConfigInit.CONFIG.maxLevel * 12;
+    }
+
     // Recommend to use https://www.geogebra.org/graphing
     public int getNextLevelExperience() {
+        if (isMaxLevel()) {
+            return 0;
+        }
         return (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * MathHelper.square(this.overallLevel));
     }
 
