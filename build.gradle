@@ -17,6 +17,7 @@ repositories {
     maven { url "https://bai.jfrog.io/artifactory/maven" }
     maven { url "https://ladysnake.jfrog.io/artifactory/mods" }
     maven { url 'https://jitpack.io' }
+    maven { url "https://www.cursemaven.com" }
 }
 
 dependencies {
@@ -41,10 +42,14 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "me.shedaniel.cloth")
     }
-    // Trinkets
-    modCompileOnly modRuntime('com.github.emilyploszaj:trinkets:3.0.2') {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    // // Trinkets
+    // modCompileOnly modRuntime('com.github.emilyploszaj:trinkets:3.0.2') {
+    //     exclude(group: "net.fabricmc.fabric-api")
+    // }
+    // // Things
+	// modCompileOnly modRuntime('curse.maven:dragonloot-456151:3433644'){
+	// 	exclude(group: "net.fabricmc.fabric-api")
+	// }
 }
 
 

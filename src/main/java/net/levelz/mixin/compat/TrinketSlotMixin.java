@@ -12,23 +12,21 @@ package net.levelz.mixin.compat;
 
 // import org.spongepowered.asm.mixin.injection.At;
 
+// import net.levelz.data.LevelLists;
+// import net.levelz.stats.PlayerStatsManager;
+// import net.minecraft.entity.player.PlayerEntity;
 // import net.minecraft.item.ItemStack;
+// import net.minecraft.item.Items;
 
 // @Mixin(TrinketSlot.class)
-// public class TrinketsPlayerScreenHandlerMixinMixin {
+// public class TrinketSlotMixin {
 // @Shadow
 // private TrinketInventory trinketInventory;
 
-// // @Inject(method = "Ldev/emi/trinkets/TrinketSlot;canInsert(Lnet/minecraft/item/ItemStack;Ldev/emi/trinkets/api/SlotReference;Lnet/minecraft/entity/LivingEntity;)Z", at = @At("HEAD"), remap =
-// // false, cancellable = true)
-// // private static void canInsertMixin(ItemStack stack, SlotReference slotRef, LivingEntity entity, CallbackInfoReturnable<Boolean> info) {
-// // System.out.println("TEST " + " " + "::" + entity + "::" + stack);
-// // info.setReturnValue(false);
-// // }
-
 // @Inject(method = "Ldev/emi/trinkets/TrinketSlot;canInsert(Lnet/minecraft/item/ItemStack;)Z", at = @At("HEAD"), remap = false, cancellable = true)
 // private void canInsertMixin(ItemStack stack, CallbackInfoReturnable<Boolean> info) {
-// System.out.println("TEST " + " " + "::" + trinketInventory.getComponent().getEntity() + "::" + stack);
+// if (stack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) trinketInventory.getComponent().getEntity(), LevelLists.elytraList, null, true)) {
 // info.setReturnValue(false);
+// }
 // }
 // }
