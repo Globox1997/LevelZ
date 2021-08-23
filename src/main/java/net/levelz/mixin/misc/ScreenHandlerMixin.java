@@ -116,14 +116,11 @@ public class ScreenHandlerMixin {
 
     @Inject(method = "internalOnSlotClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;get(I)Ljava/lang/Object;", ordinal = 1), cancellable = true)
     private void internalOnSlotClickQuickMixin(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo info) {
-        if (!player.isCreative()) {
-            ItemStack itemStack = this.slots.get(slotIndex).getStack();
-            if (itemStack != null && itemStack.getItem() instanceof ArmorItem
-                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName(), true)) {
-                info.cancel();
-            } else if (cursorStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
-                info.cancel();
-            }
+        ItemStack itemStack = this.slots.get(slotIndex).getStack();
+        if (itemStack.getItem() instanceof ArmorItem && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName(), true)) {
+            info.cancel();
+        } else if (itemStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
+            info.cancel();
         }
     }
 }
