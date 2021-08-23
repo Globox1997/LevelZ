@@ -56,11 +56,17 @@ public class ServerPlayerEntityMixin {
     @Nullable
     @Inject(method = "moveToWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;syncedExperience:I", ordinal = 0))
     private void moveToWorldMixin(ServerWorld destination, CallbackInfoReturnable<Entity> info) {
-        this.syncedLevelExperience = -1;
+
+        PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
     }
 
     @Inject(method = "onSpawn", at = @At(value = "TAIL"))
     private void onSpawnMixin(CallbackInfo info) {
+        PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
+    }
+
+    @Inject(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setWorld(Lnet/minecraft/server/world/ServerWorld;)V"))
+    void teleportMixin(ServerWorld targetWorld, double x, double y, double z, float yaw, float pitch, CallbackInfo info) {
         PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
     }
 
