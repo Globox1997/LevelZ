@@ -1,4 +1,4 @@
-package net.levelz.mixin.render;
+package net.levelz.mixin.misc;
 
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.BlockState;
