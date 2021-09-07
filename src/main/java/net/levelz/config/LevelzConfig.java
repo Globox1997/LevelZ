@@ -85,5 +85,8 @@ public class LevelzConfig implements ConfigData {
     public float miningTntBonus = 0.5F;
     @Comment("Locked blocks break slower factor")
     public float miningLockedMultiplicator = 2.0F;
+    @ConfigEntry.Category("level_setting")
+    @Comment("Highlight locked blocks in red.")
+    public boolean highlightLocked = false;
 
 }

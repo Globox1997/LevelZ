@@ -1,5 +1,6 @@
 package net.levelz.mixin.misc;
 
+import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -32,7 +33,7 @@ public abstract class WorldRendererMixin {
     @Inject(method = "drawBlockOutline(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/entity/Entity;DDDLnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V", at = @At(value = "HEAD"), cancellable = true)
     private void drawBlockOutline(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos blockPos, BlockState blockState, CallbackInfo ci)
     {
-        if (PlayerStatsManager.listContainsItemOrBlock(MinecraftClient.getInstance().player, Registry.BLOCK.getRawId(blockState.getBlock()), true)) {
+        if (ConfigInit.CONFIG.highlightLocked && PlayerStatsManager.listContainsItemOrBlock(MinecraftClient.getInstance().player, Registry.BLOCK.getRawId(blockState.getBlock()), true)) {
             drawShapeOutline(matrices, vertexConsumer, blockState.getOutlineShape(this.world, blockPos, ShapeContext.of(entity)), (double) blockPos.getX() - d, (double) blockPos.getY() - e, (double) blockPos.getZ() - f, 1.0F, 0.0F, 0.0F, 0.4F);
             ci.cancel();
         }
