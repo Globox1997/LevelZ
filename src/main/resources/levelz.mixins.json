@@ -65,7 +65,7 @@
     "player.InGameHudMixin",
     "item.ItemStackClientMixin",
     "misc.EnchantmentScreenMixin",
-    "render.WorldRendererMixin"
+    "misc.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
