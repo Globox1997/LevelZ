@@ -30,7 +30,7 @@ public class ArmorItemMixin {
     private static void dispenseArmorMixin(BlockPointer pointer, ItemStack armor, CallbackInfoReturnable<Boolean> info, BlockPos blockPos, List<LivingEntity> list, LivingEntity livingEntity) {
         if (livingEntity instanceof PlayerEntity && armor.getItem() instanceof ArmorItem) {
             ArrayList<Object> levelList = LevelLists.armorList;
-            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, ((ArmorItem) (Object) armor.getItem()).getMaterial().getName(), true)) {
+            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, ((ArmorItem) (Object) armor.getItem()).getMaterial().getName().toLowerCase(), true)) {
                 info.setReturnValue(false);
             }
         }
@@ -40,7 +40,7 @@ public class ArmorItemMixin {
     private void useMixin(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack, EquipmentSlot equipmentSlot,
             ItemStack itemStack2) {
         ArrayList<Object> levelList = LevelLists.armorList;
-        String string = ((ArmorItem) (Object) this).getMaterial().getName();
+        String string = ((ArmorItem) (Object) this).getMaterial().getName().toLowerCase();
         if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
             user.sendMessage(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)), true);
             info.setReturnValue(TypedActionResult.fail(itemStack));

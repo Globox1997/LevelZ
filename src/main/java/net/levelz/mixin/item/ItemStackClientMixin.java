@@ -31,9 +31,8 @@ import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.ShieldItem;
-import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.item.TridentItem;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -157,7 +156,7 @@ public class ItemStackClientMixin {
                 }
             } else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS)) {
                 levelList = LevelLists.toolList;
-                String material = ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                String material = ((ToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
                             .formatted(Formatting.GRAY));
@@ -165,7 +164,7 @@ public class ItemStackClientMixin {
                 }
             } else if (stack.isIn(FabricToolTags.AXES)) {
                 levelList = LevelLists.axeList;
-                String material = ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                String material = ((ToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
                             .formatted(Formatting.GRAY));
@@ -173,7 +172,7 @@ public class ItemStackClientMixin {
                 }
             } else if (stack.isIn(FabricToolTags.HOES)) {
                 levelList = LevelLists.hoeList;
-                String material = ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                String material = ((ToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
                             .formatted(Formatting.GRAY));
@@ -181,7 +180,7 @@ public class ItemStackClientMixin {
                 }
             } else if (stack.isIn(FabricToolTags.SWORDS)) {
                 levelList = LevelLists.swordList;
-                String material = ((SwordItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                String material = ((ToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
                             .formatted(Formatting.GRAY));
@@ -225,7 +224,7 @@ public class ItemStackClientMixin {
                 }
             } else if (stack.getItem() instanceof ArmorItem) {
                 levelList = LevelLists.armorList;
-                String material = ((ArmorItem) stack.getItem()).getMaterial().getName();
+                String material = ((ArmorItem) stack.getItem()).getMaterial().getName().toLowerCase();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
                             .formatted(Formatting.GRAY));
