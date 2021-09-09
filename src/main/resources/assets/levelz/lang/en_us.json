@@ -53,6 +53,7 @@
   "text.autoconfig.levelz.option.miningTntBonus": "Mining Tnt Blast Bonus",
   "text.autoconfig.levelz.option.miningOreChance": "Mining Ore Extra Chance",
   "text.autoconfig.levelz.option.miningLockedMultiplicator": "Locked Block Multiplicator",
+  "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
 
   "item.levelz.locked.tooltip": "§cLocked",
   "item.levelz.farming.tooltip": "Farming level %d required",
