@@ -73,6 +73,12 @@ public class PlayerStatsClientPacket {
                 });
             }
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.STRENGTH_PACKET, (client, handler, buf, sender) -> {
+            if (client.player != null) {
+                client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(buf.readDouble());
+            }
+        });
     }
 
     public static void writeC2SIncreaseLevelPacket(PlayerStatsManager playerStatsManager, String string) {

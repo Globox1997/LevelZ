@@ -20,6 +20,7 @@ public class PlayerStatsServerPacket {
     public static final Identifier XP_PACKET = new Identifier("levelz", "player_level_xp");
     public static final Identifier LEVEL_PACKET = new Identifier("levelz", "player_level_stats");
     public static final Identifier LIST_PACKET = new Identifier("levelz", "unlocking_list");
+    public static final Identifier STRENGTH_PACKET = new Identifier("levelz", "strength_sync");
 
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
@@ -84,6 +85,13 @@ public class PlayerStatsServerPacket {
         syncLockedBrewingItemList(playerStatsManager);
 
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LEVEL_PACKET, buf);
+        serverPlayerEntity.networkHandler.sendPacket(packet);
+    }
+
+    public static void writeS2CStrengthPacket(ServerPlayerEntity serverPlayerEntity) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeDouble(serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).getBaseValue());
+        CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(STRENGTH_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
     }
 

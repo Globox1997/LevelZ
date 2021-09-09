@@ -62,7 +62,8 @@ public class PlayerManagerMixin {
             serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
             serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR));
             serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK));
-
+            // Sync strength on client cause out of any reason it doesn't work naturally
+            PlayerStatsServerPacket.writeS2CStrengthPacket(serverPlayerEntity);
             // Check if Client will set to 0 after death
             serverPlayerStatsManager.levelProgress = ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.levelProgress;
             serverPlayerStatsManager.totalLevelExperience = ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.totalLevelExperience;
