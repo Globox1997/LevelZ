@@ -20,8 +20,12 @@ import net.minecraft.util.registry.Registry;
 
 public class LevelLoader implements SimpleSynchronousResourceReloadListener {
     private static final Logger LOGGER = LogManager.getLogger("LevelZ");
+    // For mining and brewing
+    // List of lists which get filled and cleared while loading data
     private List<List<Integer>> objectList = new ArrayList<>();
     private List<Integer> levelList = new ArrayList<>();
+    // Check if list is already replacing any other list
+    private List<Boolean> replaceList = new ArrayList<>();
 
     @Override
     public Identifier getFabricId() {
@@ -35,18 +39,21 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
+
                 if (levelList.contains(data.get("level").getAsInt())) {
+                    int index = levelList.indexOf(data.get("level").getAsInt());
                     if (JsonHelper.getBoolean(data, "replace", false)) {
-                        int index = levelList.indexOf(data.get("level").getAsInt());
                         levelList.remove(index);
                         objectList.remove(index);
+                        replaceList.remove(index);
                         fillLists(data, false, 1);
-                    } else {
+                    } else if (!replaceList.get(index)) {
                         fillLists(data, true, 1);
                     }
                 } else {
                     fillLists(data, false, 1);
                 }
+
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
@@ -159,14 +166,14 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
                 if (levelList.contains(data.get("level").getAsInt())) {
+                    int index = levelList.indexOf(data.get("level").getAsInt());
                     if (JsonHelper.getBoolean(data, "replace", false)) {
-                        int index = levelList.indexOf(data.get("level").getAsInt());
                         levelList.remove(index);
                         objectList.remove(index);
+                        replaceList.remove(index);
                         fillLists(data, false, 2);
-                    } else {
+                    } else if (!replaceList.get(index)) {
                         fillLists(data, true, 2);
-
                     }
                 } else {
                     fillLists(data, false, 2);
@@ -179,6 +186,10 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         sortAndFillLists(levelList, objectList, 2);
 
         addAllInOneList();
+
+        // Test check here:
+        // System.out.println(LevelLists.miningBlockList);
+        // System.out.println(LevelLists.miningLevelList);
     }
 
     private void fillLists(JsonObject data, boolean addToExisting, int type) {
@@ -201,11 +212,15 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         } else {
             levelList.add(data.get("level").getAsInt());
             objectList.add(idList);
+            replaceList.add(JsonHelper.getBoolean(data, "replace", false));
         }
     }
 
     // type: 1 = mining; 2 = brewing
     private void sortAndFillLists(List<Integer> levelList, List<List<Integer>> objectList, int type) {
+        // clear replace list for next usage
+        replaceList.clear();
+
         if (type != 0) {
             if (type == 1) {
                 LevelLists.miningLevelList.addAll(levelList);
