@@ -324,7 +324,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.miningLevelList.clear();
         LevelLists.brewingItemList.clear();
         LevelLists.brewingLevelList.clear();
-        LevelLists.potionList.clear();
+        // Potion list isn't filled via levelz datapacks
+        // LevelLists.potionList.clear();
     }
 
 }
