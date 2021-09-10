@@ -26,7 +26,7 @@ public class KeyInit {
                     client.setScreen(new LevelzScreen(new LevelzGui(client)));
                 }
                 keyBoolean = true;
-            } else
+            } else if (keyBoolean)
                 keyBoolean = false;
         });
     }
