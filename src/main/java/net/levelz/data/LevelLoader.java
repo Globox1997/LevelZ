@@ -279,6 +279,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.listOfAllLists.add(LevelLists.tridentList);
         LevelLists.listOfAllLists.add(LevelLists.villagerList);
         LevelLists.listOfAllLists.add(LevelLists.wanderingTraderList);
+        LevelLists.listOfAllLists.add(LevelLists.wolfList);
+        LevelLists.listOfAllLists.add(LevelLists.breedingList);
     }
 
     public static void clearEveryList() {
@@ -319,6 +321,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.tridentList.clear();
         LevelLists.villagerList.clear();
         LevelLists.wanderingTraderList.clear();
+        LevelLists.wolfList.clear();
+        LevelLists.breedingList.clear();
 
         LevelLists.miningBlockList.clear();
         LevelLists.miningLevelList.clear();

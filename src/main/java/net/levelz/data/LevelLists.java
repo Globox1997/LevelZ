@@ -29,6 +29,8 @@ public class LevelLists {
     public static final ArrayList<Object> snowGolemList = new ArrayList<Object>();
     public static final ArrayList<Object> wanderingTraderList = new ArrayList<Object>();
     public static final ArrayList<Object> villagerList = new ArrayList<Object>();
+    public static final ArrayList<Object> wolfList = new ArrayList<Object>();
+    public static final ArrayList<Object> breedingList = new ArrayList<Object>();
     // Item
     public static final ArrayList<Object> elytraList = new ArrayList<Object>();
     public static final ArrayList<Object> armorList = new ArrayList<Object>();
@@ -134,6 +136,10 @@ public class LevelLists {
             return wanderingTraderList;
         case "minecraft:villager":
             return villagerList;
+        case "minecraft:wolf":
+            return wolfList;
+        case "minecraft:breeding":
+            return breedingList;
         default:
             return new ArrayList<Object>();
         }
@@ -179,6 +185,8 @@ public class LevelLists {
         listNames.add("minecraft:snowgolem");
         listNames.add("minecraft:wanderingtrader");
         listNames.add("minecraft:villager");
+        listNames.add("minecraft:wolf");
+        listNames.add("minecraft:breeding");
         return listNames;
     }
 }
