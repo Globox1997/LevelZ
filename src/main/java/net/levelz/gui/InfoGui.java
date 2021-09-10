@@ -224,7 +224,7 @@ public class InfoGui extends LightweightGuiDescription {
                     string = string.replace("_", " ");
                     if (sortedUnlockSkillList.get(u + g + 1) != null) {
                         String otherString = sortedUnlockSkillList.get(u + g + 1).toString();
-                        otherString = string.replace("_", " ");
+                        otherString = otherString.replace("_", " ");
                         plainPanel.add(new WLabel(new TranslatableText("text.levelz.object_info_2", WordUtils.capitalize(otherString), WordUtils.capitalize(string))), 10, gridYSpace);
                     } else
                         plainPanel.add(new WLabel(new TranslatableText("text.levelz.object_info_1", WordUtils.capitalize(string))), 10, gridYSpace);
