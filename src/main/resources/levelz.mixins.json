@@ -58,7 +58,8 @@
     "misc.EnchantmentScreenHandlerMixin",
     "misc.BrewingRecipeRegistryMixin",
     "misc.EnchantmentHelperMixin",
-    "misc.ServerPlayerInteractionManagerMixin"
+    "misc.ServerPlayerInteractionManagerMixin",
+    "misc.ServerWorldMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",

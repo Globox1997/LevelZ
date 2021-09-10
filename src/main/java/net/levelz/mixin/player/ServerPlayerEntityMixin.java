@@ -2,29 +2,28 @@ package net.levelz.mixin.player;
 
 import com.mojang.authlib.GameProfile;
 
-import net.levelz.network.PlayerStatsServerPacket;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.access.PlayerSyncAccess;
 import net.levelz.init.ConfigInit;
+import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayerEntity.class)
-public class ServerPlayerEntityMixin {
+public class ServerPlayerEntityMixin implements PlayerSyncAccess {
     PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) this).getPlayerStatsManager((PlayerEntity) (Object) this);
     private int syncedLevelExperience = -99999999;
     private boolean syncTeleportStats = false;
+    private int tinySyncTicker = 0;
 
     @Inject(method = "<init>", at = @At(value = "TAIL"))
     private void initMixin(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo info) {
@@ -56,12 +55,13 @@ public class ServerPlayerEntityMixin {
                 this.syncTeleportStats = false;
             }
         }
-    }
+        if (this.tinySyncTicker > 0) {
+            this.tinySyncTicker--;
+            if (this.tinySyncTicker < 1) {
+                syncStats(false);
+            }
+        }
 
-    @Nullable
-    @Inject(method = "moveToWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;syncedExperience:I", ordinal = 0))
-    private void moveToWorldMixin(ServerWorld destination, CallbackInfoReturnable<Entity> info) {
-        PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
     }
 
     @Inject(method = "onSpawn", at = @At(value = "TAIL"))
@@ -69,9 +69,20 @@ public class ServerPlayerEntityMixin {
         PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
     }
 
-    @Inject(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;sendPlayerStatus(Lnet/minecraft/server/network/ServerPlayerEntity;)V"))
-    private void teleportMixin(ServerWorld targetWorld, double x, double y, double z, float yaw, float pitch, CallbackInfo info) {
+    @Inject(method = "copyFrom", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;syncedExperience:I", ordinal = 0))
+    private void copyFromMixin(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo info) {
+        syncStats(false);
+    }
+
+    // tinySyncer is necessary due to client player issues
+    // client player isn't readily loaded when S2C Packets roll out for any reason
+    @Override
+    public void syncStats(boolean syncDelay) {
         this.syncTeleportStats = true;
+        this.syncedLevelExperience = -1;
+        if (syncDelay) {
+            this.tinySyncTicker = 5;
+        }
     }
 
 }
