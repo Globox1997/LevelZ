@@ -19,6 +19,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
@@ -312,22 +313,23 @@ public class LevelzGui extends LightweightGuiDescription {
     private String getDamageLabel(PlayerStatsManager playerStatsManager, PlayerEntity playerEntity) {
         float damage = 0.0F;
         boolean isSword = false;
-        if (playerEntity.getMainHandStack().getItem() instanceof ToolItem) {
+        Item item = playerEntity.getMainHandStack().getItem();
+        if (item instanceof ToolItem) {
             ArrayList<Object> levelList = new ArrayList<Object>();
-            if (playerEntity.getMainHandStack().getItem() instanceof SwordItem) {
+            if (item instanceof SwordItem) {
                 levelList = LevelLists.swordList;
                 isSword = true;
-            } else if (playerEntity.getMainHandStack().getItem() instanceof AxeItem)
+            } else if (item instanceof AxeItem)
                 levelList = LevelLists.axeList;
-            else if (playerEntity.getMainHandStack().getItem() instanceof HoeItem)
+            else if (item instanceof HoeItem)
                 levelList = LevelLists.hoeList;
             else
                 levelList = LevelLists.toolList;
-            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), false)) {
+            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) item).getMaterial().toString().toLowerCase(), false)) {
                 if (isSword)
-                    damage = ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
-                else
-                    damage = ((MiningToolItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
+                    damage = ((SwordItem) item).getAttackDamage();
+                else if (item instanceof MiningToolItem)
+                    damage = ((MiningToolItem) item).getAttackDamage();
             }
 
         }
