@@ -11,7 +11,7 @@ import net.minecraft.item.Items;
 @Mixin(targets = "net.minecraft.screen.BrewingStandScreenHandler$PotionSlot")
 public class PotionSlotMixin {
 
-    @Inject(method = "matches", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "Lnet/minecraft/screen/BrewingStandScreenHandler$PotionSlot;matches(Lnet/minecraft/item/ItemStack;)Z", at = @At("HEAD"), cancellable = true)
     private static void matchesMixin(ItemStack stack, CallbackInfoReturnable<Boolean> info) {
         if (stack.getItem() == Items.DRAGON_BREATH) {
             info.setReturnValue(true);
