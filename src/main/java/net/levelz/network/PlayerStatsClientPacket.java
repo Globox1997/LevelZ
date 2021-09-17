@@ -79,6 +79,15 @@ public class PlayerStatsClientPacket {
                 client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(buf.readDouble());
             }
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.RESET_PACKET, (client, handler, buf, sender) -> {
+            if (client.player != null) {
+                String skill = buf.readString();
+                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager(client.player);
+                playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") + playerStatsManager.getLevel(skill));
+                playerStatsManager.setLevel(skill, 0);
+            }
+        });
     }
 
     public static void writeC2SIncreaseLevelPacket(PlayerStatsManager playerStatsManager, String string) {

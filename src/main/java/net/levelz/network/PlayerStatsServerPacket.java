@@ -21,6 +21,7 @@ public class PlayerStatsServerPacket {
     public static final Identifier LEVEL_PACKET = new Identifier("levelz", "player_level_stats");
     public static final Identifier LIST_PACKET = new Identifier("levelz", "unlocking_list");
     public static final Identifier STRENGTH_PACKET = new Identifier("levelz", "strength_sync");
+    public static final Identifier RESET_PACKET = new Identifier("levelz", "reset_skill");
 
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
@@ -145,6 +146,13 @@ public class PlayerStatsServerPacket {
             }
         }
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LIST_PACKET, buf);
+        serverPlayerEntity.networkHandler.sendPacket(packet);
+    }
+
+    public static void writeS2CResetSkillPacket(ServerPlayerEntity serverPlayerEntity, String skill) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeString(skill);
+        CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(RESET_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
     }
 
