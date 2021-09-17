@@ -6,7 +6,8 @@ skills.
 ### Installation
 
 LevelZ is a mod built for the [Fabric Loader](https://fabricmc.net/). It
-requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) and [Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config) to be installed separately; all other
+requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
+and [Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config) to be installed separately; all other
 dependencies are installed with the mod.
 
 ### License
@@ -174,3 +175,6 @@ The mining category stands for the locked block drop. An example how the json fi
 The "block" list has to have the id of the locked blocks.\
 The player can still break those blocks but it won't drop anything and the blockbreaking process is 50% slower (by
 default).
+
+Check out the exampleDatapack folder for an example how it can look like.\
+Every level is set to 0 in this pack.
