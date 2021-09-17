@@ -22,6 +22,7 @@ public class LevelLists {
     public static final ArrayList<Object> lecternList = new ArrayList<Object>();
     public static final ArrayList<Object> stonecutterList = new ArrayList<Object>();
     public static final ArrayList<Object> cauldronList = new ArrayList<Object>();
+    public static final ArrayList<Object> furnaceList = new ArrayList<Object>();
     // Entity
     public static final ArrayList<Object> cowList = new ArrayList<Object>();
     public static final ArrayList<Object> mooshroomList = new ArrayList<Object>();
@@ -123,6 +124,8 @@ public class LevelLists {
             return stonecutterList;
         case "minecraft:cauldron":
             return cauldronList;
+        case "minecraft:furnace":
+            return furnaceList;
         // Entity
         case "minecraft:cow":
             return cowList;
@@ -187,6 +190,7 @@ public class LevelLists {
         listNames.add("minecraft:villager");
         listNames.add("minecraft:wolf");
         listNames.add("minecraft:breeding");
+        listNames.add("minecraft:furnace");
         return listNames;
     }
 }

@@ -54,6 +54,9 @@
   "text.autoconfig.levelz.option.miningOreChance": "Mining Ore Extra Chance",
   "text.autoconfig.levelz.option.miningLockedMultiplicator": "Locked Block Multiplicator",
   "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
+  "text.autoconfig.levelz.option.disableFurnaceXP": "Disable Furnace XP",
+
+  "item.levelz.strange_potion": "Strange Potion",
 
   "item.levelz.locked.tooltip": "§cLocked",
   "item.levelz.farming.tooltip": "Farming level %d required",

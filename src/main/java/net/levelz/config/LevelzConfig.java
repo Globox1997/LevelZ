@@ -21,6 +21,8 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_setting")
     public boolean disableMobFarms = true;
     @ConfigEntry.Category("level_setting")
+    public boolean disableFurnaceXP = false;
+    @ConfigEntry.Category("level_setting")
     public int xpBaseCost = 50;
     @ConfigEntry.Category("level_setting")
     @Comment("XP equation: lvl^2 * multiplicator + base")
@@ -56,7 +58,8 @@ public class LevelzConfig implements ConfigData {
     public float staminaHealthBonus = 0.05F;
     @Comment("Food is more nutritious at max lvl")
     public float staminaFoodBonus = 0.3F;
-    public double tradeBonus = 0.2D;
+    @Comment("Price reduction in %")
+    public double tradeBonus = 1.0D;
     public float tradeXPBonus = 0.5F;
     @Comment("Disables bad reputation possibility at max lvl")
     public boolean tradeReputation = true;
