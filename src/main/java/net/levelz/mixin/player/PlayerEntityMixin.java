@@ -172,6 +172,11 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
     }
 
     @Override
+    public void resetKilledMobStat() {
+        killedMobsInChunk = 0;
+    }
+
+    @Override
     public boolean allowMobDrop() {
         return killedMobsInChunk >= 5 ? false : true;
     }

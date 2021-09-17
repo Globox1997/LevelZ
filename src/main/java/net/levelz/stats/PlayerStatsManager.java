@@ -2,12 +2,15 @@ package net.levelz.stats;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
+import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class PlayerStatsManager {
@@ -15,6 +18,7 @@ public class PlayerStatsManager {
     public int overallLevel;
     public float levelProgress;
     public int totalLevelExperience;
+    private int skillPoints;
     // Skill
     private int healthLevel;
     private int strengthLevel;
@@ -28,7 +32,6 @@ public class PlayerStatsManager {
     private int miningLevel;
     private int farmingLevel;
     private int alchemyLevel;
-    private int skillPoints;
     // Other
     public List<Integer> lockedBlockIds = new ArrayList<Integer>();
     public List<Integer> lockedbrewingItemIds = new ArrayList<Integer>();
@@ -83,85 +86,85 @@ public class PlayerStatsManager {
 
     public void setLevel(String string, int level) {
         switch (string) {
-        case "level":
-            this.overallLevel = level;
-            break;
-        case "health":
-            this.healthLevel = level;
-            break;
-        case "strength":
-            this.strengthLevel = level;
-            break;
-        case "agility":
-            this.agilityLevel = level;
-            break;
-        case "defense":
-            this.defenseLevel = level;
-            break;
-        case "stamina":
-            this.staminaLevel = level;
-            break;
-        case "luck":
-            this.luckLevel = level;
-            break;
-        case "archery":
-            this.archeryLevel = level;
-            break;
-        case "trade":
-            this.tradeLevel = level;
-            break;
-        case "smithing":
-            this.smithingLevel = level;
-            break;
-        case "mining":
-            this.miningLevel = level;
-            break;
-        case "farming":
-            this.farmingLevel = level;
-            break;
-        case "alchemy":
-            this.alchemyLevel = level;
-            break;
-        case "points":
-            this.skillPoints = level;
-            break;
-        default:
-            break;
+            case "level":
+                this.overallLevel = level;
+                break;
+            case "health":
+                this.healthLevel = level;
+                break;
+            case "strength":
+                this.strengthLevel = level;
+                break;
+            case "agility":
+                this.agilityLevel = level;
+                break;
+            case "defense":
+                this.defenseLevel = level;
+                break;
+            case "stamina":
+                this.staminaLevel = level;
+                break;
+            case "luck":
+                this.luckLevel = level;
+                break;
+            case "archery":
+                this.archeryLevel = level;
+                break;
+            case "trade":
+                this.tradeLevel = level;
+                break;
+            case "smithing":
+                this.smithingLevel = level;
+                break;
+            case "mining":
+                this.miningLevel = level;
+                break;
+            case "farming":
+                this.farmingLevel = level;
+                break;
+            case "alchemy":
+                this.alchemyLevel = level;
+                break;
+            case "points":
+                this.skillPoints = level;
+                break;
+            default:
+                break;
         }
     }
 
     public int getLevel(String string) {
         switch (string) {
-        case "level":
-            return this.overallLevel;
-        case "health":
-            return this.healthLevel;
-        case "strength":
-            return this.strengthLevel;
-        case "agility":
-            return this.agilityLevel;
-        case "defense":
-            return this.defenseLevel;
-        case "stamina":
-            return this.staminaLevel;
-        case "luck":
-            return this.luckLevel;
-        case "archery":
-            return this.archeryLevel;
-        case "trade":
-            return this.tradeLevel;
-        case "smithing":
-            return this.smithingLevel;
-        case "mining":
-            return this.miningLevel;
-        case "farming":
-            return this.farmingLevel;
-        case "alchemy":
-            return this.alchemyLevel;
-        case "points":
-            return this.skillPoints;
-        default:
-            return 0;
+            case "level":
+                return this.overallLevel;
+            case "health":
+                return this.healthLevel;
+            case "strength":
+                return this.strengthLevel;
+            case "agility":
+                return this.agilityLevel;
+            case "defense":
+                return this.defenseLevel;
+            case "stamina":
+                return this.staminaLevel;
+            case "luck":
+                return this.luckLevel;
+            case "archery":
+                return this.archeryLevel;
+            case "trade":
+                return this.tradeLevel;
+            case "smithing":
+                return this.smithingLevel;
+            case "mining":
+                return this.miningLevel;
+            case "farming":
+                return this.farmingLevel;
+            case "alchemy":
+                return this.alchemyLevel;
+            case "points":
+                return this.skillPoints;
+            default:
+                return 0;
         }
     }
 
@@ -255,4 +258,62 @@ public class PlayerStatsManager {
         }
     }
 
+    public static boolean resetSkill(PlayerEntity playerEntity, String skill) {
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
+        if (playerStatsManager.getLevel(skill) > 0) {
+            playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") + playerStatsManager.getLevel(skill));
+            playerStatsManager.setLevel(skill, 0);
+            PlayerStatsServerPacket.writeS2CResetSkillPacket((ServerPlayerEntity) playerEntity, skill);
+            return true;
+        } else
+            return false;
+    }
+
+    public static List<String> getAllSkills() {
+        List<String> list = new ArrayList<>();
+        list.add("health");
+        list.add("strength");
+        list.add("agility");
+        list.add("defense");
+        list.add("stamina");
+        list.add("luck");
+        list.add("archery");
+        list.add("trade");
+        list.add("smithing");
+        list.add("farming");
+        list.add("alchemy");
+        list.add("mining");
+        return list;
+    }
+
+    public static String getRandomSkillString(Random random) {
+        switch (random.nextInt(12)) {
+            case 0:
+                return "health";
+            case 1:
+                return "strength";
+            case 2:
+                return "agility";
+            case 3:
+                return "defense";
+            case 4:
+                return "stamina";
+            case 5:
+                return "luck";
+            case 6:
+                return "archery";
+            case 7:
+                return "trade";
+            case 8:
+                return "smithing";
+            case 9:
+                return "farming";
+            case 10:
+                return "alchemy";
+            case 11:
+                return "mining";
+            default:
+                return "health";
+        }
+    }
 }
