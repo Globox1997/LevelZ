@@ -18,6 +18,7 @@
     "entity.WanderingTraderEntityMixin",
     "entity.VillagerEntityMixin",
     "entity.WolfEntityMixin",
+    "entity.StorageMinecartEntityMixin",
     "block.BeehiveBlockMixin",
     "block.PumpkinBlockMixin",
     "block.AbstractBlockMixin",
@@ -38,6 +39,8 @@
     "block.AbstractCauldronBlockMixin",
     "block.CropBlockMixin",
     "block.AbstractBlockStateMixin",
+    "block.AbstractFurnaceBlockEntityMixin",
+    "block.AbstractFurnaceBlockMixin",
     "item.HoeItemMixin",
     "item.BowItemMixin",
     "item.FlintAndSteelItemMixin",
@@ -60,7 +63,9 @@
     "misc.BrewingRecipeRegistryMixin",
     "misc.EnchantmentHelperMixin",
     "misc.ServerPlayerInteractionManagerMixin",
-    "misc.ServerWorldMixin"
+    "misc.ServerWorldMixin",
+    "misc.LootableContainerBlockEntityMixin",
+    "misc.PotionSlotMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
