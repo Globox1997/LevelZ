@@ -11,13 +11,14 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    maven { url "https://server.bbkr.space/artifactory/libs-release" }
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/" }
     maven { url "https://bai.jfrog.io/artifactory/maven" }
     maven { url "https://ladysnake.jfrog.io/artifactory/mods" }
     maven { url 'https://jitpack.io' }
     maven { url "https://www.cursemaven.com" }
+    // maven { url "https://maven.siphalor.de/" }
+    maven { url "https://server.bbkr.space/artifactory/libs-release" }
 }
 
 dependencies {
@@ -42,6 +43,11 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "me.shedaniel.cloth")
     }
+    // modCompileOnly modRuntime("de.siphalor:spiceoffabric-1.17:1.4.1+1.17.1:1+")
+
+    //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
+    //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
+
     // // Trinkets
     // modCompileOnly modRuntime('com.github.emilyploszaj:trinkets:3.0.2') {
     //     exclude(group: "net.fabricmc.fabric-api")
