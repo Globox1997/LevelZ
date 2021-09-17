@@ -59,10 +59,10 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
             Iterator<TradeOffer> var5 = this.getOffers().iterator();
             while (var5.hasNext()) {
                 TradeOffer tradeOffer2 = (TradeOffer) var5.next();
-                int k = (int) Math.floor((0.3D + 0.0625D * (double) ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("trade") * ConfigInit.CONFIG.tradeBonus)
-                        * (double) tradeOffer2.getOriginalFirstBuyItem().getCount());
-                tradeOffer2.increaseSpecialPrice(-Math.max(k, 1));
+                tradeOffer2.increaseSpecialPrice(-(int) (((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("trade") * ConfigInit.CONFIG.tradeBonus / 100.0D
+                        * tradeOffer2.getOriginalFirstBuyItem().getCount()));
             }
+
         }
     }
 
