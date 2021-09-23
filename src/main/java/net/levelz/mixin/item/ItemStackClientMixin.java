@@ -52,6 +52,11 @@ public class ItemStackClientMixin {
             // Block
             if (stack.getItem() instanceof BlockItem) {
                 Block block = ((BlockItem) stack.getItem()).getBlock();
+                // Alchemy check
+                if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(stack.getItem()), false)) {
+                    list.add(new TranslatableText("item.levelz.alchemy.tooltip", PlayerStatsManager.getUnlockLevel(Registry.ITEM.getRawId(stack.getItem()), false)).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
                 if (block instanceof AnvilBlock) {
                     levelList = LevelLists.anvilList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
