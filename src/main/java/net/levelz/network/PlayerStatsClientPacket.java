@@ -86,6 +86,24 @@ public class PlayerStatsClientPacket {
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager(client.player);
                 playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") + playerStatsManager.getLevel(skill));
                 playerStatsManager.setLevel(skill, 0);
+                // Sync attributes on client
+                if (skill.equals("health")) {
+                    client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                            .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);
+                    client.player.setHealth(client.player.getMaxHealth());
+                } else if (skill.equals("strength")) {
+                    client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                            .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getLevel("strength") * ConfigInit.CONFIG.attackBonus);
+                } else if (skill.equals("agility")) {
+                    client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                            .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
+                } else if (skill.equals("defense")) {
+                    client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
+                            .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getLevel("defense") * ConfigInit.CONFIG.defenseBonus);
+                } else if (skill.equals("luck")) {
+                    client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
+                            .setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
+                }
             }
         });
     }

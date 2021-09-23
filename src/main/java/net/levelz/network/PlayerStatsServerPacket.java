@@ -150,6 +150,25 @@ public class PlayerStatsServerPacket {
     }
 
     public static void writeS2CResetSkillPacket(ServerPlayerEntity serverPlayerEntity, String skill) {
+        // Sync attributes on server
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity);
+        if (skill.equals("health")) {
+            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                    .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);
+            serverPlayerEntity.setHealth(serverPlayerEntity.getMaxHealth());
+        } else if (skill.equals("strength")) {
+            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                    .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getLevel("strength") * ConfigInit.CONFIG.attackBonus);
+        } else if (skill.equals("agility")) {
+            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                    .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
+        } else if (skill.equals("defense")) {
+            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
+                    .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getLevel("defense") * ConfigInit.CONFIG.defenseBonus);
+        } else if (skill.equals("luck")) {
+            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
+                    .setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
+        }
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeString(skill);
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(RESET_PACKET, buf);
