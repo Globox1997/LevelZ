@@ -65,7 +65,7 @@ public abstract class LivingEntityMixin extends Entity {
     private void tryUseTotemMixin(DamageSource source, CallbackInfoReturnable<Boolean> info) {
         if ((Object) this instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) (Object) this;
-            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("luck") == ConfigInit.CONFIG.maxLevel
+            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("luck") >= ConfigInit.CONFIG.maxLevel
                     && player.world.random.nextFloat() < ConfigInit.CONFIG.luckSurviveChance) {
                 player.setHealth(1.0F);
                 player.clearStatusEffects();

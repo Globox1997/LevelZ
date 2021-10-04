@@ -39,7 +39,7 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
     private void updateResultMixin(CallbackInfo info) {
         if (this.levelCost.get() > 1) {
             int levelCost = (int) (this.levelCost.get() * (1F - smithingLevel * ConfigInit.CONFIG.smithingCostBonus));
-            if (levelCost > 30 && smithingLevel == ConfigInit.CONFIG.maxLevel) {
+            if (levelCost > 30 && smithingLevel >= ConfigInit.CONFIG.maxLevel) {
                 this.levelCost.set(30);
             } else
                 this.levelCost.set(levelCost);
@@ -48,14 +48,14 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 
     @Redirect(method = "onTakeOutput", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExperienceLevels(I)V"))
     private void onTakeOutputMixin(PlayerEntity playerEntity, int levelCost) {
-        if (!(smithingLevel == ConfigInit.CONFIG.maxLevel) || !(ConfigInit.CONFIG.smithingToolChance > playerEntity.world.random.nextFloat()))
+        if (!(smithingLevel >= ConfigInit.CONFIG.maxLevel) || !(ConfigInit.CONFIG.smithingToolChance > playerEntity.world.random.nextFloat()))
             playerEntity.addExperienceLevels(-this.levelCost.get());
     }
 
     @Environment(EnvType.CLIENT)
     @Inject(method = "getLevelCost", at = @At(value = "HEAD"), cancellable = true)
     public void getLevelCostMixin(CallbackInfoReturnable<Integer> info) {
-        if (this.levelCost.get() > 30 && smithingLevel == ConfigInit.CONFIG.maxLevel) {
+        if (this.levelCost.get() > 30 && smithingLevel >= ConfigInit.CONFIG.maxLevel) {
             info.setReturnValue(30);
         }
     }

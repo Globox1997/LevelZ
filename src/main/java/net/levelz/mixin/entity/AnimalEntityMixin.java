@@ -47,7 +47,7 @@ public abstract class AnimalEntityMixin extends PassiveEntity {
         System.out.println(getLovingPlayer() + "::" + other.getLovingPlayer());
         if (getLovingPlayer() != null || other.getLovingPlayer() != null) {
             PlayerEntity playerEntity = getLovingPlayer() != null ? getLovingPlayer() : other.getLovingPlayer();
-            if (((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("farming") == ConfigInit.CONFIG.maxLevel
+            if (((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("farming") >= ConfigInit.CONFIG.maxLevel
                     && world.random.nextFloat() < ConfigInit.CONFIG.farmingTwinChance) {
                 PassiveEntity extraPassiveEntity = this.createChild(world, other);
                 extraPassiveEntity.setBaby(true);

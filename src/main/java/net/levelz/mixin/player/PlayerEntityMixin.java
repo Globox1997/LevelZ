@@ -98,7 +98,7 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0)
     private float attackMixinTwo(float original) {
-        if (playerStatsManager.getLevel("strength") == ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.world.random.nextFloat()) {
+        if (playerStatsManager.getLevel("strength") >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.world.random.nextFloat()) {
             return original * 2F;
         } else
             return isCrit ? original * ConfigInit.CONFIG.critDmgBonus : original;
@@ -139,17 +139,17 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;dropShoulderEntities()V", shift = Shift.AFTER), cancellable = true)
     private void damageMixin(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
-        if (playerStatsManager.getLevel("defense") == ConfigInit.CONFIG.maxLevel && source.getAttacker() != null && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.defenseReflectChance) {
+        if (playerStatsManager.getLevel("defense") >= ConfigInit.CONFIG.maxLevel && source.getAttacker() != null && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.defenseReflectChance) {
             source.getAttacker().damage(source, amount);
         }
-        if (playerStatsManager.getLevel("agility") == ConfigInit.CONFIG.maxLevel && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.movementMissChance) {
+        if (playerStatsManager.getLevel("agility") >= ConfigInit.CONFIG.maxLevel && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.movementMissChance) {
             info.setReturnValue(false);
         }
     }
 
     @Inject(method = "eatFood", at = @At(value = "HEAD"))
     private void eatFoodMixin(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
-        if (stack.getItem().isFood() && playerStatsManager.getLevel("stamina") == ConfigInit.CONFIG.maxLevel) {
+        if (stack.getItem().isFood() && playerStatsManager.getLevel("stamina") >= ConfigInit.CONFIG.maxLevel) {
             FoodComponent foodComponent = stack.getItem().getFoodComponent();
             float multiplier = ConfigInit.CONFIG.staminaFoodBonus;
             playerEntity.getHungerManager().add((int) (foodComponent.getHunger() * multiplier), foodComponent.getSaturationModifier() * multiplier);

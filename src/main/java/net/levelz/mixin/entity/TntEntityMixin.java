@@ -31,7 +31,7 @@ public abstract class TntEntityMixin extends Entity {
     @Inject(method = "explode", at = @At(value = "HEAD"), cancellable = true)
     private void explodeMixin(CallbackInfo info) {
         if (causingEntity != null && causingEntity instanceof PlayerEntity) {
-            if (((PlayerStatsManagerAccess) (PlayerEntity) causingEntity).getPlayerStatsManager((PlayerEntity) causingEntity).getLevel("mining") == ConfigInit.CONFIG.maxLevel) {
+            if (((PlayerStatsManagerAccess) (PlayerEntity) causingEntity).getPlayerStatsManager((PlayerEntity) causingEntity).getLevel("mining") >= ConfigInit.CONFIG.maxLevel) {
                 this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 4.0F * (1F + ConfigInit.CONFIG.miningTntBonus), Explosion.DestructionType.BREAK);
                 info.cancel();
             }

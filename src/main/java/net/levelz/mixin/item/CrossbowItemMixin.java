@@ -40,10 +40,9 @@ public class CrossbowItemMixin {
             PersistentProjectileEntity persistentProjectileEntity) {
         if (entity instanceof PlayerEntity) {
             int archeryLevel = ((PlayerStatsManagerAccess) (PlayerEntity) entity).getPlayerStatsManager((PlayerEntity) entity).getLevel("archery");
-            persistentProjectileEntity
-                    .setDamage(persistentProjectileEntity.getDamage() + archeryLevel == ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > entity.world.random.nextFloat()
-                            ? persistentProjectileEntity.getDamage() * 2D
-                            : (double) archeryLevel * ConfigInit.CONFIG.archeryCrossbowExtraDamage);
+            persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage()
+                    + (archeryLevel >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > entity.world.random.nextFloat() ? persistentProjectileEntity.getDamage() * 2D
+                            : (double) archeryLevel * ConfigInit.CONFIG.archeryCrossbowExtraDamage));
         }
 
     }
