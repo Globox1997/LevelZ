@@ -8,6 +8,7 @@
     "player.PlayerEntityMixin",
     "player.PlayerManagerMixin",
     "player.PlayerInventoryMixin",
+    "player.HungerManagerMixin",
     "entity.LivingEntityMixin",
     "entity.SheepEntityMixin",
     "entity.SnowGolemEntityMixin",
