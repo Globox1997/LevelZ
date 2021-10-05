@@ -46,7 +46,8 @@ public class ScreenHandlerMixin {
 
     @Inject(method = "internalOnSlotClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ScreenHandler;setCursorStack(Lnet/minecraft/item/ItemStack;)V", ordinal = 2, shift = Shift.BEFORE), cancellable = true)
     private void internalOnSlotClickMixin(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo info) {
-        if (8 - MobEntity.getPreferredEquipmentSlot(cursorStack).getEntitySlotId() == slotIndex && this.slots.get(slotIndex).toString().contains("PlayerScreenHandler")
+        if (8 - MobEntity.getPreferredEquipmentSlot(cursorStack).getEntitySlotId() == slotIndex
+                && (this.slots.get(slotIndex).toString().contains("PlayerScreenHandler") || this.slots.get(slotIndex).toString().contains("class_1723"))
                 && this.slots.get(slotIndex).canInsert(cursorStack)) {
             if (cursorStack.getItem() instanceof ArmorItem
                     && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true)) {
@@ -64,7 +65,8 @@ public class ScreenHandlerMixin {
 
     @Inject(method = "internalOnSlotClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;setStack(Lnet/minecraft/item/ItemStack;)V", ordinal = 1, shift = Shift.BEFORE), cancellable = true)
     private void internalOnSlotClickSwitchMixin(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo info) {
-        if (8 - MobEntity.getPreferredEquipmentSlot(cursorStack).getEntitySlotId() == slotIndex && this.slots.get(slotIndex).toString().contains("PlayerScreenHandler")) {
+        if (8 - MobEntity.getPreferredEquipmentSlot(cursorStack).getEntitySlotId() == slotIndex
+                && (this.slots.get(slotIndex).toString().contains("PlayerScreenHandler") || this.slots.get(slotIndex).toString().contains("class_1723"))) {
             if (cursorStack.getItem() instanceof ArmorItem
                     && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true)) {
                 info.cancel();
@@ -82,7 +84,8 @@ public class ScreenHandlerMixin {
     private void internalOnSlotSwitchSetMixin(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo info) {
         PlayerInventory playerInventory = player.getInventory();
         ItemStack itemStack = playerInventory.getStack(button);
-        if (8 - MobEntity.getPreferredEquipmentSlot(itemStack).getEntitySlotId() == slotIndex && this.slots.get(slotIndex).toString().contains("PlayerScreenHandler")) {
+        if (8 - MobEntity.getPreferredEquipmentSlot(itemStack).getEntitySlotId() == slotIndex
+                && (this.slots.get(slotIndex).toString().contains("PlayerScreenHandler") || this.slots.get(slotIndex).toString().contains("class_1723"))) {
             if (itemStack.getItem() instanceof ArmorItem
                     && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName().toLowerCase(), true)) {
                 info.cancel();
@@ -100,7 +103,8 @@ public class ScreenHandlerMixin {
     private void internalOnSlotSwitchSwitchMixin(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo info) {
         PlayerInventory playerInventory = player.getInventory();
         ItemStack itemStack = playerInventory.getStack(button);
-        if (8 - MobEntity.getPreferredEquipmentSlot(itemStack).getEntitySlotId() == slotIndex && this.slots.get(slotIndex).toString().contains("PlayerScreenHandler")) {
+        if (8 - MobEntity.getPreferredEquipmentSlot(itemStack).getEntitySlotId() == slotIndex
+                && (this.slots.get(slotIndex).toString().contains("PlayerScreenHandler") || this.slots.get(slotIndex).toString().contains("class_1723"))) {
             if (itemStack.getItem() instanceof ArmorItem
                     && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName().toLowerCase(), true)) {
                 info.cancel();
