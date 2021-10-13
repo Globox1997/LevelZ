@@ -80,13 +80,13 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
         }
     }
 
-    @Redirect(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"))
+    @Redirect(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"), require = 0)
     private void addExhaustion(HungerManager hungerManager, float exhaustion) {
         exhaustion *= ConfigInit.CONFIG.staminaBase - ((float) playerStatsManager.getLevel("stamina") * ConfigInit.CONFIG.staminaBonus);
         hungerManager.addExhaustion(exhaustion);
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), ordinal = 2)
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), ordinal = 2, require = 0)
     private boolean attackMixin(boolean original) {
         if (playerEntity.world.random.nextFloat() < (float) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckCritBonus) {
             isCrit = true;
@@ -96,7 +96,7 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
         return original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0)
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0, require = 0)
     private float attackMixinTwo(float original) {
         if (playerStatsManager.getLevel("strength") >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.world.random.nextFloat()) {
             return original * 2F;
@@ -104,12 +104,12 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
             return isCrit ? original * ConfigInit.CONFIG.critDmgBonus : original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 0)
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 0, require = 0)
     private float attackMixinThree(float original) {
         return getUnlockedDamage(original, false);
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 1)
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 1, require = 0)
     private float attackMixinFour(float original) {
         return getUnlockedDamage(original, true);
     }

@@ -21,7 +21,7 @@ public class InGameHudMixin {
     @Final
     private MinecraftClient client;
 
-    @ModifyConstant(method = "renderExperienceBar", constant = @Constant(intValue = 8453920))
+    @ModifyConstant(method = "renderExperienceBar", constant = @Constant(intValue = 8453920), require = 0)
     private int modifyExperienceNumberColor(int original) {
         if (((PlayerStatsManagerAccess) client.player).getPlayerStatsManager(client.player).getLevel("points") > 0)
             return 1507303;
