@@ -9,12 +9,16 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.UserCache;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldProperties;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,6 +30,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Optional;
 
+import com.mojang.authlib.GameProfile;
+
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
 
@@ -33,14 +39,15 @@ public class PlayerManagerMixin {
     @Final
     private MinecraftServer server;
 
-    @Inject(method = "onPlayerConnect", at = @At(value = "TAIL"))
-    private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
+    @Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;onPlayerConnected(Lnet/minecraft/server/network/ServerPlayerEntity;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info, GameProfile gameProfile, UserCache userCache, Optional<GameProfile> optional,
+            String string, NbtCompound nbtCompound, RegistryKey<World> registryKey, ServerWorld serverWorld, ServerWorld serverWorld3, String string2, WorldProperties worldProperties,
+            ServerPlayNetworkHandler serverPlayNetworkHandler) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
-        boolean isFirstTimeJoin = loadPlayerData(player) == null;
+        boolean isFirstTimeJoin = nbtCompound == null;
         if (isFirstTimeJoin && server != null && server.getSaveProperties().getGeneratorOptions().hasBonusChest()) {
             playerStatsManager.setLevel("points", ConfigInit.CONFIG.startPoints);
         }
-        PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, player);
         PlayerStatsServerPacket.writeS2CListPacket(player);
         if (isFirstTimeJoin) {
             player.setHealth(player.getMaxHealth());
@@ -86,9 +93,4 @@ public class PlayerManagerMixin {
         }
     }
 
-    @Shadow
-    @Nullable
-    public NbtCompound loadPlayerData(ServerPlayerEntity player) {
-        return null;
-    }
 }
