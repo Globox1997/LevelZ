@@ -19,6 +19,8 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_setting")
     public boolean resetCurrentXP = true;
     @ConfigEntry.Category("level_setting")
+    public boolean dropPlayerXP = true;
+    @ConfigEntry.Category("level_setting")
     public boolean disableMobFarms = true;
     @ConfigEntry.Category("level_setting")
     public boolean disableFurnaceXP = false;

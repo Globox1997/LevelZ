@@ -2,7 +2,7 @@
   "commands.playerstats.changed": "stats got changed",
 
   "category.levelz.keybind": "LevelZ Keybinds",
-  "key.levelz.openskillscreen":"Skill Screen",
+  "key.levelz.openskillscreen": "Skill Screen",
 
   "text.autoconfig.levelz.title": "LevelZ Config",
   "text.autoconfig.levelz.category.level_setting": "Level Settings",
@@ -55,9 +55,10 @@
   "text.autoconfig.levelz.option.miningLockedMultiplicator": "Locked Block Multiplicator",
   "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
   "text.autoconfig.levelz.option.disableFurnaceXP": "Disable Furnace XP",
+  "text.autoconfig.levelz.option.dropPlayerXP": "Drop Player XP",
 
   "item.levelz.strange_potion": "Strange Potion",
-
+  
   "item.levelz.locked.tooltip": "§cLocked",
   "item.levelz.farming.tooltip": "Farming level %d required",
   "item.levelz.mining.tooltip": "Mining level %d required",
@@ -153,7 +154,6 @@
   "text.levelz.mining_info_2_2": "to drop more raw ore by %d%%",
   "text.levelz.mining_max_lvl_1": "Player gains %d%% tnt",
   "text.levelz.mining_max_lvl_2": "power increase",
-
 
   "text.levelz.farming_info_2_1": "Player unlocks at lvl %s",
   "text.levelz.farming_info_2_2": "chance of double harvest",
