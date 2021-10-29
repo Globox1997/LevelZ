@@ -228,12 +228,15 @@ public class ItemStackClientMixin {
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
             } else if (stack.getItem() instanceof ArmorItem) {
-                levelList = LevelLists.armorList;
-                String material = ((ArmorItem) stack.getItem()).getMaterial().getName().toLowerCase();
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
-                    list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
-                            .formatted(Formatting.GRAY));
-                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                try {
+                    levelList = LevelLists.armorList;
+                    String material = ((ArmorItem) stack.getItem()).getMaterial().getName().toLowerCase();
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip",
+                                levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } catch (AbstractMethodError ignored) {
                 }
             } else if (stack.getItem() instanceof ShieldItem) {
                 levelList = LevelLists.shieldList;
