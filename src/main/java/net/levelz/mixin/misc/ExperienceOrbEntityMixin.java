@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ExperienceOrbEntity.class)
-public class ExperienceOrbEntityMixin implements ExperienceOrbEntityAccess, ExperienceOrbAccess {
+public abstract class ExperienceOrbEntityMixin implements ExperienceOrbAccess {
     @Shadow
     private int amount;
 

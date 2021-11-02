@@ -67,8 +67,7 @@
     "misc.ServerWorldMixin",
     "misc.LootableContainerBlockEntityMixin",
     "misc.PotionSlotMixin",
-    "misc.ExperienceOrbEntityMixin",
-    "misc.ExperienceOrbEntityAccess"
+    "misc.ExperienceOrbEntityMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
