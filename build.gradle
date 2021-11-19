@@ -26,6 +26,8 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // Env Bug Fix
+    runtimeOnly 'io.github.juuxel:libninepatch:1.1.0'
     // LibGui
     modImplementation include("io.github.cottonmc:LibGui:${project.cottonmc_version}")
     // Cloth
@@ -39,7 +41,7 @@ dependencies {
     // Wthit
     modCompileOnly modRuntimeOnly("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
     // REI
-    modCompileOnly modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:6.0.268-alpha") {
+    modCompileOnly ("me.shedaniel:RoughlyEnoughItems-fabric:6.0.268-alpha") {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "me.shedaniel.cloth")
     }
