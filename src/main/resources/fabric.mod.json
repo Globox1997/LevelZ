@@ -30,10 +30,11 @@
     "levelz.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.7.4",
+    "fabricloader": ">=0.12.5",
     "fabric": "*",
-    "minecraft": "1.17.x",
-    "cloth-config2": ">=5.0.34"
+    "minecraft": "1.18.x",
+    "java": ">=17",
+    "cloth-config2": ">=6.0.42"
   },
   "suggests": {
     "another-mod": "*"
