@@ -3,7 +3,7 @@ package net.levelz.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
@@ -31,7 +31,7 @@ public class ListGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(200, 215);
 
-        root.add(new WLabel(new TranslatableText("text.levelz.locked_list", WordUtils.capitalize(name))), 6, 7);
+        root.add(new WLabel(new TranslatableText("text.levelz.locked_list", StringUtils.capitalize(name))), 6, 7);
 
         ZWSprite infoIcon = new ZWSprite(name, client, 2);
         root.add(infoIcon, 180, 7, 12, 9);

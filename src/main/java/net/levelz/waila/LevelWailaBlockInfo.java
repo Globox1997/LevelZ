@@ -30,10 +30,10 @@ public class LevelWailaBlockInfo extends LevelFeature implements IBlockComponent
 
     @Override
     public void appendBody(List<Text> tooltip, IBlockAccessor accessor, IPluginConfig config) {
-        if (config.get(MINEABLE_INFO)) {
+        if (config.getBoolean(MINEABLE_INFO)) {
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) accessor.getPlayer()).getPlayerStatsManager(accessor.getPlayer());
             if (playerStatsManager.lockedBlockIds.contains(Registry.BLOCK.getRawId(accessor.getBlock()))) {
-                if (config.get(MINEABLE_LEVEL_INFO)) {
+                if (config.getBoolean(MINEABLE_LEVEL_INFO)) {
                     tooltip.add(new TranslatableText("block.levelz.locked_with_level.tooltip", playerStatsManager.getLevel("mining")).formatted(Formatting.RED));
                 } else
                     tooltip.add(new TranslatableText("block.levelz.locked.tooltip"));

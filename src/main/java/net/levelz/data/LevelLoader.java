@@ -38,7 +38,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         for (Identifier id : manager.findResources("mining", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
+                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 
                 if (levelList.contains(data.get("level").getAsInt())) {
                     int index = levelList.indexOf(data.get("level").getAsInt());
@@ -64,7 +64,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         for (Identifier id : manager.findResources("item", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
+                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
                 ArrayList<Object> list = LevelLists.getList(data.get("item").getAsString());
                 if (data.get("item").getAsString().equals("minecraft:armor") || data.get("item").getAsString().equals("minecraft:tool") || data.get("item").getAsString().equals("minecraft:hoe")
                         || data.get("item").getAsString().equals("minecraft:sword") || data.get("item").getAsString().equals("minecraft:axe")) {
@@ -110,7 +110,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         for (Identifier id : manager.findResources("block", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
+                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
                 ArrayList<Object> list = LevelLists.getList(data.get("block").getAsString());
                 if (!list.isEmpty()) {
                     if (JsonHelper.getBoolean(data, "replace", false)) {
@@ -140,7 +140,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         for (Identifier id : manager.findResources("entity", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
+                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
                 ArrayList<Object> list = LevelLists.getList(data.get("entity").getAsString());
                 if (!list.isEmpty()) {
                     if (JsonHelper.getBoolean(data, "replace", false)) {
@@ -164,7 +164,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         for (Identifier id : manager.findResources("brewing", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = new JsonParser().parse(new InputStreamReader(stream)).getAsJsonObject();
+                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
                 if (levelList.contains(data.get("level").getAsInt())) {
                     int index = levelList.indexOf(data.get("level").getAsInt());
                     if (JsonHelper.getBoolean(data, "replace", false)) {
