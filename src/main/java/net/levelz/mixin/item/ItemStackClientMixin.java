@@ -128,6 +128,11 @@ public class ItemStackClientMixin {
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
+                } else if (block == Blocks.BEACON) {
+                    levelList = LevelLists.beaconList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
+                    }
                 } else if (!LevelLists.customBlockList.isEmpty() && LevelLists.customBlockList.contains(block.getTranslationKey().replace("block.", "").replace(".", ":"))) {
                     levelList = LevelLists.customBlockList;
                     String string = Registry.BLOCK.getId(block).toString();

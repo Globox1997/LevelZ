@@ -356,6 +356,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.listOfAllLists.add(LevelLists.wolfList);
         LevelLists.listOfAllLists.add(LevelLists.breedingList);
         LevelLists.listOfAllLists.add(LevelLists.furnaceList);
+        LevelLists.listOfAllLists.add(LevelLists.beaconList);
         LevelLists.listOfAllLists.add(LevelLists.customBlockList);
         LevelLists.listOfAllLists.add(LevelLists.customItemList);
     }
@@ -401,6 +402,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.wolfList.clear();
         LevelLists.breedingList.clear();
         LevelLists.furnaceList.clear();
+        LevelLists.beaconList.clear();
         LevelLists.customBlockList.clear();
         LevelLists.customItemList.clear();
 

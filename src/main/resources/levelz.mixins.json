@@ -42,6 +42,7 @@
     "block.AbstractBlockStateMixin",
     "block.AbstractFurnaceBlockEntityMixin",
     "block.AbstractFurnaceBlockMixin",
+    "block.BeaconBlockMixin",
     "item.HoeItemMixin",
     "item.BowItemMixin",
     "item.FlintAndSteelItemMixin",

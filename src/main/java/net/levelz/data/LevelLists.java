@@ -23,6 +23,7 @@ public class LevelLists {
     public static final ArrayList<Object> stonecutterList = new ArrayList<Object>();
     public static final ArrayList<Object> cauldronList = new ArrayList<Object>();
     public static final ArrayList<Object> furnaceList = new ArrayList<Object>();
+    public static final ArrayList<Object> beaconList = new ArrayList<Object>();
     // Entity
     public static final ArrayList<Object> cowList = new ArrayList<Object>();
     public static final ArrayList<Object> mooshroomList = new ArrayList<Object>();
@@ -131,6 +132,8 @@ public class LevelLists {
             return cauldronList;
         case "minecraft:furnace":
             return furnaceList;
+        case "minecraft:beacon":
+            return beaconList;
         case "minecraft:custom_block":
             return customBlockList;
         // Entity
@@ -198,6 +201,7 @@ public class LevelLists {
         listNames.add("minecraft:wolf");
         listNames.add("minecraft:breeding");
         listNames.add("minecraft:furnace");
+        listNames.add("minecraft:beacon");
         listNames.add("minecraft:custom_block");
         listNames.add("minecraft:custom_item");
         return listNames;
