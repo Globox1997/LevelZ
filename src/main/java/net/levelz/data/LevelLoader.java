@@ -205,24 +205,51 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
                 ArrayList<Object> list = LevelLists.getList(data.get("entity").getAsString());
-                if (!list.isEmpty()) {
-                    if (JsonHelper.getBoolean(data, "replace", false)) {
-                        list.clear();
-                    } else {
-                        if (!(boolean) list.get(3)) {
-                            LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+
+                if (data.get("entity").getAsString().equals("minecraft:custom_entity")) {
+                    ArrayList<Object> customList = LevelLists.getList(data.get("entity").getAsString());
+                    if (customList.contains(data.get("object").getAsString())) {
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            int removeLines = list.indexOf(data.get("object").getAsString());
+                            for (int i = 0; i < 5; i++) {
+                                list.remove(removeLines);
+                            }
+                        } else {
+                            if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
+                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                            }
+                            continue;
                         }
+                    }
+                    if (Registry.ENTITY_TYPE.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
+                        LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("object").getAsString());
                         continue;
                     }
+                    customList.add(data.get("object").getAsString());
+                    customList.add(data.get("skill").getAsString());
+                    customList.add(data.get("level").getAsInt());
+                    customList.add(data.get("entity").getAsString());
+                    customList.add(JsonHelper.getBoolean(data, "replace", false));
+                } else {
+                    if (!list.isEmpty()) {
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            list.clear();
+                        } else {
+                            if (!(boolean) list.get(3)) {
+                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                            }
+                            continue;
+                        }
+                    }
+                    if (Registry.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("air")) {
+                        LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("entity").getAsString());
+                        continue;
+                    }
+                    list.add(data.get("skill").getAsString());
+                    list.add(data.get("level").getAsInt());
+                    list.add(data.get("entity").getAsString());
+                    list.add(JsonHelper.getBoolean(data, "replace", false));
                 }
-                if (Registry.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("air")) {
-                    LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("entity").getAsString());
-                    continue;
-                }
-                list.add(data.get("skill").getAsString());
-                list.add(data.get("level").getAsInt());
-                list.add(data.get("entity").getAsString());
-                list.add(JsonHelper.getBoolean(data, "replace", false));
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
@@ -359,6 +386,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.listOfAllLists.add(LevelLists.beaconList);
         LevelLists.listOfAllLists.add(LevelLists.customBlockList);
         LevelLists.listOfAllLists.add(LevelLists.customItemList);
+        LevelLists.listOfAllLists.add(LevelLists.customEntityList);
     }
 
     public static void clearEveryList() {
@@ -405,6 +433,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.beaconList.clear();
         LevelLists.customBlockList.clear();
         LevelLists.customItemList.clear();
+        LevelLists.customEntityList.clear();
 
         LevelLists.miningBlockList.clear();
         LevelLists.miningLevelList.clear();

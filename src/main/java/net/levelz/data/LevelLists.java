@@ -61,6 +61,7 @@ public class LevelLists {
     // Custom
     public static final ArrayList<Object> customBlockList = new ArrayList<Object>();
     public static final ArrayList<Object> customItemList = new ArrayList<Object>();
+    public static final ArrayList<Object> customEntityList = new ArrayList<Object>();
 
     public static ArrayList<Object> getList(String string) {
         switch (string) {
@@ -153,6 +154,8 @@ public class LevelLists {
             return wolfList;
         case "minecraft:breeding":
             return breedingList;
+        case "minecraft:custom_entity":
+            return customEntityList;
         default:
             return new ArrayList<Object>();
         }
@@ -204,6 +207,7 @@ public class LevelLists {
         listNames.add("minecraft:beacon");
         listNames.add("minecraft:custom_block");
         listNames.add("minecraft:custom_item");
+        listNames.add("minecraft:custom_entity");
         return listNames;
     }
 }
