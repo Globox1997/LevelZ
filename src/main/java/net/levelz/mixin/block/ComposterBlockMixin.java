@@ -14,6 +14,7 @@ import net.minecraft.block.ComposterBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +27,7 @@ public class ComposterBlockMixin {
     private void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.composterList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
             info.setReturnValue(ActionResult.FAIL);
         }
     }

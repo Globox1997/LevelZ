@@ -13,6 +13,7 @@ import net.minecraft.entity.passive.SnowGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 
 @Mixin(SnowGolemEntity.class)
@@ -22,7 +23,7 @@ public class SnowGolemEntityMixin {
     protected void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.snowGolemList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
             info.setReturnValue(ActionResult.FAIL);
         }
     }

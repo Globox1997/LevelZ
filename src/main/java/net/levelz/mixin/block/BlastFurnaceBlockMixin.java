@@ -12,6 +12,7 @@ import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.BlastFurnaceBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -22,7 +23,7 @@ public class BlastFurnaceBlockMixin {
     protected void openScreenMixin(World world, BlockPos pos, PlayerEntity player, CallbackInfo info) {
         ArrayList<Object> levelList = LevelLists.blastFurnaceList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
             info.cancel();
         }
     }

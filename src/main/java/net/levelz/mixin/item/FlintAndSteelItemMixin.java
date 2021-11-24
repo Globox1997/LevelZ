@@ -13,6 +13,7 @@ import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 
 @Mixin(FlintAndSteelItem.class)
 public class FlintAndSteelItemMixin {
@@ -21,7 +22,7 @@ public class FlintAndSteelItemMixin {
     private void useOnBlockMixin(ItemUsageContext context, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.flintAndSteelList;
         if (!PlayerStatsManager.playerLevelisHighEnough(context.getPlayer(), levelList, null, true)) {
-            context.getPlayer().sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+            context.getPlayer().sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
             info.setReturnValue(ActionResult.FAIL);
         }
 

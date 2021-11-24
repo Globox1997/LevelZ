@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 
 @Mixin(AxolotlEntity.class)
@@ -24,7 +25,7 @@ public class AxolotlEntityMixin {
         if (player.getStackInHand(hand).getItem() == Items.WATER_BUCKET) {
             ArrayList<Object> levelList = LevelLists.axolotlList;
             if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-                player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+                player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
                 info.setReturnValue(ActionResult.FAIL);
             }
         }

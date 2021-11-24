@@ -19,6 +19,7 @@ import net.minecraft.item.ArrowItem;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
@@ -30,7 +31,7 @@ public class CrossbowItemMixin {
     private void useMixin(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack) {
         ArrayList<Object> levelList = LevelLists.crossbowList;
         if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, null, true)) {
-            user.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+            user.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
             info.setReturnValue(TypedActionResult.fail(itemStack));
         }
     }

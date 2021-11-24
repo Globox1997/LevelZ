@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPointer;
@@ -46,7 +47,9 @@ public class ArmorItemMixin {
             ArrayList<Object> levelList = LevelLists.armorList;
             String string = ((ArmorItem) (Object) this).getMaterial().getName().toLowerCase();
             if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
-                user.sendMessage(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)), true);
+                user.sendMessage(
+                        new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
+                        true);
                 info.setReturnValue(TypedActionResult.fail(itemStack));
             }
         } catch (AbstractMethodError ignore) {

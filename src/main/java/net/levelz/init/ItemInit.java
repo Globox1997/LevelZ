@@ -32,7 +32,8 @@ public class ItemInit {
                 ArrayList<Object> customList = LevelLists.customItemList;
                 String string = Registry.ITEM.getId(player.getStackInHand(hand).getItem()).toString();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
-                    player.sendMessage(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)), true);
+                    player.sendMessage(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2))
+                            .formatted(Formatting.RED), true);
                     return TypedActionResult.fail(player.getStackInHand(hand));
                 }
             }
@@ -46,7 +47,8 @@ public class ItemInit {
                     String string = Registry.BLOCK.getId(world.getBlockState(blockPos).getBlock()).toString();
                     ArrayList<Object> customList = LevelLists.customBlockList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
-                        player.sendMessage(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)), true);
+                        player.sendMessage(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2))
+                                .formatted(Formatting.RED), true);
                         return ActionResult.FAIL;
                     }
                 }

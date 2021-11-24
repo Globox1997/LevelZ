@@ -13,6 +13,7 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 
 @Mixin(WolfEntity.class)
@@ -22,7 +23,7 @@ public class WolfEntityMixin {
     private void interactMobMixin(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.wolfList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)), true);
+            player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
             info.setReturnValue(ActionResult.FAIL);
         }
     }

@@ -14,6 +14,7 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 
 @Mixin(HoeItem.class)
 public class HoeItemMixin {
@@ -24,7 +25,9 @@ public class HoeItemMixin {
         String material = ((MiningToolItem) context.getStack().getItem()).getMaterial().toString().toLowerCase();
         if (!PlayerStatsManager.playerLevelisHighEnough(context.getPlayer(), levelList, material, true)) {
             context.getPlayer().sendMessage(
-                    new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString()), true);
+                    new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
+                            .formatted(Formatting.RED),
+                    true);
             info.setReturnValue(ActionResult.FAIL);
         }
     }
