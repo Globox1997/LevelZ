@@ -201,10 +201,18 @@ public class ItemStackClientMixin {
                     list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                 }
             } else if (stack.getItem() instanceof BowItem) {
-                levelList = LevelLists.bowList;
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
-                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
+                ArrayList<Object> customList = LevelLists.customItemList;
+                String string = Registry.ITEM.getId(stack.getItem()).toString();
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, false)) {
+                    list.add(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1).toString() + ".tooltip", customList.get(customList.indexOf(string) + 2).toString())
+                            .formatted(Formatting.RED));
+                } else {
+                    levelList = LevelLists.bowList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
+                    }
                 }
+
             } else if (stack.getItem() instanceof TridentItem) {
                 levelList = LevelLists.tridentList;
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
