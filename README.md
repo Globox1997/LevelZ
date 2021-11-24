@@ -62,11 +62,24 @@ The block category stands for the use of a few vanilla blocks. An example how th
 "skill": has to be one of the mentioned skills.\
 "level": is the level when the player unlocks the interaction of the block.\
 "block": has to be one of the following strings:\
-"minecraft:anvil","minecraft:barrel","minecraft:beehive","minecraft:blastfurnace","minecraft:brewing","minecraft:
+"minecraft:anvil","minecraft:barrel","minecraft:beacon","minecraft:beehive","minecraft:blastfurnace","minecraft:brewing"
+,"minecraft:
 cartography","minecraft:cauldron","minecraft:composter","minecraft:enchanting","minecraft:grindstone","minecraft:
 lectern","minecraft:loom","minecraft:pumpkin","minecraft:smithing","minecraft:smoker","minecraft:stonecutter"
 
-Currently it only supports those vanilla blocks and will only cancel the interaction with the block.\
+It will only cancel the interaction with the block.\
+Since version 1.1.0: Custom block restrictions got added:
+
+```
+{
+    "replace": false,
+    "skill": "smithing",
+    "level": 10,
+    "block": "minecraft:custom_block",
+    "object": "modid:blockid"
+}
+```
+
 One last thing to mention: the enchanting table list takes a unlocking level list inside its json file which looks like
 this:
 
@@ -115,7 +128,19 @@ example how the json file should look like is here:
 "minecraft:cow","minecraft:mooshroom","minecraft:sheep","minecraft:snowgolem","minecraft:villager","minecraft:
 wanderingtrader"
 
-Currently it only supports those vanilla entities and will only cancel the interaction with it.
+It will only cancel the interaction with the entity.
+
+Since version 1.1.0: Custom entity restrictions got added:
+
+```
+{
+    "replace": false,
+    "skill": "smithing",
+    "level": 10,
+    "block": "minecraft:custom_entity",
+    "object": "modid:entityid"
+}
+```
 
 #### 4. Item
 
@@ -155,6 +180,18 @@ An example of one of those categories is here:
 
 It takes a fifth argument called "material" to determine which material of items will be locked.\
 Each of these items has to be in the corresponding fabric item tag.
+
+Since version 1.1.0: Custom item restrictions got added:
+
+```
+{
+    "replace": false,
+    "skill": "smithing",
+    "level": 10,
+    "block": "minecraft:custom_item",
+    "object": "modid:itemid"
+}
+```
 
 #### 5. Mining
 
