@@ -35,6 +35,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
     @Override
     public void reload(ResourceManager manager) {
         clearEveryList();
+        // Mining
         for (Identifier id : manager.findResources("mining", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
@@ -61,6 +62,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         // Fill mining list
         sortAndFillLists(levelList, objectList, 1);
 
+        // Item
         for (Identifier id : manager.findResources("item", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
@@ -86,6 +88,30 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     list.add(data.get("level").getAsInt());
                     list.add(data.get("item").getAsString());
                     list.add(JsonHelper.getBoolean(data, "replace", false));
+                } else if (data.get("item").getAsString().equals("minecraft:custom_item")) {
+                    ArrayList<Object> customList = LevelLists.getList(data.get("item").getAsString());
+                    if (customList.contains(data.get("object").getAsString())) {
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            int removeLines = list.indexOf(data.get("object").getAsString());
+                            for (int i = 0; i < 5; i++) {
+                                list.remove(removeLines);
+                            }
+                        } else {
+                            if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
+                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                            }
+                            continue;
+                        }
+                    }
+                    if (Registry.ITEM.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
+                        LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("object").getAsString());
+                        continue;
+                    }
+                    customList.add(data.get("object").getAsString());
+                    customList.add(data.get("skill").getAsString());
+                    customList.add(data.get("level").getAsInt());
+                    customList.add(data.get("item").getAsString());
+                    customList.add(JsonHelper.getBoolean(data, "replace", false));
                 } else {
                     if (!list.isEmpty()) {
                         if (JsonHelper.getBoolean(data, "replace", false)) {
@@ -107,29 +133,57 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             }
         }
 
+        // Block
         for (Identifier id : manager.findResources("block", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
                 ArrayList<Object> list = LevelLists.getList(data.get("block").getAsString());
-                if (!list.isEmpty()) {
-                    if (JsonHelper.getBoolean(data, "replace", false)) {
-                        list.clear();
-                    } else {
-                        if (!(boolean) list.get(3)) {
-                            LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+
+                if (data.get("block").getAsString().equals("minecraft:custom_block")) {
+                    ArrayList<Object> customList = LevelLists.getList(data.get("block").getAsString());
+                    if (customList.contains(data.get("object").getAsString())) {
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            int removeLines = list.indexOf(data.get("object").getAsString());
+                            for (int i = 0; i < 5; i++) {
+                                list.remove(removeLines);
+                            }
+                        } else {
+                            if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
+                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                            }
+                            continue;
                         }
+                    }
+                    if (Registry.BLOCK.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
+                        LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("object").getAsString());
                         continue;
                     }
-                }
-                list.add(data.get("skill").getAsString());
-                list.add(data.get("level").getAsInt());
-                list.add(data.get("block").getAsString());
-                list.add(JsonHelper.getBoolean(data, "replace", false));
-                // EnchantingTable
-                if (data.get("enchanting") != null) {
-                    for (int i = 0; i < data.getAsJsonArray("enchanting").size(); i++) {
-                        list.add(data.get("enchanting").getAsJsonArray().get(i).getAsInt());
+                    customList.add(data.get("object").getAsString());
+                    customList.add(data.get("skill").getAsString());
+                    customList.add(data.get("level").getAsInt());
+                    customList.add(data.get("block").getAsString());
+                    customList.add(JsonHelper.getBoolean(data, "replace", false));
+                } else {
+                    if (!list.isEmpty()) {
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            list.clear();
+                        } else {
+                            if (!(boolean) list.get(3)) {
+                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                            }
+                            continue;
+                        }
+                    }
+                    list.add(data.get("skill").getAsString());
+                    list.add(data.get("level").getAsInt());
+                    list.add(data.get("block").getAsString());
+                    list.add(JsonHelper.getBoolean(data, "replace", false));
+                    // EnchantingTable
+                    if (data.get("enchanting") != null) {
+                        for (int i = 0; i < data.getAsJsonArray("enchanting").size(); i++) {
+                            list.add(data.get("enchanting").getAsJsonArray().get(i).getAsInt());
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -137,6 +191,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             }
         }
 
+        // Entity
         for (Identifier id : manager.findResources("entity", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
@@ -161,6 +216,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             }
         }
 
+        // Brewing
         for (Identifier id : manager.findResources("brewing", path -> path.endsWith(".json"))) {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
@@ -282,6 +338,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.listOfAllLists.add(LevelLists.wolfList);
         LevelLists.listOfAllLists.add(LevelLists.breedingList);
         LevelLists.listOfAllLists.add(LevelLists.furnaceList);
+        LevelLists.listOfAllLists.add(LevelLists.customBlockList);
+        LevelLists.listOfAllLists.add(LevelLists.customItemList);
     }
 
     public static void clearEveryList() {
@@ -325,6 +383,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.wolfList.clear();
         LevelLists.breedingList.clear();
         LevelLists.furnaceList.clear();
+        LevelLists.customBlockList.clear();
+        LevelLists.customItemList.clear();
 
         LevelLists.miningBlockList.clear();
         LevelLists.miningLevelList.clear();

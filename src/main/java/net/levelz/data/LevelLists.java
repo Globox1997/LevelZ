@@ -57,6 +57,9 @@ public class LevelLists {
     public static final List<List<Integer>> brewingItemList = new ArrayList<>();
     public static final List<Integer> brewingLevelList = new ArrayList<>();
     public static final List<Object> potionList = new ArrayList<>();
+    // Custom
+    public static final ArrayList<Object> customBlockList = new ArrayList<Object>();
+    public static final ArrayList<Object> customItemList = new ArrayList<Object>();
 
     public static ArrayList<Object> getList(String string) {
         switch (string) {
@@ -91,6 +94,8 @@ public class LevelLists {
             return totemList;
         case "minecraft:axe":
             return axeList;
+        case "minecraft:custom_item":
+            return customItemList;
         // Block
         case "minecraft:beehive":
             return beehiveList;
@@ -126,6 +131,8 @@ public class LevelLists {
             return cauldronList;
         case "minecraft:furnace":
             return furnaceList;
+        case "minecraft:custom_block":
+            return customBlockList;
         // Entity
         case "minecraft:cow":
             return cowList;
@@ -191,6 +198,8 @@ public class LevelLists {
         listNames.add("minecraft:wolf");
         listNames.add("minecraft:breeding");
         listNames.add("minecraft:furnace");
+        listNames.add("minecraft:custom_block");
+        listNames.add("minecraft:custom_item");
         return listNames;
     }
 }

@@ -161,7 +161,7 @@ public class PlayerStatsClientPacket {
                 int count = 2;
                 int negativeCount = -2;
                 if (listName.equals("minecraft:armor") || listName.equals("minecraft:tool") || listName.equals("minecraft:hoe") || listName.equals("minecraft:sword")
-                        || listName.equals("minecraft:axe"))
+                        || listName.equals("minecraft:axe") || listName.equals("minecraft:custom_block") || listName.equals("minecraft:custom_item"))
                     negativeCount--;
                 if (listName.equals("minecraft:enchanting")) {
                     count = 5;

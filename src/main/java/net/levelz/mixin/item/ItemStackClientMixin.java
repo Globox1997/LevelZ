@@ -148,7 +148,17 @@ public class ItemStackClientMixin {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
                         list.add(new TranslatableText("item.levelz.locked.tooltip"));
                     }
-                } else if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.BLOCK.getRawId(block), true)) {
+                } else if (!LevelLists.customBlockList.isEmpty() && LevelLists.customBlockList.contains(block.getTranslationKey().replace("block.", "").replace(".", ":"))) {
+                    levelList = LevelLists.customBlockList;
+                    String string = Registry.BLOCK.getId(block).toString();
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(string) + 2).toString())
+                                .formatted(Formatting.GRAY));
+                        list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                    }
+                } else
+                // Mining check
+                if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.BLOCK.getRawId(block), true)) {
                     list.add(new TranslatableText("item.levelz.mining.tooltip", PlayerStatsManager.getUnlockLevel(Registry.BLOCK.getRawId(block), true)).formatted(Formatting.GRAY));
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
@@ -261,6 +271,14 @@ public class ItemStackClientMixin {
                 levelList = LevelLists.fishingList;
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.GRAY));
+                    list.add(new TranslatableText("item.levelz.locked.tooltip"));
+                }
+            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(stack.getItem().getTranslationKey().replace("item.", "").replace(".", ":"))) {
+                levelList = LevelLists.customItemList;
+                String string = Registry.ITEM.getId(stack.getItem()).toString();
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(string) + 2).toString())
+                            .formatted(Formatting.GRAY));
                     list.add(new TranslatableText("item.levelz.locked.tooltip"));
                 }
             } else if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(stack.getItem()), false)) {
