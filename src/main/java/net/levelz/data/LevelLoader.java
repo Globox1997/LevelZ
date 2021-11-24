@@ -123,6 +123,10 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                             continue;
                         }
                     }
+                    if (Registry.ITEM.get(new Identifier(data.get("item").getAsString())).toString().equals("air")) {
+                        LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("item").getAsString());
+                        continue;
+                    }
                     list.add(data.get("skill").getAsString());
                     list.add(data.get("level").getAsInt());
                     list.add(data.get("item").getAsString());
@@ -175,6 +179,10 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                             continue;
                         }
                     }
+                    if (Registry.BLOCK.get(new Identifier(data.get("block").getAsString())).toString().equals("air")) {
+                        LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("block").getAsString());
+                        continue;
+                    }
                     list.add(data.get("skill").getAsString());
                     list.add(data.get("level").getAsInt());
                     list.add(data.get("block").getAsString());
@@ -206,6 +214,10 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                         }
                         continue;
                     }
+                }
+                if (Registry.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("air")) {
+                    LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("entity").getAsString());
+                    continue;
                 }
                 list.add(data.get("skill").getAsString());
                 list.add(data.get("level").getAsInt());
@@ -252,10 +264,16 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         List<Integer> idList = new ArrayList<Integer>();
         if (type == 1) {
             for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
+                if (Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())).toString().equals("air")) {
+                    LOGGER.info("{} is not a valid block identifier", data.getAsJsonArray("block").get(i).getAsString());
+                }
                 idList.add(Registry.BLOCK.getRawId(Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString()))));
             }
         } else if (type == 2) {
             for (int i = 0; i < data.getAsJsonArray("item").size(); i++) {
+                if (Registry.ITEM.get(new Identifier(data.getAsJsonArray("item").get(i).getAsString())).toString().equals("air")) {
+                    LOGGER.info("{} is not a valid item identifier", data.getAsJsonArray("item").get(i).getAsString());
+                }
                 idList.add(Registry.ITEM.getRawId(Registry.ITEM.get(new Identifier(data.getAsJsonArray("item").get(i).getAsString()))));
             }
         }
