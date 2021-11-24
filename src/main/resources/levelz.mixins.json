@@ -20,6 +20,7 @@
     "entity.VillagerEntityMixin",
     "entity.WolfEntityMixin",
     "entity.StorageMinecartEntityMixin",
+    "entity.AxolotlEntityMixin",
     "block.BeehiveBlockMixin",
     "block.PumpkinBlockMixin",
     "block.AbstractBlockMixin",
