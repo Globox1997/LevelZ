@@ -12,8 +12,13 @@ import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import net.fabricmc.fabric.api.util.TriState;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.Items;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class InfoGui extends LightweightGuiDescription {
 
@@ -216,6 +221,7 @@ public class InfoGui extends LightweightGuiDescription {
 
         for (int u = 0; u < sortedUnlockSkillList.size(); u++) {
             if (sortedUnlockSkillList.get(u) != null && sortedUnlockSkillList.get(u).getClass() == Integer.class) {
+                // Add level category info
                 plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", sortedUnlockSkillList.get(u))), 0, gridYSpace);
                 gridYSpace += 16;
                 for (int g = 1; g < sortedUnlockSkillList.size() - u; g += 2) {
@@ -223,9 +229,21 @@ public class InfoGui extends LightweightGuiDescription {
                         break;
                     }
                     String string = sortedUnlockSkillList.get(u + g).toString();
+                    if (string.contains("minecraft:custom_"))
+                        string = sortedUnlockSkillList.get(u + g + 1).toString();
+
+                    Identifier identifier = new Identifier(string);
+
+                    if (!Registry.BLOCK.get(identifier).equals(Blocks.AIR))
+                        string = Registry.BLOCK.get(identifier).getName().getString();
+                    else if (!Registry.ITEM.get(identifier).equals(Items.AIR))
+                        string = Registry.ITEM.get(identifier).getName().getString();
+                    else if (!Registry.ENTITY_TYPE.get(identifier).equals(EntityType.PIG))
+                        string = Registry.ENTITY_TYPE.get(identifier).getName().getString();
+
                     string = string.replace("minecraft:", "");
                     string = string.replace("_", " ");
-                    if (sortedUnlockSkillList.get(u + g + 1) != null) {
+                    if (sortedUnlockSkillList.get(u + g + 1) != null && !sortedUnlockSkillList.get(u + g).toString().contains("minecraft:custom_")) {
                         String otherString = sortedUnlockSkillList.get(u + g + 1).toString();
                         otherString = otherString.replace("_", " ");
                         plainPanel.add(new WLabel(new TranslatableText("text.levelz.object_info_2", StringUtils.capitalize(otherString), StringUtils.capitalize(string))), 10, gridYSpace);
