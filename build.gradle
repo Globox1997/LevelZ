@@ -41,13 +41,13 @@ dependencies {
     // Wthit
     modCompileOnly modRuntimeOnly("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
     // REI
-    modCompileOnly ("me.shedaniel:RoughlyEnoughItems-fabric:6.0.268-alpha") {
-        exclude(group: "net.fabricmc.fabric-api")
-        exclude(group: "me.shedaniel.cloth")
-    }
+    // modCompileOnly ("me.shedaniel:RoughlyEnoughItems-fabric:6.0.268-alpha") {
+    //     exclude(group: "net.fabricmc.fabric-api")
+    //     exclude(group: "me.shedaniel.cloth")
+    // }
     // modCompileOnly modRuntime("de.siphalor:spiceoffabric-1.17:1.4.1+1.17.1:1+")
 	// MCDA
-	modCompileOnly ('curse.maven:mcda-426206:3438235'){
+	modCompileOnly ('curse.maven:mcda-426206:3543557'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
