@@ -46,9 +46,9 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
         }
     }
 
-    @Redirect(method = "onTakeOutput", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExperienceLevels(I)V"))
+    @Redirect(method = "onTakeOutput", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExperienceLevels(I)V"), require = 0)
     private void onTakeOutputMixin(PlayerEntity playerEntity, int levelCost) {
-        if (!(smithingLevel >= ConfigInit.CONFIG.maxLevel) || !(ConfigInit.CONFIG.smithingToolChance > playerEntity.world.random.nextFloat()))
+        if (!(smithingLevel >= ConfigInit.CONFIG.maxLevel) || !(ConfigInit.CONFIG.smithingAnvilChance > playerEntity.world.random.nextFloat()))
             playerEntity.addExperienceLevels(-this.levelCost.get());
     }
 
