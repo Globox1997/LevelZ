@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerDropAccess;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
@@ -21,9 +22,7 @@ import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
-import net.minecraft.item.AxeItem;
 import net.minecraft.item.FoodComponent;
-import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.SwordItem;
@@ -118,12 +117,12 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
         boolean isSword = false;
         if (playerEntity.getMainHandStack().getItem() instanceof ToolItem) {
             ArrayList<Object> levelList = new ArrayList<Object>();
-            if (playerEntity.getMainHandStack().getItem() instanceof SwordItem) {
+            if (playerEntity.getMainHandStack().isIn(FabricToolTags.SWORDS)) {
                 levelList = LevelLists.swordList;
                 isSword = true;
-            } else if (playerEntity.getMainHandStack().getItem() instanceof AxeItem)
+            } else if (playerEntity.getMainHandStack().isIn(FabricToolTags.AXES))
                 levelList = LevelLists.axeList;
-            else if (playerEntity.getMainHandStack().getItem() instanceof HoeItem)
+            else if (playerEntity.getMainHandStack().isIn(FabricToolTags.HOES))
                 levelList = LevelLists.hoeList;
             else
                 levelList = LevelLists.toolList;

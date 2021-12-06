@@ -7,6 +7,7 @@ import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
@@ -17,9 +18,7 @@ import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
@@ -313,23 +312,23 @@ public class LevelzGui extends LightweightGuiDescription {
     private String getDamageLabel(PlayerStatsManager playerStatsManager, PlayerEntity playerEntity) {
         float damage = 0.0F;
         boolean isSword = false;
-        Item item = playerEntity.getMainHandStack().getItem();
-        if (item instanceof ToolItem) {
+        ItemStack itemStack = playerEntity.getMainHandStack();
+        if (itemStack.getItem() instanceof ToolItem) {
             ArrayList<Object> levelList = new ArrayList<Object>();
-            if (item instanceof SwordItem) {
+            if (itemStack.isIn(FabricToolTags.SWORDS)) {
                 levelList = LevelLists.swordList;
                 isSword = true;
-            } else if (item instanceof AxeItem)
+            } else if (itemStack.isIn(FabricToolTags.AXES))
                 levelList = LevelLists.axeList;
-            else if (item instanceof HoeItem)
+            else if (itemStack.isIn(FabricToolTags.HOES))
                 levelList = LevelLists.hoeList;
             else
                 levelList = LevelLists.toolList;
-            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) item).getMaterial().toString().toLowerCase(), false)) {
+            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), false)) {
                 if (isSword)
-                    damage = ((SwordItem) item).getAttackDamage();
-                else if (item instanceof MiningToolItem)
-                    damage = ((MiningToolItem) item).getAttackDamage();
+                    damage = ((SwordItem) itemStack.getItem()).getAttackDamage();
+                else if (itemStack.getItem() instanceof MiningToolItem)
+                    damage = ((MiningToolItem) itemStack.getItem()).getAttackDamage();
             }
 
         }
