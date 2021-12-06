@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ExperienceOrbEntity.class)
 public abstract class ExperienceOrbEntityMixin implements ExperienceOrbAccess {
@@ -54,6 +55,12 @@ public abstract class ExperienceOrbEntityMixin implements ExperienceOrbAccess {
             }
         } else
             player.addExperience(i);
+    }
+
+    @Inject(method = "isMergeable", at = @At("HEAD"), cancellable = true)
+    private void isMergeableMixin(ExperienceOrbEntity other, CallbackInfoReturnable<Boolean> info) {
+        if (this.isPlayerDropped)
+            info.setReturnValue(false);
     }
 
     @Override

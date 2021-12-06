@@ -2,8 +2,6 @@ package net.levelz.mixin.entity;
 
 import java.util.ArrayList;
 
-import net.levelz.access.ExperienceOrbAccess;
-import net.minecraft.entity.ExperienceOrbEntity;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -82,24 +80,6 @@ public abstract class LivingEntityMixin extends Entity {
     protected void dropMixin(DamageSource source, CallbackInfo info) {
         if (!((Object) this instanceof PlayerEntity) && attackingPlayer != null && this.playerHitTimer > 0 && !((PlayerDropAccess) attackingPlayer).allowMobDrop()) {
             info.cancel();
-        }
-    }
-
-    @Inject(method = "dropXp", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"), cancellable = true)
-    protected void dropXpMixin(CallbackInfo info) {
-        if (((Object) this instanceof PlayerEntity)) {
-            if (!ConfigInit.CONFIG.dropPlayerXP)
-                info.cancel();
-            else {
-                ExperienceOrbEntity experienceOrbEntity = (ExperienceOrbEntity) EntityType.EXPERIENCE_ORB.create(this.world);
-                experienceOrbEntity.refreshPositionAndAngles(this.getBlockPos(), this.random.nextFloat() * 360F, 0.0F);
-                experienceOrbEntity.setVelocity((this.random.nextDouble() * 0.20000000298023224D - 0.10000000149011612D) * 2.0D, this.random.nextDouble() * 0.2D * 2.0D,
-                        (this.random.nextDouble() * 0.20000000298023224D - 0.10000000149011612D) * 2.0D);
-                ((ExperienceOrbAccess) experienceOrbEntity).setAmount(this.getXpToDrop(this.attackingPlayer));
-                ((ExperienceOrbAccess) experienceOrbEntity).setDroppedByPlayer();
-                this.world.spawnEntity(experienceOrbEntity);
-                info.cancel();
-            }
         }
     }
 

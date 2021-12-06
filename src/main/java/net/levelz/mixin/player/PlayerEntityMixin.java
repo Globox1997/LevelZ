@@ -13,12 +13,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.levelz.access.ExperienceOrbAccess;
 import net.levelz.access.PlayerDropAccess;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.network.PlayerStatsServerPacket;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ExperienceOrbEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
@@ -36,7 +40,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 @Mixin(PlayerEntity.class)
-public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAccess {
+public abstract class PlayerEntityMixin extends LivingEntity implements PlayerStatsManagerAccess, PlayerDropAccess {
 
     private final PlayerStatsManager playerStatsManager = new PlayerStatsManager();
     private final PlayerEntity playerEntity = (PlayerEntity) (Object) this;
@@ -44,6 +48,10 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
     private int killedMobsInChunk;
     @Nullable
     private Chunk killedMobChunk;
+
+    public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+        super(entityType, world);
+    }
 
     @Inject(method = "readCustomDataFromNbt", at = @At(value = "TAIL"))
     public void readCustomDataFromNbtMixin(NbtCompound tag, CallbackInfo info) {
@@ -178,6 +186,19 @@ public class PlayerEntityMixin implements PlayerStatsManagerAccess, PlayerDropAc
     @Override
     public boolean allowMobDrop() {
         return killedMobsInChunk >= 5 ? false : true;
+    }
+
+    @Override
+    protected void dropXp() {
+        if (ConfigInit.CONFIG.dropPlayerXP) {
+            ExperienceOrbEntity experienceOrbEntity = (ExperienceOrbEntity) EntityType.EXPERIENCE_ORB.create(this.world);
+            experienceOrbEntity.refreshPositionAndAngles(this.getBlockPos(), this.random.nextFloat() * 360F, 0.0F);
+            experienceOrbEntity.setVelocity((this.random.nextDouble() * 0.20000000298023224D - 0.10000000149011612D) * 2.0D, this.random.nextDouble() * 0.2D * 2.0D,
+                    (this.random.nextDouble() * 0.20000000298023224D - 0.10000000149011612D) * 2.0D);
+            ((ExperienceOrbAccess) experienceOrbEntity).setAmount(this.getXpToDrop(this.attackingPlayer));
+            ((ExperienceOrbAccess) experienceOrbEntity).setDroppedByPlayer();
+            this.world.spawnEntity(experienceOrbEntity);
+        }
     }
 
 }
