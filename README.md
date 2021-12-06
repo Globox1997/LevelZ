@@ -137,7 +137,7 @@ Since version 1.1.0: Custom entity restrictions got added:
     "replace": false,
     "skill": "smithing",
     "level": 10,
-    "block": "minecraft:custom_entity",
+    "entity": "minecraft:custom_entity",
     "object": "modid:entityid"
 }
 ```
@@ -188,7 +188,7 @@ Since version 1.1.0: Custom item restrictions got added:
     "replace": false,
     "skill": "smithing",
     "level": 10,
-    "block": "minecraft:custom_item",
+    "item": "minecraft:custom_item",
     "object": "modid:itemid"
 }
 ```
