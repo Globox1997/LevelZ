@@ -1,7 +1,5 @@
 package net.levelz.mixin.player;
 
-import java.util.ArrayList;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -9,18 +7,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.levelz.data.LevelLists;
-import net.levelz.stats.PlayerStatsManager;
+import net.levelz.access.PlayerBreakBlockAccess;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MiningToolItem;
 import net.minecraft.util.collection.DefaultedList;
 
 @Mixin(PlayerInventory.class)
-public class PlayerInventoryMixin {
+public abstract class PlayerInventoryMixin implements PlayerBreakBlockAccess {
 
     @Shadow
     @Final
@@ -33,22 +28,29 @@ public class PlayerInventoryMixin {
     @Shadow
     public int selectedSlot;
 
+    public boolean canBreakBlock = true;
+
+    public float blockBreakExtraDelta = 1.0F;
+
     @Inject(method = "getBlockBreakingSpeed", at = @At(value = "HEAD"), cancellable = true)
     private void getBlockBreakingSpeedMixin(BlockState block, CallbackInfoReturnable<Float> info) {
-        ItemStack itemStack = this.main.get(this.selectedSlot);
-        if (itemStack.getItem() instanceof MiningToolItem) {
-            ArrayList<Object> itemList;
-            if (itemStack.isIn(FabricToolTags.HOES)) {
-                itemList = LevelLists.hoeList;
-            } else if (itemStack.isIn(FabricToolTags.AXES)) {
-                itemList = LevelLists.axeList;
-            } else {
-                itemList = LevelLists.toolList;
-            }
-            if (!PlayerStatsManager.playerLevelisHighEnough(player, itemList, ((MiningToolItem) this.main.get(this.selectedSlot).getItem()).getMaterial().toString().toLowerCase(), true)) {
-                info.setReturnValue(1.0F);
-            }
-        }
+        if (!this.canBreakBlock)
+            info.setReturnValue(1.0F);
+    }
+
+    @Override
+    public void setInventoryBlockBreakable(boolean breakable) {
+        this.canBreakBlock = breakable;
+    }
+
+    @Override
+    public void setAbstractBlockBreakDelta(float breakingDelta) {
+        this.blockBreakExtraDelta = breakingDelta;
+    }
+
+    @Override
+    public float getBreakingAbstractBlockDelta() {
+        return this.blockBreakExtraDelta;
     }
 
 }
