@@ -34,7 +34,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.ShieldItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.TridentItem;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -45,7 +44,7 @@ import net.minecraft.util.registry.Registry;
 public class ItemStackClientMixin {
 
     @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;appendTooltip(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Ljava/util/List;Lnet/minecraft/client/item/TooltipContext;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void getTooltipMixin(@Nullable PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> info, List<Text> list, MutableText mutableText, int i) {
+    private void getTooltipMixin(@Nullable PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> info, List<Text> list) {
         if (player != null) {
             ItemStack stack = (ItemStack) (Object) this;
             ArrayList<Object> levelList = new ArrayList<Object>();
@@ -85,6 +84,11 @@ public class ItemStackClientMixin {
                     }
                 } else if (block == Blocks.BLAST_FURNACE) {
                     levelList = LevelLists.blastFurnaceList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
+                    }
+                } else if (block == Blocks.FURNACE) {
+                    levelList = LevelLists.furnaceList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
