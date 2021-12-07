@@ -1,12 +1,12 @@
 package net.levelz.mixin.misc;
 
+import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -46,10 +46,10 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
         }
     }
 
-    @Redirect(method = "onTakeOutput", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExperienceLevels(I)V"), require = 0)
-    private void onTakeOutputMixin(PlayerEntity playerEntity, int levelCost) {
-        if (!(smithingLevel >= ConfigInit.CONFIG.maxLevel) || !(ConfigInit.CONFIG.smithingAnvilChance > playerEntity.world.random.nextFloat()))
-            playerEntity.addExperienceLevels(-this.levelCost.get());
+    @Inject(method = "onTakeOutput", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/Property;get()I"), require = 0)
+    private void onTakeOutputMixin(PlayerEntity playerEntity, ItemStack stack, CallbackInfo ci) {
+        if ((smithingLevel >= ConfigInit.CONFIG.maxLevel) && (ConfigInit.CONFIG.smithingAnvilChance > playerEntity.world.random.nextFloat()))
+            levelCost.set(0);
     }
 
     @Environment(EnvType.CLIENT)
