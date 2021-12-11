@@ -51,6 +51,8 @@ public class PlayerManagerMixin {
         if (isFirstTimeJoin) {
             player.setHealth(player.getMaxHealth());
         }
+        // Sync strength on client cause out of any reason it doesn't work naturally as with respawnPlayer
+        PlayerStatsServerPacket.writeS2CStrengthPacket(player);
     }
 
     @Inject(method = "respawnPlayer", at = @At(value = "TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT)
