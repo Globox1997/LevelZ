@@ -185,18 +185,19 @@ public class InfoGui extends LightweightGuiDescription {
 
         // Fill skill list
         for (int i = 0; i < LevelLists.listOfAllLists.size(); i++) {
-            if (!LevelLists.listOfAllLists.get(i).isEmpty())
+            if (!LevelLists.listOfAllLists.get(i).isEmpty()) {
                 if (LevelLists.listOfAllLists.get(i).get(0).toString().equals(name)) {
                     unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(1));
                     unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(2));
                     unlockSkillList.add(null);
-                } else if (LevelLists.listOfAllLists.get(i).get(1).toString().equals(name)) {
-                    for (int k = 0; k < LevelLists.listOfAllLists.get(i).size(); k += 5) {
-                        unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(2 + k));
-                        unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(3 + k));
-                        unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(0 + k));
-                    }
-                }
+                } else
+                    for (int k = 0; k < LevelLists.listOfAllLists.get(i).size(); k += 5)
+                        if (LevelLists.listOfAllLists.get(i).get(k + 1).toString().equals(name)) {
+                            unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(2 + k));
+                            unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(3 + k));
+                            unlockSkillList.add(LevelLists.listOfAllLists.get(i).get(0 + k));
+                        }
+            }
         }
         // Sort list
         ArrayList<Object> sortedUnlockSkillList = new ArrayList<Object>();
