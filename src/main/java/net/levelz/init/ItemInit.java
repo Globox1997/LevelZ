@@ -49,7 +49,7 @@ public class ItemInit {
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
                         player.sendMessage(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2))
                                 .formatted(Formatting.RED), true);
-                        return ActionResult.FAIL;
+                        return ActionResult.success(false);
                     }
                 }
             }
@@ -63,9 +63,8 @@ public class ItemInit {
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
                     player.sendMessage(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2))
                             .formatted(Formatting.RED), true);
-                    return ActionResult.FAIL;
+                    return ActionResult.success(false);
                 }
-
             }
             return ActionResult.PASS;
         });
