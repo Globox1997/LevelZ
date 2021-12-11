@@ -50,6 +50,10 @@ dependencies {
 	modCompileOnly ('curse.maven:mcda-426206:3543557'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+    // DragonLoot
+	modCompileOnly modRuntimeOnly('curse.maven:dragonloot-424480:3529611'){
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 
 
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
