@@ -75,9 +75,10 @@ public class PlayerStatsClientPacket {
         });
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.STRENGTH_PACKET, (client, handler, buf, sender) -> {
-            if (client.player != null) {
-                client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(buf.readDouble());
-            }
+            double damageAttribute = buf.readDouble();
+            client.execute(() -> {
+                client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(damageAttribute);
+            });
         });
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.RESET_PACKET, (client, handler, buf, sender) -> {
