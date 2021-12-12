@@ -77,11 +77,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
                 playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
                 if (playerEntity instanceof ServerPlayerEntity) {
                     PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) playerEntity);
+                    PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
                 }
                 if (playerStatsManager.overallLevel > 0 && playerStatsManager.overallLevel % 10 == 0) {
                     float f = playerStatsManager.overallLevel > 30 ? 1.0F : (float) playerStatsManager.overallLevel / 30.0F;
-                    playerEntity.world.playSound((PlayerEntity) null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP,
-                            playerEntity.getSoundCategory(), f * 0.75F, 1.0F);
+                    playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), f * 0.75F,
+                            1.0F);
                 }
             }
         }
