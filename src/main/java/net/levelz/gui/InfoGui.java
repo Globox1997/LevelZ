@@ -244,6 +244,7 @@ public class InfoGui extends LightweightGuiDescription {
 
                     string = string.replace("minecraft:", "");
                     string = string.replace("_", " ");
+                    string = string.replace(":", " ");
                     if (sortedUnlockSkillList.get(u + g + 1) != null && !sortedUnlockSkillList.get(u + g).toString().contains("minecraft:custom_")) {
                         String otherString = sortedUnlockSkillList.get(u + g + 1).toString();
                         otherString = otherString.replace("_", " ");
