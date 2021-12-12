@@ -17,6 +17,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.OreBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -42,7 +44,8 @@ public class BlockMixin {
     private static void getDroppedStacksMixin(BlockState state, ServerWorld world, BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity entity, ItemStack stack,
             CallbackInfoReturnable<List<ItemStack>> info, LootContext.Builder builder) {
         if (entity != null && state.getBlock() instanceof OreBlock && entity instanceof PlayerEntity) {
-            if ((float) ((PlayerStatsManagerAccess) entity).getPlayerStatsManager((PlayerEntity) entity).getLevel("mining") * ConfigInit.CONFIG.miningOreChance > world.random.nextFloat()) {
+            if ((float) ((PlayerStatsManagerAccess) entity).getPlayerStatsManager((PlayerEntity) entity).getLevel("mining") * ConfigInit.CONFIG.miningOreChance > world.random.nextFloat()
+                    && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, stack) == 0) {
                 Block.dropStack(world, pos, state.getDroppedStacks(builder).get(0).split(1));
             }
         }
