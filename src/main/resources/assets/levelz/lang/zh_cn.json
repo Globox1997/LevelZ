@@ -84,7 +84,7 @@
   "text.levelz.info": "%s技能信息",
   "text.levelz.general_info": "可解锁的物品或技能",
   "text.levelz.lock_info": "解锁%s需要%d级",
-  "text.levelz.object_info_1": "可使用%s",
+  "text.levelz.object_info_1": "解锁%s",
   "text.levelz.object_info_2": "%s %s",
   "text.levelz.more_info": "点击技能图标获取更多信息",
 
