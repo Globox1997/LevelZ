@@ -8,7 +8,7 @@
   "text.autoconfig.levelz.category.level_setting": "等级设置",
   "text.autoconfig.levelz.category.default": "技能设置",
   "text.autoconfig.levelz.option.hardMode": "极限模式 (开启后玩家死亡时清除所有点数和经验)",
-  "text.autoconfig.levelz.option.disableMobFarms": "经由刷怪笼生成的怪物不给予经验值",
+  "text.autoconfig.levelz.option.disableMobFarms": "关闭大量杀怪掉落",
   "text.autoconfig.levelz.option.maxLevel": "最大等级",
   "text.autoconfig.levelz.option.startPoints": "初始点数 (开启奖励箱生效)",
   "text.autoconfig.levelz.option.resetCurrentXP": "死亡时重置当前经验条",
@@ -30,7 +30,7 @@
   "text.autoconfig.levelz.option.luckBase": "基础幸运值",
   "text.autoconfig.levelz.option.luckBonus": "每级幸运值加成",
   "text.autoconfig.levelz.option.luckCritBonus": "每级幸运一击加成",
-  "text.autoconfig.levelz.option.luckSurviveChance": "幸存致死伤害几率",
+  "text.autoconfig.levelz.option.luckSurviveChance": "免疫致死伤害几率",
   "text.autoconfig.levelz.option.critDmgBonus": "幸运一击伤害加成",
   "text.autoconfig.levelz.option.staminaBase": "基础饥饿消耗",
   "text.autoconfig.levelz.option.staminaBonus": "每级饥饿消耗减少",
@@ -60,7 +60,7 @@
   "item.levelz.strange_potion": "奇怪药水",
   
   "item.levelz.locked.tooltip": "已锁定",
-  "item.levelz.farming.tooltip": "耕作 %d",
+  "item.levelz.farming.tooltip": "农耕 %d",
   "item.levelz.mining.tooltip": "采矿 %d",
   "item.levelz.strength.tooltip": "力量 %d",
   "item.levelz.archery.tooltip": "箭术 %d",
@@ -208,11 +208,11 @@
   "spritetip.levelz.mining_skill_info_1": "解锁工具",
   "spritetip.levelz.mining_skill_info_2": "解锁矿物资源",
 
-  "spritetip.levelz.farming_skill": "耕作",
-  "spritetip.levelz.farming_skill_info": "解锁耕作物品",
+  "spritetip.levelz.farming_skill": "农耕",
+  "spritetip.levelz.farming_skill_info": "解锁农耕物品",
 
-  "spritetip.levelz.alchemy_skill": "炼药",
-  "spritetip.levelz.alchemy_skill_info": "解锁炼药物品",
+  "spritetip.levelz.alchemy_skill": "炼金",
+  "spritetip.levelz.alchemy_skill_info": "解锁炼金物品",
 
   "container.levelz.enchant": "Tier %d解锁于%s Level %d",
 
