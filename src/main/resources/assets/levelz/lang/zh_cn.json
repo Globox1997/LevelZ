@@ -82,7 +82,7 @@
   "text.levelz.level": "Lv.%d",
   "text.levelz.locked_list": "%s列表",
   "text.levelz.info": "%s技能信息",
-  "text.levelz.general_info": "可解锁的道具或技能",
+  "text.levelz.general_info": "可解锁的物品或技能",
   "text.levelz.lock_info": "解锁%s需要%d级",
   "text.levelz.object_info_1": "可使用%s",
   "text.levelz.object_info_2": "%s %s",
