@@ -52,7 +52,7 @@
   "text.autoconfig.levelz.option.archeryDoubleDamageChance": "远程双倍伤害几率",
   "text.autoconfig.levelz.option.miningTntBonus": "TNT威力加成",
   "text.autoconfig.levelz.option.miningOreChance": "额外矿物掉落几率",
-  "text.autoconfig.levelz.option.miningLockedMultiplicator": "已锁定的方块破坏速度乘数",
+  "text.autoconfig.levelz.option.miningLockedMultiplicator": "已锁定的方块破坏速度减慢倍数",
   "text.autoconfig.levelz.option.highlightLocked": "高亮显示锁定的方块",
   "text.autoconfig.levelz.option.disableFurnaceXP": "关闭熔炉经验",
   "text.autoconfig.levelz.option.dropPlayerXP": "玩家经验掉落",
