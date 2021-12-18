@@ -2,7 +2,7 @@
     "replace": false,
     "skill": "alchemy",
     "level": 5,
-    "block": "minecraft:enchanting",
+    "block": "minecraft:enchanting_table",
     "enchanting": [
         5,
         10,

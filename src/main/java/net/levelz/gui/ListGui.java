@@ -1,10 +1,5 @@
 package net.levelz.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
@@ -24,6 +19,10 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class ListGui extends LightweightGuiDescription {
 
     public ListGui(String name, MinecraftClient client) {
@@ -31,7 +30,7 @@ public class ListGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(200, 215);
 
-        root.add(new WLabel(new TranslatableText("text.levelz.locked_list", StringUtils.capitalize(name))), 6, 7);
+        root.add(new WLabel(new TranslatableText("text.levelz.locked_list", new TranslatableText(String.format("spritetip.levelz.%s_skill", name)))), 6, 7);
 
         ZWSprite infoIcon = new ZWSprite(name, client, 2);
         root.add(infoIcon, 180, 7, 12, 9);
@@ -44,11 +43,11 @@ public class ListGui extends LightweightGuiDescription {
         List<Integer> levelList = new ArrayList<>();
         List<List<Integer>> ObjectList = new ArrayList<>();
         boolean isBlock = false;
-        if (name == "mining") {
+        if (Objects.equals(name, "mining")) {
             levelList = LevelLists.miningLevelList;
             ObjectList = LevelLists.miningBlockList;
             isBlock = true;
-        } else if (name == "alchemy") {
+        } else if (Objects.equals(name, "alchemy")) {
             levelList = LevelLists.brewingLevelList;
             ObjectList = LevelLists.brewingItemList;
         }

@@ -1,14 +1,10 @@
 package net.levelz.gui;
 
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WButton;
-import io.github.cottonmc.cotton.gui.widget.WDynamicLabel;
-import io.github.cottonmc.cotton.gui.widget.WLabel;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.WSprite;
+import io.github.cottonmc.cotton.gui.widget.*;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
@@ -22,9 +18,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Language;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -42,7 +38,7 @@ public class LevelzGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(200, 200);
         // Top label
-        WLabel topLlabel = new WLabel(new LiteralText(playerEntity.getName().getString() + " Skills"), 0xFFFFFF);
+        WLabel topLlabel = new WLabel(new TranslatableText("text.levelz.gui.title", playerEntity.getName().getString()));//new LiteralText(playerEntity.getName().getString() + " Skills"), 0xFFFFFF);
         root.add(topLlabel, 80, 7);
         // Small icons
         WSprite lifeIcon = new WSprite(GUI_ICONS, 0F, 0F, 1F / 28.2865F, 1F / 28.2865F);
@@ -69,8 +65,8 @@ public class LevelzGui extends LightweightGuiDescription {
                 () -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 10D).setScale(2, RoundingMode.HALF_DOWN).floatValue());
         WDynamicLabel foodLabel = new WDynamicLabel(() -> "" + Math.round(playerEntity.getHungerManager().getFoodLevel()));
         WDynamicLabel fortuneLabel = new WDynamicLabel(() -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_LUCK)).setScale(2, RoundingMode.HALF_DOWN).floatValue());
-        WDynamicLabel overallLevel = new WDynamicLabel(() -> "Level " + playerStatsManager.getLevel("level"));
-        WDynamicLabel skillPoints = new WDynamicLabel(() -> "Points " + playerStatsManager.getLevel("points"));
+        WDynamicLabel overallLevel = new WDynamicLabel(() -> String.format(Language.getInstance().get("text.levelz.gui.level"), playerStatsManager.getLevel("level")));
+        WDynamicLabel skillPoints = new WDynamicLabel(() -> String.format(Language.getInstance().get("text.levelz.gui.points"), playerStatsManager.getLevel("points")));
         WDynamicLabel nextLevel = new WDynamicLabel(
                 () -> "XP " + (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()) + " / " + playerStatsManager.getNextLevelExperience());
 

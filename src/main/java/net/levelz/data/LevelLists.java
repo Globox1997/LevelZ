@@ -106,11 +106,11 @@ public class LevelLists {
             return pumpkinList;
         case "minecraft:anvil":
             return anvilList;
-        case "minecraft:brewing":
+        case "minecraft:brewing_stand":
             return brewingStandList;
-        case "minecraft:enchanting":
+        case "minecraft:enchanting_table":
             return enchantingTableList;
-        case "minecraft:smithing":
+        case "minecraft:smithing_table":
             return smithingTableList;
         case "minecraft:grindstone":
             return grindstoneList;
@@ -118,7 +118,7 @@ public class LevelLists {
             return loomList;
         case "minecraft:smoker":
             return smokerList;
-        case "minecraft:blastfurnace":
+        case "minecraft:blast_furnace":
             return blastFurnaceList;
         case "minecraft:cartography":
             return cartographyList;
@@ -145,9 +145,9 @@ public class LevelLists {
             return mooshroomList;
         case "minecraft:sheep":
             return sheepList;
-        case "minecraft:snowgolem":
+        case "minecraft:snow_golem":
             return snowGolemList;
-        case "minecraft:wanderingtrader":
+        case "minecraft:wandering_trader":
             return wanderingTraderList;
         case "minecraft:villager":
             return villagerList;
@@ -185,13 +185,13 @@ public class LevelLists {
         listNames.add("minecraft:beehive");
         listNames.add("minecraft:pumpkin");
         listNames.add("minecraft:anvil");
-        listNames.add("minecraft:brewing");
-        listNames.add("minecraft:enchanting");
-        listNames.add("minecraft:smithing");
+        listNames.add("minecraft:brewing_stand");
+        listNames.add("minecraft:enchanting_table");
+        listNames.add("minecraft:smithing_table");
         listNames.add("minecraft:grindstone");
         listNames.add("minecraft:loom");
         listNames.add("minecraft:smoker");
-        listNames.add("minecraft:blastfurnace");
+        listNames.add("minecraft:blast_furnace");
         listNames.add("minecraft:cartography");
         listNames.add("minecraft:barrel");
         listNames.add("minecraft:composter");
@@ -201,8 +201,8 @@ public class LevelLists {
         listNames.add("minecraft:cow");
         listNames.add("minecraft:mooshroom");
         listNames.add("minecraft:sheep");
-        listNames.add("minecraft:snowgolem");
-        listNames.add("minecraft:wanderingtrader");
+        listNames.add("minecraft:snow_golem");
+        listNames.add("minecraft:wandering_trader");
         listNames.add("minecraft:villager");
         listNames.add("minecraft:wolf");
         listNames.add("minecraft:breeding");
