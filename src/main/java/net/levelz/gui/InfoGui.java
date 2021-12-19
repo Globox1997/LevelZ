@@ -37,14 +37,14 @@ public class InfoGui extends LightweightGuiDescription {
 
         int gridYSpace = 4;
 
-        TranslatableText translatableText1 = new TranslatableText("");
-        TranslatableText translatableText1B = new TranslatableText("");
-        TranslatableText translatableText2A = new TranslatableText("");
-        TranslatableText translatableText2B = new TranslatableText("");
-        TranslatableText translatableText3A = new TranslatableText("");
-        TranslatableText translatableText3B = new TranslatableText("");
-        TranslatableText translatableText6A = new TranslatableText("");
-        TranslatableText translatableText6B = new TranslatableText("");
+        TranslatableText translatableText1 = null;
+        TranslatableText translatableText1B = null;
+        TranslatableText translatableText2A = null;
+        TranslatableText translatableText2B = null;
+        TranslatableText translatableText3A = null;
+        TranslatableText translatableText3B = null;
+        TranslatableText translatableText6A = null;
+        TranslatableText translatableText6B = null;
 
         switch (name) {
             case "health":
@@ -152,25 +152,25 @@ public class InfoGui extends LightweightGuiDescription {
                 break;
         }
 
-        if (!translatableText1.equals(new TranslatableText(""))) {
+        if (translatableTextIsNotBlank(translatableText1)) {
             plainPanel.add(new WLabel(translatableText1), 0, gridYSpace);
             gridYSpace += 14;
         }
-        if (!translatableText1B.equals(new TranslatableText(""))) {
+        if (translatableTextIsNotBlank(translatableText1B)) {
             plainPanel.add(new WLabel(translatableText1B), 0, gridYSpace);
             gridYSpace += 14;
         }
-        if (!translatableText2A.equals(new TranslatableText(""))) {
+        if (translatableTextIsNotBlank(translatableText2A)) {
             plainPanel.add(new WLabel(translatableText2A), 0, gridYSpace);
-            if (!translatableText2B.equals(new TranslatableText(""))) {
+            if (translatableTextIsNotBlank(translatableText2B)) {
                 gridYSpace += 10;
                 plainPanel.add(new WLabel(translatableText2B), 0, gridYSpace);
             }
             gridYSpace += 14;
         }
-        if (!translatableText3A.equals(new TranslatableText(""))) {
+        if (translatableTextIsNotBlank(translatableText3A)) {
             plainPanel.add(new WLabel(translatableText3A), 0, gridYSpace);
-            if (!translatableText3B.equals(new TranslatableText(""))) {
+            if (translatableTextIsNotBlank(translatableText3B)) {
                 gridYSpace += 10;
                 plainPanel.add(new WLabel(translatableText3B), 0, gridYSpace);
             }
@@ -273,9 +273,10 @@ public class InfoGui extends LightweightGuiDescription {
 
                     gridYSpace += 16;
                 }
-                gridYSpace += 4;
                 if (sortedUnlockSkillList.get(u).equals(ConfigInit.CONFIG.maxLevel)) {
                     hasLvlMaxUnlock = true;
+                } else {
+                    gridYSpace += 4;
                 }
             }
 
@@ -286,12 +287,12 @@ public class InfoGui extends LightweightGuiDescription {
         } else {
             gridYSpace -= 16;
         }
-        if (!translatableText6A.equals(new TranslatableText(""))) {
+        if (translatableTextIsNotBlank(translatableText6A)) {
             gridYSpace += 16;
-            plainPanel.add(new WLabel(translatableText6A), 0, gridYSpace);
-            if (!translatableText6B.equals(new TranslatableText(""))) {
+            plainPanel.add(new WLabel(translatableText6A), 10, gridYSpace);
+            if (translatableTextIsNotBlank(translatableText6B)) {
                 gridYSpace += 10;
-                plainPanel.add(new WLabel(translatableText6B), 0, gridYSpace);
+                plainPanel.add(new WLabel(translatableText6B), 10, gridYSpace);
             }
         }
         if (gridYSpace <= 180) {
@@ -301,5 +302,11 @@ public class InfoGui extends LightweightGuiDescription {
 
         root.add(scrollPanel, 10, 20, 180, 185);
         root.validate(this);
+    }
+
+    private boolean translatableTextIsNotBlank(TranslatableText text){
+        if (text == null) return false;
+        if (!Language.getInstance().hasTranslation(text.getKey())) return false;
+        return !Language.getInstance().get(text.getKey()).isBlank();
     }
 }
