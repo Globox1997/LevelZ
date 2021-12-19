@@ -2,5 +2,5 @@
     "replace": true,
     "skill": "smithing",
     "level": 0,
-    "block": "minecraft:smithing"
+    "block": "minecraft:smithing_table"
 }
