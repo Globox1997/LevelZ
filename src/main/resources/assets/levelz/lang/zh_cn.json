@@ -7,6 +7,8 @@
   "text.autoconfig.levelz.title": "LevelZ 配置",
   "text.autoconfig.levelz.category.level_setting": "等级设置",
   "text.autoconfig.levelz.category.default": "技能设置",
+  "text.autoconfig.levelz.option.useVanillaExp": "使用原版经验",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip": "使用原版经验提升技能等级",
   "text.autoconfig.levelz.option.hardMode": "极限模式 (开启后玩家死亡时清除所有点数和经验)",
   "text.autoconfig.levelz.option.disableMobFarms": "禁用刷怪塔",
   "text.autoconfig.levelz.option.maxLevel": "最大等级",
@@ -82,6 +84,7 @@
   "text.levelz.gui.title": "%s 技能面板",
   "text.levelz.gui.level": "等级 %d",
   "text.levelz.gui.points": "技能点 %d",
+  "text.levelz.gui.level_up": "升级",
 
   "text.levelz.level": "Lv.%d",
   "text.levelz.locked_list": "%s列表",

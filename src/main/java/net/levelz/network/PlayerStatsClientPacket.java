@@ -1,8 +1,5 @@
 package net.levelz.network;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
@@ -16,6 +13,9 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerStatsClientPacket {
 
@@ -107,6 +107,15 @@ public class PlayerStatsClientPacket {
                 }
             }
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.ADD_EXPERIENCE_PACKET, (client, handler, buf, sender) -> {
+            PlayerEntity player = client.player;
+            if (player == null) return;
+            int experience = buf.readInt();
+            client.execute(() -> {
+                player.addExperience(experience);
+            });
+        });
     }
 
     public static void writeC2SIncreaseLevelPacket(PlayerStatsManager playerStatsManager, String string) {
@@ -117,6 +126,13 @@ public class PlayerStatsClientPacket {
         buf.writeInt(playerStatsManager.getLevel(string));
 
         CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PlayerStatsServerPacket.STATS_INCREASE_PACKET, buf);
+        MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
+    }
+
+    public static void writeC2SLevelUpPacket() {
+        // Levelz level up
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PlayerStatsServerPacket.LEVEL_UP_PACKET, buf);
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
     }
 

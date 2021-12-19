@@ -1,7 +1,5 @@
 package net.levelz.network;
 
-import java.util.ArrayList;
-
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
@@ -14,6 +12,8 @@ import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
+
 public class PlayerStatsServerPacket {
 
     public static final Identifier STATS_INCREASE_PACKET = new Identifier("levelz", "player_increase_stats");
@@ -22,6 +22,8 @@ public class PlayerStatsServerPacket {
     public static final Identifier LIST_PACKET = new Identifier("levelz", "unlocking_list");
     public static final Identifier STRENGTH_PACKET = new Identifier("levelz", "strength_sync");
     public static final Identifier RESET_PACKET = new Identifier("levelz", "reset_skill");
+    public static final Identifier ADD_EXPERIENCE_PACKET = new Identifier("levelz", "add_experience");
+    public static final Identifier LEVEL_UP_PACKET = new Identifier("levelz", "level_up");
 
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
@@ -49,6 +51,12 @@ public class PlayerStatsServerPacket {
                     syncLockedBrewingItemList(playerStatsManager);
                 }
             }
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(LEVEL_UP_PACKET, (server, player, handler, buffer, sender) -> {
+            if (player == null) return;
+            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+            playerStatsManager.levelUp(player, 0);
         });
 
     }
@@ -172,6 +180,15 @@ public class PlayerStatsServerPacket {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeString(skill);
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(RESET_PACKET, buf);
+        serverPlayerEntity.networkHandler.sendPacket(packet);
+    }
+
+    public static void writeS2CAddExperiencePacket(ServerPlayerEntity serverPlayerEntity, int experience) {
+        // Add player experience
+        // serverPlayerEntity.addExperience(experience);
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeInt(experience);
+        CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(ADD_EXPERIENCE_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
     }
 

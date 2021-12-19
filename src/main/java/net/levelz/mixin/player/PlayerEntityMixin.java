@@ -67,6 +67,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     @Inject(method = "addExperience", at = @At(value = "TAIL"))
     public void addExperienceMixin(int experience, CallbackInfo info) {
+        if (ConfigInit.CONFIG.useVanillaExp) return;
+        playerStatsManager.levelUp(playerEntity, experience);
+        /*
         boolean isEndLvl = this.playerStatsManager.isMaxLevel();
         if (!isEndLvl) {
             playerStatsManager.levelProgress += (float) experience / (float) playerStatsManager.getNextLevelExperience();
@@ -86,6 +89,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
                 }
             }
         }
+        */
     }
 
     @Redirect(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"), require = 0)

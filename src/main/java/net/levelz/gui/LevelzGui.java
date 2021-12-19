@@ -67,9 +67,20 @@ public class LevelzGui extends LightweightGuiDescription {
         WDynamicLabel fortuneLabel = new WDynamicLabel(() -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_LUCK)).setScale(2, RoundingMode.HALF_DOWN).floatValue());
         WDynamicLabel overallLevel = new WDynamicLabel(() -> String.format(Language.getInstance().get("text.levelz.gui.level"), playerStatsManager.getLevel("level")));
         WDynamicLabel skillPoints = new WDynamicLabel(() -> String.format(Language.getInstance().get("text.levelz.gui.points"), playerStatsManager.getLevel("points")));
-        WDynamicLabel nextLevel = new WDynamicLabel(
-                () -> "XP " + (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()) + " / " + playerStatsManager.getNextLevelExperience());
-
+        WDynamicLabel nextLevel;
+        if (ConfigInit.CONFIG.useVanillaExp) {
+            nextLevel = new WDynamicLabel(() -> String.format("XP %d / %d", PlayerStatsManager.getPlayerExp(playerEntity), playerStatsManager.getNextLevelExperience()));
+            ZWButton levelUp = new ZWButton(new TranslatableText("text.levelz.gui.level_up"), 10);
+            levelUp.setEnabled(playerStatsManager.getLevelProgress(playerEntity) >= 1 && !playerStatsManager.isMaxLevel());
+            levelUp.setOnClick(() -> {
+                PlayerStatsClientPacket.writeC2SLevelUpPacket();
+                levelUp.setEnabled(playerStatsManager.getLevelProgress(playerEntity) >= 1 && !playerStatsManager.isMaxLevel());
+            });
+            root.add(levelUp, 110, 49);
+        } else {
+            nextLevel = new WDynamicLabel(
+                    () -> "XP " + (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()) + " / " + playerStatsManager.getNextLevelExperience());
+        }
         root.add(lifeLabel, 74, 22);
         root.add(protectionLabel, 74, 36);
         root.add(damageLabel, 124, 22);

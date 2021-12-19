@@ -11,6 +11,9 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_setting")
     public int maxLevel = 20;
     @ConfigEntry.Category("level_setting")
+    @ConfigEntry.Gui.Tooltip
+    public boolean useVanillaExp = true;
+    @ConfigEntry.Category("level_setting")
     @Comment("Applies if bonus chest world setting is enabled")
     public int startPoints = 5;
     @ConfigEntry.Category("level_setting")

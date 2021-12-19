@@ -35,7 +35,7 @@ public class LevelzScreen extends CottonClientScreen {
             RenderSystem.enableDepthTest();
             RenderSystem.setShaderTexture(0, DrawableHelper.GUI_ICONS_TEXTURE);
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) this.client.player).getPlayerStatsManager(this.client.player);
-            int m = (int) (playerStatsManager.levelProgress * 131.0F);
+            int m = (int) (playerStatsManager.getLevelProgress(this.client.player) * 129.0F);
             int x = scaledWidth / 2 - 41;
             int n = scaledHeight / 2 - 45;
             LevelzScreen.drawTexture(matrices, x, n, 130, 5, 0F, 64F, 182, 5, 256, 256);
