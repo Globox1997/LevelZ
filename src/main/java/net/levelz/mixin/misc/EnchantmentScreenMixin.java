@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.util.Language;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -39,9 +40,10 @@ public abstract class EnchantmentScreenMixin extends HandledScreen<EnchantmentSc
         if (this.isPointWithinBounds(176, 0, 11, 13, (double) mouseX, (double) mouseY)) {
             this.drawTexture(matrices, i + 176, j, 33, 64, 11, 13);
             List<Text> list = Lists.newArrayList();
-            list.add((new TranslatableText("container.levelz.enchant", 1, LevelLists.enchantingTableList.get(0), LevelLists.enchantingTableList.get(4))).formatted(Formatting.WHITE));
-            list.add((new TranslatableText("container.levelz.enchant", 2, LevelLists.enchantingTableList.get(0), LevelLists.enchantingTableList.get(5))).formatted(Formatting.WHITE));
-            list.add((new TranslatableText("container.levelz.enchant", 3, LevelLists.enchantingTableList.get(0), LevelLists.enchantingTableList.get(6))).formatted(Formatting.WHITE));
+            String skill = Language.getInstance().get("spritetip.levelz.%s_skill".formatted(LevelLists.enchantingTableList.get(0)));
+            list.add((new TranslatableText("container.levelz.enchant", 1, skill, LevelLists.enchantingTableList.get(4))).formatted(Formatting.WHITE));
+            list.add((new TranslatableText("container.levelz.enchant", 2, skill, LevelLists.enchantingTableList.get(5))).formatted(Formatting.WHITE));
+            list.add((new TranslatableText("container.levelz.enchant", 3, skill, LevelLists.enchantingTableList.get(6))).formatted(Formatting.WHITE));
             this.renderTooltip(matrices, list, mouseX, mouseY);
         } else
             this.drawTexture(matrices, i + 176, j, 22, 64, 11, 13);

@@ -218,7 +218,7 @@
   "spritetip.levelz.alchemy_skill": "炼金",
   "spritetip.levelz.alchemy_skill_info": "解锁炼金物品",
 
-  "container.levelz.enchant": "Tier %d解锁于%s Level %d",
+  "container.levelz.enchant": "第 §7%d §r格需要 §c%s %d §r解锁",
 
   "text.levelz.object_info.sword": "剑",
   "text.levelz.object_info.tool": "工具",
