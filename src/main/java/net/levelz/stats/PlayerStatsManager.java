@@ -214,6 +214,7 @@ public class PlayerStatsManager {
     }
 
     public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, List<Object> list, String string, boolean creativeRequired) {
+        if (list== null || list.isEmpty()) return true;
         if (!playerEntity.isCreative() || !creativeRequired) {
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
             int playerLevel = 0;
