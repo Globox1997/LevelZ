@@ -30,7 +30,8 @@ public abstract class ExperienceOrbEntityMixin implements ExperienceOrbAccess {
         this.isPlayerDropped = nbt.getBoolean("IsPlayerDropped");
     }
 
-    @Redirect(method = "onPlayerCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExperience(I)V"))
+    // require = 0 can crash without notice
+    @Redirect(method = "onPlayerCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;addExperience(I)V"), require = 0)
     private void onPlayerCollisionMixin(PlayerEntity player, int i) {
         if (this.isPlayerDropped) {
             player.addScore(i);
