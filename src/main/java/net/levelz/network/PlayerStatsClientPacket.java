@@ -164,7 +164,7 @@ public class PlayerStatsClientPacket {
                 if (listName.equals("minecraft:armor") || listName.equals("minecraft:tool") || listName.equals("minecraft:hoe") || listName.equals("minecraft:sword")
                         || listName.equals("minecraft:axe") || listName.equals("minecraft:custom_block") || listName.equals("minecraft:custom_item") || listName.equals("minecraft:custom_entity"))
                     negativeCount--;
-                if (listName.equals("minecraft:enchanting")) {
+                if (listName.equals("minecraft:enchanting_table")) {
                     count = 5;
                 }
                 for (int u = negativeCount; u < count; u++) {

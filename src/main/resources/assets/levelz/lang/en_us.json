@@ -79,6 +79,10 @@
   "block.levelz.locked.tooltip": "§cLocked",
   "block.levelz.locked_with_level.tooltip": "Locked Level %d",
 
+  "text.levelz.gui.title": "%s Skills",
+  "text.levelz.gui.level": "Level %d",
+  "text.levelz.gui.points": "Points %d",
+
   "text.levelz.level": "Level %d",
   "text.levelz.locked_list": "%s list",
   "text.levelz.info": "%s Skill Info",
@@ -215,6 +219,23 @@
   "spritetip.levelz.alchemy_skill_info": "Unlocks Alchemy Items",
 
   "container.levelz.enchant": "Tier %d unlocks at %s level %d",
+
+  "text.levelz.object_info.sword": "Sword",
+  "text.levelz.object_info.tool": "Tool",
+  "text.levelz.object_info.hoe": "Hoe",
+  "text.levelz.object_info.axe": "Axe",
+  "text.levelz.object_info.armor": "Armor",
+  "text.levelz.object_info.breeding": "Breeding",
+
+  "text.levelz.object_prefix.wood": "Wood",
+  "text.levelz.object_prefix.stone": "Stone",
+  "text.levelz.object_prefix.iron": "Iron",
+  "text.levelz.object_prefix.gold": "Gold",
+  "text.levelz.object_prefix.diamond": "Diamond",
+  "text.levelz.object_prefix.netherite": "Netherite",
+  "text.levelz.object_prefix.turtle": "Turtle",
+  "text.levelz.object_prefix.chainmail": "Chainmail",
+  "text.levelz.object_prefix.leather": "Leather",
 
   "config.waila.plugin_levelz": "LevelZ",
   "config.waila.plugin_levelz.mineable_info": "Mineable Info",
