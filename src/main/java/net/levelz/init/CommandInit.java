@@ -3,6 +3,7 @@ package net.levelz.init;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.config.LevelRule;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -68,6 +69,9 @@ public class CommandInit {
                         return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "progress",
                                 IntegerArgumentType.getInteger(commandContext, "level"));
                     })))));
+        });
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            dispatcher.register(LevelRule.commandBuilder("levelz", 3));
         });
     }
 

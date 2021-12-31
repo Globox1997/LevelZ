@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import net.levelz.config.LevelRule;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,7 +22,6 @@ import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
-import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.LivingEntity;
@@ -31,13 +31,10 @@ import net.minecraft.entity.player.HungerManager;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements PlayerStatsManagerAccess, PlayerDropAccess {
@@ -67,7 +64,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     @Inject(method = "addExperience", at = @At(value = "TAIL"))
     public void addExperienceMixin(int experience, CallbackInfo info) {
-        if (ConfigInit.CONFIG.useVanillaExp) return;
+        if (LevelRule.getInstance().useVanillaExp()) return;
         playerStatsManager.levelUp(playerEntity, experience);
         /*
         boolean isEndLvl = this.playerStatsManager.isMaxLevel();

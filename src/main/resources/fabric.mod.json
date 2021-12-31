@@ -24,6 +24,9 @@
     ],
     "modmenu": [
       "net.levelz.config.ModMenuIntegration"
+    ],
+    "cardinal-components-scoreboard": [
+      "net.levelz.init.LevelZComponent"
     ]
   },
   "mixins": [
@@ -43,6 +46,9 @@
     "waila:plugins": {
       "id": "levelz:plugin",
       "initializer": "net.levelz.waila.LevelWailaPlugin"
-    }
+    },
+    "cardinal-components": [
+      "levelz:rule"
+    ]
   }
 }

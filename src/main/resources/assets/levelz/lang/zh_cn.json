@@ -8,7 +8,9 @@
   "text.autoconfig.levelz.category.level_setting": "等级设置",
   "text.autoconfig.levelz.category.default": "技能设置",
   "text.autoconfig.levelz.option.useVanillaExp": "使用原版经验",
-  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip": "使用原版经验提升技能等级",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip[0]": "使用原版经验提升技能等级",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip[1]": "仅在创建存档时生效",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip[2]": "游戏中修改请使用命令 \"/levelz useVanillaExp [true|false]\"",
   "text.autoconfig.levelz.option.hardMode": "极限模式 (开启后玩家死亡时清除所有点数和经验)",
   "text.autoconfig.levelz.option.disableMobFarms": "禁用刷怪塔",
   "text.autoconfig.levelz.option.maxLevel": "最大等级",
@@ -242,5 +244,9 @@
 
   "config.waila.plugin_levelz": "LevelZ",
   "config.waila.plugin_levelz.mineable_info": "可挖掘状态显示",
-  "config.waila.plugin_levelz.mineable_level_info": "可挖掘等级显示"
+  "config.waila.plugin_levelz.mineable_level_info": "可挖掘等级显示",
+
+  "commands.levelz.rule.changed": "存档规则已更新",
+  "commands.levelz.rule.error": "值错误/其他错误",
+  "commands.levelz.rule.notfound": "不存在的存档规则，请检查命令"
 }

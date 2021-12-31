@@ -55,6 +55,11 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
+    // Cardinal-Components-API
+    modApi "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_components}"
+    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-scoreboard:${project.cardinal_components}"
+    //modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components}"
+
 
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom

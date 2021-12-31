@@ -8,7 +8,9 @@
   "text.autoconfig.levelz.category.level_setting": "Level Settings",
   "text.autoconfig.levelz.category.default": "Skill Settings",
   "text.autoconfig.levelz.option.useVanillaExp": "Use Vanilla Exp",
-  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip": "Use the original experience to increase the skill level",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip[0]": "Use the original experience to increase the skill level",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip[1]": "Only effective when the archive is created",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip[2]": "Please use the command \"/levelz useVanillaExp [true|false]\" to modify in the game",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",
@@ -242,5 +244,9 @@
 
   "config.waila.plugin_levelz": "LevelZ",
   "config.waila.plugin_levelz.mineable_info": "Mineable Info",
-  "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info"
+  "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info",
+
+  "commands.levelz.rule.changed": "Level rule got changed",
+  "commands.levelz.rule.error": "Command execution encountered an error",
+  "commands.levelz.rule.notfound": "rule not found"
 }

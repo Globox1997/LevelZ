@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.config.LevelRule;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.network.PlayerStatsClientPacket;
@@ -68,7 +69,7 @@ public class LevelzGui extends LightweightGuiDescription {
         WDynamicLabel overallLevel = new WDynamicLabel(() -> String.format(Language.getInstance().get("text.levelz.gui.level"), playerStatsManager.getLevel("level")));
         WDynamicLabel skillPoints = new WDynamicLabel(() -> String.format(Language.getInstance().get("text.levelz.gui.points"), playerStatsManager.getLevel("points")));
         WDynamicLabel nextLevel;
-        if (ConfigInit.CONFIG.useVanillaExp) {
+        if (LevelRule.getInstance().useVanillaExp()) {
             nextLevel = new WDynamicLabel(() -> String.format("XP %d / %d", PlayerStatsManager.getPlayerExp(playerEntity), playerStatsManager.getNextLevelExperience()));
             ZWButton levelUp = new ZWButton(new TranslatableText("text.levelz.gui.level_up"), 10);
             levelUp.setEnabled(playerStatsManager.getLevelProgress(playerEntity) >= 1 && !playerStatsManager.isMaxLevel());

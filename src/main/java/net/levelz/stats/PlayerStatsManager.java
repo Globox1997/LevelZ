@@ -1,6 +1,7 @@
 package net.levelz.stats;
 
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.config.LevelRule;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.network.PlayerStatsServerPacket;
@@ -181,7 +182,7 @@ public class PlayerStatsManager {
     }
 
     public float getLevelProgress(PlayerEntity playerEntity) {
-        if (ConfigInit.CONFIG.useVanillaExp) {
+        if (LevelRule.getInstance().useVanillaExp()) {
             return Math.min(getPlayerExp(playerEntity) / (float) this.getNextLevelExperience(), 1F);
         }
         return levelProgress;
@@ -330,7 +331,7 @@ public class PlayerStatsManager {
 
     public void levelUp(PlayerEntity playerEntity, int experience) {
         if (this.isMaxLevel()) return;
-        if (ConfigInit.CONFIG.useVanillaExp) {
+        if (LevelRule.getInstance().useVanillaExp()) {
             if (this.getLevelProgress(playerEntity) < 1) return;
             experience = this.getNextLevelExperience();
         } else {
@@ -339,10 +340,10 @@ public class PlayerStatsManager {
         this.totalLevelExperience = MathHelper.clamp(this.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
         while (experience >= this.getNextLevelExperience() && !this.isMaxLevel()) {
             this.addExperienceLevels(1);
-            if (ConfigInit.CONFIG.useVanillaExp) playerEntity.addExperience(-experience);
+            if (LevelRule.getInstance().useVanillaExp()) playerEntity.addExperience(-experience);
             if (playerEntity instanceof ServerPlayerEntity) {
                 PlayerStatsServerPacket.writeS2CSkillPacket(this, (ServerPlayerEntity) playerEntity);
-                if (ConfigInit.CONFIG.useVanillaExp)
+                if (LevelRule.getInstance().useVanillaExp())
                     PlayerStatsServerPacket.writeS2CAddExperiencePacket((ServerPlayerEntity) playerEntity, -experience);
                 onLevelUp(playerEntity, this.overallLevel);
             }
