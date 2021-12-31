@@ -1,5 +1,7 @@
 package net.levelz.mixin.player;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.jetbrains.annotations.Nullable;
@@ -28,8 +30,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MiningToolItem;
-import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
@@ -127,12 +127,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     }
 
     private float getUnlockedDamage(float original, boolean zero) {
-        boolean isSword = false;
         if (playerEntity.getMainHandStack().getItem() instanceof ToolItem) {
             ArrayList<Object> levelList = new ArrayList<Object>();
             if (playerEntity.getMainHandStack().isIn(FabricToolTags.SWORDS)) {
                 levelList = LevelLists.swordList;
-                isSword = true;
             } else if (playerEntity.getMainHandStack().isIn(FabricToolTags.AXES))
                 levelList = LevelLists.axeList;
             else if (playerEntity.getMainHandStack().isIn(FabricToolTags.HOES))
@@ -140,10 +138,13 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
             else
                 levelList = LevelLists.toolList;
             if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
-                if (isSword)
-                    return zero ? 0 : original - ((SwordItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
-                else
-                    return zero ? 0 : original - ((MiningToolItem) playerEntity.getMainHandStack().getItem()).getAttackDamage();
+                try {
+                    Method getter = playerEntity.getMainHandStack().getItem().getClass().getDeclaredMethod("getAttackDamage");
+                    float attackDamage = (float) getter.invoke(playerEntity.getMainHandStack().getItem());
+                    return zero ? 0 : original - attackDamage;
+                } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return original;
