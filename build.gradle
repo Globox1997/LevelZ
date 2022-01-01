@@ -56,8 +56,8 @@ dependencies {
 	}
 
     // Cardinal-Components-API
-    modApi "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_components}"
-    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-scoreboard:${project.cardinal_components}"
+    modApi  include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_components}")
+    modImplementation include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-scoreboard:${project.cardinal_components}")
     //modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components}"
 
 
