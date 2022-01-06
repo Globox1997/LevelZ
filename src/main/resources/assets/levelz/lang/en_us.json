@@ -56,6 +56,7 @@
   "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
   "text.autoconfig.levelz.option.disableFurnaceXP": "Disable Furnace XP",
   "text.autoconfig.levelz.option.dropPlayerXP": "Drop Player XP",
+  "text.autoconfig.levelz.option.enableStartPoints": "Starter Points",
 
   "item.levelz.strange_potion": "Strange Potion",
   

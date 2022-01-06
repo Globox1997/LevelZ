@@ -13,6 +13,8 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_setting")
     @Comment("Applies if bonus chest world setting is enabled")
     public int startPoints = 5;
+    @Comment("Enables starter points for SERVER only")
+    public boolean enableStartPoints = false;
     @ConfigEntry.Category("level_setting")
     @Comment("If true will reset stats on death")
     public boolean hardMode = false;

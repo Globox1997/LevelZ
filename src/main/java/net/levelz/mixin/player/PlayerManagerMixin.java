@@ -44,7 +44,7 @@ public class PlayerManagerMixin {
             ServerPlayNetworkHandler serverPlayNetworkHandler) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
         boolean isFirstTimeJoin = nbtCompound == null;
-        if (isFirstTimeJoin && server != null && server.getSaveProperties().getGeneratorOptions().hasBonusChest()) {
+        if (isFirstTimeJoin && server != null && (server.getSaveProperties().getGeneratorOptions().hasBonusChest() || ConfigInit.CONFIG.enableStartPoints)) {
             playerStatsManager.setLevel("points", ConfigInit.CONFIG.startPoints);
         }
         PlayerStatsServerPacket.writeS2CListPacket(player);
