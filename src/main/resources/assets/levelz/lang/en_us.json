@@ -7,6 +7,10 @@
   "text.autoconfig.levelz.title": "LevelZ Config",
   "text.autoconfig.levelz.category.level_setting": "Level Settings",
   "text.autoconfig.levelz.category.default": "Skill Settings",
+  "text.autoconfig.levelz.option.useVanillaExp": "Use Vanilla Exp",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip[0]": "Use the original experience to increase the skill level",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip[1]": "Only effective when the archive is created",
+  "text.autoconfig.levelz.option.useVanillaExp.@Tooltip[2]": "Please use the command \"/levelz useVanillaExp [true|false]\" to modify in the game",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",
@@ -59,7 +63,7 @@
   "text.autoconfig.levelz.option.enableStartPoints": "Starter Points",
 
   "item.levelz.strange_potion": "Strange Potion",
-  
+
   "item.levelz.locked.tooltip": "Locked",
   "item.levelz.farming.tooltip": "Farming %d",
   "item.levelz.mining.tooltip": "Mining %d",
@@ -83,6 +87,7 @@
   "text.levelz.gui.title": "%s Skills",
   "text.levelz.gui.level": "Level %d",
   "text.levelz.gui.points": "Points %d",
+  "text.levelz.gui.level_up": "Level up",
 
   "text.levelz.level": "Level %d",
   "text.levelz.locked_list": "%s list",
@@ -240,5 +245,9 @@
 
   "config.waila.plugin_levelz": "LevelZ",
   "config.waila.plugin_levelz.mineable_info": "Mineable Info",
-  "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info"
+  "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info",
+
+  "commands.levelz.rule.changed": "Level rule got changed",
+  "commands.levelz.rule.error": "Command execution encountered an error",
+  "commands.levelz.rule.notfound": "rule not found"
 }
