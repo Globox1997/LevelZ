@@ -3,7 +3,7 @@
     "skill": "alchemy",
     "level": 0,
     "block": "minecraft:enchanting_table",
-    "enchanting": [
+    "enchanting_tier": [
         0,
         0,
         0

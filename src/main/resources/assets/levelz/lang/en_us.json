@@ -219,7 +219,7 @@
   "spritetip.levelz.alchemy_skill": "Alchemy",
   "spritetip.levelz.alchemy_skill_info": "Unlocks Alchemy Items",
 
-  "container.levelz.enchant": "Tier %d unlocks at %s level %d",
+  "container.levelz.enchanting_tier": "Tier %d at %s level %d",
 
   "text.levelz.object_info.sword": "Sword",
   "text.levelz.object_info.tool": "Tool",

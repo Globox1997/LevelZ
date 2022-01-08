@@ -188,9 +188,9 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     list.add(data.get("block").getAsString());
                     list.add(JsonHelper.getBoolean(data, "replace", false));
                     // EnchantingTable
-                    if (data.get("enchanting_table") != null) {
-                        for (int i = 0; i < data.getAsJsonArray("enchanting_table").size(); i++) {
-                            list.add(data.get("enchanting_table").getAsJsonArray().get(i).getAsInt());
+                    if (data.get("enchanting_tier") != null) {
+                        for (int i = 0; i < data.getAsJsonArray("enchanting_tier").size(); i++) {
+                            list.add(data.get("enchanting_tier").getAsJsonArray().get(i).getAsInt());
                         }
                     }
                 }
