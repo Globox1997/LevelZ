@@ -69,7 +69,8 @@
     "misc.ServerWorldMixin",
     "misc.LootableContainerBlockEntityMixin",
     "misc.PotionSlotMixin",
-    "misc.ExperienceOrbEntityMixin"
+    "misc.ExperienceOrbEntityMixin",
+    "misc.PiglinBrainMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
