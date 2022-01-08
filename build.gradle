@@ -47,26 +47,20 @@ dependencies {
     // }
     // modCompileOnly modRuntime("de.siphalor:spiceoffabric-1.17:1.4.1+1.17.1:1+")
 	// MCDA
-	modCompileOnly ('curse.maven:mcda-426206:3543557'){
+	modCompileOnly ('curse.maven:mcda-426206:3543557') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // DragonLoot
-	modCompileOnly modRuntimeOnly('curse.maven:dragonloot-424480:3529611'){
+	modCompileOnly modRuntimeOnly('curse.maven:dragonloot-424480:3529611') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-
+    // Trinkets
+    modCompileOnly modRuntimeOnly('com.github.emilyploszaj:trinkets:3.1.0') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
-
-    // // Trinkets
-    // modCompileOnly modRuntime('com.github.emilyploszaj:trinkets:3.0.2') {
-    //     exclude(group: "net.fabricmc.fabric-api")
-    // }
-    // // Things
-	// modCompileOnly modRuntime('curse.maven:dragonloot-456151:3433644'){
-	// 	exclude(group: "net.fabricmc.fabric-api")
-	// }
 }
 
 

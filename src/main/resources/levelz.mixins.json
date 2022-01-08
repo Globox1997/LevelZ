@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "net.levelz.mixin",
   "compatibilityLevel": "JAVA_16",
+  "plugin": "net.levelz.mixin.LevelzMixinPlugin",
   "mixins": [
     "player.ServerPlayerEntityMixin",
     "player.PlayerEntityMixin",
@@ -70,7 +71,8 @@
     "misc.LootableContainerBlockEntityMixin",
     "misc.PotionSlotMixin",
     "misc.ExperienceOrbEntityMixin",
-    "misc.PiglinBrainMixin"
+    "misc.PiglinBrainMixin",
+    "compat.TrinketSlotMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
