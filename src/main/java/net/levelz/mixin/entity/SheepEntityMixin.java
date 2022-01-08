@@ -20,7 +20,7 @@ import net.minecraft.util.Hand;
 public class SheepEntityMixin {
 
     @Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/SheepEntity;sheared(Lnet/minecraft/sound/SoundCategory;)V"), cancellable = true)
-    private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+    private void interactMobMixin(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.sheepList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
             player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);

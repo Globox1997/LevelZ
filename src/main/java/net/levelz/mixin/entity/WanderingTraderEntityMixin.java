@@ -30,7 +30,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
     }
 
     @Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/WanderingTraderEntity;setCurrentCustomer(Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
-    private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+    private void interactMobMixin(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.wanderingTraderList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
             player.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
@@ -39,7 +39,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
     }
 
     @ModifyVariable(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), ordinal = 0)
-    private int afterUsing(int original) {
+    private int afterUsingMixin(int original) {
         if (this.getCurrentCustomer() != null) {
             return original + (int) (((PlayerStatsManagerAccess) this.getCurrentCustomer()).getPlayerStatsManager(this.getCurrentCustomer()).getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus);
         } else

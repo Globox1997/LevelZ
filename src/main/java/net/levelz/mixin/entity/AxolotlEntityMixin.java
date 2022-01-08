@@ -21,7 +21,7 @@ import net.minecraft.util.Hand;
 public class AxolotlEntityMixin {
 
     @Inject(method = "interactMob", at = @At("HEAD"), cancellable = true)
-    private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+    private void interactMobMixin(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         if (player.getStackInHand(hand).getItem() == Items.WATER_BUCKET) {
             ArrayList<Object> levelList = LevelLists.axolotlList;
             if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {

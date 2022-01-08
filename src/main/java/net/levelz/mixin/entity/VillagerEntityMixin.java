@@ -37,7 +37,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
     }
 
     @Inject(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/VillagerEntity;beginTradeWith(Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
-    private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+    private void interactMobMixin(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.villagerList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
             this.sayNo();
@@ -47,7 +47,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
     }
 
     @ModifyVariable(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), ordinal = 0)
-    private int afterUsing(int original) {
+    private int afterUsingMixin(int original) {
         if (this.getCurrentCustomer() != null) {
             return original + (int) (((PlayerStatsManagerAccess) this.getCurrentCustomer()).getPlayerStatsManager(this.getCurrentCustomer()).getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus);
         } else
