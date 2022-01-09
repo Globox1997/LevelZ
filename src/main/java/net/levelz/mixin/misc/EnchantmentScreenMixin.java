@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.api.Environment;
 import net.levelz.data.LevelLists;
-import net.levelz.gui.LevelzGui;
+import net.levelz.init.RenderInit;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.gui.screen.ingame.EnchantmentScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -36,7 +36,7 @@ public abstract class EnchantmentScreenMixin extends HandledScreen<EnchantmentSc
     protected void drawBackgroundMixin(MatrixStack matrices, float delta, int mouseX, int mouseY, CallbackInfo info) {
         int i = (this.width - this.backgroundWidth) / 2;
         int j = (this.height - this.backgroundHeight) / 2;
-        RenderSystem.setShaderTexture(0, LevelzGui.GUI_ICONS);
+        RenderSystem.setShaderTexture(0, RenderInit.GUI_ICONS);
         if (this.isPointWithinBounds(176, 0, 11, 13, (double) mouseX, (double) mouseY)) {
             this.drawTexture(matrices, i + 176, j, 33, 64, 11, 13);
             List<Text> list = Lists.newArrayList();

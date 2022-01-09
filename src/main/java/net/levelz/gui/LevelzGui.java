@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
+import net.levelz.init.RenderInit;
 import net.levelz.network.PlayerStatsClientPacket;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
@@ -19,7 +20,6 @@ import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 
 import java.math.BigDecimal;
@@ -29,8 +29,6 @@ import java.util.ArrayList;
 @Environment(EnvType.CLIENT)
 public class LevelzGui extends LightweightGuiDescription {
 
-    public static final Identifier GUI_ICONS = new Identifier("levelz:textures/gui/icons.png");
-
     public LevelzGui(MinecraftClient client) {
         PlayerEntity playerEntity = client.player;
 
@@ -38,15 +36,15 @@ public class LevelzGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(200, 200);
         // Top label
-        WLabel topLlabel = new WLabel(new TranslatableText("text.levelz.gui.title", playerEntity.getName().getString()));//new LiteralText(playerEntity.getName().getString() + " Skills"), 0xFFFFFF);
+        WLabel topLlabel = new WLabel(new TranslatableText("text.levelz.gui.title", playerEntity.getName().getString()));// new LiteralText(playerEntity.getName().getString() + " Skills"), 0xFFFFFF);
         root.add(topLlabel, 80, 7);
         // Small icons
-        WSprite lifeIcon = new WSprite(GUI_ICONS, 0F, 0F, 1F / 28.2865F, 1F / 28.2865F);
-        WSprite protectionIcon = new WSprite(GUI_ICONS, 1F / 28.2865F, 0F, 2F / 28.305F, 1F / 28.2865F);
-        WSprite speedIcon = new WSprite(GUI_ICONS, 2F / 28.2865F, 0F, 3F / 28.355F, 1F / 28.2865F);
-        WSprite damageIcon = new WSprite(GUI_ICONS, 3F / 28.2865F, 0F, 4F / 28.4F, 1F / 28.2865F);
-        WSprite foodIcon = new WSprite(GUI_ICONS, 4F / 28.2865F, 0F, 5F / 28.4F, 1F / 28.2865F);
-        WSprite fortuneIcon = new WSprite(GUI_ICONS, 5F / 28.2865F, 0F, 6F / 28.2865F, 1F / 28.2865F);
+        WSprite lifeIcon = new WSprite(RenderInit.GUI_ICONS, 0F, 0F, 1F / 28.2865F, 1F / 28.2865F);
+        WSprite protectionIcon = new WSprite(RenderInit.GUI_ICONS, 1F / 28.2865F, 0F, 2F / 28.305F, 1F / 28.2865F);
+        WSprite speedIcon = new WSprite(RenderInit.GUI_ICONS, 2F / 28.2865F, 0F, 3F / 28.355F, 1F / 28.2865F);
+        WSprite damageIcon = new WSprite(RenderInit.GUI_ICONS, 3F / 28.2865F, 0F, 4F / 28.4F, 1F / 28.2865F);
+        WSprite foodIcon = new WSprite(RenderInit.GUI_ICONS, 4F / 28.2865F, 0F, 5F / 28.4F, 1F / 28.2865F);
+        WSprite fortuneIcon = new WSprite(RenderInit.GUI_ICONS, 5F / 28.2865F, 0F, 6F / 28.2865F, 1F / 28.2865F);
 
         root.add(lifeIcon, 58, 21, 10, 10);
         root.add(protectionIcon, 58, 34, 10, 10);
@@ -107,18 +105,18 @@ public class LevelzGui extends LightweightGuiDescription {
         root.add(alchemyLabel, 129, 195);
 
         // Skill sprites
-        ZWSprite healthIcon = new ZWSprite("health", GUI_ICONS, client, 0F, 1F / 16F, 1F / 16F, 2F / 16F);
-        ZWSprite strengthIcon = new ZWSprite("strength", GUI_ICONS, client, 1F / 16F, 1F / 16F, 2F / 16F, 2F / 16F);
-        ZWSprite agilityIcon = new ZWSprite("agility", GUI_ICONS, client, 2F / 16F, 1F / 16F, 3F / 16F, 2F / 16F);
-        ZWSprite defenseIcon = new ZWSprite("defense", GUI_ICONS, client, 3F / 16F, 1F / 16F, 4F / 16F, 2F / 16F);
-        ZWSprite staminaIcon = new ZWSprite("stamina", GUI_ICONS, client, 4F / 16F, 1F / 16F, 5F / 16F, 2F / 16F);
-        ZWSprite luckIcon = new ZWSprite("luck", GUI_ICONS, client, 5F / 16F, 1F / 16F, 6F / 16F, 2F / 16F);
-        ZWSprite archeryIcon = new ZWSprite("archery", GUI_ICONS, client, 6F / 16F, 1F / 16F, 7F / 16F, 2F / 16F);
-        ZWSprite tradeIcon = new ZWSprite("trade", GUI_ICONS, client, 7F / 16F, 1F / 16F, 8F / 16F, 2F / 16F);
-        ZWSprite smithingIcon = new ZWSprite("smithing", GUI_ICONS, client, 8F / 16F, 1F / 16F, 9F / 16F, 2F / 16F);
-        ZWSprite miningIcon = new ZWSprite("mining", GUI_ICONS, client, 9F / 16F, 1F / 16F, 10F / 16F, 2F / 16F);
-        ZWSprite farmingIcon = new ZWSprite("farming", GUI_ICONS, client, 10F / 16F, 1F / 16F, 11F / 16F, 2F / 16F);
-        ZWSprite alchemyIcon = new ZWSprite("alchemy", GUI_ICONS, client, 11F / 16F, 1F / 16F, 12F / 16F, 2F / 16F);
+        ZWSprite healthIcon = new ZWSprite("health", RenderInit.GUI_ICONS, client, 0F, 1F / 16F, 1F / 16F, 2F / 16F);
+        ZWSprite strengthIcon = new ZWSprite("strength", RenderInit.GUI_ICONS, client, 1F / 16F, 1F / 16F, 2F / 16F, 2F / 16F);
+        ZWSprite agilityIcon = new ZWSprite("agility", RenderInit.GUI_ICONS, client, 2F / 16F, 1F / 16F, 3F / 16F, 2F / 16F);
+        ZWSprite defenseIcon = new ZWSprite("defense", RenderInit.GUI_ICONS, client, 3F / 16F, 1F / 16F, 4F / 16F, 2F / 16F);
+        ZWSprite staminaIcon = new ZWSprite("stamina", RenderInit.GUI_ICONS, client, 4F / 16F, 1F / 16F, 5F / 16F, 2F / 16F);
+        ZWSprite luckIcon = new ZWSprite("luck", RenderInit.GUI_ICONS, client, 5F / 16F, 1F / 16F, 6F / 16F, 2F / 16F);
+        ZWSprite archeryIcon = new ZWSprite("archery", RenderInit.GUI_ICONS, client, 6F / 16F, 1F / 16F, 7F / 16F, 2F / 16F);
+        ZWSprite tradeIcon = new ZWSprite("trade", RenderInit.GUI_ICONS, client, 7F / 16F, 1F / 16F, 8F / 16F, 2F / 16F);
+        ZWSprite smithingIcon = new ZWSprite("smithing", RenderInit.GUI_ICONS, client, 8F / 16F, 1F / 16F, 9F / 16F, 2F / 16F);
+        ZWSprite miningIcon = new ZWSprite("mining", RenderInit.GUI_ICONS, client, 9F / 16F, 1F / 16F, 10F / 16F, 2F / 16F);
+        ZWSprite farmingIcon = new ZWSprite("farming", RenderInit.GUI_ICONS, client, 10F / 16F, 1F / 16F, 11F / 16F, 2F / 16F);
+        ZWSprite alchemyIcon = new ZWSprite("alchemy", RenderInit.GUI_ICONS, client, 11F / 16F, 1F / 16F, 12F / 16F, 2F / 16F);
 
         // Skill sprite tooltip
         healthIcon.addText(new TranslatableText("spritetip.levelz.health_skill").getString());
