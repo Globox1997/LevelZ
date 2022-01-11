@@ -4,10 +4,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
+import io.github.cottonmc.cotton.gui.client.LibGui;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.KeyInit;
+import net.levelz.init.RenderInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -15,6 +17,9 @@ import net.minecraft.client.util.math.MatrixStack;
 
 @Environment(EnvType.CLIENT)
 public class LevelzScreen extends CottonClientScreen {
+
+    private boolean sliderOpen = false;
+
     public LevelzScreen(GuiDescription description) {
         super(description);
     }
@@ -45,6 +50,29 @@ public class LevelzScreen extends CottonClientScreen {
             RenderSystem.disableBlend();
             RenderSystem.disableDepthTest();
         }
+
+        RenderSystem.setShaderTexture(0, RenderInit.GUI_ICONS);
+        if (LibGui.isDarkMode())
+            this.drawTexture(matrices, this.left - 6, this.top + 6, 72, 80, 6, 20);
+        else
+            this.drawTexture(matrices, this.left - 6, this.top + 6, 48, 80, 6, 20);
+        if (this.isPointWithinBounds(-18, 6, 18, 20, (double) mouseX, (double) mouseY)) {
+            if (this.isPointWithinBounds(-6, 6, 7, 20, (double) mouseX, (double) mouseY))
+                this.sliderOpen = true;
+            if (this.sliderOpen)
+                if (LibGui.isDarkMode())
+                    this.drawTexture(matrices, this.left - 18, this.top + 6, 78, 80, 18, 20);
+                else
+                    this.drawTexture(matrices, this.left - 18, this.top + 6, 54, 80, 18, 20);
+        } else
+            this.sliderOpen = false;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        if (this.sliderOpen)
+            this.client.setScreen(new InventoryScreen(this.client.player));
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -55,6 +83,12 @@ public class LevelzScreen extends CottonClientScreen {
         } else
             return super.keyPressed(ch, keyCode, modifiers);
 
+    }
+
+    private boolean isPointWithinBounds(int x, int y, int width, int height, double pointX, double pointY) {
+        int i = this.left;
+        int j = this.top;
+        return (pointX -= (double) i) >= (double) (x - 1) && pointX < (double) (x + width + 1) && (pointY -= (double) j) >= (double) (y - 1) && pointY < (double) (y + height + 1);
     }
 
 }
