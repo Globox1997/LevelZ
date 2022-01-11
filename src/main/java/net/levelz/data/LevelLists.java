@@ -60,6 +60,9 @@ public class LevelLists {
     public static final List<List<Integer>> brewingItemList = new ArrayList<>();
     public static final List<Integer> brewingLevelList = new ArrayList<>();
     public static final List<Object> potionList = new ArrayList<>();
+
+    public static final List<List<Integer>> smithingItemList = new ArrayList<>();
+    public static final List<Integer> smithingLevelList = new ArrayList<>();
     // Custom
     public static final ArrayList<Object> customBlockList = new ArrayList<Object>();
     public static final ArrayList<Object> customItemList = new ArrayList<Object>();

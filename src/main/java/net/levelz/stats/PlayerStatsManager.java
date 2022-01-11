@@ -35,6 +35,7 @@ public class PlayerStatsManager {
     // Other
     public List<Integer> lockedBlockIds = new ArrayList<Integer>();
     public List<Integer> lockedbrewingItemIds = new ArrayList<Integer>();
+    public List<Integer> lockedSmithingItemIds = new ArrayList<Integer>();
 
     // Wood, Stone, Iron,Gold, Diamond, Netherite
 
@@ -220,19 +221,26 @@ public class PlayerStatsManager {
     }
 
     // 1 = block, 2 = alchemy, 3 = ?
-    public static boolean listContainsItemOrBlock(PlayerEntity playerEntity, int id, boolean isBlock) {
+    public static boolean listContainsItemOrBlock(PlayerEntity playerEntity, int id, int reference) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
-        if (isBlock) {
+        if (reference == 1) {
             int playerMiningLevel = playerStatsManager.getLevel("mining");
             if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
                 if (playerStatsManager.lockedBlockIds.contains(id)) {
                     return true;
                 }
             }
-        } else {
+        } else if (reference == 2) {
             int playerBrewingLevel = playerStatsManager.getLevel("alchemy");
             if (playerBrewingLevel < ConfigInit.CONFIG.maxLevel) {
                 if (playerStatsManager.lockedbrewingItemIds.contains(id)) {
+                    return true;
+                }
+            }
+        } else if (reference == 3) {
+            int playerSmithingLevel = playerStatsManager.getLevel("smithing");
+            if (playerSmithingLevel < ConfigInit.CONFIG.maxLevel) {
+                if (playerStatsManager.lockedSmithingItemIds.contains(id)) {
                     return true;
                 }
             }
@@ -240,22 +248,31 @@ public class PlayerStatsManager {
         return false;
     }
 
-    public static int getUnlockLevel(int id, boolean isBlock) {
-        if (isBlock) {
+    // 1:mining; 2:brewing; 3:smithing
+    public static int getUnlockLevel(int id, int reference) {
+        if (reference == 1) {
             for (int i = 0; i < LevelLists.miningBlockList.size(); i++) {
                 if (LevelLists.miningBlockList.get(i).contains(id)) {
                     return LevelLists.miningLevelList.get(i);
                 }
             }
             return 0;
-        } else {
+        } else if (reference == 2) {
             for (int i = 0; i < LevelLists.brewingItemList.size(); i++) {
                 if (LevelLists.brewingItemList.get(i).contains(id)) {
                     return LevelLists.brewingLevelList.get(i);
                 }
             }
             return 0;
+        } else if (reference == 3) {
+            for (int i = 0; i < LevelLists.smithingItemList.size(); i++) {
+                if (LevelLists.smithingItemList.get(i).contains(id)) {
+                    return LevelLists.smithingLevelList.get(i);
+                }
+            }
+            return 0;
         }
+        return 0;
     }
 
     public static boolean resetSkill(PlayerEntity playerEntity, String skill) {

@@ -60,7 +60,7 @@ public class ScreenHandlerMixin {
             }
         } else if (type == ScreenHandlerType.BREWING_STAND && slotIndex == 3 && !cursorStack.isEmpty()) {
             // Slot 3: top; slot 0-2: bottom slots
-            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(cursorStack.getItem()), false) && !player.isCreative()) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(cursorStack.getItem()), 2) && !player.isCreative()) {
                 info.cancel();
             }
         }
@@ -80,7 +80,7 @@ public class ScreenHandlerMixin {
                 info.cancel();
             }
         } else if (type == ScreenHandlerType.BREWING_STAND && slotIndex == 3 && !cursorStack.isEmpty()) {
-            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(cursorStack.getItem()), false) && !player.isCreative()) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(cursorStack.getItem()), 2) && !player.isCreative()) {
                 info.cancel();
             }
         }
@@ -102,7 +102,7 @@ public class ScreenHandlerMixin {
                 info.cancel();
             }
         } else if (type == ScreenHandlerType.BREWING_STAND && slotIndex == 3 && !itemStack.isEmpty()) {
-            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(itemStack.getItem()), false) && !player.isCreative()) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(itemStack.getItem()), 2) && !player.isCreative()) {
                 info.cancel();
             }
         }
@@ -124,7 +124,7 @@ public class ScreenHandlerMixin {
                 info.cancel();
             }
         } else if (type == ScreenHandlerType.BREWING_STAND && slotIndex == 3 && !itemStack.isEmpty()) {
-            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(itemStack.getItem()), false) && !player.isCreative()) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(itemStack.getItem()), 2) && !player.isCreative()) {
                 info.cancel();
             }
         }

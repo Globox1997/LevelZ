@@ -280,6 +280,33 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         // Fill brewing list
         sortAndFillLists(levelList, objectList, 2);
 
+        // Smithing
+        for (Identifier id : manager.findResources("smithing", path -> path.endsWith(".json"))) {
+            try {
+                InputStream stream = manager.getResource(id).getInputStream();
+                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+
+                if (levelList.contains(data.get("level").getAsInt())) {
+                    int index = levelList.indexOf(data.get("level").getAsInt());
+                    if (JsonHelper.getBoolean(data, "replace", false)) {
+                        levelList.remove(index);
+                        objectList.remove(index);
+                        replaceList.remove(index);
+                        fillLists(data, false, 2);
+                    } else if (!replaceList.get(index)) {
+                        fillLists(data, true, 2);
+                    }
+                } else {
+                    fillLists(data, false, 2);
+                }
+
+            } catch (Exception e) {
+                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+            }
+        }
+        // Fill smithing list
+        sortAndFillLists(levelList, objectList, 3);
+
         addAllInOneList();
 
         // Test check here:
@@ -287,6 +314,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         // System.out.println(LevelLists.miningLevelList);
     }
 
+    // 1:block; 2:item
     private void fillLists(JsonObject data, boolean addToExisting, int type) {
         List<Integer> idList = new ArrayList<Integer>();
         if (type == 1) {
@@ -317,7 +345,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         }
     }
 
-    // type: 1 = mining; 2 = brewing
+    // type: 1 = mining; 2 = brewing; 3 = smithing
     private void sortAndFillLists(List<Integer> levelList, List<List<Integer>> objectList, int type) {
         // clear replace list for next usage
         replaceList.clear();
@@ -334,6 +362,12 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 LevelLists.brewingLevelList.sort(Comparator.naturalOrder());
                 for (int i = 0; i < levelList.size(); i++) {
                     LevelLists.brewingItemList.add(i, objectList.get(levelList.indexOf(LevelLists.brewingLevelList.get(i))));
+                }
+            } else if (type == 3) {
+                LevelLists.smithingLevelList.addAll(levelList);
+                LevelLists.smithingLevelList.sort(Comparator.naturalOrder());
+                for (int i = 0; i < levelList.size(); i++) {
+                    LevelLists.smithingItemList.add(i, objectList.get(levelList.indexOf(LevelLists.smithingLevelList.get(i))));
                 }
             }
             this.objectList.clear();
@@ -445,6 +479,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.miningLevelList.clear();
         LevelLists.brewingItemList.clear();
         LevelLists.brewingLevelList.clear();
+        LevelLists.smithingItemList.clear();
+        LevelLists.smithingLevelList.clear();
         // Potion list isn't filled via levelz datapacks
         // LevelLists.potionList.clear();
     }

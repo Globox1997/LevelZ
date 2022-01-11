@@ -76,6 +76,7 @@
 
   "item.levelz.mining_restriction.tooltip": "§7Mineable: §cMining %d",
   "item.levelz.alchemy_restriction.tooltip": "§7Brewable: §cBrewing %d",
+  "item.levelz.smithing_restriction.tooltip": "§7Smithable: §cSmithing %d",
 
   "block.levelz.locked.tooltip": "§cLocked",
   "block.levelz.locked_with_level.tooltip": "Locked Level %d",
@@ -83,6 +84,7 @@
   "text.levelz.gui.title": "%s Skills",
   "text.levelz.gui.level": "Level %d",
   "text.levelz.gui.points": "Points %d",
+  "text.levelz.gui.short_level": "Lv. %d",
 
   "text.levelz.level": "Level %d",
   "text.levelz.locked_list": "%s list",

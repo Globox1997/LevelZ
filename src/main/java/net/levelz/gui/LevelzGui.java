@@ -36,7 +36,7 @@ public class LevelzGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(200, 200);
         // Top label
-        WLabel topLlabel = new WLabel(new TranslatableText("text.levelz.gui.title", playerEntity.getName().getString()));// new LiteralText(playerEntity.getName().getString() + " Skills"), 0xFFFFFF);
+        WLabel topLlabel = new WLabel(new TranslatableText("text.levelz.gui.title", playerEntity.getName().getString()));
         root.add(topLlabel, 80, 7);
         // Small icons
         WSprite lifeIcon = new WSprite(RenderInit.GUI_ICONS, 0F, 0F, 1F / 28.2865F, 1F / 28.2865F);
@@ -262,6 +262,7 @@ public class LevelzGui extends LightweightGuiDescription {
         });
         smithingButton.setOnClick(() -> {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(playerStatsManager, "smithing");
+            PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
             setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton, farmingButton,
                     alchemyButton, playerStatsManager);
         });
@@ -305,25 +306,24 @@ public class LevelzGui extends LightweightGuiDescription {
 
     private String getDamageLabel(PlayerStatsManager playerStatsManager, PlayerEntity playerEntity) {
         float damage = 0.0F;
-        boolean isSword = false;
         ItemStack itemStack = playerEntity.getMainHandStack();
         if (itemStack.getItem() instanceof ToolItem) {
-            ArrayList<Object> levelList = new ArrayList<Object>();
+            ArrayList<Object> levelList = null;
             if (itemStack.isIn(FabricToolTags.SWORDS)) {
                 levelList = LevelLists.swordList;
-                isSword = true;
             } else if (itemStack.isIn(FabricToolTags.AXES))
                 levelList = LevelLists.axeList;
             else if (itemStack.isIn(FabricToolTags.HOES))
                 levelList = LevelLists.hoeList;
-            else
+            else if (playerEntity.getMainHandStack().isIn(FabricToolTags.PICKAXES) || playerEntity.getMainHandStack().isIn(FabricToolTags.SHOVELS))
                 levelList = LevelLists.toolList;
-            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), false)) {
-                if (isSword)
-                    damage = ((SwordItem) itemStack.getItem()).getAttackDamage();
-                else if (itemStack.getItem() instanceof MiningToolItem)
-                    damage = ((MiningToolItem) itemStack.getItem()).getAttackDamage();
-            }
+            if (levelList != null)
+                if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), false)) {
+                    if (itemStack.getItem() instanceof SwordItem)
+                        damage = ((SwordItem) itemStack.getItem()).getAttackDamage();
+                    else if (itemStack.getItem() instanceof MiningToolItem)
+                        damage = ((MiningToolItem) itemStack.getItem()).getAttackDamage();
+                }
 
         }
         damage += playerEntity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);

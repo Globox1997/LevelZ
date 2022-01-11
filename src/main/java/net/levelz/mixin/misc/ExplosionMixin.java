@@ -34,7 +34,7 @@ public class ExplosionMixin {
     private BlockState affectWorldMixin(BlockState original) {
         if (this.entity != null) {
             if (this.entity instanceof TntEntity && ((TntEntity) this.entity).getCausingEntity() != null && ((TntEntity) this.entity).getCausingEntity() instanceof PlayerEntity) {
-                if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) ((TntEntity) this.entity).getCausingEntity(), Registry.BLOCK.getRawId(original.getBlock()), true)) {
+                if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) ((TntEntity) this.entity).getCausingEntity(), Registry.BLOCK.getRawId(original.getBlock()), 1)) {
                     return Blocks.AIR.getDefaultState();
                 }
             }

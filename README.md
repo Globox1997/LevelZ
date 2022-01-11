@@ -37,13 +37,14 @@ found here and are self-explanatory:
 * farming
 * alchemy
 
-The mod has 5 different folder for different locking things.
+The mod has 6 different folder for different locking things.
 
 1. block
-2. brewing
-3. entity
-4. item
+2. entity
+3. item
+4. brewing
 5. mining
+6. smithing
 
 #### 1. Block
 
@@ -91,26 +92,7 @@ this:
     ]
 ```
 
-#### 2. Brewing
-
-The brewing category stands for the use of brewing ingredient items at the brewing table. An example how the json file
-should look like is here:
-
-```
-{
-    "replace": false,
-    "level": 4,
-    "item": [
-        "minecraft:golden_carrot"
-    ]
-}
-```
-
-It looks the slots of the brewing table, so players can't insert items to brew the resulting potion before they reached
-the level. A list of the brewing items can be found here [Brewing Wiki](https://minecraft.fandom.com/wiki/Brewing). It
-is hardcoded to the alchemy skill.
-
-#### 3. Entity
+#### 2. Entity
 
 The entity category is pretty similar to the block category and will lock the interaction with the set entity. An
 example how the json file should look like is here:
@@ -142,7 +124,7 @@ Since version 1.1.0: Custom entity restrictions got added:
 }
 ```
 
-#### 4. Item
+#### 3. Item
 
 The item category stands for the use of items. An example how the json file should look like is here:
 
@@ -193,6 +175,25 @@ Since version 1.1.0: Custom item restrictions got added:
 }
 ```
 
+#### 4. Brewing
+
+The brewing category stands for the use of brewing ingredient items at the brewing table. An example how the json file
+should look like is here:
+
+```
+{
+    "replace": false,
+    "level": 4,
+    "item": [
+        "minecraft:golden_carrot"
+    ]
+}
+```
+
+It looks the slots of the brewing table, so players can't insert items to brew the resulting potion before they reached
+the level. A list of the brewing items can be found here [Brewing Wiki](https://minecraft.fandom.com/wiki/Brewing). It
+is hardcoded to the alchemy skill.
+
 #### 5. Mining
 
 The mining category stands for the locked block drop. An example how the json file should look like is here:
@@ -212,6 +213,27 @@ The mining category stands for the locked block drop. An example how the json fi
 The "block" list has to have the id of the locked blocks.\
 The player can still break those blocks but it won't drop anything and the blockbreaking process is 50% slower (by
 default).
+
+#### 6. Smithing (Since version 1.1.5)
+
+The smithing category stands for the crafting restriction of items at the smithing table. An example how the json file
+should look like is here:
+
+```
+{
+    "replace": false,
+    "level": 20,
+    "item": [
+        "minecraft:netherite_sword",
+        "minecraft:netherite_pickaxe"
+    ]
+}
+```
+
+It looks the crafting recipe of the smithing table, so players can't pull out crafting result items of the table before they reached
+the level. It is hardcoded to the smithing skill.
+
+### Example Datapack
 
 Check out the exampleDatapack folder for an example how it can look like.\
 Every level is set to 0 in this pack.

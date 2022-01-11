@@ -118,6 +118,10 @@ public class InfoGui extends LightweightGuiDescription {
             translatableText3B = new TranslatableText("text.levelz.smithing_info_3_2", ConfigInit.CONFIG.smithingCostBonus);
             translatableText6A = new TranslatableText("text.levelz.smithing_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
             translatableText6B = new TranslatableText("text.levelz.smithing_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
+
+            ZWSprite smithingListIcon = new ZWSprite(name, client, 1);
+            root.add(smithingListIcon, 180, 7, 12, 9);
+
             break;
         case "mining":
             translatableText1 = new TranslatableText("text.levelz.mining_info_1");

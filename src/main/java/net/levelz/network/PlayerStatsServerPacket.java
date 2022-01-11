@@ -47,6 +47,8 @@ public class PlayerStatsServerPacket {
                     syncLockedBlockList(playerStatsManager);
                 } else if (stat.equals("alchemy")) {
                     syncLockedBrewingItemList(playerStatsManager);
+                } else if (stat.equals("smithing")) {
+                    syncLockedSmithingItemList(playerStatsManager);
                 }
             }
         });
@@ -84,6 +86,7 @@ public class PlayerStatsServerPacket {
         // Set on server
         syncLockedBlockList(playerStatsManager);
         syncLockedBrewingItemList(playerStatsManager);
+        syncLockedSmithingItemList(playerStatsManager);
 
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LEVEL_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
@@ -122,6 +125,19 @@ public class PlayerStatsServerPacket {
         }
     }
 
+    public static void syncLockedSmithingItemList(PlayerStatsManager playerStatsManager) {
+        playerStatsManager.lockedSmithingItemIds.clear();
+        for (int i = 0; i < LevelLists.smithingLevelList.size(); i++) {
+            if (LevelLists.smithingLevelList.get(i) > playerStatsManager.getLevel("smithing")) {
+                for (int u = 0; u < LevelLists.smithingItemList.get(i).size(); u++) {
+                    if (!playerStatsManager.lockedSmithingItemIds.contains(LevelLists.smithingItemList.get(i).get(u))) {
+                        playerStatsManager.lockedSmithingItemIds.add(LevelLists.smithingItemList.get(i).get(u));
+                    }
+                }
+            }
+        }
+    }
+
     public static void writeS2CListPacket(ServerPlayerEntity serverPlayerEntity) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         for (int i = 0; i < LevelLists.getListNames().size(); i++) {
@@ -143,6 +159,13 @@ public class PlayerStatsServerPacket {
             buf.writeString(LevelLists.brewingLevelList.get(k).toString());
             for (int u = 0; u < LevelLists.brewingItemList.get(k).size(); u++) {
                 buf.writeString(LevelLists.brewingItemList.get(k).get(u).toString());
+            }
+        }
+        for (int k = 0; k < LevelLists.smithingLevelList.size(); k++) {
+            buf.writeString("smithing:level");
+            buf.writeString(LevelLists.smithingLevelList.get(k).toString());
+            for (int u = 0; u < LevelLists.smithingItemList.get(k).size(); u++) {
+                buf.writeString(LevelLists.smithingItemList.get(k).get(u).toString());
             }
         }
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LIST_PACKET, buf);

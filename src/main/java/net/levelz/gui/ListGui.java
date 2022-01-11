@@ -50,6 +50,9 @@ public class ListGui extends LightweightGuiDescription {
         } else if (Objects.equals(name, "alchemy")) {
             levelList = LevelLists.brewingLevelList;
             ObjectList = LevelLists.brewingItemList;
+        } else if (Objects.equals(name, "smithing")) {
+            levelList = LevelLists.smithingLevelList;
+            ObjectList = LevelLists.smithingItemList;
         }
 
         // 9 objects next to each other

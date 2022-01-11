@@ -48,7 +48,7 @@ public class ItemStackClientMixin {
         if (player != null) {
             ItemStack stack = (ItemStack) (Object) this;
             ArrayList<Object> levelList = new ArrayList<Object>();
-
+            int itemId = Registry.ITEM.getRawId(stack.getItem());
             // Block
             if (stack.getItem() instanceof BlockItem) {
                 Block block = ((BlockItem) stack.getItem()).getBlock();
@@ -146,13 +146,12 @@ public class ItemStackClientMixin {
                     }
                 }
                 // Alchemy check
-                if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(stack.getItem()), false)) {
-                    list.add(new TranslatableText("item.levelz.alchemy_restriction.tooltip", PlayerStatsManager.getUnlockLevel(Registry.ITEM.getRawId(stack.getItem()), false))
-                            .formatted(Formatting.RED));
+                if (PlayerStatsManager.listContainsItemOrBlock(player, itemId, 2)) {
+                    list.add(new TranslatableText("item.levelz.alchemy_restriction.tooltip", PlayerStatsManager.getUnlockLevel(itemId, 2)).formatted(Formatting.RED));
                 }
                 // Mining check
-                if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.BLOCK.getRawId(block), true)) {
-                    list.add(new TranslatableText("item.levelz.mining_restriction.tooltip", PlayerStatsManager.getUnlockLevel(Registry.BLOCK.getRawId(block), true)).formatted(Formatting.RED));
+                if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.BLOCK.getRawId(block), 1)) {
+                    list.add(new TranslatableText("item.levelz.mining_restriction.tooltip", PlayerStatsManager.getUnlockLevel(Registry.BLOCK.getRawId(block), 1)).formatted(Formatting.RED));
                 }
             } else
             // Item
@@ -264,8 +263,14 @@ public class ItemStackClientMixin {
                     list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(string) + 2).toString())
                             .formatted(Formatting.RED));
                 }
-            } else if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(stack.getItem()), false)) {
-                list.add(new TranslatableText("item.levelz.alchemy_restriction.tooltip", PlayerStatsManager.getUnlockLevel(Registry.ITEM.getRawId(stack.getItem()), false)).formatted(Formatting.RED));
+            }
+            // Alchemy check
+            if (PlayerStatsManager.listContainsItemOrBlock(player, itemId, 2)) {
+                list.add(new TranslatableText("item.levelz.alchemy_restriction.tooltip", PlayerStatsManager.getUnlockLevel(itemId, 2)).formatted(Formatting.RED));
+            }
+            // Smithing check
+            if (PlayerStatsManager.listContainsItemOrBlock(player, itemId, 3)) {
+                list.add(new TranslatableText("item.levelz.smithing_restriction.tooltip", PlayerStatsManager.getUnlockLevel(itemId, 3)).formatted(Formatting.RED));
             }
         }
     }

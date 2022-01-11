@@ -148,6 +148,7 @@ public class PlayerStatsClientPacket {
         // Set unlocked list
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
+        PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
     }
 
     private static void executeListPacket(PacketByteBuf buf, ClientPlayerEntity player) {
@@ -180,14 +181,23 @@ public class PlayerStatsClientPacket {
                 }
                 LevelLists.miningBlockList.add(blockList);
             } else if (listName.equals("brewing:level")) {
-                List<Integer> itemList = new ArrayList<>();
+                List<Integer> brewingItemList = new ArrayList<>();
                 LevelLists.brewingLevelList.add(Integer.parseInt(list.get(i + 1)));
                 for (int u = i + 2; u < list.size(); u++) {
-                    if (list.get(u).equals("brewing:level"))
+                    if (list.get(u).equals("brewing:level") || list.get(u).equals("smithing:level"))
                         break;
-                    itemList.add(Integer.parseInt(list.get(u)));
+                    brewingItemList.add(Integer.parseInt(list.get(u)));
                 }
-                LevelLists.brewingItemList.add(itemList);
+                LevelLists.brewingItemList.add(brewingItemList);
+            } else if (listName.equals("smithing:level")) {
+                List<Integer> smithingItemList = new ArrayList<>();
+                LevelLists.smithingLevelList.add(Integer.parseInt(list.get(i + 1)));
+                for (int u = i + 2; u < list.size(); u++) {
+                    if (list.get(u).equals("smithing:level"))
+                        break;
+                    smithingItemList.add(Integer.parseInt(list.get(u)));
+                }
+                LevelLists.smithingItemList.add(smithingItemList);
             }
         }
         LevelLists.listOfAllLists.clear();
@@ -202,6 +212,7 @@ public class PlayerStatsClientPacket {
         player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
+        PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
     }
 
     private static void addToList(String listName, String object) {

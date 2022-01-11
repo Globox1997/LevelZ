@@ -71,11 +71,13 @@
     "misc.PotionSlotMixin",
     "misc.ExperienceOrbEntityMixin",
     "misc.PiglinBrainMixin",
+    "misc.SmithingScreenHandlerMixin",
     "compat.TrinketSlotMixin"
   ],
   "client": [
     "player.ClientPlayerEntityMixin",
     "player.InGameHudMixin",
+    "player.InventoryScreenMixin",
     "item.ItemStackClientMixin",
     "misc.EnchantmentScreenMixin",
     "misc.WorldRendererMixin"
