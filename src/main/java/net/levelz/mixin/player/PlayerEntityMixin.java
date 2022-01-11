@@ -1,7 +1,5 @@
 package net.levelz.mixin.player;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.jetbrains.annotations.Nullable;
@@ -79,7 +77,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
                     PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) playerEntity);
                     PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
                 }
-                if (playerStatsManager.overallLevel > 0 && playerStatsManager.overallLevel % 10 == 0) {
+                if (playerStatsManager.overallLevel > 0) {
                     float f = playerStatsManager.overallLevel > 30 ? 1.0F : (float) playerStatsManager.overallLevel / 30.0F;
                     playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), f * 0.75F,
                             1.0F);
@@ -124,24 +122,18 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     private float getUnlockedDamage(float original, boolean zero) {
         if (playerEntity.getMainHandStack().getItem() instanceof ToolItem) {
-            ArrayList<Object> levelList = new ArrayList<Object>();
+            ArrayList<Object> levelList = null;
             if (playerEntity.getMainHandStack().isIn(FabricToolTags.SWORDS)) {
                 levelList = LevelLists.swordList;
             } else if (playerEntity.getMainHandStack().isIn(FabricToolTags.AXES))
                 levelList = LevelLists.axeList;
             else if (playerEntity.getMainHandStack().isIn(FabricToolTags.HOES))
                 levelList = LevelLists.hoeList;
-            else
+            else if (playerEntity.getMainHandStack().isIn(FabricToolTags.PICKAXES) || playerEntity.getMainHandStack().isIn(FabricToolTags.SHOVELS))
                 levelList = LevelLists.toolList;
-            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
-                try {
-                    Method getter = playerEntity.getMainHandStack().getItem().getClass().getDeclaredMethod("getAttackDamage");
-                    float attackDamage = (float) getter.invoke(playerEntity.getMainHandStack().getItem());
-                    return zero ? 0 : original - attackDamage;
-                } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            }
+            if (levelList != null)
+                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true))
+                    return zero ? 0 : 1.0F;
         }
         return original;
     }
