@@ -49,7 +49,7 @@ public class AbstractBlockStateMixin {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
         int playerMiningLevel = playerStatsManager.getLevel("mining");
         if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
-            if (playerStatsManager.lockedBlockIds.contains(Registry.BLOCK.getRawId(world.getBlockState(pos).getBlock()))) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, 1, Registry.BLOCK.getRawId(world.getBlockState(pos).getBlock()))) {
                 ((PlayerBreakBlockAccess) player.getInventory()).setAbstractBlockBreakDelta(ConfigInit.CONFIG.miningLockedMultiplicator);
             } else if (playerMiningLevel < 5) {
                 ((PlayerBreakBlockAccess) player.getInventory()).setAbstractBlockBreakDelta(1.2F - playerMiningLevel * 0.0475F);
