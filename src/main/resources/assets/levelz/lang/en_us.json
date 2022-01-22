@@ -1,5 +1,5 @@
 {
-  "commands.playerstats.changed": "Playerstats got changed",
+  "commands.playerstats.changed": "%s stats got changed",
   "commands.playerstats.printProgress": "%s XP: %s / %s",
   "commands.playerstats.printLevel": "%s %s %s",
 

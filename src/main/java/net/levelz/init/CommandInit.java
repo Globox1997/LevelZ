@@ -266,9 +266,10 @@ public class CommandInit {
                 }
             }
             PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, serverPlayerEntity);
+
+            if (reference != 3)
+                source.sendFeedback(new TranslatableText("commands.playerstats.changed", serverPlayerEntity.getDisplayName()), true);
         }
-        if (reference != 3)
-            source.sendFeedback(new TranslatableText("commands.playerstats.changed"), true);
 
         return targets.size();
     }
