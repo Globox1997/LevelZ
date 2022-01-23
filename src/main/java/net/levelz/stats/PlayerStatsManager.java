@@ -37,7 +37,7 @@ public class PlayerStatsManager {
     public List<Integer> lockedbrewingItemIds = new ArrayList<Integer>();
     public List<Integer> lockedSmithingItemIds = new ArrayList<Integer>();
 
-    // Wood, Stone, Iron,Gold, Diamond, Netherite
+    // Wood, Stone, Iron, Gold, Diamond, Netherite
 
     public void readNbt(NbtCompound tag) {
         if (tag.contains("HealthLevel", 99)) {
