@@ -101,7 +101,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0, require = 0)
-    private float attackMixinTwo(float original) {
+    private float attackGetItemMixin(float original) {
         if (playerStatsManager.getLevel("strength") >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.world.random.nextFloat()) {
             return original * 2F;
         } else
@@ -109,12 +109,27 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 0, require = 0)
-    private float attackMixinThree(float original) {
+    private float attackGetAttackCooldownProgressMixin(float original) {
         return getUnlockedDamage(original, false);
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 1, require = 0)
-    private float attackMixinFour(float original) {
+    private float attackGetAttackCooldownProgressMixinTwo(float original) {
+        return getUnlockedDamage(original, true);
+    }
+
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getFireAspect(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 1, require = 0)
+    private int attackGetFireAspectMixin(int original) {
+        return (int) getUnlockedDamage((float) original, true);
+    }
+
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockback(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 0, require = 0)
+    private int attackGetKnockbackMixin(int original) {
+        return (int) getUnlockedDamage((float) original, true);
+    }
+
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/World;getNonSpectatingEntities(Ljava/lang/Class;Lnet/minecraft/util/math/Box;)Ljava/util/List;"), ordinal = 3)
+    private float attackGetSweepingMultiplierMixin(float original) {
         return getUnlockedDamage(original, true);
     }
 

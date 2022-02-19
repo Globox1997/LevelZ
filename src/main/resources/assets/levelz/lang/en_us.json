@@ -80,6 +80,8 @@
   "item.levelz.alchemy_restriction.tooltip": "§7Brewable: §cBrewing %d",
   "item.levelz.smithing_restriction.tooltip": "§7Smithable: §cSmithing %d",
 
+  "item.levelz.sheep_restriction.tooltip": "§7Sheep Use: §c%s %d",
+
   "block.levelz.locked.tooltip": "§cLocked",
   "block.levelz.locked_with_level.tooltip": "Locked Level %d",
 
