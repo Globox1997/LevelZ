@@ -139,7 +139,7 @@ The item category stands for the use of items. An example how the json file shou
 
 "item": has to be one of the following strings:\
 "minecraft:bow","minecraft:bucket,"minecraft:crossbow","minecraft:dragon_breath","minecraft:elytra","minecraft:
-fishing_rod","minecraft:flint_and_steel","minecraft:shield","minecraft:totem_of_undying"
+fishing_rod","minecraft:flint_and_steel","minecraft:shield","minecraft:totem_of_undying","minecraft:shears"
 
 The item category also has 4 special categories:
 

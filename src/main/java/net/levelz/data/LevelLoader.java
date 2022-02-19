@@ -307,6 +307,33 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         // Fill smithing list
         sortAndFillLists(levelList, objectList, 3);
 
+        // // Crafting
+        // for (Identifier id : manager.findResources("crafting", path -> path.endsWith(".json"))) {
+        // try {
+        // InputStream stream = manager.getResource(id).getInputStream();
+        // JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+
+        // if (levelList.contains(data.get("level").getAsInt())) {
+        // int index = levelList.indexOf(data.get("level").getAsInt());
+        // if (JsonHelper.getBoolean(data, "replace", false)) {
+        // levelList.remove(index);
+        // objectList.remove(index);
+        // replaceList.remove(index);
+        // fillLists(data, false, 2);
+        // } else if (!replaceList.get(index)) {
+        // fillLists(data, true, 2);
+        // }
+        // } else {
+        // fillLists(data, false, 2);
+        // }
+
+        // } catch (Exception e) {
+        // LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+        // }
+        // }
+        // // Fill crafting list
+        // sortAndFillLists(levelList, objectList, 4);
+
         addAllInOneList();
 
         // Test check here:
@@ -420,6 +447,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.listOfAllLists.add(LevelLists.beaconList);
         LevelLists.listOfAllLists.add(LevelLists.axolotlList);
         LevelLists.listOfAllLists.add(LevelLists.piglinList);
+        LevelLists.listOfAllLists.add(LevelLists.shearsList);
 
         LevelLists.listOfAllLists.add(LevelLists.customBlockList);
         LevelLists.listOfAllLists.add(LevelLists.customItemList);
@@ -470,6 +498,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.beaconList.clear();
         LevelLists.axolotlList.clear();
         LevelLists.piglinList.clear();
+        LevelLists.shearsList.clear();
 
         LevelLists.customBlockList.clear();
         LevelLists.customItemList.clear();

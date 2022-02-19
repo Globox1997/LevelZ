@@ -1,5 +1,6 @@
 package net.levelz.mixin.block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.Block;
@@ -22,6 +25,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.MiningToolItem;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -34,9 +38,23 @@ public class BlockMixin {
     @Inject(method = "Lnet/minecraft/block/Block;dropStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getDroppedStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)Ljava/util/List;"), cancellable = true)
     private static void dropStacksMixin(BlockState state, World world, BlockPos pos, @Nullable BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfo info) {
         if (entity instanceof PlayerEntity) {
-            if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) entity, Registry.BLOCK.getRawId(state.getBlock()), 1)) {
+            if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) entity, Registry.BLOCK.getRawId(state.getBlock()), 1))
+                info.cancel();
+            else if (stack.getItem() instanceof MiningToolItem) {
+                ArrayList<Object> levelList = null;
+                if (stack.isIn(FabricToolTags.AXES))
+                    levelList = LevelLists.axeList;
+                else if (stack.isIn(FabricToolTags.HOES))
+                    levelList = LevelLists.hoeList;
+                else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS))
+                    levelList = LevelLists.toolList;
+                if (levelList != null
+                        && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) entity, levelList, ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
+                    info.cancel();
+            } else if (stack.isIn(FabricToolTags.SHEARS) && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) entity, LevelLists.shearsList, null, true)) {
                 info.cancel();
             }
+
         }
     }
 

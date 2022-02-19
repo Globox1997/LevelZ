@@ -51,6 +51,7 @@ public class LevelLists {
     public static final ArrayList<Object> fishingList = new ArrayList<Object>();
     public static final ArrayList<Object> dragonBreathList = new ArrayList<Object>();
     public static final ArrayList<Object> totemList = new ArrayList<Object>();
+    public static final ArrayList<Object> shearsList = new ArrayList<Object>();
     // Misc
     public static final List<ArrayList<Object>> listOfAllLists = new ArrayList<>();
     // Player
@@ -101,6 +102,8 @@ public class LevelLists {
             return totemList;
         case "minecraft:axe":
             return axeList;
+        case "minecraft:shears":
+            return shearsList;
         case "minecraft:custom_item":
             return customItemList;
         // Block
@@ -216,6 +219,7 @@ public class LevelLists {
         listNames.add("minecraft:beacon");
         listNames.add("minecraft:axolotl");
         listNames.add("minecraft:piglin");
+        listNames.add("minecraft:shears");
         // Custom
         listNames.add("minecraft:custom_block");
         listNames.add("minecraft:custom_item");
