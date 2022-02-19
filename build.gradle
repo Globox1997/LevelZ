@@ -55,7 +55,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Trinkets
-    modCompileOnly modRuntimeOnly('com.github.emilyploszaj:trinkets:3.1.0') {
+    modCompileOnly modRuntimeOnly('com.github.emilyploszaj:trinkets:3.2.0') {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
