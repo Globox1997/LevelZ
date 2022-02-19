@@ -31,6 +31,8 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_setting")
     @Comment("XP equation: lvl^2 * multiplicator + base")
     public float xpCostMultiplicator = 0.1F;
+    @Comment("0 = no experience cap")
+    public int xpMaxCost = 0;
     @Comment("Attribute values - Bonus for each lvl")
     public double healthBase = 6D;
     public double healthBonus = 1D;

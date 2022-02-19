@@ -188,7 +188,11 @@ public class PlayerStatsManager {
         if (isMaxLevel()) {
             return 0;
         }
-        return (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * MathHelper.square(this.overallLevel));
+        int experienceCost = (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * MathHelper.square(this.overallLevel));
+        if (ConfigInit.CONFIG.xpMaxCost != 0)
+            return experienceCost >= ConfigInit.CONFIG.xpMaxCost ? ConfigInit.CONFIG.xpMaxCost : experienceCost;
+        else
+            return experienceCost;
     }
 
     public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, List<Object> list, String string, boolean creativeRequired) {
