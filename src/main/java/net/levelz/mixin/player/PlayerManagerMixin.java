@@ -15,6 +15,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProperties;
 
@@ -73,8 +74,9 @@ public class PlayerManagerMixin {
             // Sync strength on client cause out of any reason it doesn't work naturally
             PlayerStatsServerPacket.writeS2CStrengthPacket(serverPlayerEntity);
             // Check if Client will set to 0 after death
-            serverPlayerStatsManager.levelProgress = ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.levelProgress;
-            serverPlayerStatsManager.totalLevelExperience = ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.totalLevelExperience;
+            boolean keepInventory = serverWorld.getGameRules().getBoolean(GameRules.KEEP_INVENTORY);
+            serverPlayerStatsManager.levelProgress = keepInventory ? playerStatsManager.levelProgress : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.levelProgress;
+            serverPlayerStatsManager.totalLevelExperience = keepInventory ? playerStatsManager.totalLevelExperience : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.totalLevelExperience;
             // Level
             serverPlayerStatsManager.setLevel("level", playerStatsManager.getLevel("level"));
             serverPlayerStatsManager.setLevel("points", playerStatsManager.getLevel("points"));
