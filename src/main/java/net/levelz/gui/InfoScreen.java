@@ -14,7 +14,7 @@ public class InfoScreen extends CottonClientScreen {
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean shouldPause() {
         return false;
     }
 

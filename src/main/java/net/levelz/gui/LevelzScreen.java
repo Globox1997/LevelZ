@@ -25,7 +25,7 @@ public class LevelzScreen extends CottonClientScreen {
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean shouldPause() {
         return false;
     }
 
