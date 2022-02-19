@@ -67,7 +67,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         }
     }
 
-    @Inject(method = "setAttacker", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;handleInteraction(Lnet/minecraft/entity/EntityInteraction;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/InteractionObserver;)V"))
+    @Inject(method = "setAttacker", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;handleInteraction(Lnet/minecraft/entity/EntityInteraction;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/InteractionObserver;)V"), cancellable = true)
     private void setAttackerMixin(@Nullable LivingEntity attacker, CallbackInfo info) {
         if (attacker != null && attacker instanceof PlayerEntity && ConfigInit.CONFIG.tradeReputation
                 && ((PlayerStatsManagerAccess) (PlayerEntity) attacker).getPlayerStatsManager((PlayerEntity) attacker).getLevel("trade") >= ConfigInit.CONFIG.maxLevel) {
