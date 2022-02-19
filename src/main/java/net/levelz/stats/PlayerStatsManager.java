@@ -220,7 +220,7 @@ public class PlayerStatsManager {
         return true;
     }
 
-    // 1 = block, 2 = alchemy, 3 = ?
+    // 1 = block, 2 = alchemy, 3 = smithing, 4 = ?
     public static boolean listContainsItemOrBlock(PlayerEntity playerEntity, int id, int reference) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
         if (reference == 1) {

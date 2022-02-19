@@ -20,7 +20,7 @@ public class BrewingStandScreenHandlerMixin {
     @Inject(method = "transferSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;canInsert(Lnet/minecraft/item/ItemStack;)Z", ordinal = 1, shift = Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     private void transferSlotMixin(PlayerEntity player, int index, CallbackInfoReturnable<ItemStack> info, ItemStack itemStack, Slot slot, ItemStack itemStack2) {
         if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(itemStack2.getItem()), 2) && !player.isCreative()) {
-            info.cancel();
+            info.setReturnValue(ItemStack.EMPTY);
         }
     }
 }
