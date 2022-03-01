@@ -163,7 +163,8 @@ An example of one of those categories is here:
 It takes a fifth argument called "material" to determine which material of items will be locked.\
 Each of these items has to be in the corresponding fabric item tag.
 
-Since version 1.1.0: Custom item restrictions got added:
+Since version 1.1.0: Custom item restrictions got added:\
+Use it only if those two previous options don't work!
 
 ```
 {
