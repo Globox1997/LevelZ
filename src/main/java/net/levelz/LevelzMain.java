@@ -10,6 +10,7 @@ public class LevelzMain implements ModInitializer {
     public void onInitialize() {
         CommandInit.init();
         ConfigInit.init();
+        EntityInit.init();
         JsonReaderInit.init();
         PlayerStatsServerPacket.init();
         TagInit.init();

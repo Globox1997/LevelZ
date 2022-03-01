@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.data.LevelLoader;
+import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.MinecraftClient;
@@ -106,6 +107,47 @@ public class PlayerStatsClientPacket {
                             .setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
                 }
             }
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.LEVEL_EXPERIENCE_ORB_PACKET, (client, handler, buf, sender) -> {
+
+            // NetworkThreadUtils.forceMainThread(packet, this, this.client);
+            int id = buf.readVarInt();
+            double d = buf.readDouble();
+            double e = buf.readDouble();
+            double f = buf.readDouble();
+            int experienceAmount = buf.readShort();
+
+            // EntityType<?> type = Registry.ENTITY_TYPE.get(buffer.readVarInt());
+            // UUID entityUUID = buffer.readUuid();
+            // int entityID = buffer.readVarInt();
+            // double x = buffer.readDouble();
+            // double y = buffer.readDouble();
+            // double z = buffer.readDouble();
+            // float pitch = (buffer.readByte() * 360) / 256.0F;
+            // float yaw = (buffer.readByte() * 360) / 256.0F;
+            client.execute(() -> {
+                LevelExperienceOrbEntity levelExperienceOrbEntity = new LevelExperienceOrbEntity(client.world, d, e, f, experienceAmount);
+                if (levelExperienceOrbEntity != null) {
+                    levelExperienceOrbEntity.updateTrackedPosition(d, e, f);
+                    levelExperienceOrbEntity.setYaw(0.0f);
+                    levelExperienceOrbEntity.setPitch(0.0f);
+                    levelExperienceOrbEntity.setId(id);
+                    client.world.addEntity(id, levelExperienceOrbEntity);
+                }
+                // World world = client.player.getEntityWorld();
+                // Entity entity = type.create(world);
+                // if (entity != null) {
+                // entity.updatePosition(x, y, z);
+                // entity.updateTrackedPosition(x, y, z);
+                // entity.setPitch(pitch);
+                // entity.setYaw(yaw);
+                // entity.setId(entityID);
+                // entity.setUuid(entityUUID);
+                // ClientWorld clientWorld = MinecraftClient.getInstance().world;
+                // clientWorld.addEntity(entityID, entity);
+                // }
+            });
         });
     }
 

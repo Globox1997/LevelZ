@@ -6,9 +6,11 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
+import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -22,6 +24,7 @@ public class PlayerStatsServerPacket {
     public static final Identifier LIST_PACKET = new Identifier("levelz", "unlocking_list");
     public static final Identifier STRENGTH_PACKET = new Identifier("levelz", "strength_sync");
     public static final Identifier RESET_PACKET = new Identifier("levelz", "reset_skill");
+    public static final Identifier LEVEL_EXPERIENCE_ORB_PACKET = new Identifier("levelz", "level_experience_orb");
 
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
@@ -196,6 +199,16 @@ public class PlayerStatsServerPacket {
         buf.writeString(skill);
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(RESET_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
+    }
+
+    public Packet<?> createS2CLevelExperienceOrbPacket(LevelExperienceOrbEntity levelExperienceOrbEntity) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeVarInt(levelExperienceOrbEntity.getId());
+        buf.writeDouble(levelExperienceOrbEntity.getX());
+        buf.writeDouble(levelExperienceOrbEntity.getY());
+        buf.writeDouble(levelExperienceOrbEntity.getZ());
+        buf.writeShort(levelExperienceOrbEntity.getExperienceAmount());
+        return ServerPlayNetworking.createS2CPacket(LEVEL_EXPERIENCE_ORB_PACKET, buf);
     }
 
 }
