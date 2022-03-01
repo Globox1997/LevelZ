@@ -44,13 +44,12 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
     @Inject(method = "mouseClicked", at = @At("HEAD"))
     private void mouseClickedMixin(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> info) {
-        if (this.sliderOpen)
+        if (this.sliderOpen && this.focusedSlot == null)
             this.client.setScreen(new LevelzScreen(new LevelzGui(client)));
     }
 
     @Inject(method = "drawBackground", at = @At("TAIL"))
     protected void drawBackgroundMixin(MatrixStack matrices, float delta, int mouseX, int mouseY, CallbackInfo info) {
-
         if (!this.recipeBook.isOpen()) {
             RenderSystem.setShaderTexture(0, RenderInit.GUI_ICONS);
             this.drawTexture(matrices, this.x - 6, this.y + 6, 0, 80, 6, 20);
