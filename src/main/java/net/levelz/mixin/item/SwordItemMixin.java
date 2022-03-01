@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(SwordItem.class)
@@ -22,14 +23,16 @@ public class SwordItemMixin {
     @Inject(method = "postHit", at = @At("HEAD"), cancellable = true)
     private void postHitMixin(ItemStack stack, LivingEntity target, LivingEntity attacker, CallbackInfoReturnable<Boolean> info) {
         if (stack.isIn(FabricToolTags.SWORDS) && attacker instanceof PlayerEntity
-                && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, LevelLists.swordList, ((SwordItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
+                && (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, LevelLists.swordList, ((SwordItem) stack.getItem()).getMaterial().toString().toLowerCase(), true)
+                        || !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, LevelLists.customItemList, Registry.ITEM.getId(stack.getItem()).toString(), true)))
             info.setReturnValue(false);
     }
 
     @Inject(method = "postMine", at = @At("HEAD"), cancellable = true)
     private void postMineMixin(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfoReturnable<Boolean> info) {
         if (stack.isIn(FabricToolTags.SWORDS) && miner instanceof PlayerEntity
-                && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, LevelLists.swordList, ((SwordItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
+                && (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, LevelLists.swordList, ((SwordItem) stack.getItem()).getMaterial().toString().toLowerCase(), true)
+                        || !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, LevelLists.customItemList, Registry.ITEM.getId(stack.getItem()).toString(), true)))
             info.setReturnValue(false);
     }
 

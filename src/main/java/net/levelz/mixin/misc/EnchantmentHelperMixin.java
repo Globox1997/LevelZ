@@ -20,6 +20,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
+import net.minecraft.util.registry.Registry;
 
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
@@ -38,18 +39,23 @@ public class EnchantmentHelperMixin {
         ItemStack itemStack = user.getStackInHand(user.getActiveHand());
         if (itemStack.getItem() instanceof ToolItem && user instanceof PlayerEntity) {
             PlayerEntity playerEntity = (PlayerEntity) user;
-            ArrayList<Object> levelList = null;
-            if (playerEntity.getMainHandStack().isIn(FabricToolTags.SWORDS)) {
-                levelList = LevelLists.swordList;
-            } else if (playerEntity.getMainHandStack().isIn(FabricToolTags.AXES))
-                levelList = LevelLists.axeList;
-            else if (playerEntity.getMainHandStack().isIn(FabricToolTags.HOES))
-                levelList = LevelLists.hoeList;
-            else if (playerEntity.getMainHandStack().isIn(FabricToolTags.PICKAXES) || playerEntity.getMainHandStack().isIn(FabricToolTags.SHOVELS))
-                levelList = LevelLists.toolList;
-            if (levelList != null)
-                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true))
-                    info.cancel();
+            ArrayList<Object> levelList = LevelLists.customItemList;
+            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(itemStack.getItem()).toString(), true))
+                info.cancel();
+            else {
+                levelList = null;
+                if (itemStack.isIn(FabricToolTags.SWORDS)) {
+                    levelList = LevelLists.swordList;
+                } else if (itemStack.isIn(FabricToolTags.AXES))
+                    levelList = LevelLists.axeList;
+                else if (itemStack.isIn(FabricToolTags.HOES))
+                    levelList = LevelLists.hoeList;
+                else if (itemStack.isIn(FabricToolTags.PICKAXES) || itemStack.isIn(FabricToolTags.SHOVELS))
+                    levelList = LevelLists.toolList;
+                if (levelList != null)
+                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), true))
+                        info.cancel();
+            }
         }
     }
 
@@ -58,18 +64,23 @@ public class EnchantmentHelperMixin {
         ItemStack itemStack = user.getStackInHand(user.getActiveHand());
         if (itemStack.getItem() instanceof ToolItem && user instanceof PlayerEntity) {
             PlayerEntity playerEntity = (PlayerEntity) user;
-            ArrayList<Object> levelList = null;
-            if (playerEntity.getMainHandStack().isIn(FabricToolTags.SWORDS)) {
-                levelList = LevelLists.swordList;
-            } else if (playerEntity.getMainHandStack().isIn(FabricToolTags.AXES))
-                levelList = LevelLists.axeList;
-            else if (playerEntity.getMainHandStack().isIn(FabricToolTags.HOES))
-                levelList = LevelLists.hoeList;
-            else if (playerEntity.getMainHandStack().isIn(FabricToolTags.PICKAXES) || playerEntity.getMainHandStack().isIn(FabricToolTags.SHOVELS))
-                levelList = LevelLists.toolList;
-            if (levelList != null)
-                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) playerEntity.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true))
-                    info.cancel();
+            ArrayList<Object> levelList = LevelLists.customItemList;
+            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(itemStack.getItem()).toString(), true))
+                info.cancel();
+            else {
+                levelList = null;
+                if (itemStack.isIn(FabricToolTags.SWORDS)) {
+                    levelList = LevelLists.swordList;
+                } else if (itemStack.isIn(FabricToolTags.AXES))
+                    levelList = LevelLists.axeList;
+                else if (itemStack.isIn(FabricToolTags.HOES))
+                    levelList = LevelLists.hoeList;
+                else if (itemStack.isIn(FabricToolTags.PICKAXES) || itemStack.isIn(FabricToolTags.SHOVELS))
+                    levelList = LevelLists.toolList;
+                if (levelList != null)
+                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), true))
+                        info.cancel();
+            }
         }
     }
 }

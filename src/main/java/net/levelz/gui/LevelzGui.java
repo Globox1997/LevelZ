@@ -21,6 +21,7 @@ import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Language;
+import net.minecraft.util.registry.Registry;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -308,22 +309,30 @@ public class LevelzGui extends LightweightGuiDescription {
         float damage = 0.0F;
         ItemStack itemStack = playerEntity.getMainHandStack();
         if (itemStack.getItem() instanceof ToolItem) {
-            ArrayList<Object> levelList = null;
-            if (itemStack.isIn(FabricToolTags.SWORDS)) {
-                levelList = LevelLists.swordList;
-            } else if (itemStack.isIn(FabricToolTags.AXES))
-                levelList = LevelLists.axeList;
-            else if (itemStack.isIn(FabricToolTags.HOES))
-                levelList = LevelLists.hoeList;
-            else if (playerEntity.getMainHandStack().isIn(FabricToolTags.PICKAXES) || playerEntity.getMainHandStack().isIn(FabricToolTags.SHOVELS))
-                levelList = LevelLists.toolList;
-            if (levelList != null)
-                if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), false)) {
-                    if (itemStack.getItem() instanceof SwordItem)
-                        damage = ((SwordItem) itemStack.getItem()).getAttackDamage();
-                    else if (itemStack.getItem() instanceof MiningToolItem)
-                        damage = ((MiningToolItem) itemStack.getItem()).getAttackDamage();
-                }
+            ArrayList<Object> levelList = LevelLists.customItemList;
+            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(itemStack.getItem()).toString(), false)) {
+                if (itemStack.getItem() instanceof SwordItem)
+                    damage = ((SwordItem) itemStack.getItem()).getAttackDamage();
+                else if (itemStack.getItem() instanceof MiningToolItem)
+                    damage = ((MiningToolItem) itemStack.getItem()).getAttackDamage();
+            } else {
+                levelList = null;
+                if (itemStack.isIn(FabricToolTags.SWORDS)) {
+                    levelList = LevelLists.swordList;
+                } else if (itemStack.isIn(FabricToolTags.AXES))
+                    levelList = LevelLists.axeList;
+                else if (itemStack.isIn(FabricToolTags.HOES))
+                    levelList = LevelLists.hoeList;
+                else if (itemStack.isIn(FabricToolTags.PICKAXES) || itemStack.isIn(FabricToolTags.SHOVELS))
+                    levelList = LevelLists.toolList;
+                if (levelList != null)
+                    if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), false)) {
+                        if (itemStack.getItem() instanceof SwordItem)
+                            damage = ((SwordItem) itemStack.getItem()).getAttackDamage();
+                        else if (itemStack.getItem() instanceof MiningToolItem)
+                            damage = ((MiningToolItem) itemStack.getItem()).getAttackDamage();
+                    }
+            }
 
         }
         damage += playerEntity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);

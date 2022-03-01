@@ -155,7 +155,14 @@ public class ItemStackClientMixin {
 
             } else {
                 // Item
-                if (stack.getItem() instanceof ToolItem) {
+                if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(stack.getItem().getTranslationKey().replace("item.", "").replace(".", ":"))) {
+                    levelList = LevelLists.customItemList;
+                    String string = Registry.ITEM.getId(stack.getItem()).toString();
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
+                        list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(string) + 2).toString())
+                                .formatted(Formatting.RED));
+                    }
+                } else if (stack.getItem() instanceof ToolItem) {
                     if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS)) {
                         levelList = LevelLists.toolList;
                         String material = ((ToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
@@ -261,13 +268,6 @@ public class ItemStackClientMixin {
                     levelList = LevelLists.fishingList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
-                    }
-                } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(stack.getItem().getTranslationKey().replace("item.", "").replace(".", ":"))) {
-                    levelList = LevelLists.customItemList;
-                    String string = Registry.ITEM.getId(stack.getItem()).toString();
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
-                        list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(string) + 2).toString())
-                                .formatted(Formatting.RED));
                     }
                 }
                 // Alchemy check

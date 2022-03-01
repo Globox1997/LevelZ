@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(MiningToolItem.class)
@@ -24,32 +25,42 @@ public class MiningToolItemMixin {
     @Inject(method = "postHit", at = @At("HEAD"), cancellable = true)
     private void postHitMixin(ItemStack stack, LivingEntity target, LivingEntity attacker, CallbackInfoReturnable<Boolean> info) {
         if (attacker instanceof PlayerEntity) {
-            ArrayList<Object> levelList = null;
-            if (stack.isIn(FabricToolTags.AXES))
-                levelList = LevelLists.axeList;
-            else if (stack.isIn(FabricToolTags.HOES))
-                levelList = LevelLists.hoeList;
-            else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS))
-                levelList = LevelLists.toolList;
-            if (levelList != null)
-                if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, levelList, ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
-                    info.setReturnValue(false);
+            ArrayList<Object> levelList = LevelLists.customItemList;
+            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true))
+                info.setReturnValue(false);
+            else {
+                levelList = null;
+                if (stack.isIn(FabricToolTags.AXES))
+                    levelList = LevelLists.axeList;
+                else if (stack.isIn(FabricToolTags.HOES))
+                    levelList = LevelLists.hoeList;
+                else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS))
+                    levelList = LevelLists.toolList;
+                if (levelList != null)
+                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, levelList, ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
+                        info.setReturnValue(false);
+            }
         }
     }
 
     @Inject(method = "postMine", at = @At("HEAD"), cancellable = true)
     private void postMineMixin(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfoReturnable<Boolean> info) {
         if (miner instanceof PlayerEntity) {
-            ArrayList<Object> levelList = null;
-            if (stack.isIn(FabricToolTags.AXES))
-                levelList = LevelLists.axeList;
-            else if (stack.isIn(FabricToolTags.HOES))
-                levelList = LevelLists.hoeList;
-            else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS))
-                levelList = LevelLists.toolList;
-            if (levelList != null)
-                if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, levelList, ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
-                    info.setReturnValue(false);
+            ArrayList<Object> levelList = LevelLists.customItemList;
+            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true))
+                info.setReturnValue(false);
+            else {
+                levelList = null;
+                if (stack.isIn(FabricToolTags.AXES))
+                    levelList = LevelLists.axeList;
+                else if (stack.isIn(FabricToolTags.HOES))
+                    levelList = LevelLists.hoeList;
+                else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS))
+                    levelList = LevelLists.toolList;
+                if (levelList != null)
+                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, levelList, ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
+                        info.setReturnValue(false);
+            }
         }
     }
 }
