@@ -185,9 +185,8 @@ public class PlayerStatsManager {
 
     // Recommend to use https://www.geogebra.org/graphing
     public int getNextLevelExperience() {
-        if (isMaxLevel()) {
+        if (isMaxLevel())
             return 0;
-        }
         int experienceCost = (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * MathHelper.square(this.overallLevel));
         if (ConfigInit.CONFIG.xpMaxCost != 0)
             return experienceCost >= ConfigInit.CONFIG.xpMaxCost ? ConfigInit.CONFIG.xpMaxCost : experienceCost;
