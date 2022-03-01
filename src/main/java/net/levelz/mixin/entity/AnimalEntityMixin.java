@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
+import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.EntityType;
@@ -45,7 +46,6 @@ public abstract class AnimalEntityMixin extends PassiveEntity {
 
     @Inject(method = "breed", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void breedMixin(ServerWorld world, AnimalEntity other, CallbackInfo info, PassiveEntity passiveEntity) {
-        System.out.println(getLovingPlayer() + "::" + other.getLovingPlayer());
         if (getLovingPlayer() != null || other.getLovingPlayer() != null) {
             PlayerEntity playerEntity = getLovingPlayer() != null ? getLovingPlayer() : other.getLovingPlayer();
             if (((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("farming") >= ConfigInit.CONFIG.maxLevel
@@ -56,7 +56,16 @@ public abstract class AnimalEntityMixin extends PassiveEntity {
                 world.spawnEntityAndPassengers(extraPassiveEntity);
             }
         }
+    }
 
+    @Inject(method = "breed", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
+    private void breedExperienceMixin(ServerWorld world, AnimalEntity other, CallbackInfo info) {
+        if (ConfigInit.CONFIG.breedingXPMultiplier > 0.0F)
+            LevelExperienceOrbEntity.spawn(world, this.getPos().add(0.0D, 0.1D, 0.0D),
+                    (int) ((this.getRandom().nextInt(7) + 1) * ConfigInit.CONFIG.breedingXPMultiplier
+                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && getLovingPlayer() != null
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) getLovingPlayer()).getPlayerStatsManager(getLovingPlayer()).getLevel("level")
+                                    : 1.0F)));
     }
 
     @Shadow

@@ -8,31 +8,26 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name = "levelz")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class LevelzConfig implements ConfigData {
-    @ConfigEntry.Category("level_setting")
+    @ConfigEntry.Category("level_settings")
     public int maxLevel = 20;
-    @ConfigEntry.Category("level_setting")
+    @ConfigEntry.Category("level_settings")
     @Comment("Applies if bonus chest world setting is enabled")
     public int startPoints = 5;
+    @ConfigEntry.Category("level_settings")
     @Comment("Enables starter points for SERVER only")
     public boolean enableStartPoints = false;
-    @ConfigEntry.Category("level_setting")
+    @ConfigEntry.Category("level_settings")
     @Comment("If true will reset stats on death")
     public boolean hardMode = false;
-    @ConfigEntry.Category("level_setting")
-    public boolean resetCurrentXP = true;
-    @ConfigEntry.Category("level_setting")
-    public boolean dropPlayerXP = true;
-    @ConfigEntry.Category("level_setting")
+    @ConfigEntry.Category("level_settings")
     public boolean disableMobFarms = true;
-    @ConfigEntry.Category("level_setting")
-    public boolean disableFurnaceXP = false;
-    @ConfigEntry.Category("level_setting")
-    public int xpBaseCost = 50;
-    @ConfigEntry.Category("level_setting")
-    @Comment("XP equation: lvl^2 * multiplicator + base")
-    public float xpCostMultiplicator = 0.1F;
-    @Comment("0 = no experience cap")
-    public int xpMaxCost = 0;
+    @ConfigEntry.Category("level_settings")
+    @Comment("Amount of allowed mob kills in a chunk")
+    public int mobKillCount = 5;
+    @ConfigEntry.Category("level_settings")
+    @Comment("Highlight locked blocks in red.")
+    public boolean highlightLocked = false;
+
     @Comment("Attribute values - Bonus for each lvl")
     public double healthBase = 6D;
     public double healthBonus = 1D;
@@ -94,8 +89,39 @@ public class LevelzConfig implements ConfigData {
     public float miningTntBonus = 0.5F;
     @Comment("Locked blocks break slower factor")
     public float miningLockedMultiplicator = 2.0F;
-    @ConfigEntry.Category("level_setting")
-    @Comment("Highlight locked blocks in red.")
-    public boolean highlightLocked = false;
+
+    @ConfigEntry.Category("experience_settings")
+    @Comment("XP equation: lvl^2 * multiplicator + base")
+    public float xpCostMultiplicator = 0.1F;
+    @ConfigEntry.Category("experience_settings")
+    public int xpBaseCost = 50;
+    @ConfigEntry.Category("experience_settings")
+    @Comment("0 = no experience cap")
+    public int xpMaxCost = 0;
+    @ConfigEntry.Category("experience_settings")
+    public boolean resetCurrentXP = true;
+    @ConfigEntry.Category("experience_settings")
+    public boolean dropPlayerXP = true;
+    @ConfigEntry.Category("experience_settings")
+    public boolean dropXPbasedOnLvl = false;
+    @ConfigEntry.Category("experience_settings")
+    @Comment("0.01 = 1% more xp per lvl")
+    public float basedOnMultiplier = 0.01F;
+    @ConfigEntry.Category("experience_settings")
+    public float breedingXPMultiplier = 1.0F;
+    @ConfigEntry.Category("experience_settings")
+    public float bottleXPMultiplier = 1.0F;
+    @ConfigEntry.Category("experience_settings")
+    public float dragonXPMultiplier = 0.5F;
+    @ConfigEntry.Category("experience_settings")
+    public float fishingXPMultiplier = 0.8F;
+    @ConfigEntry.Category("experience_settings")
+    public float furnaceXPMultiplier = 0.1F;
+    @ConfigEntry.Category("experience_settings")
+    public float oreXPMultiplier = 1.0F;
+    @ConfigEntry.Category("experience_settings")
+    public float tradingXPMultiplier = 0.5F;
+    @ConfigEntry.Category("experience_settings")
+    public float mobXPMultiplier = 1.0F;
 
 }

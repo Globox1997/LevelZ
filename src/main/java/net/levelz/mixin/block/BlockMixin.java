@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
+import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.Block;
@@ -27,13 +28,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.loot.context.LootContext;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(Block.class)
 public class BlockMixin {
+
+    @Nullable
+    private ServerPlayerEntity serverPlayerEntity = null;
 
     @Inject(method = "Lnet/minecraft/block/Block;dropStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getDroppedStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)Ljava/util/List;"), cancellable = true)
     private static void dropStacksMixin(BlockState state, World world, BlockPos pos, @Nullable BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfo info) {
@@ -67,6 +73,22 @@ public class BlockMixin {
                 Block.dropStack(world, pos, state.getDroppedStacks(builder).get(0).split(1));
             }
         }
+    }
+
+    @Inject(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
+    protected void dropExperienceMixin(ServerWorld world, BlockPos pos, int size, CallbackInfo info) {
+        if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F)
+            LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
+                    (int) (size * ConfigInit.CONFIG.oreXPMultiplier
+                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity).getLevel("level")
+                                    : 1.0F)));
+    }
+
+    @Inject(method = "onBreak", at = @At(value = "HEAD"))
+    private void onBreakMixin(World world, BlockPos pos, BlockState state, PlayerEntity player, CallbackInfo info) {
+        if (!world.isClient)
+            serverPlayerEntity = (ServerPlayerEntity) player;
     }
 
 }

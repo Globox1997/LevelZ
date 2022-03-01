@@ -4,22 +4,26 @@ import java.util.ArrayList;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
+import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.village.TradeOffer;
 import net.minecraft.world.World;
 
 @Mixin(WanderingTraderEntity.class)
@@ -38,11 +42,15 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
         }
     }
 
-    @ModifyVariable(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), ordinal = 0)
-    private int afterUsingMixin(int original) {
-        if (this.getCurrentCustomer() != null) {
-            return original + (int) (((PlayerStatsManagerAccess) this.getCurrentCustomer()).getPlayerStatsManager(this.getCurrentCustomer()).getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus);
-        } else
-            return original;
+    @Inject(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    protected void afterUsingMixin(TradeOffer offer, CallbackInfo info, int i) {
+        if (ConfigInit.CONFIG.tradingXPMultiplier > 0.0F)
+            LevelExperienceOrbEntity
+                    .spawn((ServerWorld) world, this.getPos().add(0.0D, 0.5D, 0.0D),
+                            (int) (i * ConfigInit.CONFIG.tradingXPMultiplier * (this.getCurrentCustomer() != null
+                                    ? 1.0F + ((PlayerStatsManagerAccess) this.getCurrentCustomer()).getPlayerStatsManager(this.getCurrentCustomer()).getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus
+                                    : 1.0F)
+                                    * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.getCurrentCustomer() != null ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier
+                                            * ((PlayerStatsManagerAccess) this.getCurrentCustomer()).getPlayerStatsManager(this.getCurrentCustomer()).getLevel("level") : 1.0F)));
     }
 }

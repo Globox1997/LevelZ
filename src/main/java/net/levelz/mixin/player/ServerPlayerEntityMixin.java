@@ -17,9 +17,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 
 @Mixin(ServerPlayerEntity.class)
-public class ServerPlayerEntityMixin implements PlayerSyncAccess {
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerSyncAccess {
+
+    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
+        super(world, pos, yaw, profile);
+    }
+
     PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) this).getPlayerStatsManager((PlayerEntity) (Object) this);
     private int syncedLevelExperience = -99999999;
     private boolean syncTeleportStats = false;
@@ -40,8 +49,24 @@ public class ServerPlayerEntityMixin implements PlayerSyncAccess {
         // Init stats - Can't send to client cause network hander is null -> onSpawn packet
     }
 
-    @Inject(method = "addExperience", at = @At(value = "TAIL"))
-    private void addExperienceMixin(int experience, CallbackInfo info) {
+    @Override
+    public void addLevelExperience(int experience) {
+        boolean isEndLvl = this.playerStatsManager.isMaxLevel();
+        if (!isEndLvl) {
+            ServerPlayerEntity playerEntity = (ServerPlayerEntity) (Object) this;
+            playerStatsManager.levelProgress += (float) experience / (float) playerStatsManager.getNextLevelExperience();
+            playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
+            while (playerStatsManager.levelProgress >= 1.0F && !isEndLvl) {
+                playerStatsManager.levelProgress = (playerStatsManager.levelProgress - 1.0F) * (float) playerStatsManager.getNextLevelExperience();
+                playerStatsManager.addExperienceLevels(1);
+                playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
+                PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, playerEntity);
+                PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
+                if (playerStatsManager.overallLevel > 0) {
+                    playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), 1.0F, 1.0F);
+                }
+            }
+        }
         this.syncedLevelExperience = -1;
     }
 

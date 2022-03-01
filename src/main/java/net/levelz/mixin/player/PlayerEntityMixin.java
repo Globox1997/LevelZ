@@ -13,13 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.levelz.access.ExperienceOrbAccess;
 import net.levelz.access.PlayerDropAccess;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
+import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
-import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.LivingEntity;
@@ -29,13 +28,12 @@ import net.minecraft.entity.player.HungerManager;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements PlayerStatsManagerAccess, PlayerDropAccess {
@@ -61,27 +59,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     @Inject(method = "writeCustomDataToNbt", at = @At(value = "TAIL"))
     public void writeCustomDataToNbtMixin(NbtCompound tag, CallbackInfo info) {
         this.playerStatsManager.writeNbt(tag);
-    }
-
-    @Inject(method = "addExperience", at = @At(value = "TAIL"))
-    public void addExperienceMixin(int experience, CallbackInfo info) {
-        boolean isEndLvl = this.playerStatsManager.isMaxLevel();
-        if (!isEndLvl) {
-            playerStatsManager.levelProgress += (float) experience / (float) playerStatsManager.getNextLevelExperience();
-            playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
-            while (playerStatsManager.levelProgress >= 1.0F && !isEndLvl) {
-                playerStatsManager.levelProgress = (playerStatsManager.levelProgress - 1.0F) * (float) playerStatsManager.getNextLevelExperience();
-                playerStatsManager.addExperienceLevels(1);
-                playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
-                if (playerEntity instanceof ServerPlayerEntity) {
-                    PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) playerEntity);
-                    PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
-                }
-                if (playerStatsManager.overallLevel > 0) {
-                    playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), 1.0F, 1.0F);
-                }
-            }
-        }
     }
 
     @Redirect(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"), require = 0)
@@ -192,19 +169,15 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     @Override
     public boolean allowMobDrop() {
-        return killedMobsInChunk >= 5 ? false : true;
+        return killedMobsInChunk >= ConfigInit.CONFIG.mobKillCount ? false : true;
     }
 
     @Override
     protected void dropXp() {
-        if (ConfigInit.CONFIG.dropPlayerXP) {
-            ExperienceOrbEntity experienceOrbEntity = (ExperienceOrbEntity) EntityType.EXPERIENCE_ORB.create(this.world);
-            experienceOrbEntity.refreshPositionAndAngles(this.getBlockPos(), this.random.nextFloat() * 360F, 0.0F);
-            experienceOrbEntity.setVelocity((this.random.nextDouble() * 0.20000000298023224D - 0.10000000149011612D) * 2.0D, this.random.nextDouble() * 0.2D * 2.0D,
-                    (this.random.nextDouble() * 0.20000000298023224D - 0.10000000149011612D) * 2.0D);
-            ((ExperienceOrbAccess) experienceOrbEntity).setAmount(this.getXpToDrop(this.attackingPlayer));
-            ((ExperienceOrbAccess) experienceOrbEntity).setDroppedByPlayer();
-            this.world.spawnEntity(experienceOrbEntity);
+        if (this.world instanceof ServerWorld && (this.shouldAlwaysDropXp() || this.playerHitTimer > 0 && this.shouldDropXp() && this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT))) {
+            if (ConfigInit.CONFIG.dropPlayerXP && (ConfigInit.CONFIG.resetCurrentXP || ConfigInit.CONFIG.hardMode))
+                LevelExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(), (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()));
+            ExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(), this.getXpToDrop(this.attackingPlayer));
         }
     }
 

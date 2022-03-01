@@ -7,8 +7,9 @@
   "key.levelz.openskillscreen": "Skill Screen",
 
   "text.autoconfig.levelz.title": "LevelZ Config",
-  "text.autoconfig.levelz.category.level_setting": "Level Settings",
   "text.autoconfig.levelz.category.default": "Skill Settings",
+  "text.autoconfig.levelz.category.level_settings": "Level Settings",
+  "text.autoconfig.levelz.category.experience_settings": "Experience Settings",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",
@@ -57,9 +58,19 @@
   "text.autoconfig.levelz.option.miningOreChance": "Mining Ore Extra Chance",
   "text.autoconfig.levelz.option.miningLockedMultiplicator": "Locked Block Multiplicator",
   "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
-  "text.autoconfig.levelz.option.disableFurnaceXP": "Disable Furnace XP",
   "text.autoconfig.levelz.option.dropPlayerXP": "Drop Player XP",
   "text.autoconfig.levelz.option.enableStartPoints": "Starter Points",
+  "text.autoconfig.levelz.option.mobKillCount": "Mob Kill Count",
+  "text.autoconfig.levelz.option.dropXPbasedOnLvl": "Drop XP Based On Level",
+  "text.autoconfig.levelz.option.basedOnMultiplier": "Based On Level Multiplier",
+  "text.autoconfig.levelz.option.breedingXPMultiplier": "Breeding XP Multiplier",
+  "text.autoconfig.levelz.option.bottleXPMultiplier": "XP Bottle XP Multiplier",
+  "text.autoconfig.levelz.option.dragonXPMultiplier": "Ender Dragon XP Multiplier",
+  "text.autoconfig.levelz.option.fishingXPMultiplier": "Fishing XP Multiplier",
+  "text.autoconfig.levelz.option.furnaceXPMultiplier": "Furnace XP Multiplier",
+  "text.autoconfig.levelz.option.oreXPMultiplier": "Ore XP Multiplier",
+  "text.autoconfig.levelz.option.tradingXPMultiplier": "Trading XP Multiplier",
+  "text.autoconfig.levelz.option.mobXPMultiplier": "Mob XP Multiplier",
 
   "item.levelz.strange_potion": "Strange Potion",
   
@@ -247,5 +258,7 @@
 
   "config.waila.plugin_levelz": "LevelZ",
   "config.waila.plugin_levelz.mineable_info": "Mineable Info",
-  "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info"
+  "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info",
+
+  "entity.levelz.level_experience_orb": "Experience Orb"
 }

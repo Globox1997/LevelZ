@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
+import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 
@@ -12,9 +13,9 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.entity.EntityType;
@@ -23,6 +24,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -32,6 +34,11 @@ import net.minecraft.world.World;
 
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin extends MerchantEntity {
+
+    @Shadow
+    @Nullable
+    private PlayerEntity lastCustomer;
+
     public VillagerEntityMixin(EntityType<? extends MerchantEntity> entityType, World world) {
         super(entityType, world);
     }
@@ -46,12 +53,15 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         }
     }
 
-    @ModifyVariable(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), ordinal = 0)
-    private int afterUsingMixin(int original) {
-        if (this.getCurrentCustomer() != null) {
-            return original + (int) (((PlayerStatsManagerAccess) this.getCurrentCustomer()).getPlayerStatsManager(this.getCurrentCustomer()).getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus);
-        } else
-            return original;
+    @Inject(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    protected void afterUsingMixin(TradeOffer offer, CallbackInfo info, int i) {
+        if (ConfigInit.CONFIG.tradingXPMultiplier > 0.0F)
+            LevelExperienceOrbEntity.spawn((ServerWorld) world, this.getPos().add(0.0D, 0.5D, 0.0D),
+                    (int) (i * ConfigInit.CONFIG.tradingXPMultiplier
+                            * (lastCustomer != null ? 1.0F + ((PlayerStatsManagerAccess) lastCustomer).getPlayerStatsManager(lastCustomer).getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus : 1.0F)
+                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && lastCustomer != null
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) lastCustomer).getPlayerStatsManager(lastCustomer).getLevel("level")
+                                    : 1.0F)));
     }
 
     @Inject(method = "prepareOffersFor", at = @At(value = "TAIL"))
