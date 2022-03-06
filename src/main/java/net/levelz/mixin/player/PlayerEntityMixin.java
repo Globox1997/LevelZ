@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerDropAccess;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
@@ -25,8 +24,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.FoodComponent;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ShovelItem;
+import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -114,21 +119,21 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     private float getUnlockedDamage(float original, boolean zero) {
         if (playerEntity.getMainHandStack().getItem() instanceof ToolItem) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            ItemStack itemStack = playerEntity.getMainHandStack();
-            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(itemStack.getItem()).toString(), true))
+            Item item = playerEntity.getMainHandStack().getItem();
+            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
                 return zero ? 0 : 1.0F;
             else {
                 levelList = null;
-                if (itemStack.isIn(FabricToolTags.SWORDS)) {
+                if (item instanceof SwordItem) {
                     levelList = LevelLists.swordList;
-                } else if (itemStack.isIn(FabricToolTags.AXES))
+                } else if (item instanceof AxeItem)
                     levelList = LevelLists.axeList;
-                else if (itemStack.isIn(FabricToolTags.HOES))
+                else if (item instanceof HoeItem)
                     levelList = LevelLists.hoeList;
-                else if (itemStack.isIn(FabricToolTags.PICKAXES) || itemStack.isIn(FabricToolTags.SHOVELS))
+                else if (item instanceof PickaxeItem || item instanceof ShovelItem)
                     levelList = LevelLists.toolList;
                 if (levelList != null)
-                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), true))
+                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) item).getMaterial().toString().toLowerCase(), true))
                         return zero ? 0 : 1.0F;
             }
         }

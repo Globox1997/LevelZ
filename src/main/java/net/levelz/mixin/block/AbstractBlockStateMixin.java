@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerBreakBlockAccess;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
@@ -15,7 +14,9 @@ import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -28,17 +29,17 @@ public class AbstractBlockStateMixin {
     private void onBlockBreakStartMixin(World world, BlockPos pos, PlayerEntity player, CallbackInfo info) {
 
         // Set player inventory calculation here
-        ItemStack itemStack = player.getStackInHand(player.getActiveHand());
-        if (itemStack.getItem() instanceof MiningToolItem) {
+        Item item = player.getStackInHand(player.getActiveHand()).getItem();
+        if (item instanceof MiningToolItem) {
             ArrayList<Object> itemList;
-            if (itemStack.isIn(FabricToolTags.HOES)) {
+            if (item instanceof HoeItem) {
                 itemList = LevelLists.hoeList;
-            } else if (itemStack.isIn(FabricToolTags.AXES)) {
+            } else if (item instanceof AxeItem) {
                 itemList = LevelLists.axeList;
             } else {
                 itemList = LevelLists.toolList;
             }
-            if (!PlayerStatsManager.playerLevelisHighEnough(player, itemList, ((MiningToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), true)) {
+            if (!PlayerStatsManager.playerLevelisHighEnough(player, itemList, ((MiningToolItem) item).getMaterial().toString().toLowerCase(), true)) {
                 ((PlayerBreakBlockAccess) player.getInventory()).setInventoryBlockBreakable(false);
             } else
                 ((PlayerBreakBlockAccess) player.getInventory()).setInventoryBlockBreakable(true);

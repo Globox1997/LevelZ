@@ -4,7 +4,6 @@ import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
@@ -15,8 +14,12 @@ import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.MiningToolItem;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.text.TranslatableText;
@@ -307,30 +310,30 @@ public class LevelzGui extends LightweightGuiDescription {
 
     private String getDamageLabel(PlayerStatsManager playerStatsManager, PlayerEntity playerEntity) {
         float damage = 0.0F;
-        ItemStack itemStack = playerEntity.getMainHandStack();
-        if (itemStack.getItem() instanceof ToolItem) {
+        Item item = playerEntity.getMainHandStack().getItem();
+        if (item instanceof ToolItem) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(itemStack.getItem()).toString(), false)) {
-                if (itemStack.getItem() instanceof SwordItem)
-                    damage = ((SwordItem) itemStack.getItem()).getAttackDamage();
-                else if (itemStack.getItem() instanceof MiningToolItem)
-                    damage = ((MiningToolItem) itemStack.getItem()).getAttackDamage();
+            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), false)) {
+                if (item instanceof SwordItem)
+                    damage = ((SwordItem) item).getAttackDamage();
+                else if (item instanceof MiningToolItem)
+                    damage = ((MiningToolItem) item).getAttackDamage();
             } else {
                 levelList = null;
-                if (itemStack.isIn(FabricToolTags.SWORDS)) {
+                if (item instanceof SwordItem) {
                     levelList = LevelLists.swordList;
-                } else if (itemStack.isIn(FabricToolTags.AXES))
+                } else if (item instanceof AxeItem)
                     levelList = LevelLists.axeList;
-                else if (itemStack.isIn(FabricToolTags.HOES))
+                else if (item instanceof HoeItem)
                     levelList = LevelLists.hoeList;
-                else if (itemStack.isIn(FabricToolTags.PICKAXES) || itemStack.isIn(FabricToolTags.SHOVELS))
+                else if (item instanceof PickaxeItem || item instanceof ShovelItem)
                     levelList = LevelLists.toolList;
                 if (levelList != null)
-                    if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) itemStack.getItem()).getMaterial().toString().toLowerCase(), false)) {
-                        if (itemStack.getItem() instanceof SwordItem)
-                            damage = ((SwordItem) itemStack.getItem()).getAttackDamage();
-                        else if (itemStack.getItem() instanceof MiningToolItem)
-                            damage = ((MiningToolItem) itemStack.getItem()).getAttackDamage();
+                    if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) item).getMaterial().toString().toLowerCase(), false)) {
+                        if (item instanceof SwordItem)
+                            damage = ((SwordItem) item).getAttackDamage();
+                        else if (item instanceof MiningToolItem)
+                            damage = ((MiningToolItem) item).getAttackDamage();
                     }
             }
 

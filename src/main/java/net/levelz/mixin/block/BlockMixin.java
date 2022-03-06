@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.entity.LevelExperienceOrbEntity;
@@ -25,8 +24,14 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ShearsItem;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -47,17 +52,18 @@ public class BlockMixin {
             if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) entity, Registry.BLOCK.getRawId(state.getBlock()), 1))
                 info.cancel();
             else if (stack.getItem() instanceof MiningToolItem) {
+                Item item = stack.getItem();
                 ArrayList<Object> levelList = null;
-                if (stack.isIn(FabricToolTags.AXES))
+                if (item instanceof AxeItem)
                     levelList = LevelLists.axeList;
-                else if (stack.isIn(FabricToolTags.HOES))
+                else if (item instanceof HoeItem)
                     levelList = LevelLists.hoeList;
-                else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS))
+                else if (item instanceof PickaxeItem || item instanceof ShovelItem)
                     levelList = LevelLists.toolList;
                 if (levelList != null
                         && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) entity, levelList, ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
                     info.cancel();
-            } else if (stack.isIn(FabricToolTags.SHEARS) && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) entity, LevelLists.shearsList, null, true)) {
+            } else if (stack.getItem() instanceof ShearsItem && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) entity, LevelLists.shearsList, null, true)) {
                 info.cancel();
             }
 

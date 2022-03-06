@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.fabricmc.api.EnvType;
@@ -23,16 +22,22 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.item.FishingRodItem;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ShearsItem;
 import net.minecraft.item.ShieldItem;
+import net.minecraft.item.ShovelItem;
+import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.TridentItem;
 import net.minecraft.text.Text;
@@ -155,44 +160,45 @@ public class ItemStackClientMixin {
 
             } else {
                 // Item
-                if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(stack.getItem().getTranslationKey().replace("item.", "").replace(".", ":"))) {
+                Item item = stack.getItem();
+                if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(item.getTranslationKey().replace("item.", "").replace(".", ":"))) {
                     levelList = LevelLists.customItemList;
-                    String string = Registry.ITEM.getId(stack.getItem()).toString();
+                    String string = Registry.ITEM.getId(item).toString();
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(string) + 2).toString())
                                 .formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() instanceof ToolItem) {
-                    if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS)) {
+                } else if (item instanceof ToolItem) {
+                    if (item instanceof PickaxeItem || item instanceof ShovelItem) {
                         levelList = LevelLists.toolList;
-                        String material = ((ToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                        String material = ((ToolItem) item).getMaterial().toString().toLowerCase();
                         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                             list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip",
                                     levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.RED));
                         }
-                    } else if (stack.isIn(FabricToolTags.AXES)) {
+                    } else if (item instanceof AxeItem) {
                         levelList = LevelLists.axeList;
-                        String material = ((ToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                        String material = ((ToolItem) item).getMaterial().toString().toLowerCase();
                         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                             list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip",
                                     levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.RED));
                         }
-                    } else if (stack.isIn(FabricToolTags.HOES)) {
+                    } else if (item instanceof HoeItem) {
                         levelList = LevelLists.hoeList;
-                        String material = ((ToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                        String material = ((ToolItem) item).getMaterial().toString().toLowerCase();
                         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                             list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip",
                                     levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.RED));
                         }
-                    } else if (stack.isIn(FabricToolTags.SWORDS)) {
+                    } else if (item instanceof SwordItem) {
                         levelList = LevelLists.swordList;
-                        String material = ((ToolItem) stack.getItem()).getMaterial().toString().toLowerCase();
+                        String material = ((ToolItem) item).getMaterial().toString().toLowerCase();
                         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                             list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip",
                                     levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.RED));
                         }
                     }
-                } else if (stack.isIn(FabricToolTags.SHEARS)) {
+                } else if (item instanceof ShearsItem) {
                     levelList = LevelLists.sheepList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz.sheep_restriction.tooltip", StringUtils.capitalize((String) levelList.get(0)), levelList.get(1)).formatted(Formatting.RED));
@@ -201,24 +207,24 @@ public class ItemStackClientMixin {
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() == Items.FLINT_AND_STEEL) {
+                } else if (item == Items.FLINT_AND_STEEL) {
                     levelList = LevelLists.flintAndSteelList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() == Items.GLASS_BOTTLE) {
+                } else if (item == Items.GLASS_BOTTLE) {
                     levelList = LevelLists.dragonBreathList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() == Items.TOTEM_OF_UNDYING) {
+                } else if (item == Items.TOTEM_OF_UNDYING) {
                     levelList = LevelLists.totemList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() instanceof BowItem) {
+                } else if (item instanceof BowItem) {
                     ArrayList<Object> customList = LevelLists.customItemList;
-                    String string = Registry.ITEM.getId(stack.getItem()).toString();
+                    String string = Registry.ITEM.getId(item).toString();
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, false)) {
                         list.add(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1).toString() + ".tooltip",
                                 customList.get(customList.indexOf(string) + 2).toString()).formatted(Formatting.RED));
@@ -229,42 +235,42 @@ public class ItemStackClientMixin {
                         }
                     }
 
-                } else if (stack.getItem() instanceof TridentItem) {
+                } else if (item instanceof TridentItem) {
                     levelList = LevelLists.tridentList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() instanceof CrossbowItem) {
+                } else if (item instanceof CrossbowItem) {
                     levelList = LevelLists.crossbowList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() instanceof ArmorItem) {
+                } else if (item instanceof ArmorItem) {
                     try {
                         levelList = LevelLists.armorList;
-                        String material = ((ArmorItem) stack.getItem()).getMaterial().getName().toLowerCase();
+                        String material = ((ArmorItem) item).getMaterial().getName().toLowerCase();
                         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                             list.add(new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip",
                                     levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.RED));
                         }
                     } catch (AbstractMethodError ignored) {
                     }
-                } else if (stack.getItem() instanceof ShieldItem) {
+                } else if (item instanceof ShieldItem) {
                     levelList = LevelLists.shieldList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() instanceof ElytraItem) {
+                } else if (item instanceof ElytraItem) {
                     levelList = LevelLists.elytraList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() instanceof BucketItem) {
+                } else if (item instanceof BucketItem) {
                     levelList = LevelLists.bucketList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                     }
-                } else if (stack.getItem() instanceof FishingRodItem) {
+                } else if (item instanceof FishingRodItem) {
                     levelList = LevelLists.fishingList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                         list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));

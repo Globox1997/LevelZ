@@ -7,14 +7,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -30,14 +34,15 @@ public class MiningToolItemMixin {
                 info.setReturnValue(false);
             else {
                 levelList = null;
-                if (stack.isIn(FabricToolTags.AXES))
+                Item item = stack.getItem();
+                if (item instanceof AxeItem)
                     levelList = LevelLists.axeList;
-                else if (stack.isIn(FabricToolTags.HOES))
+                else if (item instanceof HoeItem)
                     levelList = LevelLists.hoeList;
-                else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS))
+                else if (item instanceof PickaxeItem || item instanceof ShovelItem)
                     levelList = LevelLists.toolList;
                 if (levelList != null)
-                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, levelList, ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
+                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, levelList, ((MiningToolItem) item).getMaterial().toString().toLowerCase(), true))
                         info.setReturnValue(false);
             }
         }
@@ -51,14 +56,15 @@ public class MiningToolItemMixin {
                 info.setReturnValue(false);
             else {
                 levelList = null;
-                if (stack.isIn(FabricToolTags.AXES))
+                Item item = stack.getItem();
+                if (item instanceof AxeItem)
                     levelList = LevelLists.axeList;
-                else if (stack.isIn(FabricToolTags.HOES))
+                else if (item instanceof HoeItem)
                     levelList = LevelLists.hoeList;
-                else if (stack.isIn(FabricToolTags.PICKAXES) || stack.isIn(FabricToolTags.SHOVELS))
+                else if (item instanceof PickaxeItem || item instanceof ShovelItem)
                     levelList = LevelLists.toolList;
                 if (levelList != null)
-                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, levelList, ((MiningToolItem) stack.getItem()).getMaterial().toString().toLowerCase(), true))
+                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, levelList, ((MiningToolItem) item).getMaterial().toString().toLowerCase(), true))
                         info.setReturnValue(false);
             }
         }
