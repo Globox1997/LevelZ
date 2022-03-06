@@ -20,8 +20,8 @@ public class InfoScreen extends CottonClientScreen {
 
     @Override
     public boolean keyPressed(int ch, int keyCode, int modifiers) {
-        if (client.options.keyInventory.matchesKey(ch, keyCode)) {
-            this.onClose();
+        if (client.options.inventoryKey.matchesKey(ch, keyCode)) {
+            this.close();
             return true;
         } else if (KeyInit.screenKey.matchesKey(ch, keyCode)) {
             this.client.setScreen(new LevelzScreen(new LevelzGui(client)));

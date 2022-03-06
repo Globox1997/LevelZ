@@ -76,8 +76,8 @@ public class LevelzScreen extends CottonClientScreen {
 
     @Override
     public boolean keyPressed(int ch, int keyCode, int modifiers) {
-        if (KeyInit.screenKey.matchesKey(ch, keyCode) || client.options.keyInventory.matchesKey(ch, keyCode)) {
-            this.onClose();
+        if (KeyInit.screenKey.matchesKey(ch, keyCode) || client.options.inventoryKey.matchesKey(ch, keyCode)) {
+            this.close();
             return true;
         } else
             return super.keyPressed(ch, keyCode, modifiers);
