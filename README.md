@@ -45,6 +45,7 @@ The mod has 6 different folder for different locking things.
 4. brewing
 5. mining
 6. smithing
+7. crafting
 
 #### 1. Block
 
@@ -231,8 +232,25 @@ should look like is here:
 }
 ```
 
-It looks the crafting recipe of the smithing table, so players can't pull out crafting result items of the table before they reached
+It locks the crafting recipe of the smithing table, so players can't pull out crafting result items of the table before they reached
 the level. It is hardcoded to the smithing skill.
+
+#### 7. Crafting (Since version 1.3.0)
+
+The crafting category stands for the crafting restriction of items at the crafting table and player gui. An example how the json file
+should look like is here:
+
+```
+{
+    "replace": false,
+    "level": 4,
+    "skill": "luck",
+    "item": [
+        "minecraft:stick",
+        "minecraft:wooden_axe"
+    ]
+}
+```
 
 ### Example Datapack
 

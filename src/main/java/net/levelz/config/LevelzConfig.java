@@ -27,7 +27,8 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_settings")
     @Comment("Highlight locked blocks in red.")
     public boolean highlightLocked = false;
-
+    @ConfigEntry.Category("level_settings")
+    public boolean sortCraftingRecipesBySkill = false;
     @Comment("Attribute values - Bonus for each lvl")
     public double healthBase = 6D;
     public double healthBonus = 1D;

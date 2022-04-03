@@ -36,23 +36,23 @@ public class PlayerStatsServerPacket {
                 if (stat.equals("health")) {
                     player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus);
                     player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus);
-                } else if (stat.equals("strength")) {
+                } else if (stat.equals("strength"))
                     player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
                             .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus);
-                } else if (stat.equals("agility")) {
+                else if (stat.equals("agility"))
                     player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
                             .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus);
-                } else if (stat.equals("defense")) {
+                else if (stat.equals("defense"))
                     player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus);
-                } else if (stat.equals("luck")) {
+                else if (stat.equals("luck"))
                     player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus);
-                } else if (stat.equals("mining")) {
+                else if (stat.equals("mining"))
                     syncLockedBlockList(playerStatsManager);
-                } else if (stat.equals("alchemy")) {
+                else if (stat.equals("alchemy"))
                     syncLockedBrewingItemList(playerStatsManager);
-                } else if (stat.equals("smithing")) {
+                else if (stat.equals("smithing"))
                     syncLockedSmithingItemList(playerStatsManager);
-                }
+                syncLockedCraftingItemList(playerStatsManager);
             }
         });
 
@@ -90,6 +90,7 @@ public class PlayerStatsServerPacket {
         syncLockedBlockList(playerStatsManager);
         syncLockedBrewingItemList(playerStatsManager);
         syncLockedSmithingItemList(playerStatsManager);
+        syncLockedCraftingItemList(playerStatsManager);
 
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LEVEL_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
@@ -107,9 +108,8 @@ public class PlayerStatsServerPacket {
         for (int i = 0; i < LevelLists.miningLevelList.size(); i++) {
             if (LevelLists.miningLevelList.get(i) > playerStatsManager.getLevel("mining")) {
                 for (int u = 0; u < LevelLists.miningBlockList.get(i).size(); u++) {
-                    if (!playerStatsManager.lockedBlockIds.contains(LevelLists.miningBlockList.get(i).get(u))) {
+                    if (!playerStatsManager.lockedBlockIds.contains(LevelLists.miningBlockList.get(i).get(u)))
                         playerStatsManager.lockedBlockIds.add(LevelLists.miningBlockList.get(i).get(u));
-                    }
                 }
             }
         }
@@ -120,9 +120,8 @@ public class PlayerStatsServerPacket {
         for (int i = 0; i < LevelLists.brewingLevelList.size(); i++) {
             if (LevelLists.brewingLevelList.get(i) > playerStatsManager.getLevel("alchemy")) {
                 for (int u = 0; u < LevelLists.brewingItemList.get(i).size(); u++) {
-                    if (!playerStatsManager.lockedbrewingItemIds.contains(LevelLists.brewingItemList.get(i).get(u))) {
+                    if (!playerStatsManager.lockedbrewingItemIds.contains(LevelLists.brewingItemList.get(i).get(u)))
                         playerStatsManager.lockedbrewingItemIds.add(LevelLists.brewingItemList.get(i).get(u));
-                    }
                 }
             }
         }
@@ -133,9 +132,20 @@ public class PlayerStatsServerPacket {
         for (int i = 0; i < LevelLists.smithingLevelList.size(); i++) {
             if (LevelLists.smithingLevelList.get(i) > playerStatsManager.getLevel("smithing")) {
                 for (int u = 0; u < LevelLists.smithingItemList.get(i).size(); u++) {
-                    if (!playerStatsManager.lockedSmithingItemIds.contains(LevelLists.smithingItemList.get(i).get(u))) {
+                    if (!playerStatsManager.lockedSmithingItemIds.contains(LevelLists.smithingItemList.get(i).get(u)))
                         playerStatsManager.lockedSmithingItemIds.add(LevelLists.smithingItemList.get(i).get(u));
-                    }
+                }
+            }
+        }
+    }
+
+    public static void syncLockedCraftingItemList(PlayerStatsManager playerStatsManager) {
+        playerStatsManager.lockedCraftingItemIds.clear();
+        for (int i = 0; i < LevelLists.craftingLevelList.size(); i++) {
+            if (LevelLists.craftingLevelList.get(i) > playerStatsManager.getLevel(LevelLists.craftingSkillList.get(i).toString())) {
+                for (int u = 0; u < LevelLists.craftingItemList.get(i).size(); u++) {
+                    if (!playerStatsManager.lockedCraftingItemIds.contains(LevelLists.craftingItemList.get(i).get(u)))
+                        playerStatsManager.lockedCraftingItemIds.add(LevelLists.craftingItemList.get(i).get(u));
                 }
             }
         }
@@ -169,6 +179,14 @@ public class PlayerStatsServerPacket {
             buf.writeString(LevelLists.smithingLevelList.get(k).toString());
             for (int u = 0; u < LevelLists.smithingItemList.get(k).size(); u++) {
                 buf.writeString(LevelLists.smithingItemList.get(k).get(u).toString());
+            }
+        }
+        for (int k = 0; k < LevelLists.craftingLevelList.size(); k++) {
+            buf.writeString("crafting:level");
+            buf.writeString(LevelLists.craftingLevelList.get(k).toString());
+            buf.writeString(LevelLists.craftingSkillList.get(k).toString());
+            for (int u = 0; u < LevelLists.craftingItemList.get(k).size(); u++) {
+                buf.writeString(LevelLists.craftingItemList.get(k).get(u).toString());
             }
         }
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LIST_PACKET, buf);

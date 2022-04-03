@@ -71,6 +71,7 @@
   "text.autoconfig.levelz.option.oreXPMultiplier": "Ore XP Multiplier",
   "text.autoconfig.levelz.option.tradingXPMultiplier": "Trading XP Multiplier",
   "text.autoconfig.levelz.option.mobXPMultiplier": "Mob XP Multiplier",
+  "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
 
   "item.levelz.strange_potion": "Strange Potion",
   
@@ -91,6 +92,7 @@
   "item.levelz.mining_restriction.tooltip": "§7Mineable: §cMining %d",
   "item.levelz.alchemy_restriction.tooltip": "§7Brewable: §cBrewing %d",
   "item.levelz.smithing_restriction.tooltip": "§7Smithable: §cSmithing %d",
+  "item.levelz.crafting_restriction.tooltip": "§7Craftable: §c%s %d",
 
   "item.levelz.sheep_restriction.tooltip": "§7Sheep Use: §c%s %d",
 
@@ -110,6 +112,7 @@
   "text.levelz.object_info_1": "%s Use",
   "text.levelz.object_info_2": "%s %s",
   "text.levelz.more_info": "Click on skill sprites for more info",
+  "text.levelz.crafting_info": "Crafting Recipe Restriction List",
 
   "text.levelz.health_info_1": "Player starts with %d HP",
   "text.levelz.health_info_2_1": "Each skill point increases health",
@@ -236,6 +239,8 @@
 
   "spritetip.levelz.alchemy_skill": "Alchemy",
   "spritetip.levelz.alchemy_skill_info": "Unlocks Alchemy Items",
+
+  "spritetip.levelz.crafting_skill": "Crafting",
 
   "container.levelz.enchanting_tier": "Tier %d at %s level %d",
 

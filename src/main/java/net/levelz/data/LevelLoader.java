@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.levelz.util.SortList;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -20,12 +21,14 @@ import net.minecraft.util.registry.Registry;
 
 public class LevelLoader implements SimpleSynchronousResourceReloadListener {
     private static final Logger LOGGER = LogManager.getLogger("LevelZ");
-    // For mining and brewing
+
     // List of lists which get filled and cleared while loading data
-    private List<List<Integer>> objectList = new ArrayList<>();
-    private List<Integer> levelList = new ArrayList<>();
+    private List<List<Integer>> objectList = new ArrayList<List<Integer>>();
+    private List<Integer> levelList = new ArrayList<Integer>();
     // Check if list is already replacing any other list
-    private List<Boolean> replaceList = new ArrayList<>();
+    private List<Boolean> replaceList = new ArrayList<Boolean>();
+    // List for crafting recipe
+    private List<String> skillList = new ArrayList<String>();
 
     @Override
     public Identifier getFabricId() {
@@ -47,12 +50,12 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                         levelList.remove(index);
                         objectList.remove(index);
                         replaceList.remove(index);
-                        fillLists(data, false, 1);
+                        fillLists(data, false, 1, -1);
                     } else if (!replaceList.get(index)) {
-                        fillLists(data, true, 1);
+                        fillLists(data, true, 1, -1);
                     }
                 } else {
-                    fillLists(data, false, 1);
+                    fillLists(data, false, 1, -1);
                 }
 
             } catch (Exception e) {
@@ -68,6 +71,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
                 ArrayList<Object> list = LevelLists.getList(data.get("item").getAsString());
+
                 if (data.get("item").getAsString().equals("minecraft:armor") || data.get("item").getAsString().equals("minecraft:tool") || data.get("item").getAsString().equals("minecraft:hoe")
                         || data.get("item").getAsString().equals("minecraft:sword") || data.get("item").getAsString().equals("minecraft:axe")) {
                     if (list.contains(data.get("material").getAsString())) {
@@ -260,18 +264,19 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             try {
                 InputStream stream = manager.getResource(id).getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+
                 if (levelList.contains(data.get("level").getAsInt())) {
                     int index = levelList.indexOf(data.get("level").getAsInt());
                     if (JsonHelper.getBoolean(data, "replace", false)) {
                         levelList.remove(index);
                         objectList.remove(index);
                         replaceList.remove(index);
-                        fillLists(data, false, 2);
+                        fillLists(data, false, 2, -1);
                     } else if (!replaceList.get(index)) {
-                        fillLists(data, true, 2);
+                        fillLists(data, true, 2, -1);
                     }
                 } else {
-                    fillLists(data, false, 2);
+                    fillLists(data, false, 2, -1);
                 }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
@@ -292,12 +297,12 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                         levelList.remove(index);
                         objectList.remove(index);
                         replaceList.remove(index);
-                        fillLists(data, false, 2);
+                        fillLists(data, false, 2, -1);
                     } else if (!replaceList.get(index)) {
-                        fillLists(data, true, 2);
+                        fillLists(data, true, 2, -1);
                     }
                 } else {
-                    fillLists(data, false, 2);
+                    fillLists(data, false, 2, -1);
                 }
 
             } catch (Exception e) {
@@ -307,32 +312,39 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         // Fill smithing list
         sortAndFillLists(levelList, objectList, 3);
 
-        // // Crafting
-        // for (Identifier id : manager.findResources("crafting", path -> path.endsWith(".json"))) {
-        // try {
-        // InputStream stream = manager.getResource(id).getInputStream();
-        // JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+        // Crafting
+        for (Identifier id : manager.findResources("crafting", path -> path.endsWith(".json"))) {
+            try {
+                InputStream stream = manager.getResource(id).getInputStream();
+                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 
-        // if (levelList.contains(data.get("level").getAsInt())) {
-        // int index = levelList.indexOf(data.get("level").getAsInt());
-        // if (JsonHelper.getBoolean(data, "replace", false)) {
-        // levelList.remove(index);
-        // objectList.remove(index);
-        // replaceList.remove(index);
-        // fillLists(data, false, 2);
-        // } else if (!replaceList.get(index)) {
-        // fillLists(data, true, 2);
-        // }
-        // } else {
-        // fillLists(data, false, 2);
-        // }
+                int index = -1;
+                if (skillList.contains(data.get("skill").getAsString()))
+                    for (int i = 0; i < skillList.size(); i++)
+                        if (skillList.get(i).equals(data.get("skill").getAsString()) && levelList.size() >= i && levelList.get(i).equals(data.get("level").getAsInt())) {
+                            index = i;
+                            break;
+                        }
 
-        // } catch (Exception e) {
-        // LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
-        // }
-        // }
-        // // Fill crafting list
-        // sortAndFillLists(levelList, objectList, 4);
+                if (index != -1) {
+                    if (JsonHelper.getBoolean(data, "replace", false)) {
+                        skillList.remove(index);
+                        levelList.remove(index);
+                        objectList.remove(index);
+                        replaceList.remove(index);
+                        fillLists(data, false, 3, index);
+                    } else if (!replaceList.get(index))
+                        fillLists(data, true, 3, index);
+
+                } else {
+                    fillLists(data, false, 3, index);
+                }
+            } catch (Exception e) {
+                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+            }
+        }
+        // Fill crafting list
+        sortAndFillLists(levelList, objectList, 4);
 
         addAllInOneList();
 
@@ -341,38 +353,42 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         // System.out.println(LevelLists.miningLevelList);
     }
 
-    // 1:block; 2:item
-    private void fillLists(JsonObject data, boolean addToExisting, int type) {
+    // 1 = block; 2 = item
+    private void fillLists(JsonObject data, boolean addToExisting, int type, int index) {
         List<Integer> idList = new ArrayList<Integer>();
         if (type == 1) {
             for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
                 if (Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())).toString().equals("air")) {
                     LOGGER.info("{} is not a valid block identifier", data.getAsJsonArray("block").get(i).getAsString());
+                    continue;
                 }
                 idList.add(Registry.BLOCK.getRawId(Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString()))));
             }
-        } else if (type == 2) {
+        } else if (type == 2 || type == 3) {
             for (int i = 0; i < data.getAsJsonArray("item").size(); i++) {
                 if (Registry.ITEM.get(new Identifier(data.getAsJsonArray("item").get(i).getAsString())).toString().equals("air")) {
                     LOGGER.info("{} is not a valid item identifier", data.getAsJsonArray("item").get(i).getAsString());
+                    continue;
                 }
                 idList.add(Registry.ITEM.getRawId(Registry.ITEM.get(new Identifier(data.getAsJsonArray("item").get(i).getAsString()))));
             }
         }
 
         if (addToExisting) {
-            int index = levelList.indexOf(data.get("level").getAsInt());
-            for (int u = 0; u < idList.size(); u++) {
+            if (index == -1)
+                index = levelList.indexOf(data.get("level").getAsInt());
+            for (int u = 0; u < idList.size(); u++)
                 objectList.get(index).add(idList.get(u));
-            }
         } else {
+            if (type == 3)
+                skillList.add(data.get("skill").getAsString());
             levelList.add(data.get("level").getAsInt());
             objectList.add(idList);
             replaceList.add(JsonHelper.getBoolean(data, "replace", false));
         }
     }
 
-    // type: 1 = mining; 2 = brewing; 3 = smithing
+    // type: 1 = mining; 2 = brewing; 3 = smithing; 4 = crafting
     private void sortAndFillLists(List<Integer> levelList, List<List<Integer>> objectList, int type) {
         // clear replace list for next usage
         replaceList.clear();
@@ -381,21 +397,27 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
             if (type == 1) {
                 LevelLists.miningLevelList.addAll(levelList);
                 LevelLists.miningLevelList.sort(Comparator.naturalOrder());
-                for (int i = 0; i < levelList.size(); i++) {
+                for (int i = 0; i < levelList.size(); i++)
                     LevelLists.miningBlockList.add(i, objectList.get(levelList.indexOf(LevelLists.miningLevelList.get(i))));
-                }
+
             } else if (type == 2) {
                 LevelLists.brewingLevelList.addAll(levelList);
                 LevelLists.brewingLevelList.sort(Comparator.naturalOrder());
-                for (int i = 0; i < levelList.size(); i++) {
+                for (int i = 0; i < levelList.size(); i++)
                     LevelLists.brewingItemList.add(i, objectList.get(levelList.indexOf(LevelLists.brewingLevelList.get(i))));
-                }
+
             } else if (type == 3) {
                 LevelLists.smithingLevelList.addAll(levelList);
                 LevelLists.smithingLevelList.sort(Comparator.naturalOrder());
-                for (int i = 0; i < levelList.size(); i++) {
+                for (int i = 0; i < levelList.size(); i++)
                     LevelLists.smithingItemList.add(i, objectList.get(levelList.indexOf(LevelLists.smithingLevelList.get(i))));
-                }
+
+            } else if (type == 4) {
+                LevelLists.craftingLevelList.addAll(levelList);
+                LevelLists.craftingSkillList.addAll(skillList);
+                LevelLists.craftingItemList.addAll(objectList);
+                SortList.concurrentSort(LevelLists.craftingLevelList, LevelLists.craftingLevelList, LevelLists.craftingSkillList, LevelLists.craftingItemList);
+                this.skillList.clear();
             }
             this.objectList.clear();
             this.levelList.clear();
@@ -510,6 +532,9 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.brewingLevelList.clear();
         LevelLists.smithingItemList.clear();
         LevelLists.smithingLevelList.clear();
+        LevelLists.craftingItemList.clear();
+        LevelLists.craftingLevelList.clear();
+        LevelLists.craftingSkillList.clear();
         // Potion list isn't filled via levelz datapacks
         // LevelLists.potionList.clear();
     }

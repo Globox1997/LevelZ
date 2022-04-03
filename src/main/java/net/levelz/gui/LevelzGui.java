@@ -186,6 +186,12 @@ public class LevelzGui extends LightweightGuiDescription {
         infoIcon.addText(new TranslatableText("text.levelz.more_info").getString());
         root.add(infoIcon, 178, 73, 11, 13);
 
+        if (!LevelLists.craftingItemList.isEmpty()) {
+            ZWSprite craftingIcon = new ZWSprite("crafting", client, 3);
+            craftingIcon.addText(new TranslatableText("text.levelz.crafting_info").getString());
+            root.add(craftingIcon, 180, 5, 15, 13);
+        }
+
         // Skill buttons
         ZWButton healthButton = new ZWButton();
         ZWButton strengthButton = new ZWButton();
@@ -306,6 +312,8 @@ public class LevelzGui extends LightweightGuiDescription {
         wButton10.setEnabled(enoughPoints && playerStatsManager.getLevel("mining") < ConfigInit.CONFIG.maxLevel);
         wButton11.setEnabled(enoughPoints && playerStatsManager.getLevel("farming") < ConfigInit.CONFIG.maxLevel);
         wButton12.setEnabled(enoughPoints && playerStatsManager.getLevel("alchemy") < ConfigInit.CONFIG.maxLevel);
+
+        PlayerStatsServerPacket.syncLockedCraftingItemList(playerStatsManager);
     }
 
     private String getDamageLabel(PlayerStatsManager playerStatsManager, PlayerEntity playerEntity) {

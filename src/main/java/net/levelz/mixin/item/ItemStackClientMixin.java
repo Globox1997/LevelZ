@@ -303,6 +303,16 @@ public class ItemStackClientMixin {
             if (PlayerStatsManager.listContainsItemOrBlock(player, itemId, 3))
                 list.add(new TranslatableText("item.levelz.smithing_restriction.tooltip", PlayerStatsManager.getUnlockLevel(itemId, 3)).formatted(Formatting.RED));
         }
+        if (PlayerStatsManager.listContainsItemOrBlock(player, itemId, 4))
+            for (int i = 0; i < LevelLists.craftingItemList.size(); i++) {
+                if (LevelLists.craftingItemList.get(i).contains(itemId)) {
+                    list.add(
+                            new TranslatableText("item.levelz.crafting_restriction.tooltip", StringUtils.capitalize(LevelLists.craftingSkillList.get(i)), PlayerStatsManager.getUnlockLevel(itemId, 4))
+                                    .formatted(Formatting.RED));
+                    break;
+                }
+            }
+
         return list;
     }
 

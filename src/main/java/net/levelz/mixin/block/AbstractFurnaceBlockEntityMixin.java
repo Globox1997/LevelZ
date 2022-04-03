@@ -47,7 +47,7 @@ public class AbstractFurnaceBlockEntityMixin {
     @Inject(method = "getRecipesUsedAndDropExperience", at = @At(value = "TAIL"))
     private void getRecipesUsedAndDropExperienceMixin(ServerWorld world, Vec3d pos, CallbackInfoReturnable<List<Recipe<?>>> info) {
         if (ConfigInit.CONFIG.furnaceXPMultiplier > 0.0F)
-            for (Object2IntMap.Entry entry : this.recipesUsed.object2IntEntrySet()) {
+            for (Object2IntMap.Entry<Identifier> entry : this.recipesUsed.object2IntEntrySet()) {
                 world.getRecipeManager().get((Identifier) entry.getKey()).ifPresent(recipe -> {
                     int i = MathHelper.floor((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
                     float f = MathHelper.fractionalPart((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());

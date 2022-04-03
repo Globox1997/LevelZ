@@ -49,15 +49,18 @@ public class ZWSprite extends WSprite {
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         if (type != 0 && name != null) {
             Identifier identifier = new Identifier("levelz:textures/gui/info_icon.png");
+            boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
             if (name.equals("info")) {
-                boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
-                if (hovered) {
+                if (hovered)
                     identifier = new Identifier("levelz:textures/gui/hovered_info_icon.png");
-                }
-            } else if (type == 1) {
+            } else if (type == 1)
                 identifier = new Identifier("levelz:textures/gui/list_icon.png");
-            } else if (type == 2) {
+            else if (type == 2)
                 identifier = new Identifier("levelz:textures/gui/clicked_list_icon.png");
+            else if (type == 3 || type == 4) {
+                identifier = new Identifier("levelz:textures/gui/crafting_book.png");
+                if (hovered)
+                    identifier = new Identifier("levelz:textures/gui/hovered_crafting_book.png");
             }
             paintFrame(matrices, x, y, new Texture(identifier));
         } else
@@ -71,14 +74,16 @@ public class ZWSprite extends WSprite {
         }
     }
 
-    // type 1: list, 2: clicked list
+    // type 1: list, 2: clicked list, 3: recipe list
 
     @Override
     public InputResult onClick(int x, int y, int button) {
         if (client != null && name != null) {
-            if (type == 1) {
+            if (type == 1 || type == 3)
                 client.setScreen(new InfoScreen(new ListGui(name, client)));
-            } else
+            else if (type == 4)
+                client.setScreen(new LevelzScreen(new LevelzGui(client)));
+            else
                 client.setScreen(new InfoScreen(new InfoGui(name, client)));
         }
         return InputResult.IGNORED;

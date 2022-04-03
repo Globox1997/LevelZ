@@ -6,6 +6,8 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import net.fabricmc.fabric.api.util.TriState;
 import net.levelz.data.LevelLists;
+import net.levelz.init.ConfigInit;
+import net.levelz.util.SortList;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
@@ -32,8 +34,8 @@ public class ListGui extends LightweightGuiDescription {
 
         root.add(new WLabel(new TranslatableText("text.levelz.locked_list", new TranslatableText(String.format("spritetip.levelz.%s_skill", name)))), 6, 7);
 
-        ZWSprite infoIcon = new ZWSprite(name, client, 2);
-        root.add(infoIcon, 180, 7, 12, 9);
+        ZWSprite infoIcon = new ZWSprite(name, client, Objects.equals(name, "crafting") ? 4 : 2);
+        root.add(infoIcon, 180, Objects.equals(name, "crafting") ? 5 : 7, Objects.equals(name, "crafting") ? 15 : 12, Objects.equals(name, "crafting") ? 13 : 9);
 
         WPlainPanel plainPanel = new WPlainPanel();
 
@@ -42,6 +44,7 @@ public class ListGui extends LightweightGuiDescription {
 
         List<Integer> levelList = new ArrayList<>();
         List<List<Integer>> ObjectList = new ArrayList<>();
+        List<String> skillList = new ArrayList<>();
         boolean isBlock = false;
         if (Objects.equals(name, "mining")) {
             levelList = LevelLists.miningLevelList;
@@ -53,15 +56,25 @@ public class ListGui extends LightweightGuiDescription {
         } else if (Objects.equals(name, "smithing")) {
             levelList = LevelLists.smithingLevelList;
             ObjectList = LevelLists.smithingItemList;
+        } else if (Objects.equals(name, "crafting")) {
+            levelList = LevelLists.craftingLevelList;
+            ObjectList = LevelLists.craftingItemList;
+            skillList = LevelLists.craftingSkillList;
+            if (ConfigInit.CONFIG.sortCraftingRecipesBySkill)
+                SortList.concurrentSort(skillList, skillList, levelList, ObjectList);
         }
 
         // 9 objects next to each other
         int gridYSpace = 10;
         for (int u = 0; u < levelList.size(); u++) {
-            if (ObjectList.get(u).isEmpty()) {
+            if (ObjectList.get(u).isEmpty())
                 continue;
-            }
-            plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", levelList.get(u))), 0, gridYSpace);
+
+            if (!skillList.isEmpty())
+                plainPanel.add(new WLabel(new TranslatableText("item.levelz." + skillList.get(u) + ".tooltip", levelList.get(u))), 0, gridYSpace);
+            else
+                plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", levelList.get(u))), 0, gridYSpace);
+
             int listSplitter = 0;
             int gridXSpace = 0;
             gridYSpace += 16;

@@ -55,15 +55,20 @@ public class LevelLists {
     // Misc
     public static final List<ArrayList<Object>> listOfAllLists = new ArrayList<>();
     // Player
-    public static final List<List<Integer>> miningBlockList = new ArrayList<>();
-    public static final List<Integer> miningLevelList = new ArrayList<>();
+    public static final List<List<Integer>> miningBlockList = new ArrayList<List<Integer>>();
+    public static final List<Integer> miningLevelList = new ArrayList<Integer>();
 
-    public static final List<List<Integer>> brewingItemList = new ArrayList<>();
-    public static final List<Integer> brewingLevelList = new ArrayList<>();
-    public static final List<Object> potionList = new ArrayList<>();
+    public static final List<List<Integer>> brewingItemList = new ArrayList<List<Integer>>();
+    public static final List<Integer> brewingLevelList = new ArrayList<Integer>();
+    public static final List<Object> potionList = new ArrayList<Object>();
 
-    public static final List<List<Integer>> smithingItemList = new ArrayList<>();
-    public static final List<Integer> smithingLevelList = new ArrayList<>();
+    public static final List<List<Integer>> smithingItemList = new ArrayList<List<Integer>>();
+    public static final List<Integer> smithingLevelList = new ArrayList<Integer>();
+
+    public static final List<List<Integer>> craftingItemList = new ArrayList<List<Integer>>();
+    public static final List<Integer> craftingLevelList = new ArrayList<Integer>();
+    public static final List<String> craftingSkillList = new ArrayList<String>();
+
     // Custom
     public static final ArrayList<Object> customBlockList = new ArrayList<Object>();
     public static final ArrayList<Object> customItemList = new ArrayList<Object>();

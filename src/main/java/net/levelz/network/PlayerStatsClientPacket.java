@@ -110,22 +110,11 @@ public class PlayerStatsClientPacket {
         });
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.LEVEL_EXPERIENCE_ORB_PACKET, (client, handler, buf, sender) -> {
-
-            // NetworkThreadUtils.forceMainThread(packet, this, this.client);
             int id = buf.readVarInt();
             double d = buf.readDouble();
             double e = buf.readDouble();
             double f = buf.readDouble();
             int experienceAmount = buf.readShort();
-
-            // EntityType<?> type = Registry.ENTITY_TYPE.get(buffer.readVarInt());
-            // UUID entityUUID = buffer.readUuid();
-            // int entityID = buffer.readVarInt();
-            // double x = buffer.readDouble();
-            // double y = buffer.readDouble();
-            // double z = buffer.readDouble();
-            // float pitch = (buffer.readByte() * 360) / 256.0F;
-            // float yaw = (buffer.readByte() * 360) / 256.0F;
             client.execute(() -> {
                 LevelExperienceOrbEntity levelExperienceOrbEntity = new LevelExperienceOrbEntity(client.world, d, e, f, experienceAmount);
                 if (levelExperienceOrbEntity != null) {
@@ -135,18 +124,6 @@ public class PlayerStatsClientPacket {
                     levelExperienceOrbEntity.setId(id);
                     client.world.addEntity(id, levelExperienceOrbEntity);
                 }
-                // World world = client.player.getEntityWorld();
-                // Entity entity = type.create(world);
-                // if (entity != null) {
-                // entity.updatePosition(x, y, z);
-                // entity.updateTrackedPosition(x, y, z);
-                // entity.setPitch(pitch);
-                // entity.setYaw(yaw);
-                // entity.setId(entityID);
-                // entity.setUuid(entityUUID);
-                // ClientWorld clientWorld = MinecraftClient.getInstance().world;
-                // clientWorld.addEntity(entityID, entity);
-                // }
             });
         });
     }
@@ -191,6 +168,7 @@ public class PlayerStatsClientPacket {
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
+        PlayerStatsServerPacket.syncLockedCraftingItemList(playerStatsManager);
     }
 
     private static void executeListPacket(PacketByteBuf buf, ClientPlayerEntity player) {
@@ -235,11 +213,21 @@ public class PlayerStatsClientPacket {
                 List<Integer> smithingItemList = new ArrayList<>();
                 LevelLists.smithingLevelList.add(Integer.parseInt(list.get(i + 1)));
                 for (int u = i + 2; u < list.size(); u++) {
-                    if (list.get(u).equals("smithing:level"))
+                    if (list.get(u).equals("smithing:level") || list.get(u).equals("crafting:level"))
                         break;
                     smithingItemList.add(Integer.parseInt(list.get(u)));
                 }
                 LevelLists.smithingItemList.add(smithingItemList);
+            } else if (listName.equals("crafting:level")) {
+                List<Integer> craftingItemList = new ArrayList<>();
+                LevelLists.craftingLevelList.add(Integer.parseInt(list.get(i + 1)));
+                LevelLists.craftingSkillList.add(String.valueOf(list.get(i + 2)));
+                for (int u = i + 3; u < list.size(); u++) {
+                    if (list.get(u).equals("crafting:level"))
+                        break;
+                    craftingItemList.add(Integer.parseInt(list.get(u)));
+                }
+                LevelLists.craftingItemList.add(craftingItemList);
             }
         }
         LevelLists.listOfAllLists.clear();
@@ -255,6 +243,7 @@ public class PlayerStatsClientPacket {
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
+        PlayerStatsServerPacket.syncLockedCraftingItemList(playerStatsManager);
     }
 
     private static void addToList(String listName, String object) {

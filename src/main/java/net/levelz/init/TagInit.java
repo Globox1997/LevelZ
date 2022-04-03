@@ -10,6 +10,5 @@ public class TagInit {
     public static final TagKey<Item> FARM_ITEMS = TagKey.of(Registry.ITEM_KEY, new Identifier("levelz", "farm_items"));
 
     public static void init() {
-
     }
 }
