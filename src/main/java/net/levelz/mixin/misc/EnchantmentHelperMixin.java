@@ -40,51 +40,63 @@ public class EnchantmentHelperMixin {
 
     @Inject(method = "onTargetDamaged", at = @At("HEAD"), cancellable = true)
     private static void onTargetDamagedMixin(LivingEntity user, Entity target, CallbackInfo info) {
+        if (!(user instanceof PlayerEntity))
+            return;
+
         Item item = user.getStackInHand(user.getActiveHand()).getItem();
-        if (item instanceof ToolItem && user instanceof PlayerEntity) {
-            PlayerEntity playerEntity = (PlayerEntity) user;
-            ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
-                info.cancel();
-            else {
-                levelList = null;
-                if (item instanceof SwordItem) {
-                    levelList = LevelLists.swordList;
-                } else if (item instanceof AxeItem)
-                    levelList = LevelLists.axeList;
-                else if (item instanceof HoeItem)
-                    levelList = LevelLists.hoeList;
-                else if (item instanceof PickaxeItem || item instanceof ShovelItem)
-                    levelList = LevelLists.toolList;
-                if (levelList != null)
-                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) item).getMaterial().toString().toLowerCase(), true))
-                        info.cancel();
-            }
+        if (!(item instanceof ToolItem))
+            return;
+
+        PlayerEntity playerEntity = (PlayerEntity) user;
+        ArrayList<Object> levelList = LevelLists.customItemList;
+        if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList,
+                Registry.ITEM.getId(item).toString(), true))
+            info.cancel();
+        else {
+            levelList = null;
+            if (item instanceof SwordItem) {
+                levelList = LevelLists.swordList;
+            } else if (item instanceof AxeItem)
+                levelList = LevelLists.axeList;
+            else if (item instanceof HoeItem)
+                levelList = LevelLists.hoeList;
+            else if (item instanceof PickaxeItem || item instanceof ShovelItem)
+                levelList = LevelLists.toolList;
+            if (levelList != null)
+                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList,
+                        ((ToolItem) item).getMaterial().toString().toLowerCase(), true))
+                    info.cancel();
         }
     }
 
     @Inject(method = "onUserDamaged", at = @At("HEAD"), cancellable = true)
     private static void onUserDamagedMixin(LivingEntity user, Entity attacker, CallbackInfo info) {
+        if (!(user instanceof PlayerEntity))
+            return;
+
         Item item = user.getStackInHand(user.getActiveHand()).getItem();
-        if (item instanceof ToolItem && user instanceof PlayerEntity) {
-            PlayerEntity playerEntity = (PlayerEntity) user;
-            ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
-                info.cancel();
-            else {
-                levelList = null;
-                if (item instanceof SwordItem) {
-                    levelList = LevelLists.swordList;
-                } else if (item instanceof AxeItem)
-                    levelList = LevelLists.axeList;
-                else if (item instanceof HoeItem)
-                    levelList = LevelLists.hoeList;
-                else if (item instanceof PickaxeItem || item instanceof ShovelItem)
-                    levelList = LevelLists.toolList;
-                if (levelList != null)
-                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) item).getMaterial().toString().toLowerCase(), true))
-                        info.cancel();
-            }
+        if (!(item instanceof ToolItem))
+            return;
+
+        PlayerEntity playerEntity = (PlayerEntity) user;
+        ArrayList<Object> levelList = LevelLists.customItemList;
+        if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList,
+                Registry.ITEM.getId(item).toString(), true))
+            info.cancel();
+        else {
+            levelList = null;
+            if (item instanceof SwordItem) {
+                levelList = LevelLists.swordList;
+            } else if (item instanceof AxeItem)
+                levelList = LevelLists.axeList;
+            else if (item instanceof HoeItem)
+                levelList = LevelLists.hoeList;
+            else if (item instanceof PickaxeItem || item instanceof ShovelItem)
+                levelList = LevelLists.toolList;
+            if (levelList != null)
+                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList,
+                        ((ToolItem) item).getMaterial().toString().toLowerCase(), true))
+                    info.cancel();
         }
     }
 }
