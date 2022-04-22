@@ -72,6 +72,7 @@
   "text.autoconfig.levelz.option.tradingXPMultiplier": "Trading XP Multiplier",
   "text.autoconfig.levelz.option.mobXPMultiplier": "Mob XP Multiplier",
   "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
+  "text.autoconfig.levelz.option.reiExclusionzone": "REI Exclusion Zone",
 
   "item.levelz.strange_potion": "Strange Potion",
   

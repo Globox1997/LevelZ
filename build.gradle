@@ -58,6 +58,8 @@ dependencies {
     modCompileOnly ('com.github.emilyploszaj:trinkets:3.3.0') {
         exclude(group: "net.fabricmc.fabric-api")
     }
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:8.1.449"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:8.1.449"
 
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom

@@ -90,6 +90,8 @@ public class LevelzConfig implements ConfigData {
     public float miningTntBonus = 0.5F;
     @Comment("Locked blocks break slower factor")
     public float miningLockedMultiplicator = 2.0F;
+    @Comment("Roughly Enough Items exclusion zone")
+    public boolean reiExclusionzone = true;
 
     @ConfigEntry.Category("experience_settings")
     @Comment("XP equation: lvl^2 * multiplicator + base")

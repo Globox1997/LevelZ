@@ -24,6 +24,9 @@
     ],
     "modmenu": [
       "net.levelz.config.ModMenuIntegration"
+    ],
+    "rei_plugins": [
+      "net.levelz.compat.LevelzReiPlugin"
     ]
   },
   "mixins": [
