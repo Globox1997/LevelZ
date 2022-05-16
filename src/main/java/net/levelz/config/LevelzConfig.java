@@ -45,6 +45,7 @@ public class LevelzConfig implements ConfigData {
     public double attackBonus = 0.2D;
     @Comment("Chance of double meele damage at max lvl")
     public float attackDoubleDamageChance = 0.03F;
+    public float attackCritDmgBonus = 0.2F;
     public double defenseBase = 0D;
     public double defenseBonus = 0.2D;
     @Comment("Chance of damage reflection at max lvl")
@@ -54,7 +55,6 @@ public class LevelzConfig implements ConfigData {
     public float luckCritBonus = 0.01F;
     @Comment("Chance of not dying at max lvl")
     public float luckSurviveChance = 0.5F;
-    public float critDmgBonus = 0.2F;
     public float staminaBase = 1.1F;
     public float staminaBonus = 0.02F;
     public float staminaHealthBonus = 0.05F;

@@ -35,7 +35,7 @@
   "text.autoconfig.levelz.option.luckBonus": "Luck Bonus",
   "text.autoconfig.levelz.option.luckCritBonus": "Luck Crit Bonus",
   "text.autoconfig.levelz.option.luckSurviveChance": "Luck Survive Chance",
-  "text.autoconfig.levelz.option.critDmgBonus": "Crit Damage Bonus",
+  "text.autoconfig.levelz.option.attackCritDmgBonus": "Crit Damage Bonus",
   "text.autoconfig.levelz.option.staminaBase": "Stamina Base",
   "text.autoconfig.levelz.option.staminaBonus": "Stamina Bonus",
   "text.autoconfig.levelz.option.staminaHealthBonus": "Stamina Regeneration Bonus",
@@ -136,8 +136,8 @@
   "text.levelz.agility_max_lvl_2": "evade an enemy attack",
 
   "text.levelz.defense_info_1": "Player starts with %d def",
-  "text.levelz.defense_info_2_1": "Each skill point increases def",
-  "text.levelz.defense_info_2_2": "by %d defense",
+  "text.levelz.defense_info_2_1": "Each skill point increases",
+  "text.levelz.defense_info_2_2": "defense by %d",
   "text.levelz.defense_max_lvl_1": "Player gains %d%% chance to",
   "text.levelz.defense_max_lvl_2": "reflect an enemy attack",
 
@@ -192,7 +192,9 @@
   "text.levelz.farming_max_lvl_1": "Player gains %d%% chance to",
   "text.levelz.farming_max_lvl_2": "breed twins",
 
-  "text.levelz.alchemy_info_1": "Brewing sources are locked to lvls",
+  "text.levelz.alchemy_info_1": "Brewing ingredients are locked to lvls",
+  "text.levelz.alchemy_info_2_1": "Each skill point increases chance",
+  "text.levelz.alchemy_info_2_2": "of enchantment strength by %d",
   "text.levelz.alchemy_max_lvl_1": "Player gains %d%% chance to get",
   "text.levelz.alchemy_max_lvl_2": "double potion effects",
 

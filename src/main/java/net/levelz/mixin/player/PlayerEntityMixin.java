@@ -88,7 +88,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
         if (playerStatsManager.getLevel("strength") >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.world.random.nextFloat()) {
             return original * 2F;
         } else
-            return isCrit ? original * ConfigInit.CONFIG.critDmgBonus : original;
+            return isCrit ? original * ConfigInit.CONFIG.attackCritDmgBonus : original;
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttackCooldownProgress(F)F"), ordinal = 0, require = 0)

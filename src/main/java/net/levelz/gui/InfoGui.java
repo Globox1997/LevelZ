@@ -144,6 +144,8 @@ public class InfoGui extends LightweightGuiDescription {
             break;
         case "alchemy":
             translatableText1 = new TranslatableText("text.levelz.alchemy_info_1");
+            translatableText2A = new TranslatableText("text.levelz.alchemy_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyEnchantmentChance * 100F));
+            translatableText2B = new TranslatableText("text.levelz.alchemy_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyEnchantmentChance * 100F));
             translatableText6A = new TranslatableText("text.levelz.alchemy_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
             translatableText6B = new TranslatableText("text.levelz.alchemy_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
 
