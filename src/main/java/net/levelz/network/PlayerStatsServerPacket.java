@@ -1,6 +1,7 @@
 package net.levelz.network;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -25,6 +26,8 @@ public class PlayerStatsServerPacket {
     public static final Identifier STRENGTH_PACKET = new Identifier("levelz", "strength_sync");
     public static final Identifier RESET_PACKET = new Identifier("levelz", "reset_skill");
     public static final Identifier LEVEL_EXPERIENCE_ORB_PACKET = new Identifier("levelz", "level_experience_orb");
+    public static final Identifier SEND_CONFIG_SYNC_PACKET = new Identifier("levelz", "send_config_sync_packet");
+    public static final Identifier CONFIG_SYNC_PACKET = new Identifier("levelz", "config_sync_packet");
 
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
@@ -54,6 +57,10 @@ public class PlayerStatsServerPacket {
                     syncLockedSmithingItemList(playerStatsManager);
                 syncLockedCraftingItemList(playerStatsManager);
             }
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(SEND_CONFIG_SYNC_PACKET, (server, player, handler, buffer, sender) -> {
+            writeS2CConfigSyncPacket(player, ConfigInit.CONFIG.list);
         });
 
     }
@@ -149,6 +156,22 @@ public class PlayerStatsServerPacket {
                 }
             }
         }
+    }
+
+    public static void writeS2CConfigSyncPacket(ServerPlayerEntity serverPlayerEntity, List<Object> list) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof Integer)
+                buf.writeInt((int) list.get(i));
+            else if (list.get(i) instanceof Float)
+                buf.writeFloat((float) list.get(i));
+            else if (list.get(i) instanceof Double)
+                buf.writeDouble((double) list.get(i));
+            else if (list.get(i) instanceof Boolean)
+                buf.writeBoolean((boolean) list.get(i));
+        }
+        CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(CONFIG_SYNC_PACKET, buf);
+        serverPlayerEntity.networkHandler.sendPacket(packet);
     }
 
     public static void writeS2CListPacket(ServerPlayerEntity serverPlayerEntity) {

@@ -1,5 +1,7 @@
 package net.levelz.config;
 
+import java.util.List;
+
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -26,9 +28,9 @@ public class LevelzConfig implements ConfigData {
     public int mobKillCount = 5;
     @ConfigEntry.Category("level_settings")
     @Comment("Highlight locked blocks in red.")
-    public boolean highlightLocked = false;
+    public boolean highlightLocked = false; // Client only
     @ConfigEntry.Category("level_settings")
-    public boolean sortCraftingRecipesBySkill = false;
+    public boolean sortCraftingRecipesBySkill = false; // Client only
     @Comment("Attribute values - Bonus for each lvl")
     public double healthBase = 6D;
     public double healthBonus = 1D;
@@ -91,7 +93,7 @@ public class LevelzConfig implements ConfigData {
     @Comment("Locked blocks break slower factor")
     public float miningLockedMultiplicator = 2.0F;
     @Comment("Roughly Enough Items exclusion zone")
-    public boolean reiExclusionzone = true;
+    public boolean reiExclusionzone = true; // Client only
 
     @ConfigEntry.Category("experience_settings")
     @Comment("XP equation: lvl^2 * multiplicator + base")
@@ -126,5 +128,11 @@ public class LevelzConfig implements ConfigData {
     public float tradingXPMultiplier = 0.5F;
     @ConfigEntry.Category("experience_settings")
     public float mobXPMultiplier = 1.0F;
+
+    public List<Object> list = List.of(maxLevel, healthBase, healthBonus, healthAbsorptionBonus, movementBase, movementBonus, movementMissChance, movementFallBonus, attackBase, attackBonus,
+            attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus, luckSurviveChance, staminaBase, staminaBonus,
+            staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance, smithingAnvilChance, farmingBase, farmingChanceBonus,
+            farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryBowExtraDamage, archeryCrossbowExtraDamage, archeryDoubleDamageChance, miningOreChance, miningTntBonus,
+            xpCostMultiplicator, xpBaseCost, xpMaxCost);
 
 }

@@ -126,6 +126,102 @@ public class PlayerStatsClientPacket {
                 }
             });
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.CONFIG_SYNC_PACKET, (client, handler, buf, sender) -> {
+            int maxLevel = buf.readInt();
+
+            double healthBase = buf.readDouble();
+            double healthBonus = buf.readDouble();
+            float healthAbsorptionBonus = buf.readFloat();
+            double movementBase = buf.readDouble();
+            double movementBonus = buf.readDouble();
+            float movementMissChance = buf.readFloat();
+            float movementFallBonus = buf.readFloat();
+            double attackBase = buf.readDouble();
+            double attackBonus = buf.readDouble();
+            float attackDoubleDamageChance = buf.readFloat();
+            float attackCritDmgBonus = buf.readFloat();
+            double defenseBase = buf.readDouble();
+            double defenseBonus = buf.readDouble();
+            float defenseReflectChance = buf.readFloat();
+            double luckBase = buf.readDouble();
+            double luckBonus = buf.readDouble();
+
+            float luckCritBonus = buf.readFloat();
+            float luckSurviveChance = buf.readFloat();
+            float staminaBase = buf.readFloat();
+            float staminaBonus = buf.readFloat();
+
+            float staminaHealthBonus = buf.readFloat();
+            float staminaFoodBonus = buf.readFloat();
+            double tradeBonus = buf.readDouble();
+            float tradeXPBonus = buf.readFloat();
+            boolean tradeReputation = buf.readBoolean();
+            float smithingCostBonus = buf.readFloat();
+            float smithingToolChance = buf.readFloat();
+            float smithingAnvilChance = buf.readFloat();
+            int farmingBase = buf.readInt();
+            float farmingChanceBonus = buf.readFloat();
+            float farmingTwinChance = buf.readFloat();
+            float alchemyEnchantmentChance = buf.readFloat();
+            float alchemyPotionChance = buf.readFloat();
+            float archeryBowExtraDamage = buf.readFloat();
+            float archeryCrossbowExtraDamage = buf.readFloat();
+            float archeryDoubleDamageChance = buf.readFloat();
+            float miningOreChance = buf.readFloat();
+            float miningTntBonus = buf.readFloat();
+
+            float xpCostMultiplicator = buf.readFloat();
+            int xpBaseCost = buf.readInt();
+            int xpMaxCost = buf.readInt();
+
+            client.execute(() -> {
+                ConfigInit.CONFIG.maxLevel = maxLevel;
+                ConfigInit.CONFIG.xpBaseCost = xpBaseCost;
+                ConfigInit.CONFIG.xpMaxCost = xpMaxCost;
+                ConfigInit.CONFIG.xpCostMultiplicator = xpCostMultiplicator;
+
+                ConfigInit.CONFIG.healthBase = healthBase;
+                ConfigInit.CONFIG.healthBonus = healthBonus;
+                ConfigInit.CONFIG.healthAbsorptionBonus = healthAbsorptionBonus;
+                ConfigInit.CONFIG.movementBase = movementBase;
+                ConfigInit.CONFIG.movementBonus = movementBonus;
+                ConfigInit.CONFIG.movementMissChance = movementMissChance;
+                ConfigInit.CONFIG.movementFallBonus = movementFallBonus;
+                ConfigInit.CONFIG.attackBase = attackBase;
+                ConfigInit.CONFIG.attackBonus = attackBonus;
+                ConfigInit.CONFIG.attackDoubleDamageChance = attackDoubleDamageChance;
+                ConfigInit.CONFIG.attackCritDmgBonus = attackCritDmgBonus;
+                ConfigInit.CONFIG.defenseBase = defenseBase;
+                ConfigInit.CONFIG.defenseBonus = defenseBonus;
+                ConfigInit.CONFIG.defenseReflectChance = defenseReflectChance;
+                ConfigInit.CONFIG.luckBase = luckBase;
+                ConfigInit.CONFIG.luckBonus = luckBonus;
+                ConfigInit.CONFIG.luckCritBonus = luckCritBonus;
+                ConfigInit.CONFIG.luckSurviveChance = luckSurviveChance;
+                ConfigInit.CONFIG.staminaBase = staminaBase;
+                ConfigInit.CONFIG.staminaBonus = staminaBonus;
+                ConfigInit.CONFIG.staminaHealthBonus = staminaHealthBonus;
+                ConfigInit.CONFIG.staminaFoodBonus = staminaFoodBonus;
+                ConfigInit.CONFIG.tradeBonus = tradeBonus;
+                ConfigInit.CONFIG.tradeXPBonus = tradeXPBonus;
+                ConfigInit.CONFIG.tradeReputation = tradeReputation;
+                ConfigInit.CONFIG.smithingCostBonus = smithingCostBonus;
+                ConfigInit.CONFIG.smithingToolChance = smithingToolChance;
+                ConfigInit.CONFIG.smithingAnvilChance = smithingAnvilChance;
+                ConfigInit.CONFIG.farmingBase = farmingBase;
+                ConfigInit.CONFIG.farmingChanceBonus = farmingChanceBonus;
+                ConfigInit.CONFIG.farmingTwinChance = farmingTwinChance;
+                ConfigInit.CONFIG.alchemyEnchantmentChance = alchemyEnchantmentChance;
+                ConfigInit.CONFIG.alchemyPotionChance = alchemyPotionChance;
+                ConfigInit.CONFIG.archeryBowExtraDamage = archeryBowExtraDamage;
+                ConfigInit.CONFIG.archeryCrossbowExtraDamage = archeryCrossbowExtraDamage;
+                ConfigInit.CONFIG.archeryDoubleDamageChance = archeryDoubleDamageChance;
+                ConfigInit.CONFIG.miningOreChance = miningOreChance;
+                ConfigInit.CONFIG.miningTntBonus = miningTntBonus;
+            });
+
+        });
     }
 
     public static void writeC2SIncreaseLevelPacket(PlayerStatsManager playerStatsManager, String string) {
@@ -137,6 +233,10 @@ public class PlayerStatsClientPacket {
 
         CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PlayerStatsServerPacket.STATS_INCREASE_PACKET, buf);
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
+    }
+
+    public static void writeC2SSyncConfigPacket() {
+        MinecraftClient.getInstance().getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(PlayerStatsServerPacket.SEND_CONFIG_SYNC_PACKET, new PacketByteBuf(Unpooled.buffer())));
     }
 
     private static void executeXPPacket(PlayerEntity player, PacketByteBuf buf) {
