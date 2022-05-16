@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.access.PlayerSyncAccess;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -14,6 +15,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -70,8 +72,8 @@ public class CommandInit {
                     }))).then(CommandManager.literal("alchemy").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
                         return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "alchemy",
                                 IntegerArgumentType.getInteger(commandContext, "level"), 0);
-                    }))).then(CommandManager.literal("progress").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "progress",
+                    }))).then(CommandManager.literal("experience").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "experience",
                                 IntegerArgumentType.getInteger(commandContext, "level"), 0);
                     }))))
                     // Remove values
@@ -117,8 +119,8 @@ public class CommandInit {
                     }))).then(CommandManager.literal("alchemy").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
                         return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "alchemy",
                                 IntegerArgumentType.getInteger(commandContext, "level"), 1);
-                    }))).then(CommandManager.literal("progress").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "progress",
+                    }))).then(CommandManager.literal("experience").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "experience",
                                 IntegerArgumentType.getInteger(commandContext, "level"), 1);
                     }))))
                     // Set values
@@ -164,8 +166,8 @@ public class CommandInit {
                     }))).then(CommandManager.literal("alchemy").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
                         return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "alchemy",
                                 IntegerArgumentType.getInteger(commandContext, "level"), 2);
-                    }))).then(CommandManager.literal("progress").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
-                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "progress",
+                    }))).then(CommandManager.literal("experience").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "experience",
                                 IntegerArgumentType.getInteger(commandContext, "level"), 2);
                     }))))
                     // Print values
@@ -199,8 +201,8 @@ public class CommandInit {
                         return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "farming", 0, 3);
                     })).then(CommandManager.literal("alchemy").executes((commandContext) -> {
                         return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "alchemy", 0, 3);
-                    })).then(CommandManager.literal("progress").executes((commandContext) -> {
-                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "progress", 0, 3);
+                    })).then(CommandManager.literal("experience").executes((commandContext) -> {
+                        return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "experience", 0, 3);
                     })))));
         });
     }
@@ -209,16 +211,27 @@ public class CommandInit {
     private static int executeSkillCommand(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String skill, int i, int reference) {
         Iterator<ServerPlayerEntity> var3 = targets.iterator();
 
+        i = MathHelper.abs(i);
+        // loop over players
         while (var3.hasNext()) {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) var3.next();
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity);
-            if (skill.equals("progress")) {
+            if (skill.equals("experience")) {
                 if (reference == 0)
-                    playerStatsManager.levelProgress += i;
-                if (reference == 1)
-                    playerStatsManager.levelProgress = playerStatsManager.levelProgress - i > 0 ? playerStatsManager.levelProgress - i : 0;
-                if (reference == 2)
-                    playerStatsManager.levelProgress = i;
+                    ((PlayerSyncAccess) serverPlayerEntity).addLevelExperience(i);
+                if (reference == 1) {
+                    int currentXP = (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience());
+                    float oldProgress = playerStatsManager.levelProgress;
+                    playerStatsManager.levelProgress = currentXP - i > 0 ? (float) (currentXP - 1) / (float) playerStatsManager.getNextLevelExperience() : 0.0F;
+                    playerStatsManager.totalLevelExperience = currentXP - i > 0 ? playerStatsManager.totalLevelExperience - i
+                            : playerStatsManager.totalLevelExperience - (int) (oldProgress * playerStatsManager.getNextLevelExperience());
+                }
+                if (reference == 2) {
+                    float oldProgress = playerStatsManager.levelProgress;
+                    playerStatsManager.levelProgress = i >= playerStatsManager.getNextLevelExperience() ? 1.0F : (float) i / playerStatsManager.getNextLevelExperience();
+                    playerStatsManager.totalLevelExperience = (int) (playerStatsManager.totalLevelExperience - oldProgress * playerStatsManager.getNextLevelExperience()
+                            + playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience());
+                }
                 if (reference == 3)
                     source.sendFeedback(new TranslatableText("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
                             (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()), true);
@@ -234,7 +247,7 @@ public class CommandInit {
                     if (skill.equals("all"))
                         for (int u = 0; u < skillStrings().size(); u++) {
                             skill = skillStrings().get(u);
-                            if (skill.equals("progress"))
+                            if (skill.equals("experience"))
                                 source.sendFeedback(new TranslatableText("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
                                         (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()), true);
                             else
@@ -275,7 +288,7 @@ public class CommandInit {
     }
 
     private static List<String> skillStrings() {
-        return List.of("agility", "alchemy", "archery", "defense", "farming", "health", "luck", "mining", "smithing", "stamina", "strength", "trade", "level", "points", "progress");
+        return List.of("agility", "alchemy", "archery", "defense", "farming", "health", "luck", "mining", "smithing", "stamina", "strength", "trade", "level", "points", "experience");
     }
 
 }
