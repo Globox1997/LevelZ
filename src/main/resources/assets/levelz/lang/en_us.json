@@ -7,6 +7,7 @@
   "key.levelz.openskillscreen": "Skill Screen",
 
   "text.autoconfig.levelz.title": "LevelZ Config",
+  "text.autoconfig.levelz.category.gui_settings": "GUI Settings",
   "text.autoconfig.levelz.category.default": "Skill Settings",
   "text.autoconfig.levelz.category.level_settings": "Level Settings",
   "text.autoconfig.levelz.category.experience_settings": "Experience Settings",

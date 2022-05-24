@@ -8,6 +8,7 @@
  "key.levelz.openskillscreen": "打开技能界面",
  "text.autoconfig.levelz.title": "LevelZ 配置",
  "text.autoconfig.levelz.category.default": "技能设置",
+ "text.autoconfig.levelz.category.gui_settings": "GUI设置",
  "text.autoconfig.levelz.category.level_settings": "等级设置",
  "text.autoconfig.levelz.category.experience_settings": "经验设置",
  "text.autoconfig.levelz.option.hardMode": "极限模式 (开启后玩家死亡时清除所有点数和经验)",

@@ -10,7 +10,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name = "levelz")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class LevelzConfig implements ConfigData {
-    @ConfigEntry.Category("level_settings")
+    @ConfigEntry.Category("gui_settings")
     @Comment("Show the skill gui button in the inventory")
     public boolean inventoryButton = true;
     @ConfigEntry.Category("level_settings")
