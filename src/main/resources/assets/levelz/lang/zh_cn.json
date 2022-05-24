@@ -72,6 +72,7 @@
  "text.autoconfig.levelz.option.tradingXPMultiplier": "交易经验倍率",
  "text.autoconfig.levelz.option.mobXPMultiplier": "怪物经验倍率",
  "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "通过技能排序合成",
+ "text.autoconfig.levelz.option.inventoryButton": "库存按钮",
  
  "item.levelz.strange_potion": "奇异药水",
  

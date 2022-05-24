@@ -38,6 +38,8 @@ dependencies {
     modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+    // Inventorio
+    modCompileOnly("curse.maven:inventorio-491073:3764520") { transitive = false }
     // Wthit
     modCompileOnly modRuntimeOnly("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
     // REI

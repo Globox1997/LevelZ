@@ -3,10 +3,7 @@ package net.levelz.mixin.player;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.levelz.init.ConfigInit;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -20,7 +17,6 @@ import net.levelz.gui.LevelzScreen;
 import net.levelz.init.RenderInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,9 +24,10 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
+@Pseudo
 @Environment(EnvType.CLIENT)
-@Mixin(InventoryScreen.class)
-public abstract class InventoryScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
+@Mixin(targets = "me.lizardofoz.inventorio.client.ui.InventorioScreen")
+public abstract class InventorioScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
 
     @Mutable
     @Final
@@ -39,8 +36,8 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
     private boolean sliderOpen = false;
 
-    public InventoryScreenMixin(PlayerScreenHandler screenHandler, PlayerInventory playerInventory, Text text) {
-        super(screenHandler, playerInventory, text);
+    private InventorioScreenMixin(PlayerScreenHandler playerScreenHandler, PlayerInventory playerInventory, Text text) {
+        super(playerScreenHandler, playerInventory, text);
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"))
@@ -56,8 +53,8 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
         if (!this.recipeBook.isOpen() && ConfigInit.CONFIG.inventoryButton) {
             RenderSystem.setShaderTexture(0, RenderInit.GUI_ICONS);
             this.drawTexture(matrices, this.x - 6, this.y + 6, 0, 80, 6, 20);
-            if (this.isPointWithinBounds(-18, 6, 18, 20, (double) mouseX, (double) mouseY)) {
-                if (this.isPointWithinBounds(-6, 6, 7, 20, (double) mouseX, (double) mouseY))
+            if (this.isPointWithinBounds(-18, 6, 18, 20, mouseX, mouseY)) {
+                if (this.isPointWithinBounds(-6, 6, 7, 20, mouseX, mouseY))
                     this.sliderOpen = true;
                 if (this.sliderOpen)
                     this.drawTexture(matrices, this.x - 18, this.y + 6, 6, 80, 18, 20);

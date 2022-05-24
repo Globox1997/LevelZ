@@ -56,6 +56,7 @@
     "text.autoconfig.levelz.option.highlightLocked": "Выделить заблокированные блоки",
     "text.autoconfig.levelz.option.disableFurnaceXP": "Отключить опыт печи",
     "text.autoconfig.levelz.option.dropPlayerXP": "Выпадения опыта с игроков",
+    "text.autoconfig.levelz.option.inventoryButton": "Кнопка инвентаризации",
   
     "item.levelz.strange_potion": "Странное зелье",
     

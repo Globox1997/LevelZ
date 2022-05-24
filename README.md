@@ -10,6 +10,8 @@ requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
 and [Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config) to be installed separately; all other
 dependencies are installed with the mod.
 
+LevelZ is compatible with [Inventorio](https://www.curseforge.com/minecraft/mc-mods/inventorio) (Since version 1.3.2)
+
 ### License
 
 LevelZ is licensed under GPLv3.
