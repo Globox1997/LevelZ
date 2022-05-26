@@ -60,7 +60,7 @@ public class PlayerStatsServerPacket {
         });
 
         ServerPlayNetworking.registerGlobalReceiver(SEND_CONFIG_SYNC_PACKET, (server, player, handler, buffer, sender) -> {
-            writeS2CConfigSyncPacket(player, ConfigInit.CONFIG.list);
+            writeS2CConfigSyncPacket(player, ConfigInit.CONFIG.getConfigList());
         });
 
     }

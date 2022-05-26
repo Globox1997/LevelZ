@@ -30,7 +30,10 @@ public class ConfigInit {
         });
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             // if (!server.isSingleplayer()) // set in sp too
-            PlayerStatsServerPacket.writeS2CConfigSyncPacket(handler.player, ConfigInit.CONFIG.list);
+            server.execute(() -> {
+                PlayerStatsServerPacket.writeS2CConfigSyncPacket(handler.player, ConfigInit.CONFIG.getConfigList());
+            });
+
         });
 
     }

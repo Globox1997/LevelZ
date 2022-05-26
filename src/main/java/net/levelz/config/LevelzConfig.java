@@ -1,6 +1,7 @@
 package net.levelz.config;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -129,10 +130,14 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("experience_settings")
     public float mobXPMultiplier = 1.0F;
 
-    public List<Object> list = List.of(maxLevel, healthBase, healthBonus, healthAbsorptionBonus, movementBase, movementBonus, movementMissChance, movementFallBonus, attackBase, attackBonus,
-            attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus, luckSurviveChance, staminaBase, staminaBonus,
-            staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance, smithingAnvilChance, farmingBase, farmingChanceBonus,
-            farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryBowExtraDamage, archeryCrossbowExtraDamage, archeryDoubleDamageChance, miningOreChance, miningTntBonus,
-            xpCostMultiplicator, xpBaseCost, xpMaxCost);
+    // List.of is immutable
+    // Arrays.asList returns an ArrayList of the Arrays class which is different to the ArrayList class
+    public ArrayList<Object> getConfigList() {
+        return new ArrayList<Object>(Arrays.asList(maxLevel, healthBase, healthBonus, healthAbsorptionBonus, movementBase, movementBonus, movementMissChance, movementFallBonus, attackBase,
+                attackBonus, attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus, luckSurviveChance, staminaBase,
+                staminaBonus, staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance, smithingAnvilChance, farmingBase,
+                farmingChanceBonus, farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryBowExtraDamage, archeryCrossbowExtraDamage, archeryDoubleDamageChance, miningOreChance,
+                miningTntBonus, xpCostMultiplicator, xpBaseCost, xpMaxCost));
+    }
 
 }
