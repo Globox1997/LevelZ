@@ -80,11 +80,10 @@ public class LevelzScreen extends CottonClientScreen {
         if (this.sliderOpen) {
             assert this.client != null;
             assert this.client.player != null;
-            if (this.client.player.currentScreenHandler.getClass().getName().equals("net.minecraft.screen.PlayerScreenHandler")) {
-                this.client.setScreen(new InventoryScreen(this.client.player));
-            } else if (this.client.player.currentScreenHandler.getClass().getName().equals("me.lizardofoz.inventorio.player.InventorioScreenHandler")) {
+            if (RenderInit.isInventorioLoaded)
                 this.client.setScreen(new InventorioScreen(new InventorioScreenHandler(0, this.client.player.getInventory()), this.client.player.getInventory()));
-            }
+            else
+                this.client.setScreen(new InventoryScreen(this.client.player));
         }
         return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
