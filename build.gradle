@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.11-SNAPSHOT'
+    id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -39,6 +39,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // Inventorio
+    modCompileOnly("net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.1.6.21")
     modCompileOnly("curse.maven:inventorio-491073:3764520") { transitive = false }
     // Wthit
     modCompileOnly modRuntimeOnly("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
