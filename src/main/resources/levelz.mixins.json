@@ -78,7 +78,6 @@
     "misc.SmithingScreenHandlerMixin",
     "player.CraftingScreenHandlerMixin",
     "player.HungerManagerMixin",
-    "player.InventorioScreenMixin",
     "player.PlayerEntityMixin",
     "player.PlayerInventoryMixin",
     "player.PlayerManagerMixin",
@@ -90,7 +89,8 @@
     "misc.WorldRendererMixin",
     "player.ClientPlayerEntityMixin",
     "player.InGameHudMixin",
-    "player.InventoryScreenMixin"
+    "player.InventoryScreenMixin",
+    "compat.InventorioScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

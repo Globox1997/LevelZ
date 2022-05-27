@@ -1,4 +1,4 @@
-package net.levelz.mixin.player;
+package net.levelz.mixin.compat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
