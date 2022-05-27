@@ -6,6 +6,7 @@
   
     "text.autoconfig.levelz.title": "LevelZ конфигурация",
     "text.autoconfig.levelz.category.level_setting": "Настройка уровней",
+    "text.autoconfig.levelz.category.gui_settings": "Настройки графического интерфейса",
     "text.autoconfig.levelz.category.default": "Настройка скилов",
     "text.autoconfig.levelz.option.hardMode": "Хардкор мод",
     "text.autoconfig.levelz.option.disableMobFarms": "Отключает Моб-фермы",
@@ -56,6 +57,7 @@
     "text.autoconfig.levelz.option.highlightLocked": "Выделить заблокированные блоки",
     "text.autoconfig.levelz.option.disableFurnaceXP": "Отключить опыт печи",
     "text.autoconfig.levelz.option.dropPlayerXP": "Выпадения опыта с игроков",
+    "text.autoconfig.levelz.option.inventoryButton": "Кнопка инвентаризации",
   
     "item.levelz.strange_potion": "Странное зелье",
     

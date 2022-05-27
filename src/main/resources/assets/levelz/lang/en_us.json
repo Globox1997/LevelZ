@@ -7,6 +7,7 @@
   "key.levelz.openskillscreen": "Skill Screen",
 
   "text.autoconfig.levelz.title": "LevelZ Config",
+  "text.autoconfig.levelz.category.gui_settings": "GUI Settings",
   "text.autoconfig.levelz.category.default": "Skill Settings",
   "text.autoconfig.levelz.category.level_settings": "Level Settings",
   "text.autoconfig.levelz.category.experience_settings": "Experience Settings",
@@ -73,6 +74,7 @@
   "text.autoconfig.levelz.option.mobXPMultiplier": "Mob XP Multiplier",
   "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
   "text.autoconfig.levelz.option.reiExclusionzone": "REI Exclusion Zone",
+  "text.autoconfig.levelz.option.inventoryButton": "Inventory Button",
 
   "item.levelz.strange_potion": "Strange Potion",
   
