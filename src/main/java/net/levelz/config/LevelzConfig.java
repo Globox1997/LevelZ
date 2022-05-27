@@ -11,9 +11,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name = "levelz")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class LevelzConfig implements ConfigData {
-    @ConfigEntry.Category("gui_settings")
-    @Comment("Show the skill gui button in the inventory")
-    public boolean inventoryButton = true;
+    // Level settings
     @ConfigEntry.Category("level_settings")
     @Comment("Maximum level per skills")
     public int maxLevel = 20;
@@ -31,11 +29,8 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_settings")
     @Comment("Amount of allowed mob kills in a chunk")
     public int mobKillCount = 5;
-    @ConfigEntry.Category("level_settings")
-    @Comment("Highlight locked blocks in red.")
-    public boolean highlightLocked = false; // Client only
-    @ConfigEntry.Category("level_settings")
-    public boolean sortCraftingRecipesBySkill = false; // Client only
+
+    // Skill settings
     @Comment("Attribute values - Bonus for each lvl")
     public double healthBase = 6D;
     public double healthBonus = 1D;
@@ -97,9 +92,8 @@ public class LevelzConfig implements ConfigData {
     public float miningTntBonus = 0.5F;
     @Comment("Locked blocks break slower factor")
     public float miningLockedMultiplicator = 2.0F;
-    @Comment("Roughly Enough Items exclusion zone")
-    public boolean reiExclusionzone = true; // Client only
 
+    // Experience settings
     @ConfigEntry.Category("experience_settings")
     @Comment("XP equation: lvl^2 * multiplicator + base")
     public float xpCostMultiplicator = 0.1F;
@@ -133,6 +127,18 @@ public class LevelzConfig implements ConfigData {
     public float tradingXPMultiplier = 0.5F;
     @ConfigEntry.Category("experience_settings")
     public float mobXPMultiplier = 1.0F;
+
+    @ConfigEntry.Category("gui_settings")
+    @Comment("Show the skill gui button in the inventory")
+    public boolean inventoryButton = true; // Client only
+    @ConfigEntry.Category("gui_settings")
+    @Comment("Highlight locked blocks in red.")
+    public boolean highlightLocked = false; // Client only
+    @ConfigEntry.Category("gui_settings")
+    public boolean sortCraftingRecipesBySkill = false; // Client only
+    @ConfigEntry.Category("gui_settings")
+    @Comment("Roughly Enough Items exclusion zone")
+    public boolean reiExclusionzone = true; // Client only
 
     // List.of is immutable
     // Arrays.asList returns an ArrayList of the Arrays class which is different to the ArrayList class
