@@ -2,6 +2,7 @@ package net.levelz.mixin.compat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import me.lizardofoz.inventorio.client.ui.InventorioScreen;
 import net.levelz.init.ConfigInit;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,9 +25,8 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-@Pseudo
 @Environment(EnvType.CLIENT)
-@Mixin(targets = "me.lizardofoz.inventorio.client.ui.InventorioScreen")
+@Mixin(value = InventorioScreen.class)
 public abstract class InventorioScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
 
     @Mutable
