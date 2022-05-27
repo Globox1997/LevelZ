@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LibGui;
-import me.lizardofoz.inventorio.api.InventorioAPI;
 import me.lizardofoz.inventorio.client.ui.InventorioScreen;
 import me.lizardofoz.inventorio.player.InventorioScreenHandler;
 import net.fabricmc.api.Environment;
@@ -15,12 +14,8 @@ import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.init.RenderInit;
 import net.levelz.stats.PlayerStatsManager;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.Objects;
 
