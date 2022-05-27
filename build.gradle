@@ -17,7 +17,6 @@ repositories {
     maven { url "https://ladysnake.jfrog.io/artifactory/mods" }
     maven { url 'https://jitpack.io' }
     maven { url "https://www.cursemaven.com" }
-    // maven { url "https://maven.siphalor.de/" }
     maven { url "https://server.bbkr.space/artifactory/libs-release" }
 }
 
@@ -25,47 +24,43 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+     // Fabric API
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    def noFabric = {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
     // Env Bug Fix
     runtimeOnly 'io.github.juuxel:libninepatch:1.1.0'
+    runtimeOnly 'com.demonwav.mcdev:annotations:1.0'
+
     // LibGui
     modImplementation include("io.github.cottonmc:LibGui:${project.cottonmc_version}")
-    // Cloth
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    // ModMenu
-    modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    // Inventorio
-    modCompileOnly("net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.1.6.21")
-    modCompileOnly("curse.maven:inventorio-491073:3764520") { transitive = false }
-    // Wthit
-    modCompileOnly modRuntimeOnly("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
-    // REI
-    // modCompileOnly ("me.shedaniel:RoughlyEnoughItems-fabric:6.0.268-alpha") {
-    //     exclude(group: "net.fabricmc.fabric-api")
-    //     exclude(group: "me.shedaniel.cloth")
-    // }
-    // modCompileOnly modRuntime("de.siphalor:spiceoffabric-1.17:1.4.1+1.17.1:1+")
-	// MCDA
-	modCompileOnly ('curse.maven:mcda-426206:3709059') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-    // DragonLoot
-	modCompileOnly ('curse.maven:dragonloot-424480:3683636') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-    // Trinkets
-    modCompileOnly ('com.github.emilyploszaj:trinkets:3.3.0') {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:8.1.449"
-    //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:8.1.449"
 
-    //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
-    //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
+    // Cloth Config
+    modImplementation ("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") { noFabric }
+
+    // ModMenu
+    modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") { noFabric }
+
+    // Inventorio
+    modCompileOnly("curse.maven:inventorio-491073:3764520") { transitive = false }
+
+    // WTHIT
+    modCompileOnly modRuntimeOnly("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
+
+    // REI
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}")
+    // modLocalRuntime("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
+
+	// MCDA
+	modCompileOnly('curse.maven:mcda-426206:3709059') { noFabric }
+
+    // DragonLoot
+	modCompileOnly('curse.maven:dragonloot-424480:3683636') { noFabric }
+
+    // Trinkets
+    modCompileOnly('com.github.emilyploszaj:trinkets:3.3.0') { noFabric }
 }
 
 

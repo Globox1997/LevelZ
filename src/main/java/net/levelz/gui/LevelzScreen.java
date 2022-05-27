@@ -5,8 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LibGui;
-import me.lizardofoz.inventorio.client.ui.InventorioScreen;
-import me.lizardofoz.inventorio.player.InventorioScreenHandler;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
@@ -80,10 +78,13 @@ public class LevelzScreen extends CottonClientScreen {
         if (this.sliderOpen) {
             assert this.client != null;
             assert this.client.player != null;
-            if (RenderInit.isInventorioLoaded)
-                this.client.setScreen(new InventorioScreen(new InventorioScreenHandler(0, this.client.player.getInventory()), this.client.player.getInventory()));
-            else
+            if (RenderInit.isInventorioLoaded) {
+                // Close gui (temp fix)
+                this.client.setScreen(null);
+            } else {
+                // Open inventory
                 this.client.setScreen(new InventoryScreen(this.client.player));
+            }
         }
         return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
@@ -103,5 +104,4 @@ public class LevelzScreen extends CottonClientScreen {
         int j = this.top;
         return (pointX -= (double) i) >= (double) (x - 1) && pointX < (double) (x + width + 1) && (pointY -= (double) j) >= (double) (6 - 1) && pointY < (double) (6 + 20 + 1);
     }
-
 }
