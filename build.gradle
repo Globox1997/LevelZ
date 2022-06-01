@@ -40,7 +40,7 @@ dependencies {
     }
     // Inventorio
     modCompileOnly("net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.1.6.21")
-    modCompileOnly("curse.maven:inventorio-491073:3764520") { transitive = false }
+    modCompileOnly("curse.maven:inventorio-491073:3764520")
     // Wthit
     modCompileOnly modRuntimeOnly("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
     // REI

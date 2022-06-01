@@ -5,11 +5,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LibGui;
-import me.lizardofoz.inventorio.client.ui.InventorioScreen;
-import me.lizardofoz.inventorio.player.InventorioScreenHandler;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.compat.InventorioScreenCompatibility;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.init.RenderInit;
@@ -81,7 +80,7 @@ public class LevelzScreen extends CottonClientScreen {
             assert this.client != null;
             assert this.client.player != null;
             if (RenderInit.isInventorioLoaded)
-                this.client.setScreen(new InventorioScreen(new InventorioScreenHandler(0, this.client.player.getInventory()), this.client.player.getInventory()));
+                InventorioScreenCompatibility.setInventorioScreen(client);
             else
                 this.client.setScreen(new InventoryScreen(this.client.player));
         }

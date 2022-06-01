@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import me.lizardofoz.inventorio.client.ui.InventorioScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.access.PlayerStatsManagerAccess;
@@ -24,9 +25,8 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-@Pseudo
 @Environment(EnvType.CLIENT)
-@Mixin(targets = "me.lizardofoz.inventorio.client.ui.InventorioScreen")
+@Mixin(InventorioScreen.class)
 public abstract class InventorioScreenMixin extends AbstractInventoryScreen<PlayerScreenHandler> {
 
     @Mutable
