@@ -172,7 +172,7 @@ public class PlayerStatsManager {
 
     public void addExperienceLevels(int levels) {
         this.overallLevel += levels;
-        this.skillPoints++;
+        this.skillPoints += ConfigInit.CONFIG.pointsPerLevel;
         if (this.overallLevel < 0) {
             this.overallLevel = 0;
             this.levelProgress = 0.0F;

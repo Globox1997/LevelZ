@@ -22,6 +22,8 @@ public class LevelzConfig implements ConfigData {
     @Comment("Enables starter points for SERVER only")
     public boolean enableStartPoints = false;
     @ConfigEntry.Category("level_settings")
+    public int pointsPerLevel = 1;
+    @ConfigEntry.Category("level_settings")
     @Comment("If true will reset stats on death")
     public boolean hardMode = false;
     @ConfigEntry.Category("level_settings")
