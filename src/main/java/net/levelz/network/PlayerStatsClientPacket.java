@@ -172,6 +172,7 @@ public class PlayerStatsClientPacket {
             float miningTntBonus = buf.readFloat();
 
             float xpCostMultiplicator = buf.readFloat();
+            int xpExponent = buf.readInt();
             int xpBaseCost = buf.readInt();
             int xpMaxCost = buf.readInt();
 
@@ -187,6 +188,7 @@ public class PlayerStatsClientPacket {
                 ConfigInit.CONFIG.xpBaseCost = xpBaseCost;
                 ConfigInit.CONFIG.xpMaxCost = xpMaxCost;
                 ConfigInit.CONFIG.xpCostMultiplicator = xpCostMultiplicator;
+                ConfigInit.CONFIG.xpExponent = xpExponent;
 
                 ConfigInit.CONFIG.healthBase = healthBase;
                 ConfigInit.CONFIG.healthBonus = healthBonus;

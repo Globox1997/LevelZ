@@ -97,8 +97,9 @@ public class LevelzConfig implements ConfigData {
 
     // Experience settings
     @ConfigEntry.Category("experience_settings")
-    @Comment("XP equation: lvl^2 * multiplicator + base")
+    @Comment("XP equation: lvl^exponent * multiplicator + base")
     public float xpCostMultiplicator = 0.1F;
+    public int xpExponent = 2;
     @ConfigEntry.Category("experience_settings")
     public int xpBaseCost = 50;
     @ConfigEntry.Category("experience_settings")
@@ -169,7 +170,8 @@ public class LevelzConfig implements ConfigData {
                 attackBonus, attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus, luckSurviveChance, staminaBase,
                 staminaBonus, staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance, smithingAnvilChance, farmingBase,
                 farmingChanceBonus, farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryBowExtraDamage, archeryCrossbowExtraDamage, archeryDoubleDamageChance, miningOreChance,
-                miningTntBonus, xpCostMultiplicator, xpBaseCost, xpMaxCost, miningProgression, itemProgression, blockProgression, entityProgression, brewingProgression, smithingProgression));
+                miningTntBonus, xpCostMultiplicator, xpExponent, xpBaseCost, xpMaxCost, miningProgression, itemProgression, blockProgression, entityProgression, brewingProgression,
+                smithingProgression));
     }
 
 }

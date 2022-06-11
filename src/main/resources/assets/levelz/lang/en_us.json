@@ -20,6 +20,7 @@
   "text.autoconfig.levelz.option.resetCurrentXP": "Reset Current Experience",
   "text.autoconfig.levelz.option.xpBaseCost": "XP Base Cost",
   "text.autoconfig.levelz.option.xpCostMultiplicator": "XP Multiplicator",
+  "text.autoconfig.levelz.option.xpExponent": "XP Exponent",
   "text.autoconfig.levelz.option.xpMaxCost": "XP Max Cost",
   "text.autoconfig.levelz.option.healthBase": "Health Base",
   "text.autoconfig.levelz.option.healthBonus": "Health Bonus",

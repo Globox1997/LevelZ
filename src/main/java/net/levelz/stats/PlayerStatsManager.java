@@ -11,7 +11,6 @@ import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.MathHelper;
 
 public class PlayerStatsManager {
     // Level
@@ -188,7 +187,7 @@ public class PlayerStatsManager {
     public int getNextLevelExperience() {
         if (isMaxLevel())
             return 0;
-        int experienceCost = (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * MathHelper.square(this.overallLevel));
+        int experienceCost = (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * Math.pow(this.overallLevel, ConfigInit.CONFIG.xpExponent));
         if (ConfigInit.CONFIG.xpMaxCost != 0)
             return experienceCost >= ConfigInit.CONFIG.xpMaxCost ? ConfigInit.CONFIG.xpMaxCost : experienceCost;
         else
