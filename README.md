@@ -21,6 +21,7 @@ the config file.\
 If you don't know how to create a datapack check out [Data Pack Wiki](https://minecraft.fandom.com/wiki/Data_Pack)
 website and try to create your first one for the vanilla game.\
 If you know how to create one, the folder path has to be ```data\levelz\FOLDER\YOURFILE.json```\
+Make sure you name the files differently than the existing ones.\
 Each locking file can choose its depending skill except for the mining and brewing list. A list of the skills can be
 found here and are self-explanatory:
 
