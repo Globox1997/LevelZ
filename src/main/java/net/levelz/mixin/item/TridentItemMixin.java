@@ -17,6 +17,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(TridentItem.class)
@@ -24,10 +25,19 @@ public class TridentItemMixin {
 
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setCurrentHand(Lnet/minecraft/util/Hand;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private void useMixin(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack) {
-        ArrayList<Object> levelList = LevelLists.tridentList;
-        if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, null, true)) {
-            user.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
+        ArrayList<Object> customList = LevelLists.customItemList;
+        String string = Registry.ITEM.getId(itemStack.getItem()).toString();
+        if (!PlayerStatsManager.playerLevelisHighEnough(user, customList, string, true)) {
+            user.sendMessage(
+                    new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
+                    true);
             info.setReturnValue(TypedActionResult.fail(itemStack));
+        } else {
+            ArrayList<Object> levelList = LevelLists.tridentList;
+            if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, null, true)) {
+                user.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
+                info.setReturnValue(TypedActionResult.fail(itemStack));
+            }
         }
     }
 }
