@@ -175,6 +175,13 @@ public class PlayerStatsClientPacket {
             int xpBaseCost = buf.readInt();
             int xpMaxCost = buf.readInt();
 
+            boolean miningProgression = buf.readBoolean();
+            boolean itemProgression = buf.readBoolean();
+            boolean blockProgression = buf.readBoolean();
+            boolean entityProgression = buf.readBoolean();
+            boolean brewingProgression = buf.readBoolean();
+            boolean smithingProgression = buf.readBoolean();
+
             client.execute(() -> {
                 ConfigInit.CONFIG.maxLevel = maxLevel;
                 ConfigInit.CONFIG.xpBaseCost = xpBaseCost;
@@ -219,6 +226,13 @@ public class PlayerStatsClientPacket {
                 ConfigInit.CONFIG.archeryDoubleDamageChance = archeryDoubleDamageChance;
                 ConfigInit.CONFIG.miningOreChance = miningOreChance;
                 ConfigInit.CONFIG.miningTntBonus = miningTntBonus;
+
+                ConfigInit.CONFIG.miningProgression = miningProgression;
+                ConfigInit.CONFIG.itemProgression = itemProgression;
+                ConfigInit.CONFIG.blockProgression = blockProgression;
+                ConfigInit.CONFIG.entityProgression = entityProgression;
+                ConfigInit.CONFIG.brewingProgression = brewingProgression;
+                ConfigInit.CONFIG.smithingProgression = smithingProgression;
             });
 
         });

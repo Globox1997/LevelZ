@@ -19,12 +19,14 @@ public class ConfigInit {
         CONFIG = AutoConfig.getConfigHolder(LevelzConfig.class).getConfig();
 
         AutoConfig.getConfigHolder(LevelzConfig.class).registerSaveListener((manager, data) -> {
-            if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT) && !MinecraftClient.getInstance().isInSingleplayer())
+            if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT) && !MinecraftClient.getInstance().isInSingleplayer()
+                    && MinecraftClient.getInstance().getNetworkHandler() != null)
                 PlayerStatsClientPacket.writeC2SSyncConfigPacket();
             return ActionResult.SUCCESS;
         });
         AutoConfig.getConfigHolder(LevelzConfig.class).registerLoadListener((manager, newData) -> {
-            if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT) && !MinecraftClient.getInstance().isInSingleplayer())
+            if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT) && !MinecraftClient.getInstance().isInSingleplayer()
+                    && MinecraftClient.getInstance().getNetworkHandler() != null)
                 PlayerStatsClientPacket.writeC2SSyncConfigPacket();
             return ActionResult.SUCCESS;
         });

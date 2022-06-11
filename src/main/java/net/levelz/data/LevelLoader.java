@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.levelz.init.ConfigInit;
 import net.levelz.util.SortList;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -39,278 +40,290 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
     public void reload(ResourceManager manager) {
         clearEveryList();
         // Mining
-        for (Identifier id : manager.findResources("mining", path -> path.endsWith(".json"))) {
-            try {
-                InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+        if (ConfigInit.CONFIG.miningProgression) {
+            for (Identifier id : manager.findResources("mining", path -> path.endsWith(".json"))) {
+                try {
+                    InputStream stream = manager.getResource(id).getInputStream();
+                    JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 
-                if (levelList.contains(data.get("level").getAsInt())) {
-                    int index = levelList.indexOf(data.get("level").getAsInt());
-                    if (JsonHelper.getBoolean(data, "replace", false)) {
-                        levelList.remove(index);
-                        objectList.remove(index);
-                        replaceList.remove(index);
+                    if (levelList.contains(data.get("level").getAsInt())) {
+                        int index = levelList.indexOf(data.get("level").getAsInt());
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            levelList.remove(index);
+                            objectList.remove(index);
+                            replaceList.remove(index);
+                            fillLists(data, false, 1, -1);
+                        } else if (!replaceList.get(index)) {
+                            fillLists(data, true, 1, -1);
+                        }
+                    } else {
                         fillLists(data, false, 1, -1);
-                    } else if (!replaceList.get(index)) {
-                        fillLists(data, true, 1, -1);
                     }
-                } else {
-                    fillLists(data, false, 1, -1);
-                }
 
-            } catch (Exception e) {
-                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                } catch (Exception e) {
+                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                }
             }
+            // Fill mining list
+            sortAndFillLists(levelList, objectList, 1);
         }
-        // Fill mining list
-        sortAndFillLists(levelList, objectList, 1);
 
         // Item
-        for (Identifier id : manager.findResources("item", path -> path.endsWith(".json"))) {
-            try {
-                InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
-                ArrayList<Object> list = LevelLists.getList(data.get("item").getAsString());
+        if (ConfigInit.CONFIG.itemProgression) {
+            for (Identifier id : manager.findResources("item", path -> path.endsWith(".json"))) {
+                try {
+                    InputStream stream = manager.getResource(id).getInputStream();
+                    JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+                    ArrayList<Object> list = LevelLists.getList(data.get("item").getAsString());
 
-                if (data.get("item").getAsString().equals("minecraft:armor") || data.get("item").getAsString().equals("minecraft:tool") || data.get("item").getAsString().equals("minecraft:hoe")
-                        || data.get("item").getAsString().equals("minecraft:sword") || data.get("item").getAsString().equals("minecraft:axe")) {
-                    if (list.contains(data.get("material").getAsString())) {
-                        if (JsonHelper.getBoolean(data, "replace", false)) {
-                            int removeLines = list.indexOf(data.get("material").getAsString());
-                            for (int i = 0; i < 5; i++) {
-                                list.remove(removeLines);
+                    if (data.get("item").getAsString().equals("minecraft:armor") || data.get("item").getAsString().equals("minecraft:tool") || data.get("item").getAsString().equals("minecraft:hoe")
+                            || data.get("item").getAsString().equals("minecraft:sword") || data.get("item").getAsString().equals("minecraft:axe")) {
+                        if (list.contains(data.get("material").getAsString())) {
+                            if (JsonHelper.getBoolean(data, "replace", false)) {
+                                int removeLines = list.indexOf(data.get("material").getAsString());
+                                for (int i = 0; i < 5; i++) {
+                                    list.remove(removeLines);
+                                }
+                            } else {
+                                if (!(boolean) list.get(list.indexOf(data.get("material")) + 4)) {
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                }
+                                continue;
                             }
-                        } else {
-                            if (!(boolean) list.get(list.indexOf(data.get("material")) + 4)) {
-                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                        }
+                        list.add(data.get("material").getAsString());
+                        list.add(data.get("skill").getAsString());
+                        list.add(data.get("level").getAsInt());
+                        list.add(data.get("item").getAsString());
+                        list.add(JsonHelper.getBoolean(data, "replace", false));
+                    } else if (data.get("item").getAsString().equals("minecraft:custom_item")) {
+                        ArrayList<Object> customList = LevelLists.getList(data.get("item").getAsString());
+                        if (customList.contains(data.get("object").getAsString())) {
+                            if (JsonHelper.getBoolean(data, "replace", false)) {
+                                int removeLines = list.indexOf(data.get("object").getAsString());
+                                for (int i = 0; i < 5; i++) {
+                                    list.remove(removeLines);
+                                }
+                            } else {
+                                if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                }
+                                continue;
                             }
+                        }
+                        if (Registry.ITEM.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("object").getAsString());
                             continue;
                         }
-                    }
-                    list.add(data.get("material").getAsString());
-                    list.add(data.get("skill").getAsString());
-                    list.add(data.get("level").getAsInt());
-                    list.add(data.get("item").getAsString());
-                    list.add(JsonHelper.getBoolean(data, "replace", false));
-                } else if (data.get("item").getAsString().equals("minecraft:custom_item")) {
-                    ArrayList<Object> customList = LevelLists.getList(data.get("item").getAsString());
-                    if (customList.contains(data.get("object").getAsString())) {
-                        if (JsonHelper.getBoolean(data, "replace", false)) {
-                            int removeLines = list.indexOf(data.get("object").getAsString());
-                            for (int i = 0; i < 5; i++) {
-                                list.remove(removeLines);
+                        customList.add(data.get("object").getAsString());
+                        customList.add(data.get("skill").getAsString());
+                        customList.add(data.get("level").getAsInt());
+                        customList.add(data.get("item").getAsString());
+                        customList.add(JsonHelper.getBoolean(data, "replace", false));
+                    } else {
+                        if (!list.isEmpty()) {
+                            if (JsonHelper.getBoolean(data, "replace", false)) {
+                                list.clear();
+                            } else {
+                                if (!(boolean) list.get(3)) {
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                }
+                                continue;
                             }
-                        } else {
-                            if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
-                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
-                            }
+                        }
+                        if (Registry.ITEM.get(new Identifier(data.get("item").getAsString())).toString().equals("air")) {
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("item").getAsString());
                             continue;
                         }
+                        list.add(data.get("skill").getAsString());
+                        list.add(data.get("level").getAsInt());
+                        list.add(data.get("item").getAsString());
+                        list.add(JsonHelper.getBoolean(data, "replace", false));
                     }
-                    if (Registry.ITEM.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
-                        LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("object").getAsString());
-                        continue;
-                    }
-                    customList.add(data.get("object").getAsString());
-                    customList.add(data.get("skill").getAsString());
-                    customList.add(data.get("level").getAsInt());
-                    customList.add(data.get("item").getAsString());
-                    customList.add(JsonHelper.getBoolean(data, "replace", false));
-                } else {
-                    if (!list.isEmpty()) {
-                        if (JsonHelper.getBoolean(data, "replace", false)) {
-                            list.clear();
-                        } else {
-                            if (!(boolean) list.get(3)) {
-                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
-                            }
-                            continue;
-                        }
-                    }
-                    if (Registry.ITEM.get(new Identifier(data.get("item").getAsString())).toString().equals("air")) {
-                        LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("item").getAsString());
-                        continue;
-                    }
-                    list.add(data.get("skill").getAsString());
-                    list.add(data.get("level").getAsInt());
-                    list.add(data.get("item").getAsString());
-                    list.add(JsonHelper.getBoolean(data, "replace", false));
+                } catch (Exception e) {
+                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
                 }
-            } catch (Exception e) {
-                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
 
         // Block
-        for (Identifier id : manager.findResources("block", path -> path.endsWith(".json"))) {
-            try {
-                InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
-                ArrayList<Object> list = LevelLists.getList(data.get("block").getAsString());
+        if (ConfigInit.CONFIG.blockProgression) {
+            for (Identifier id : manager.findResources("block", path -> path.endsWith(".json"))) {
+                try {
+                    InputStream stream = manager.getResource(id).getInputStream();
+                    JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+                    ArrayList<Object> list = LevelLists.getList(data.get("block").getAsString());
 
-                if (data.get("block").getAsString().equals("minecraft:custom_block")) {
-                    ArrayList<Object> customList = LevelLists.getList(data.get("block").getAsString());
-                    if (customList.contains(data.get("object").getAsString())) {
-                        if (JsonHelper.getBoolean(data, "replace", false)) {
-                            int removeLines = list.indexOf(data.get("object").getAsString());
-                            for (int i = 0; i < 5; i++) {
-                                list.remove(removeLines);
+                    if (data.get("block").getAsString().equals("minecraft:custom_block")) {
+                        ArrayList<Object> customList = LevelLists.getList(data.get("block").getAsString());
+                        if (customList.contains(data.get("object").getAsString())) {
+                            if (JsonHelper.getBoolean(data, "replace", false)) {
+                                int removeLines = list.indexOf(data.get("object").getAsString());
+                                for (int i = 0; i < 5; i++) {
+                                    list.remove(removeLines);
+                                }
+                            } else {
+                                if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                }
+                                continue;
                             }
-                        } else {
-                            if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
-                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
-                            }
+                        }
+                        if (Registry.BLOCK.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("object").getAsString());
                             continue;
                         }
-                    }
-                    if (Registry.BLOCK.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
-                        LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("object").getAsString());
-                        continue;
-                    }
-                    customList.add(data.get("object").getAsString());
-                    customList.add(data.get("skill").getAsString());
-                    customList.add(data.get("level").getAsInt());
-                    customList.add(data.get("block").getAsString());
-                    customList.add(JsonHelper.getBoolean(data, "replace", false));
-                } else {
-                    if (!list.isEmpty()) {
-                        if (JsonHelper.getBoolean(data, "replace", false)) {
-                            list.clear();
-                        } else {
-                            if (!(boolean) list.get(3)) {
-                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                        customList.add(data.get("object").getAsString());
+                        customList.add(data.get("skill").getAsString());
+                        customList.add(data.get("level").getAsInt());
+                        customList.add(data.get("block").getAsString());
+                        customList.add(JsonHelper.getBoolean(data, "replace", false));
+                    } else {
+                        if (!list.isEmpty()) {
+                            if (JsonHelper.getBoolean(data, "replace", false)) {
+                                list.clear();
+                            } else {
+                                if (!(boolean) list.get(3)) {
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                }
+                                continue;
                             }
+                        }
+                        if (Registry.BLOCK.get(new Identifier(data.get("block").getAsString())).toString().equals("air")) {
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("block").getAsString());
                             continue;
                         }
-                    }
-                    if (Registry.BLOCK.get(new Identifier(data.get("block").getAsString())).toString().equals("air")) {
-                        LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("block").getAsString());
-                        continue;
-                    }
-                    list.add(data.get("skill").getAsString());
-                    list.add(data.get("level").getAsInt());
-                    list.add(data.get("block").getAsString());
-                    list.add(JsonHelper.getBoolean(data, "replace", false));
-                    // EnchantingTable
-                    if (data.get("enchanting_tier") != null) {
-                        for (int i = 0; i < data.getAsJsonArray("enchanting_tier").size(); i++) {
-                            list.add(data.get("enchanting_tier").getAsJsonArray().get(i).getAsInt());
+                        list.add(data.get("skill").getAsString());
+                        list.add(data.get("level").getAsInt());
+                        list.add(data.get("block").getAsString());
+                        list.add(JsonHelper.getBoolean(data, "replace", false));
+                        // EnchantingTable
+                        if (data.get("enchanting_tier") != null) {
+                            for (int i = 0; i < data.getAsJsonArray("enchanting_tier").size(); i++) {
+                                list.add(data.get("enchanting_tier").getAsJsonArray().get(i).getAsInt());
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
                 }
-            } catch (Exception e) {
-                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
 
         // Entity
-        for (Identifier id : manager.findResources("entity", path -> path.endsWith(".json"))) {
-            try {
-                InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
-                ArrayList<Object> list = LevelLists.getList(data.get("entity").getAsString());
+        if (ConfigInit.CONFIG.entityProgression) {
+            for (Identifier id : manager.findResources("entity", path -> path.endsWith(".json"))) {
+                try {
+                    InputStream stream = manager.getResource(id).getInputStream();
+                    JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+                    ArrayList<Object> list = LevelLists.getList(data.get("entity").getAsString());
 
-                if (data.get("entity").getAsString().equals("minecraft:custom_entity")) {
-                    ArrayList<Object> customList = LevelLists.getList(data.get("entity").getAsString());
-                    if (customList.contains(data.get("object").getAsString())) {
-                        if (JsonHelper.getBoolean(data, "replace", false)) {
-                            int removeLines = list.indexOf(data.get("object").getAsString());
-                            for (int i = 0; i < 5; i++) {
-                                list.remove(removeLines);
+                    if (data.get("entity").getAsString().equals("minecraft:custom_entity")) {
+                        ArrayList<Object> customList = LevelLists.getList(data.get("entity").getAsString());
+                        if (customList.contains(data.get("object").getAsString())) {
+                            if (JsonHelper.getBoolean(data, "replace", false)) {
+                                int removeLines = list.indexOf(data.get("object").getAsString());
+                                for (int i = 0; i < 5; i++) {
+                                    list.remove(removeLines);
+                                }
+                            } else {
+                                if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                }
+                                continue;
                             }
-                        } else {
-                            if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
-                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
-                            }
+                        }
+                        if (Registry.ENTITY_TYPE.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("object").getAsString());
                             continue;
                         }
-                    }
-                    if (Registry.ENTITY_TYPE.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
-                        LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("object").getAsString());
-                        continue;
-                    }
-                    customList.add(data.get("object").getAsString());
-                    customList.add(data.get("skill").getAsString());
-                    customList.add(data.get("level").getAsInt());
-                    customList.add(data.get("entity").getAsString());
-                    customList.add(JsonHelper.getBoolean(data, "replace", false));
-                } else {
-                    if (!list.isEmpty()) {
-                        if (JsonHelper.getBoolean(data, "replace", false)) {
-                            list.clear();
-                        } else {
-                            if (!(boolean) list.get(3)) {
-                                LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                        customList.add(data.get("object").getAsString());
+                        customList.add(data.get("skill").getAsString());
+                        customList.add(data.get("level").getAsInt());
+                        customList.add(data.get("entity").getAsString());
+                        customList.add(JsonHelper.getBoolean(data, "replace", false));
+                    } else {
+                        if (!list.isEmpty()) {
+                            if (JsonHelper.getBoolean(data, "replace", false)) {
+                                list.clear();
+                            } else {
+                                if (!(boolean) list.get(3)) {
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                }
+                                continue;
                             }
+                        }
+                        if (Registry.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("air")) {
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("entity").getAsString());
                             continue;
                         }
+                        list.add(data.get("skill").getAsString());
+                        list.add(data.get("level").getAsInt());
+                        list.add(data.get("entity").getAsString());
+                        list.add(JsonHelper.getBoolean(data, "replace", false));
                     }
-                    if (Registry.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("air")) {
-                        LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("entity").getAsString());
-                        continue;
-                    }
-                    list.add(data.get("skill").getAsString());
-                    list.add(data.get("level").getAsInt());
-                    list.add(data.get("entity").getAsString());
-                    list.add(JsonHelper.getBoolean(data, "replace", false));
+                } catch (Exception e) {
+                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
                 }
-            } catch (Exception e) {
-                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         }
 
         // Brewing
-        for (Identifier id : manager.findResources("brewing", path -> path.endsWith(".json"))) {
-            try {
-                InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+        if (ConfigInit.CONFIG.brewingProgression) {
+            for (Identifier id : manager.findResources("brewing", path -> path.endsWith(".json"))) {
+                try {
+                    InputStream stream = manager.getResource(id).getInputStream();
+                    JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 
-                if (levelList.contains(data.get("level").getAsInt())) {
-                    int index = levelList.indexOf(data.get("level").getAsInt());
-                    if (JsonHelper.getBoolean(data, "replace", false)) {
-                        levelList.remove(index);
-                        objectList.remove(index);
-                        replaceList.remove(index);
+                    if (levelList.contains(data.get("level").getAsInt())) {
+                        int index = levelList.indexOf(data.get("level").getAsInt());
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            levelList.remove(index);
+                            objectList.remove(index);
+                            replaceList.remove(index);
+                            fillLists(data, false, 2, -1);
+                        } else if (!replaceList.get(index)) {
+                            fillLists(data, true, 2, -1);
+                        }
+                    } else {
                         fillLists(data, false, 2, -1);
-                    } else if (!replaceList.get(index)) {
-                        fillLists(data, true, 2, -1);
                     }
-                } else {
-                    fillLists(data, false, 2, -1);
+                } catch (Exception e) {
+                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
                 }
-            } catch (Exception e) {
-                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
+            // Fill brewing list
+            sortAndFillLists(levelList, objectList, 2);
         }
-        // Fill brewing list
-        sortAndFillLists(levelList, objectList, 2);
 
         // Smithing
-        for (Identifier id : manager.findResources("smithing", path -> path.endsWith(".json"))) {
-            try {
-                InputStream stream = manager.getResource(id).getInputStream();
-                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+        if (ConfigInit.CONFIG.smithingProgression) {
+            for (Identifier id : manager.findResources("smithing", path -> path.endsWith(".json"))) {
+                try {
+                    InputStream stream = manager.getResource(id).getInputStream();
+                    JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 
-                if (levelList.contains(data.get("level").getAsInt())) {
-                    int index = levelList.indexOf(data.get("level").getAsInt());
-                    if (JsonHelper.getBoolean(data, "replace", false)) {
-                        levelList.remove(index);
-                        objectList.remove(index);
-                        replaceList.remove(index);
+                    if (levelList.contains(data.get("level").getAsInt())) {
+                        int index = levelList.indexOf(data.get("level").getAsInt());
+                        if (JsonHelper.getBoolean(data, "replace", false)) {
+                            levelList.remove(index);
+                            objectList.remove(index);
+                            replaceList.remove(index);
+                            fillLists(data, false, 2, -1);
+                        } else if (!replaceList.get(index)) {
+                            fillLists(data, true, 2, -1);
+                        }
+                    } else {
                         fillLists(data, false, 2, -1);
-                    } else if (!replaceList.get(index)) {
-                        fillLists(data, true, 2, -1);
                     }
-                } else {
-                    fillLists(data, false, 2, -1);
-                }
 
-            } catch (Exception e) {
-                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                } catch (Exception e) {
+                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                }
             }
+            // Fill smithing list
+            sortAndFillLists(levelList, objectList, 3);
         }
-        // Fill smithing list
-        sortAndFillLists(levelList, objectList, 3);
 
         // Crafting
         for (Identifier id : manager.findResources("crafting", path -> path.endsWith(".json"))) {

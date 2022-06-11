@@ -140,6 +140,25 @@ public class LevelzConfig implements ConfigData {
     @Comment("Roughly Enough Items exclusion zone")
     public boolean reiExclusionzone = true; // Client only
 
+    @ConfigEntry.Category("progression_settings")
+    @ConfigEntry.Gui.RequiresRestart
+    public boolean miningProgression = true;
+    @ConfigEntry.Category("progression_settings")
+    @ConfigEntry.Gui.RequiresRestart
+    public boolean itemProgression = true;
+    @ConfigEntry.Category("progression_settings")
+    @ConfigEntry.Gui.RequiresRestart
+    public boolean blockProgression = true;
+    @ConfigEntry.Category("progression_settings")
+    @ConfigEntry.Gui.RequiresRestart
+    public boolean entityProgression = true;
+    @ConfigEntry.Category("progression_settings")
+    @ConfigEntry.Gui.RequiresRestart
+    public boolean brewingProgression = true;
+    @ConfigEntry.Category("progression_settings")
+    @ConfigEntry.Gui.RequiresRestart
+    public boolean smithingProgression = true;
+
     // List.of is immutable
     // Arrays.asList returns an ArrayList of the Arrays class which is different to the ArrayList class
     public ArrayList<Object> getConfigList() {
@@ -147,7 +166,7 @@ public class LevelzConfig implements ConfigData {
                 attackBonus, attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus, luckSurviveChance, staminaBase,
                 staminaBonus, staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance, smithingAnvilChance, farmingBase,
                 farmingChanceBonus, farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryBowExtraDamage, archeryCrossbowExtraDamage, archeryDoubleDamageChance, miningOreChance,
-                miningTntBonus, xpCostMultiplicator, xpBaseCost, xpMaxCost));
+                miningTntBonus, xpCostMultiplicator, xpBaseCost, xpMaxCost, miningProgression, itemProgression, blockProgression, entityProgression, brewingProgression, smithingProgression));
     }
 
 }

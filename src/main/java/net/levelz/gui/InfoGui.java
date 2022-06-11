@@ -119,8 +119,10 @@ public class InfoGui extends LightweightGuiDescription {
             translatableText6A = new TranslatableText("text.levelz.smithing_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
             translatableText6B = new TranslatableText("text.levelz.smithing_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
 
-            ZWSprite smithingListIcon = new ZWSprite(name, client, 1);
-            root.add(smithingListIcon, 180, 7, 12, 9);
+            if (!LevelLists.smithingItemList.isEmpty()) {
+                ZWSprite smithingListIcon = new ZWSprite(name, client, 1);
+                root.add(smithingListIcon, 180, 7, 12, 9);
+            }
 
             break;
         case "mining":
@@ -130,8 +132,10 @@ public class InfoGui extends LightweightGuiDescription {
             translatableText6A = new TranslatableText("text.levelz.mining_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
             translatableText6B = new TranslatableText("text.levelz.mining_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
 
-            ZWSprite miningListIcon = new ZWSprite(name, client, 1);
-            root.add(miningListIcon, 180, 7, 12, 9);
+            if (!LevelLists.miningBlockList.isEmpty()) {
+                ZWSprite miningListIcon = new ZWSprite(name, client, 1);
+                root.add(miningListIcon, 180, 7, 12, 9);
+            }
 
             break;
         case "farming":
@@ -149,8 +153,10 @@ public class InfoGui extends LightweightGuiDescription {
             translatableText6A = new TranslatableText("text.levelz.alchemy_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
             translatableText6B = new TranslatableText("text.levelz.alchemy_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
 
-            ZWSprite alchemyListIcon = new ZWSprite(name, client, 1);
-            root.add(alchemyListIcon, 180, 7, 12, 9);
+            if (!LevelLists.brewingItemList.isEmpty()) {
+                ZWSprite alchemyListIcon = new ZWSprite(name, client, 1);
+                root.add(alchemyListIcon, 180, 7, 12, 9);
+            }
 
             break;
         default:

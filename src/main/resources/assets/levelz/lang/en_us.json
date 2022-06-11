@@ -11,6 +11,7 @@
   "text.autoconfig.levelz.category.default": "Skill Settings",
   "text.autoconfig.levelz.category.level_settings": "Level Settings",
   "text.autoconfig.levelz.category.experience_settings": "Experience Settings",
+  "text.autoconfig.levelz.category.progression_settings": "Progression Settings",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",
@@ -75,6 +76,13 @@
   "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
   "text.autoconfig.levelz.option.reiExclusionzone": "REI Exclusion Zone",
   "text.autoconfig.levelz.option.inventoryButton": "Inventory Button",
+
+  "text.autoconfig.levelz.option.miningProgression": "Mining Progression",
+  "text.autoconfig.levelz.option.itemProgression": "Item Progression",
+  "text.autoconfig.levelz.option.blockProgression": "Block Progression",
+  "text.autoconfig.levelz.option.entityProgression": "Entity Progression",
+  "text.autoconfig.levelz.option.brewingProgression": "Brewing Progression",
+  "text.autoconfig.levelz.option.smithingProgression": "Smithing Progression",
 
   "item.levelz.strange_potion": "Strange Potion",
   
