@@ -29,6 +29,9 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
         if (!FabricLoader.getInstance().isModLoaded("inventorio") && (mixinClassName.contains("InventorioScreenMixin"))) {
             return false;
         }
+        if (!FabricLoader.getInstance().isModLoaded("create") && (mixinClassName.contains("CreatePlayerStatsManagerMixin"))) {
+            return false;
+        }
         return true;
     }
 
