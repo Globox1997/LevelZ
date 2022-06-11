@@ -35,6 +35,9 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
         if (!FabricLoader.getInstance().isModLoaded("go-fish") && (mixinClassName.contains("FishingRodItemMixin")))
             return false;
 
+        if (!FabricLoader.getInstance().isModLoaded("cardboard") && (mixinClassName.contains("ArmorItemMixin")))
+            return false;
+
         return true;
     }
 
