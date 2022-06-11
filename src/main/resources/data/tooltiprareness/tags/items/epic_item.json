@@ -1,6 +1,7 @@
 {
     "replace": false,
     "values": [
-        "levelz:strange_potion"
+        "levelz:strange_potion",
+        "levelz:rare_candy"
     ]
 }

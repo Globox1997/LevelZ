@@ -86,7 +86,8 @@
   "text.autoconfig.levelz.option.smithingProgression": "Smithing Progression",
 
   "item.levelz.strange_potion": "Strange Potion",
-  
+  "item.levelz.rare_candy": "Rare Candy",
+
   "item.levelz.locked.tooltip": "Locked",
   "item.levelz.farming.tooltip": "Farming %d",
   "item.levelz.mining.tooltip": "Mining %d",
