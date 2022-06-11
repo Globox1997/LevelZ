@@ -163,6 +163,7 @@ public class LevelzConfig implements ConfigData {
 
     // List.of is immutable
     // Arrays.asList returns an ArrayList of the Arrays class which is different to the ArrayList class
+    // Returns a list which should be synced to the client
     public ArrayList<Object> getConfigList() {
         return new ArrayList<Object>(Arrays.asList(maxLevel, healthBase, healthBonus, healthAbsorptionBonus, movementBase, movementBonus, movementMissChance, movementFallBonus, attackBase,
                 attackBonus, attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus, luckSurviveChance, staminaBase,
