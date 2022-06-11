@@ -23,15 +23,18 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (!FabricLoader.getInstance().isModLoaded("trinkets")
-                && (mixinClassName.equals("net.levelz.mixin.compat.TrinketItemMixin") || mixinClassName.equals("net.levelz.mixin.compat.SurvivalTrinketSlotMixin"))) {
+                && (mixinClassName.equals("net.levelz.mixin.compat.TrinketItemMixin") || mixinClassName.equals("net.levelz.mixin.compat.SurvivalTrinketSlotMixin")))
             return false;
-        }
-        if (!FabricLoader.getInstance().isModLoaded("inventorio") && (mixinClassName.contains("InventorioScreenMixin"))) {
+
+        if (!FabricLoader.getInstance().isModLoaded("inventorio") && (mixinClassName.contains("InventorioScreenMixin")))
             return false;
-        }
-        if (!FabricLoader.getInstance().isModLoaded("create") && (mixinClassName.contains("CreatePlayerStatsManagerMixin"))) {
+
+        if (!FabricLoader.getInstance().isModLoaded("create") && (mixinClassName.contains("CreatePlayerStatsManagerMixin")))
             return false;
-        }
+
+        if (!FabricLoader.getInstance().isModLoaded("go-fish") && (mixinClassName.contains("FishingRodItemMixin")))
+            return false;
+
         return true;
     }
 
