@@ -21,7 +21,7 @@ the config file.\
 If you don't know how to create a datapack check out [Data Pack Wiki](https://minecraft.fandom.com/wiki/Data_Pack)
 website and try to create your first one for the vanilla game.\
 If you know how to create one, the folder path has to be ```data\levelz\FOLDER\YOURFILE.json```\
-Make sure you name the files differently than the existing ones.\
+Caution! Make sure you name the files differently than the existing ones.\
 Each locking file can choose its depending skill except for the mining and brewing list. A list of the skills can be
 found here and are self-explanatory:
 
@@ -257,3 +257,19 @@ should look like is here:
 
 Check out the exampleDatapack folder for an example how it can look like.\
 Every level is set to 0 in this pack.
+
+### Advancement
+
+LevelZ provides an advancement criterion trigger called "levelz:level_up".\
+It triggers when the player reached the set level.
+
+```
+    "criteria": {
+        "levelexample": {
+            "trigger": "levelz:level_up",
+            "conditions": {
+                "level": 100
+            }
+        }
+    }
+```

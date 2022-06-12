@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.access.PlayerSyncAccess;
 import net.levelz.init.ConfigInit;
+import net.levelz.init.CriteriaInit;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -62,6 +63,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
                 PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, playerEntity);
                 PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
+                CriteriaInit.LEVEL_UP.trigger((ServerPlayerEntity) playerEntity, playerStatsManager.overallLevel);
                 if (playerStatsManager.overallLevel > 0) {
                     playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), 1.0F, 1.0F);
                 }

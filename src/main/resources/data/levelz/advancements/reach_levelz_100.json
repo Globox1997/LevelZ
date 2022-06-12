@@ -1,0 +1,34 @@
+{
+    "parent": "minecraft:adventure/root",
+    "rewards": {
+        "function": "levelz:level100"
+    },
+    "display": {
+        "icon": {
+            "item": "levelz:rare_candy"
+        },
+        "title": {
+            "translate": "advancements.adventure.level_100.title"
+        },
+        "description": {
+            "translate": "advancements.adventure.level_100.description"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": false,
+        "hidden": false
+    },
+    "criteria": {
+        "level100": {
+            "trigger": "levelz:level_up",
+            "conditions": {
+                "level": 100
+            }
+        }
+    },
+    "requirements": [
+        [
+            "level100"
+        ]
+    ]
+}

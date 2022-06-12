@@ -281,5 +281,8 @@
   "config.waila.plugin_levelz.mineable_info": "Mineable Info",
   "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info",
 
-  "entity.levelz.level_experience_orb": "Experience Orb"
+  "entity.levelz.level_experience_orb": "Experience Orb",
+
+  "advancements.adventure.level_100.title": "Level 100",
+  "advancements.adventure.level_100.description": "Reach the unreachable level"
 }
