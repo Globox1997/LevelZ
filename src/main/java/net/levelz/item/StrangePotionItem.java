@@ -59,7 +59,7 @@ public class StrangePotionItem extends Item {
                 playerEntity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
             }
 
-            world.emitGameEvent(user, GameEvent.DRINKING_FINISH, user.getCameraBlockPos());
+            user.emitGameEvent(GameEvent.DRINK);
         }
         return stack;
     }

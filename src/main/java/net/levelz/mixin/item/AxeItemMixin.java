@@ -12,7 +12,7 @@ import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 
@@ -25,10 +25,9 @@ public class AxeItemMixin {
         ArrayList<Object> levelList = LevelLists.axeList;
         String material = ((AxeItem) context.getStack().getItem()).getMaterial().toString().toLowerCase();
         if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, material, true)) {
-            context.getPlayer().sendMessage(
-                    new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
-                            .formatted(Formatting.RED),
-                    true);
+            context.getPlayer()
+                    .sendMessage(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
+                            .formatted(Formatting.RED), true);
             info.setReturnValue(ActionResult.PASS);
         }
     }

@@ -12,7 +12,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
@@ -24,8 +24,7 @@ public class TrinketItemMixin {
         ArrayList<Object> customList = LevelLists.customItemList;
         String string = Registry.ITEM.getId(stack.getItem()).toString();
         if (!PlayerStatsManager.playerLevelisHighEnough(user, customList, string, true)) {
-            user.sendMessage(
-                    new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
+            user.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
                     true);
             info.setReturnValue(false);
         }

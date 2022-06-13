@@ -35,6 +35,7 @@ public class LevelLists {
     public static final ArrayList<Object> breedingList = new ArrayList<Object>();
     public static final ArrayList<Object> axolotlList = new ArrayList<Object>();
     public static final ArrayList<Object> piglinList = new ArrayList<Object>();
+    public static final ArrayList<Object> tadpoleList = new ArrayList<Object>();
     // Item
     public static final ArrayList<Object> elytraList = new ArrayList<Object>();
     public static final ArrayList<Object> armorList = new ArrayList<Object>();
@@ -171,6 +172,8 @@ public class LevelLists {
             return axolotlList;
         case "minecraft:piglin":
             return piglinList;
+        case "minecraft:tadpole":
+            return tadpoleList;
         case "minecraft:custom_entity":
             return customEntityList;
         default:
@@ -225,6 +228,7 @@ public class LevelLists {
         listNames.add("minecraft:axolotl");
         listNames.add("minecraft:piglin");
         listNames.add("minecraft:shears");
+        listNames.add("minecraft:tadpole");
         // Custom
         listNames.add("minecraft:custom_block");
         listNames.add("minecraft:custom_item");

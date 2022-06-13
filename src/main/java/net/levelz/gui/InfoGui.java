@@ -11,7 +11,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.Texts;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import net.minecraft.util.registry.Registry;
@@ -27,7 +28,7 @@ public class InfoGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(200, 215);
 
-        root.add(new WLabel(new TranslatableText("text.levelz.info", new TranslatableText(String.format("spritetip.levelz.%s_skill", name)))), 6, 7);
+        root.add(new WLabel(Text.translatable("text.levelz.info", Text.translatable(String.format("spritetip.levelz.%s_skill", name)))), 6, 7);
 
         WPlainPanel plainPanel = new WPlainPanel();
 
@@ -36,88 +37,88 @@ public class InfoGui extends LightweightGuiDescription {
 
         int gridYSpace = 4;
 
-        TranslatableText translatableText1 = null;
-        TranslatableText translatableText1B = null;
-        TranslatableText translatableText2A = null;
-        TranslatableText translatableText2B = null;
-        TranslatableText translatableText3A = null;
-        TranslatableText translatableText3B = null;
-        TranslatableText translatableText6A = null;
-        TranslatableText translatableText6B = null;
+        Text translatableText1 = null;
+        Text translatableText1B = null;
+        Text translatableText2A = null;
+        Text translatableText2B = null;
+        Text translatableText3A = null;
+        Text translatableText3B = null;
+        Text translatableText6A = null;
+        Text translatableText6B = null;
 
         switch (name) {
         case "health":
-            translatableText1 = new TranslatableText("text.levelz.health_info_1", ConfigInit.CONFIG.healthBase);
-            translatableText2A = new TranslatableText("text.levelz.health_info_2_1", ConfigInit.CONFIG.healthBonus);
-            translatableText2B = new TranslatableText("text.levelz.health_info_2_2", ConfigInit.CONFIG.healthBonus);
-            translatableText6A = new TranslatableText("text.levelz.health_max_lvl_1", ConfigInit.CONFIG.healthAbsorptionBonus);
-            translatableText6B = new TranslatableText("text.levelz.health_max_lvl_2", ConfigInit.CONFIG.healthAbsorptionBonus);
+            translatableText1 = Text.translatable("text.levelz.health_info_1", ConfigInit.CONFIG.healthBase);
+            translatableText2A = Text.translatable("text.levelz.health_info_2_1", ConfigInit.CONFIG.healthBonus);
+            translatableText2B = Text.translatable("text.levelz.health_info_2_2", ConfigInit.CONFIG.healthBonus);
+            translatableText6A = Text.translatable("text.levelz.health_max_lvl_1", ConfigInit.CONFIG.healthAbsorptionBonus);
+            translatableText6B = Text.translatable("text.levelz.health_max_lvl_2", ConfigInit.CONFIG.healthAbsorptionBonus);
             break;
         case "strength":
-            translatableText1 = new TranslatableText("text.levelz.strength_info_1", ConfigInit.CONFIG.attackBase);
-            translatableText2A = new TranslatableText("text.levelz.strength_info_2_1", ConfigInit.CONFIG.attackBonus);
-            translatableText2B = new TranslatableText("text.levelz.strength_info_2_2", ConfigInit.CONFIG.attackBonus);
-            translatableText6A = new TranslatableText("text.levelz.strength_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.attackDoubleDamageChance * 100F));
-            translatableText6B = new TranslatableText("text.levelz.strength_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.attackDoubleDamageChance * 100F));
+            translatableText1 = Text.translatable("text.levelz.strength_info_1", ConfigInit.CONFIG.attackBase);
+            translatableText2A = Text.translatable("text.levelz.strength_info_2_1", ConfigInit.CONFIG.attackBonus);
+            translatableText2B = Text.translatable("text.levelz.strength_info_2_2", ConfigInit.CONFIG.attackBonus);
+            translatableText6A = Text.translatable("text.levelz.strength_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.attackDoubleDamageChance * 100F));
+            translatableText6B = Text.translatable("text.levelz.strength_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.attackDoubleDamageChance * 100F));
             break;
         case "agility":
-            translatableText1 = new TranslatableText("text.levelz.agility_info_1", ConfigInit.CONFIG.movementBase);
-            translatableText2A = new TranslatableText("text.levelz.agility_info_2_1", ConfigInit.CONFIG.movementBonus);
-            translatableText2B = new TranslatableText("text.levelz.agility_info_2_2", ConfigInit.CONFIG.movementBonus);
-            translatableText3A = new TranslatableText("text.levelz.agility_info_3_1", ConfigInit.CONFIG.movementFallBonus);
-            translatableText3B = new TranslatableText("text.levelz.agility_info_3_2", ConfigInit.CONFIG.movementFallBonus);
-            translatableText6A = new TranslatableText("text.levelz.agility_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.movementMissChance * 100F));
-            translatableText6B = new TranslatableText("text.levelz.agility_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.movementMissChance * 100F));
+            translatableText1 = Text.translatable("text.levelz.agility_info_1", ConfigInit.CONFIG.movementBase);
+            translatableText2A = Text.translatable("text.levelz.agility_info_2_1", ConfigInit.CONFIG.movementBonus);
+            translatableText2B = Text.translatable("text.levelz.agility_info_2_2", ConfigInit.CONFIG.movementBonus);
+            translatableText3A = Text.translatable("text.levelz.agility_info_3_1", ConfigInit.CONFIG.movementFallBonus);
+            translatableText3B = Text.translatable("text.levelz.agility_info_3_2", ConfigInit.CONFIG.movementFallBonus);
+            translatableText6A = Text.translatable("text.levelz.agility_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.movementMissChance * 100F));
+            translatableText6B = Text.translatable("text.levelz.agility_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.movementMissChance * 100F));
             break;
         case "defense":
-            translatableText1 = new TranslatableText("text.levelz.defense_info_1", ConfigInit.CONFIG.defenseBase);
-            translatableText2A = new TranslatableText("text.levelz.defense_info_2_1", ConfigInit.CONFIG.defenseBonus);
-            translatableText2B = new TranslatableText("text.levelz.defense_info_2_2", ConfigInit.CONFIG.defenseBonus);
-            translatableText6A = new TranslatableText("text.levelz.defense_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.defenseReflectChance * 100F));
-            translatableText6B = new TranslatableText("text.levelz.defense_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.defenseReflectChance * 100F));
+            translatableText1 = Text.translatable("text.levelz.defense_info_1", ConfigInit.CONFIG.defenseBase);
+            translatableText2A = Text.translatable("text.levelz.defense_info_2_1", ConfigInit.CONFIG.defenseBonus);
+            translatableText2B = Text.translatable("text.levelz.defense_info_2_2", ConfigInit.CONFIG.defenseBonus);
+            translatableText6A = Text.translatable("text.levelz.defense_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.defenseReflectChance * 100F));
+            translatableText6B = Text.translatable("text.levelz.defense_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.defenseReflectChance * 100F));
             break;
         case "stamina":
-            translatableText1 = new TranslatableText("text.levelz.stamina_info_1", ConfigInit.CONFIG.staminaBase);
-            translatableText2A = new TranslatableText("text.levelz.stamina_info_2_1", ConfigInit.CONFIG.staminaBonus);
-            translatableText2B = new TranslatableText("text.levelz.stamina_info_2_2", ConfigInit.CONFIG.staminaBonus);
-            translatableText3A = new TranslatableText("text.levelz.stamina_info_3_1", ConfigInit.CONFIG.staminaHealthBonus);
-            translatableText3B = new TranslatableText("text.levelz.stamina_info_3_2", ConfigInit.CONFIG.staminaHealthBonus);
-            translatableText6A = new TranslatableText("text.levelz.stamina_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.staminaFoodBonus * 100F));
-            translatableText6B = new TranslatableText("text.levelz.stamina_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.staminaFoodBonus * 100F));
+            translatableText1 = Text.translatable("text.levelz.stamina_info_1", ConfigInit.CONFIG.staminaBase);
+            translatableText2A = Text.translatable("text.levelz.stamina_info_2_1", ConfigInit.CONFIG.staminaBonus);
+            translatableText2B = Text.translatable("text.levelz.stamina_info_2_2", ConfigInit.CONFIG.staminaBonus);
+            translatableText3A = Text.translatable("text.levelz.stamina_info_3_1", ConfigInit.CONFIG.staminaHealthBonus);
+            translatableText3B = Text.translatable("text.levelz.stamina_info_3_2", ConfigInit.CONFIG.staminaHealthBonus);
+            translatableText6A = Text.translatable("text.levelz.stamina_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.staminaFoodBonus * 100F));
+            translatableText6B = Text.translatable("text.levelz.stamina_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.staminaFoodBonus * 100F));
             break;
         case "luck":
-            translatableText1 = new TranslatableText("text.levelz.luck_info_1", ConfigInit.CONFIG.luckBase);
-            translatableText1B = new TranslatableText("text.levelz.luck_info_1_2");
-            translatableText2A = new TranslatableText("text.levelz.luck_info_2_1", ConfigInit.CONFIG.luckBonus);
-            translatableText2B = new TranslatableText("text.levelz.luck_info_2_2", ConfigInit.CONFIG.luckBonus);
-            translatableText3A = new TranslatableText("text.levelz.luck_info_3_1", ConfigInit.CONFIG.luckCritBonus);
-            translatableText3B = new TranslatableText("text.levelz.luck_info_3_2", ConfigInit.CONFIG.luckCritBonus);
-            translatableText6A = new TranslatableText("text.levelz.luck_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.luckSurviveChance * 100F));
-            translatableText6B = new TranslatableText("text.levelz.luck_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.luckSurviveChance * 100F));
+            translatableText1 = Text.translatable("text.levelz.luck_info_1", ConfigInit.CONFIG.luckBase);
+            translatableText1B = Text.translatable("text.levelz.luck_info_1_2");
+            translatableText2A = Text.translatable("text.levelz.luck_info_2_1", ConfigInit.CONFIG.luckBonus);
+            translatableText2B = Text.translatable("text.levelz.luck_info_2_2", ConfigInit.CONFIG.luckBonus);
+            translatableText3A = Text.translatable("text.levelz.luck_info_3_1", ConfigInit.CONFIG.luckCritBonus);
+            translatableText3B = Text.translatable("text.levelz.luck_info_3_2", ConfigInit.CONFIG.luckCritBonus);
+            translatableText6A = Text.translatable("text.levelz.luck_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.luckSurviveChance * 100F));
+            translatableText6B = Text.translatable("text.levelz.luck_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.luckSurviveChance * 100F));
             break;
         case "archery":
-            translatableText2A = new TranslatableText("text.levelz.archery_info_2_1", ConfigInit.CONFIG.archeryBowExtraDamage);
-            translatableText2B = new TranslatableText("text.levelz.archery_info_2_2", ConfigInit.CONFIG.archeryBowExtraDamage);
-            translatableText3A = new TranslatableText("text.levelz.archery_info_3_1", ConfigInit.CONFIG.archeryCrossbowExtraDamage);
-            translatableText3B = new TranslatableText("text.levelz.archery_info_3_2", ConfigInit.CONFIG.archeryCrossbowExtraDamage);
-            translatableText6A = new TranslatableText("text.levelz.archery_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.archeryDoubleDamageChance * 100F));
-            translatableText6B = new TranslatableText("text.levelz.archery_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.archeryDoubleDamageChance * 100F));
+            translatableText2A = Text.translatable("text.levelz.archery_info_2_1", ConfigInit.CONFIG.archeryBowExtraDamage);
+            translatableText2B = Text.translatable("text.levelz.archery_info_2_2", ConfigInit.CONFIG.archeryBowExtraDamage);
+            translatableText3A = Text.translatable("text.levelz.archery_info_3_1", ConfigInit.CONFIG.archeryCrossbowExtraDamage);
+            translatableText3B = Text.translatable("text.levelz.archery_info_3_2", ConfigInit.CONFIG.archeryCrossbowExtraDamage);
+            translatableText6A = Text.translatable("text.levelz.archery_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.archeryDoubleDamageChance * 100F));
+            translatableText6B = Text.translatable("text.levelz.archery_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.archeryDoubleDamageChance * 100F));
             break;
         case "trade":
-            translatableText2A = new TranslatableText("text.levelz.trade_info_2_1", ConfigInit.CONFIG.tradeXPBonus);
-            translatableText2B = new TranslatableText("text.levelz.trade_info_2_2", ConfigInit.CONFIG.tradeXPBonus);
-            translatableText3A = new TranslatableText("text.levelz.trade_info_3_1", ConfigInit.CONFIG.tradeBonus);
-            translatableText3B = new TranslatableText("text.levelz.trade_info_3_2", ConfigInit.CONFIG.tradeBonus);
-            translatableText6A = new TranslatableText("text.levelz.trade_max_lvl_1", ConfigInit.CONFIG.tradeReputation);
-            translatableText6B = new TranslatableText("text.levelz.trade_max_lvl_2", ConfigInit.CONFIG.tradeReputation);
+            translatableText2A = Text.translatable("text.levelz.trade_info_2_1", ConfigInit.CONFIG.tradeXPBonus);
+            translatableText2B = Text.translatable("text.levelz.trade_info_2_2", ConfigInit.CONFIG.tradeXPBonus);
+            translatableText3A = Text.translatable("text.levelz.trade_info_3_1", ConfigInit.CONFIG.tradeBonus);
+            translatableText3B = Text.translatable("text.levelz.trade_info_3_2", ConfigInit.CONFIG.tradeBonus);
+            translatableText6A = Text.translatable("text.levelz.trade_max_lvl_1", ConfigInit.CONFIG.tradeReputation);
+            translatableText6B = Text.translatable("text.levelz.trade_max_lvl_2", ConfigInit.CONFIG.tradeReputation);
             break;
         case "smithing":
-            translatableText2A = new TranslatableText("text.levelz.smithing_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingToolChance * 100F));
-            translatableText2B = new TranslatableText("text.levelz.smithing_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingToolChance * 100F));
-            translatableText3A = new TranslatableText("text.levelz.smithing_info_3_1", ConfigInit.CONFIG.smithingCostBonus);
-            translatableText3B = new TranslatableText("text.levelz.smithing_info_3_2", ConfigInit.CONFIG.smithingCostBonus);
-            translatableText6A = new TranslatableText("text.levelz.smithing_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
-            translatableText6B = new TranslatableText("text.levelz.smithing_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
+            translatableText2A = Text.translatable("text.levelz.smithing_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingToolChance * 100F));
+            translatableText2B = Text.translatable("text.levelz.smithing_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingToolChance * 100F));
+            translatableText3A = Text.translatable("text.levelz.smithing_info_3_1", ConfigInit.CONFIG.smithingCostBonus);
+            translatableText3B = Text.translatable("text.levelz.smithing_info_3_2", ConfigInit.CONFIG.smithingCostBonus);
+            translatableText6A = Text.translatable("text.levelz.smithing_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
+            translatableText6B = Text.translatable("text.levelz.smithing_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
 
             if (!LevelLists.smithingItemList.isEmpty()) {
                 ZWSprite smithingListIcon = new ZWSprite(name, client, 1);
@@ -126,11 +127,11 @@ public class InfoGui extends LightweightGuiDescription {
 
             break;
         case "mining":
-            translatableText1 = new TranslatableText("text.levelz.mining_info_1");
-            translatableText2A = new TranslatableText("text.levelz.mining_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningOreChance * 100F));
-            translatableText2B = new TranslatableText("text.levelz.mining_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningOreChance * 100F));
-            translatableText6A = new TranslatableText("text.levelz.mining_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
-            translatableText6B = new TranslatableText("text.levelz.mining_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
+            translatableText1 = Text.translatable("text.levelz.mining_info_1");
+            translatableText2A = Text.translatable("text.levelz.mining_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningOreChance * 100F));
+            translatableText2B = Text.translatable("text.levelz.mining_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningOreChance * 100F));
+            translatableText6A = Text.translatable("text.levelz.mining_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
+            translatableText6B = Text.translatable("text.levelz.mining_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
 
             if (!LevelLists.miningBlockList.isEmpty()) {
                 ZWSprite miningListIcon = new ZWSprite(name, client, 1);
@@ -139,19 +140,19 @@ public class InfoGui extends LightweightGuiDescription {
 
             break;
         case "farming":
-            translatableText2A = new TranslatableText("text.levelz.farming_info_2_1", ConfigInit.CONFIG.farmingBase);
-            translatableText2B = new TranslatableText("text.levelz.farming_info_2_2", ConfigInit.CONFIG.farmingBase);
-            translatableText3A = new TranslatableText("text.levelz.farming_info_3_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingChanceBonus * 100F));
-            translatableText3B = new TranslatableText("text.levelz.farming_info_3_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingChanceBonus * 100F));
-            translatableText6A = new TranslatableText("text.levelz.farming_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingTwinChance * 100F));
-            translatableText6B = new TranslatableText("text.levelz.farming_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingTwinChance * 100F));
+            translatableText2A = Text.translatable("text.levelz.farming_info_2_1", ConfigInit.CONFIG.farmingBase);
+            translatableText2B = Text.translatable("text.levelz.farming_info_2_2", ConfigInit.CONFIG.farmingBase);
+            translatableText3A = Text.translatable("text.levelz.farming_info_3_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingChanceBonus * 100F));
+            translatableText3B = Text.translatable("text.levelz.farming_info_3_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingChanceBonus * 100F));
+            translatableText6A = Text.translatable("text.levelz.farming_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingTwinChance * 100F));
+            translatableText6B = Text.translatable("text.levelz.farming_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingTwinChance * 100F));
             break;
         case "alchemy":
-            translatableText1 = new TranslatableText("text.levelz.alchemy_info_1");
-            translatableText2A = new TranslatableText("text.levelz.alchemy_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyEnchantmentChance * 100F));
-            translatableText2B = new TranslatableText("text.levelz.alchemy_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyEnchantmentChance * 100F));
-            translatableText6A = new TranslatableText("text.levelz.alchemy_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
-            translatableText6B = new TranslatableText("text.levelz.alchemy_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
+            translatableText1 = Text.translatable("text.levelz.alchemy_info_1");
+            translatableText2A = Text.translatable("text.levelz.alchemy_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyEnchantmentChance * 100F));
+            translatableText2B = Text.translatable("text.levelz.alchemy_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyEnchantmentChance * 100F));
+            translatableText6A = Text.translatable("text.levelz.alchemy_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
+            translatableText6B = Text.translatable("text.levelz.alchemy_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
 
             if (!LevelLists.brewingItemList.isEmpty()) {
                 ZWSprite alchemyListIcon = new ZWSprite(name, client, 1);
@@ -228,14 +229,14 @@ public class InfoGui extends LightweightGuiDescription {
 
         boolean hasLvlMaxUnlock = false;
         gridYSpace += 10;
-        plainPanel.add(new WLabel(new TranslatableText("text.levelz.general_info")), 0, gridYSpace);
+        plainPanel.add(new WLabel(Text.translatable("text.levelz.general_info")), 0, gridYSpace);
         gridYSpace += 16;
         // level, object, info, object, info,..., level,...
 
         for (int u = 0; u < sortedUnlockSkillList.size(); u++) {
             if (sortedUnlockSkillList.get(u) != null && sortedUnlockSkillList.get(u).getClass() == Integer.class) {
                 // Add level category info
-                plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", sortedUnlockSkillList.get(u))), 0, gridYSpace);
+                plainPanel.add(new WLabel(Text.translatable("text.levelz.level", sortedUnlockSkillList.get(u))), 0, gridYSpace);
                 gridYSpace += 16;
                 for (int g = 1; g < sortedUnlockSkillList.size() - u; g += 2) {
                     if (sortedUnlockSkillList.get(u + g).getClass() == Integer.class) {
@@ -276,9 +277,9 @@ public class InfoGui extends LightweightGuiDescription {
                             otherString = language.get(translationKey);
                         else
                             otherString = otherString.replace('_', ' ');
-                        plainPanel.add(new WLabel(new TranslatableText("text.levelz.object_info_2", StringUtils.capitalize(otherString), string)), 10, gridYSpace);
+                        plainPanel.add(new WLabel(Text.translatable("text.levelz.object_info_2", StringUtils.capitalize(otherString), string)), 10, gridYSpace);
                     } else
-                        plainPanel.add(new WLabel(new TranslatableText("text.levelz.object_info_1", string)), 10, gridYSpace);
+                        plainPanel.add(new WLabel(Text.translatable("text.levelz.object_info_1", string)), 10, gridYSpace);
 
                     gridYSpace += 16;
                 }
@@ -292,7 +293,7 @@ public class InfoGui extends LightweightGuiDescription {
         }
 
         if (!hasLvlMaxUnlock) {
-            plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", ConfigInit.CONFIG.maxLevel)), 0, gridYSpace);
+            plainPanel.add(new WLabel(Text.translatable("text.levelz.level", ConfigInit.CONFIG.maxLevel)), 0, gridYSpace);
         } else {
             gridYSpace -= 16;
         }
@@ -313,11 +314,11 @@ public class InfoGui extends LightweightGuiDescription {
         root.validate(this);
     }
 
-    private boolean translatableTextIsNotBlank(TranslatableText text) {
+    private boolean translatableTextIsNotBlank(Text text) {
         if (text == null)
             return false;
-        if (!Language.getInstance().hasTranslation(text.getKey()))
+        if (!Texts.hasTranslation(text))
             return false;
-        return !Language.getInstance().get(text.getKey()).isBlank();
+        return !Language.getInstance().get(text.getString()).isBlank();
     }
 }

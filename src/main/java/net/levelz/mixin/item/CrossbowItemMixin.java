@@ -18,7 +18,7 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -33,14 +33,13 @@ public class CrossbowItemMixin {
         ArrayList<Object> customList = LevelLists.customItemList;
         String string = Registry.ITEM.getId(itemStack.getItem()).toString();
         if (!PlayerStatsManager.playerLevelisHighEnough(user, customList, string, true)) {
-            user.sendMessage(
-                    new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
+            user.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
                     true);
             info.setReturnValue(TypedActionResult.fail(itemStack));
         } else {
             ArrayList<Object> levelList = LevelLists.crossbowList;
             if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, null, true)) {
-                user.sendMessage(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
+                user.sendMessage(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
                 info.setReturnValue(TypedActionResult.fail(itemStack));
             }
         }

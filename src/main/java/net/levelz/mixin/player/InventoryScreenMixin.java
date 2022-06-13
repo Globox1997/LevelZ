@@ -26,7 +26,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 @Environment(EnvType.CLIENT)
 @Mixin(InventoryScreen.class)
@@ -76,7 +75,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
         matrices.push();
         matrices.scale(0.6F, 0.6F, 1F);
         matrices.translate((28 + this.x) / 0.6F, (8 + this.y + textRenderer.fontHeight / 2F) / 0.6F, 0);
-        textRenderer.draw(matrices, new TranslatableText("text.levelz.gui.short_level", playerStatsManager.getLevel("level")), 0, -textRenderer.fontHeight / 2F, color);
+        textRenderer.draw(matrices, Text.translatable("text.levelz.gui.short_level", playerStatsManager.getLevel("level")), 0, -textRenderer.fontHeight / 2F, color);
         matrices.pop();
     }
 }

@@ -17,7 +17,7 @@ import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.recipe.BrewingRecipeRegistry;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -32,7 +32,7 @@ public class ListGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(200, 215);
 
-        root.add(new WLabel(new TranslatableText("text.levelz.locked_list", new TranslatableText(String.format("spritetip.levelz.%s_skill", name)))), 6, 7);
+        root.add(new WLabel(Text.translatable("text.levelz.locked_list", Text.translatable(String.format("spritetip.levelz.%s_skill", name)))), 6, 7);
 
         ZWSprite infoIcon = new ZWSprite(name, client, Objects.equals(name, "crafting") ? 4 : 2);
         root.add(infoIcon, 180, Objects.equals(name, "crafting") ? 5 : 7, Objects.equals(name, "crafting") ? 15 : 12, Objects.equals(name, "crafting") ? 13 : 9);
@@ -71,9 +71,9 @@ public class ListGui extends LightweightGuiDescription {
                 continue;
 
             if (!skillList.isEmpty())
-                plainPanel.add(new WLabel(new TranslatableText("item.levelz." + skillList.get(u) + ".tooltip", levelList.get(u))), 0, gridYSpace);
+                plainPanel.add(new WLabel(Text.translatable("item.levelz." + skillList.get(u) + ".tooltip", levelList.get(u))), 0, gridYSpace);
             else
-                plainPanel.add(new WLabel(new TranslatableText("text.levelz.level", levelList.get(u))), 0, gridYSpace);
+                plainPanel.add(new WLabel(Text.translatable("text.levelz.level", levelList.get(u))), 0, gridYSpace);
 
             int listSplitter = 0;
             int gridXSpace = 0;
@@ -96,7 +96,7 @@ public class ListGui extends LightweightGuiDescription {
                         int index = LevelLists.potionList.indexOf(item);
                         Potion potion = (Potion) LevelLists.potionList.get(index + 1);
                         ItemStack stack = PotionUtil.setPotion(new ItemStack(Items.POTION), potion);
-                        zwSprite.addText("Ingredient for " + new TranslatableText(((PotionItem) PotionUtil.setPotion(stack, potion).getItem()).getTranslationKey(stack)).getString());
+                        zwSprite.addText("Ingredient for " + Text.translatable(((PotionItem) PotionUtil.setPotion(stack, potion).getItem()).getTranslationKey(stack)).getString());
                     }
 
                 }

@@ -22,7 +22,7 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Language;
 import net.minecraft.util.registry.Registry;
 
@@ -40,7 +40,7 @@ public class LevelzGui extends LightweightGuiDescription {
         setRootPanel(root);
         root.setSize(200, 200);
         // Top label
-        WLabel topLlabel = new WLabel(new TranslatableText("text.levelz.gui.title", playerEntity.getName().getString()));
+        WLabel topLlabel = new WLabel(Text.translatable("text.levelz.gui.title", playerEntity.getName().getString()));
         root.add(topLlabel, 80, 7);
         // Small icons
         WSprite lifeIcon = new WSprite(RenderInit.GUI_ICONS, 0F, 0F, 1F / 28.2865F, 1F / 28.2865F);
@@ -123,50 +123,50 @@ public class LevelzGui extends LightweightGuiDescription {
         ZWSprite alchemyIcon = new ZWSprite("alchemy", RenderInit.GUI_ICONS, client, 11F / 16F, 1F / 16F, 12F / 16F, 2F / 16F);
 
         // Skill sprite tooltip
-        healthIcon.addText(new TranslatableText("spritetip.levelz.health_skill").getString());
-        healthIcon.addText(new TranslatableText("spritetip.levelz.health_skill_info").getString());
+        healthIcon.addText(Text.translatable("spritetip.levelz.health_skill").getString());
+        healthIcon.addText(Text.translatable("spritetip.levelz.health_skill_info").getString());
 
-        strengthIcon.addText(new TranslatableText("spritetip.levelz.strength_skill").getString());
-        strengthIcon.addText(new TranslatableText("spritetip.levelz.strength_skill_info_1").getString());
-        strengthIcon.addText(new TranslatableText("spritetip.levelz.strength_skill_info_2").getString());
+        strengthIcon.addText(Text.translatable("spritetip.levelz.strength_skill").getString());
+        strengthIcon.addText(Text.translatable("spritetip.levelz.strength_skill_info_1").getString());
+        strengthIcon.addText(Text.translatable("spritetip.levelz.strength_skill_info_2").getString());
 
-        agilityIcon.addText(new TranslatableText("spritetip.levelz.agility_skill").getString());
-        agilityIcon.addText(new TranslatableText("spritetip.levelz.agility_skill_info_1").getString());
-        agilityIcon.addText(new TranslatableText("spritetip.levelz.agility_skill_info_2").getString());
+        agilityIcon.addText(Text.translatable("spritetip.levelz.agility_skill").getString());
+        agilityIcon.addText(Text.translatable("spritetip.levelz.agility_skill_info_1").getString());
+        agilityIcon.addText(Text.translatable("spritetip.levelz.agility_skill_info_2").getString());
 
-        defenseIcon.addText(new TranslatableText("spritetip.levelz.defense_skill").getString());
-        defenseIcon.addText(new TranslatableText("spritetip.levelz.defense_skill_info_1").getString());
-        defenseIcon.addText(new TranslatableText("spritetip.levelz.defense_skill_info_2").getString());
+        defenseIcon.addText(Text.translatable("spritetip.levelz.defense_skill").getString());
+        defenseIcon.addText(Text.translatable("spritetip.levelz.defense_skill_info_1").getString());
+        defenseIcon.addText(Text.translatable("spritetip.levelz.defense_skill_info_2").getString());
 
-        staminaIcon.addText(new TranslatableText("spritetip.levelz.stamina_skill").getString());
-        staminaIcon.addText(new TranslatableText("spritetip.levelz.stamina_skill_info_1").getString());
-        staminaIcon.addText(new TranslatableText("spritetip.levelz.stamina_skill_info_2").getString());
+        staminaIcon.addText(Text.translatable("spritetip.levelz.stamina_skill").getString());
+        staminaIcon.addText(Text.translatable("spritetip.levelz.stamina_skill_info_1").getString());
+        staminaIcon.addText(Text.translatable("spritetip.levelz.stamina_skill_info_2").getString());
 
-        luckIcon.addText(new TranslatableText("spritetip.levelz.luck_skill").getString());
-        luckIcon.addText(new TranslatableText("spritetip.levelz.luck_skill_info_1").getString());
-        luckIcon.addText(new TranslatableText("spritetip.levelz.luck_skill_info_2").getString());
+        luckIcon.addText(Text.translatable("spritetip.levelz.luck_skill").getString());
+        luckIcon.addText(Text.translatable("spritetip.levelz.luck_skill_info_1").getString());
+        luckIcon.addText(Text.translatable("spritetip.levelz.luck_skill_info_2").getString());
 
-        archeryIcon.addText(new TranslatableText("spritetip.levelz.archery_skill").getString());
-        archeryIcon.addText(new TranslatableText("spritetip.levelz.archery_skill_info_1").getString());
-        archeryIcon.addText(new TranslatableText("spritetip.levelz.archery_skill_info_2").getString());
-        archeryIcon.addText(new TranslatableText("spritetip.levelz.archery_skill_info_3").getString());
+        archeryIcon.addText(Text.translatable("spritetip.levelz.archery_skill").getString());
+        archeryIcon.addText(Text.translatable("spritetip.levelz.archery_skill_info_1").getString());
+        archeryIcon.addText(Text.translatable("spritetip.levelz.archery_skill_info_2").getString());
+        archeryIcon.addText(Text.translatable("spritetip.levelz.archery_skill_info_3").getString());
 
-        tradeIcon.addText(new TranslatableText("spritetip.levelz.trade_skill").getString());
-        tradeIcon.addText(new TranslatableText("spritetip.levelz.trade_skill_info").getString());
+        tradeIcon.addText(Text.translatable("spritetip.levelz.trade_skill").getString());
+        tradeIcon.addText(Text.translatable("spritetip.levelz.trade_skill_info").getString());
 
-        smithingIcon.addText(new TranslatableText("spritetip.levelz.smithing_skill").getString());
-        smithingIcon.addText(new TranslatableText("spritetip.levelz.smithing_skill_info_1").getString());
-        smithingIcon.addText(new TranslatableText("spritetip.levelz.smithing_skill_info_2").getString());
+        smithingIcon.addText(Text.translatable("spritetip.levelz.smithing_skill").getString());
+        smithingIcon.addText(Text.translatable("spritetip.levelz.smithing_skill_info_1").getString());
+        smithingIcon.addText(Text.translatable("spritetip.levelz.smithing_skill_info_2").getString());
 
-        miningIcon.addText(new TranslatableText("spritetip.levelz.mining_skill").getString());
-        miningIcon.addText(new TranslatableText("spritetip.levelz.mining_skill_info_1").getString());
-        miningIcon.addText(new TranslatableText("spritetip.levelz.mining_skill_info_2").getString());
+        miningIcon.addText(Text.translatable("spritetip.levelz.mining_skill").getString());
+        miningIcon.addText(Text.translatable("spritetip.levelz.mining_skill_info_1").getString());
+        miningIcon.addText(Text.translatable("spritetip.levelz.mining_skill_info_2").getString());
 
-        farmingIcon.addText(new TranslatableText("spritetip.levelz.farming_skill").getString());
-        farmingIcon.addText(new TranslatableText("spritetip.levelz.farming_skill_info").getString());
+        farmingIcon.addText(Text.translatable("spritetip.levelz.farming_skill").getString());
+        farmingIcon.addText(Text.translatable("spritetip.levelz.farming_skill_info").getString());
 
-        alchemyIcon.addText(new TranslatableText("spritetip.levelz.alchemy_skill").getString());
-        alchemyIcon.addText(new TranslatableText("spritetip.levelz.alchemy_skill_info").getString());
+        alchemyIcon.addText(Text.translatable("spritetip.levelz.alchemy_skill").getString());
+        alchemyIcon.addText(Text.translatable("spritetip.levelz.alchemy_skill_info").getString());
 
         root.add(healthIcon, 15, 90, 16, 16);
         root.add(strengthIcon, 15, 110, 16, 16);
@@ -183,12 +183,12 @@ public class LevelzGui extends LightweightGuiDescription {
 
         // Info button
         ZWSprite infoIcon = new ZWSprite("info", null, 1);
-        infoIcon.addText(new TranslatableText("text.levelz.more_info").getString());
+        infoIcon.addText(Text.translatable("text.levelz.more_info").getString());
         root.add(infoIcon, 178, 73, 11, 13);
 
         if (!LevelLists.craftingItemList.isEmpty()) {
             ZWSprite craftingIcon = new ZWSprite("crafting", client, 3);
-            craftingIcon.addText(new TranslatableText("text.levelz.crafting_info").getString());
+            craftingIcon.addText(Text.translatable("text.levelz.crafting_info").getString());
             root.add(craftingIcon, 180, 5, 15, 13);
         }
 

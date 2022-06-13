@@ -27,7 +27,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     // Env Bug Fix
-    runtimeOnly 'io.github.juuxel:libninepatch:1.1.0'
+    //runtimeOnly 'io.github.juuxel:libninepatch:1.1.0'
     // LibGui
     modImplementation include("io.github.cottonmc:LibGui:${project.cottonmc_version}")
     // Cloth
@@ -42,7 +42,7 @@ dependencies {
     modCompileOnly("net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.1.6.21")
     modCompileOnly("curse.maven:inventorio-491073:3764520")
     // Wthit
-    modCompileOnly modRuntimeOnly("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
+    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
     // REI
     // modCompileOnly ("me.shedaniel:RoughlyEnoughItems-fabric:6.0.268-alpha") {
     //     exclude(group: "net.fabricmc.fabric-api")
@@ -58,11 +58,13 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Trinkets
-    modCompileOnly ('com.github.emilyploszaj:trinkets:3.3.0') {
+    modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.0.0-beta.1")
+	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.0.0-beta.1")
+    modCompileOnly ('com.github.emilyploszaj:trinkets:3.4.0') {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:8.1.449"
-    //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:8.1.449"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.472"
+    //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
 
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom

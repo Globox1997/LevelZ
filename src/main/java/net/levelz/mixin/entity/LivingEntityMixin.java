@@ -42,8 +42,8 @@ public abstract class LivingEntityMixin extends Entity {
         super(type, world);
     }
 
-    @ModifyVariable(method = "applyEnchantmentsToDamage", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getProtectionAmount(Ljava/lang/Iterable;Lnet/minecraft/entity/damage/DamageSource;)I", shift = At.Shift.AFTER), ordinal = 0)
-    private int applyEnchantmentsToDamageMixin(int original, DamageSource source, float amount) {
+    @ModifyVariable(method = "modifyAppliedDamage", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getProtectionAmount(Ljava/lang/Iterable;Lnet/minecraft/entity/damage/DamageSource;)I", shift = At.Shift.AFTER), ordinal = 0)
+    private int modifyAppliedDamageMixin(int original, DamageSource source, float amount) {
         if (source == DamageSource.FALL && (Object) this instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) (Object) this;
             return (int) (original + ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("agility") * ConfigInit.CONFIG.movementFallBonus);
@@ -93,13 +93,13 @@ public abstract class LivingEntityMixin extends Entity {
         if (ConfigInit.CONFIG.mobXPMultiplier > 0.0F)
             LevelExperienceOrbEntity
                     .spawn((ServerWorld) world, this.getPos(),
-                            (int) (this.getXpToDrop(this.attackingPlayer) * ConfigInit.CONFIG.mobXPMultiplier * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.attackingPlayer != null
+                            (int) (this.getXpToDrop() * ConfigInit.CONFIG.mobXPMultiplier * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.attackingPlayer != null
                                     ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.attackingPlayer).getPlayerStatsManager(this.attackingPlayer).getLevel("level")
                                     : 1.0F)));
     }
 
     @Shadow
-    protected int getXpToDrop(PlayerEntity player) {
+    protected int getXpToDrop() {
         return 0;
     }
 

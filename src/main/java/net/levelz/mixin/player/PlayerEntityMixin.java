@@ -189,7 +189,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
         if (this.world instanceof ServerWorld && (this.shouldAlwaysDropXp() || this.playerHitTimer > 0 && this.shouldDropXp() && this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT))) {
             if (ConfigInit.CONFIG.dropPlayerXP && (ConfigInit.CONFIG.resetCurrentXP || ConfigInit.CONFIG.hardMode))
                 LevelExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(), (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()));
-            ExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(), this.getXpToDrop(this.attackingPlayer));
+            ExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(), this.getXpToDrop());
         }
     }
 

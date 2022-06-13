@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.access.PlayerSyncAccess;
 import net.levelz.network.PlayerStatsServerPacket;
@@ -14,7 +14,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Collection;
@@ -25,7 +25,7 @@ public class CommandInit {
 
     public static void init() {
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
             dispatcher.register((CommandManager.literal("playerstats").requires((serverCommandSource) -> {
                 return serverCommandSource.hasPermissionLevel(3);
             })).then(CommandManager.argument("targets", EntityArgumentType.players())
@@ -233,7 +233,7 @@ public class CommandInit {
                             + playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience());
                 }
                 if (reference == 3)
-                    source.sendFeedback(new TranslatableText("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
+                    source.sendFeedback(Text.translatable("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
                             (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()), true);
             } else {
                 int playerSkillLevel = playerStatsManager.getLevel(skill);
@@ -248,14 +248,14 @@ public class CommandInit {
                         for (int u = 0; u < skillStrings().size(); u++) {
                             skill = skillStrings().get(u);
                             if (skill.equals("experience"))
-                                source.sendFeedback(new TranslatableText("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
+                                source.sendFeedback(Text.translatable("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
                                         (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()), true);
                             else
-                                source.sendFeedback(new TranslatableText("commands.playerstats.printLevel", serverPlayerEntity.getDisplayName(),
+                                source.sendFeedback(Text.translatable("commands.playerstats.printLevel", serverPlayerEntity.getDisplayName(),
                                         StringUtils.capitalize(skill) + (skill.equals("level") || skill.equals("points") ? ":" : " Level:"), playerStatsManager.getLevel(skill)), true);
                         }
                     else
-                        source.sendFeedback(new TranslatableText("commands.playerstats.printLevel", serverPlayerEntity.getDisplayName(),
+                        source.sendFeedback(Text.translatable("commands.playerstats.printLevel", serverPlayerEntity.getDisplayName(),
                                 StringUtils.capitalize(skill) + (skill.equals("level") || skill.equals("points") ? ":" : " Level:"), playerSkillLevel), true);
 
                     continue;
@@ -281,7 +281,7 @@ public class CommandInit {
             PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, serverPlayerEntity);
 
             if (reference != 3)
-                source.sendFeedback(new TranslatableText("commands.playerstats.changed", serverPlayerEntity.getDisplayName()), true);
+                source.sendFeedback(Text.translatable("commands.playerstats.changed", serverPlayerEntity.getDisplayName()), true);
         }
 
         return targets.size();
