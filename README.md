@@ -66,8 +66,7 @@ The block category stands for the use of a few vanilla blocks. An example how th
 "level": is the level when the player unlocks the interaction of the block.\
 "block": has to be one of the following strings:\
 "minecraft:anvil","minecraft:barrel","minecraft:beacon","minecraft:beehive","minecraft:blast_furnace","minecraft:brewing_stand"
-,"minecraft:
-cartography","minecraft:cauldron","minecraft:composter","minecraft:enchanting_table","minecraft:grindstone","minecraft:
+,"minecraft:cartography","minecraft:cauldron","minecraft:composter","minecraft:enchanting_table","minecraft:grindstone","minecraft:
 lectern","minecraft:loom","minecraft:pumpkin","minecraft:smithing_table","minecraft:smoker","minecraft:stonecutter"
 
 It will only cancel the interaction with the block.\
@@ -110,7 +109,7 @@ example how the json file should look like is here:
 
 "entity": has to be one of the following strings:\
 "minecraft:cow","minecraft:mooshroom","minecraft:sheep","minecraft:snow_golem","minecraft:villager","minecraft:
-wandering_trader","minecraft:axolotl","minecraft:piglin","minecraft:wolf"
+wandering_trader","minecraft:axolotl","minecraft:piglin","minecraft:wolf","minecraft:tadpole"
 
 It will only cancel the interaction with the entity.
 
