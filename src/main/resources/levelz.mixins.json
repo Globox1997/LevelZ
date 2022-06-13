@@ -79,6 +79,7 @@
     "misc.ServerWorldMixin",
     "misc.SmithingScreenHandlerMixin",
     "misc.VehicleInventoryMixin",
+    "misc.BucketableMixin",
     "player.CraftingScreenHandlerMixin",
     "player.HungerManagerMixin",
     "player.PlayerEntityMixin",
