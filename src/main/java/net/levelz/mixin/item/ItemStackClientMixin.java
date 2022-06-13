@@ -236,6 +236,11 @@ public class ItemStackClientMixin {
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                     list.add(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                 }
+            } else if (item == Items.COMPASS) {
+                levelList = LevelLists.compassList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                    list.add(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
+                }
             } else if (item == Items.TOTEM_OF_UNDYING) {
                 levelList = LevelLists.totemList;
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
