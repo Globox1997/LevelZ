@@ -36,6 +36,7 @@ public class LevelLists {
     public static final ArrayList<Object> axolotlList = new ArrayList<Object>();
     public static final ArrayList<Object> piglinList = new ArrayList<Object>();
     public static final ArrayList<Object> tadpoleList = new ArrayList<Object>();
+    public static final ArrayList<Object> allayList = new ArrayList<Object>();
     // Item
     public static final ArrayList<Object> elytraList = new ArrayList<Object>();
     public static final ArrayList<Object> armorList = new ArrayList<Object>();
@@ -53,6 +54,7 @@ public class LevelLists {
     public static final ArrayList<Object> dragonBreathList = new ArrayList<Object>();
     public static final ArrayList<Object> totemList = new ArrayList<Object>();
     public static final ArrayList<Object> shearsList = new ArrayList<Object>();
+    public static final ArrayList<Object> compassList = new ArrayList<Object>();
     // Misc
     public static final List<ArrayList<Object>> listOfAllLists = new ArrayList<>();
     // Player
@@ -110,6 +112,8 @@ public class LevelLists {
             return axeList;
         case "minecraft:shears":
             return shearsList;
+        case "minecraft:compass":
+            return compassList;
         case "minecraft:custom_item":
             return customItemList;
         // Block
@@ -174,6 +178,8 @@ public class LevelLists {
             return piglinList;
         case "minecraft:tadpole":
             return tadpoleList;
+        case "minecraft:allay":
+            return allayList;
         case "minecraft:custom_entity":
             return customEntityList;
         default:
@@ -229,6 +235,8 @@ public class LevelLists {
         listNames.add("minecraft:piglin");
         listNames.add("minecraft:shears");
         listNames.add("minecraft:tadpole");
+        listNames.add("minecraft:allay");
+        listNames.add("minecraft:compass");
         // Custom
         listNames.add("minecraft:custom_block");
         listNames.add("minecraft:custom_item");
