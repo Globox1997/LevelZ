@@ -28,6 +28,8 @@ public class PlayerStatsServerPacket {
     public static final Identifier LEVEL_EXPERIENCE_ORB_PACKET = new Identifier("levelz", "level_experience_orb");
     public static final Identifier SEND_CONFIG_SYNC_PACKET = new Identifier("levelz", "send_config_sync_packet");
     public static final Identifier CONFIG_SYNC_PACKET = new Identifier("levelz", "config_sync_packet");
+    public static final Identifier TAG_PACKET = new Identifier("levelz", "tag_packet");
+    public static final Identifier SEND_TAG_PACKET = new Identifier("levelz", "send_tag_packet");
 
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
@@ -61,6 +63,9 @@ public class PlayerStatsServerPacket {
 
         ServerPlayNetworking.registerGlobalReceiver(SEND_CONFIG_SYNC_PACKET, (server, player, handler, buffer, sender) -> {
             writeS2CConfigSyncPacket(player, ConfigInit.CONFIG.getConfigList());
+        });
+        ServerPlayNetworking.registerGlobalReceiver(SEND_TAG_PACKET, (server, player, handler, buffer, sender) -> {
+            writeS2CTagPacket(player, buffer.readIdentifier());
         });
 
     }
@@ -172,6 +177,13 @@ public class PlayerStatsServerPacket {
         }
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(CONFIG_SYNC_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
+    }
+
+    public static void writeS2CTagPacket(ServerPlayerEntity serverPlayerEntity, Identifier identifier) {
+        // PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        // System.out.println(Blocks.ACACIA_LOG.getRegistryEntry().isIn(BlockTags.ACACIA_LOGS));
+        // System.out.println(Registry.BLOCK.getOrCreateEntryList(BlockTags.ACACIA_LOGS));
+        // System.out.println(Registry.BLOCK.getOrCreateEntryList(TagKey.of(Registry.BLOCK_KEY, identifier)));
     }
 
     public static void writeS2CListPacket(ServerPlayerEntity serverPlayerEntity) {

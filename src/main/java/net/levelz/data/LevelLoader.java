@@ -45,7 +45,6 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                 try {
                     InputStream stream = manager.getResource(id).getInputStream();
                     JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
-
                     if (levelList.contains(data.get("level").getAsInt())) {
                         int index = levelList.indexOf(data.get("level").getAsInt());
                         if (JsonHelper.getBoolean(data, "replace", false)) {
@@ -371,7 +370,24 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         List<Integer> idList = new ArrayList<Integer>();
         if (type == 1) {
             for (int i = 0; i < data.getAsJsonArray("block").size(); i++) {
-                if (Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())).toString().equals("air")) {
+                if (data.getAsJsonArray("block").get(i).getAsString().contains("#")) {
+                    // tags are server sided and at this time here, client networking isn't established
+                    // System.out.println(data.getAsJsonArray("block").get(i).getAsString() + " : " + data.getAsJsonArray("block").get(i).getAsString().replace("#", "") + " : "
+                    // + Registry.BLOCK.containsTag(TagKey.of(Registry.BLOCK_KEY, new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")))) + " : "
+                    // + TagKey.of(Registry.BLOCK_KEY, new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", ""))) + " : "
+                    // + new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")) + " : " + BlockTags.ACACIA_LOGS.id());
+                    // this.tagId = TagKey.of(Registry.BLOCK_KEY, Identifier.fromCommandInput(this.reader));
+                    // System.out.println(BlockTags.ACACIA_LOGS;
+                    // PlayerStatsClientPacket.writeC2STagPacket(new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")));
+                    // System.out.println(Blocks.ACACIA_LOG.getRegistryEntry().isIn(BlockTags.ACACIA_LOGS));
+                    // System.out.println(Registry.BLOCK.getOrCreateEntryList(BlockTags.ACACIA_LOGS));
+                    // // System.out.println(Registry.BLOCK_KEY.(BlockTags.ACACIA_LOGS));
+                    // System.out.println(Registry.BLOCK.containsTag(TagKey.of(Registry.BLOCK_KEY, BlockTags.ACACIA_LOGS.id())) + " : "
+                    // + TagKey.of(Registry.BLOCK_KEY, new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", ""))) + " : "
+                    // + new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")) + " : " + BlockTags.ACACIA_LOGS.toString());
+                    LOGGER.info("{} might be a block tag but tags are not supported (yet?)", data.getAsJsonArray("block").get(i).getAsString());
+                    continue;
+                } else if (Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())).toString().equals("air")) {
                     LOGGER.info("{} is not a valid block identifier", data.getAsJsonArray("block").get(i).getAsString());
                     continue;
                 }

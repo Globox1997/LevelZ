@@ -255,6 +255,13 @@ public class PlayerStatsClientPacket {
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(PlayerStatsServerPacket.SEND_CONFIG_SYNC_PACKET, new PacketByteBuf(Unpooled.buffer())));
     }
 
+    // public static void writeC2STagPacket(List<Object> list) {
+    // PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+    // CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PlayerStatsServerPacket.SEND_TAG_PACKET, buf);
+    // MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
+    // }
+
+    // Private executes
     private static void executeXPPacket(PlayerEntity player, PacketByteBuf buf) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
         playerStatsManager.levelProgress = buf.readFloat();
