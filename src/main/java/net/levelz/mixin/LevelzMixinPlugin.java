@@ -38,7 +38,10 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
         if (FabricLoader.getInstance().isModLoaded("cardboard") && mixinClassName.contains("ArmorItemMixin"))
             return false;
 
-        if (FabricLoader.getInstance().isModLoaded("limitless") && mixinClassName.contains("AnvilScreenHandler"))
+        if (FabricLoader.getInstance().isModLoaded("limitless") && mixinClassName.contains("AnvilScreenHandlerMixin"))
+            return false;
+
+        if (!FabricLoader.getInstance().isModLoaded("dualwielding") && mixinClassName.contains("DualWieldingOffhandAttackMixin"))
             return false;
 
         return true;
