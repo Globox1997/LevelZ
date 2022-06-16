@@ -17,6 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.EnchantmentScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 
+import java.util.ArrayList;
+
 @Mixin(EnchantmentScreenHandler.class)
 public abstract class EnchantmentScreenHandlerMixin {
 
@@ -46,24 +48,27 @@ public abstract class EnchantmentScreenHandlerMixin {
             ItemStack itemStack = inventory.getStack(0);
             if (!itemStack.isEmpty() && itemStack.isEnchantable()) {
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerInventory.player).getPlayerStatsManager(playerInventory.player);
-                int playerAlchemyLevel = playerStatsManager.getLevel(LevelLists.enchantingTableList.get(0).toString());
-                if (playerAlchemyLevel < ConfigInit.CONFIG.maxLevel) {
-                    if (playerAlchemyLevel < (int) LevelLists.enchantingTableList.get(4)) {
-                        for (int i = 0; i < 3; ++i) {
-                            this.enchantmentPower[i] = 0;
-                            this.enchantmentId[i] = -1;
-                            this.enchantmentLevel[i] = -1;
+                ArrayList<Object> enchantingTableList = LevelLists.enchantingTableList;
+                if (!enchantingTableList.isEmpty()) {
+                    int playerAlchemyLevel = playerStatsManager.getLevel(enchantingTableList.get(0).toString());
+                    if (playerAlchemyLevel < ConfigInit.CONFIG.maxLevel) {
+                        if (playerAlchemyLevel < (int) enchantingTableList.get(4)) {
+                            for (int i = 0; i < 3; ++i) {
+                                this.enchantmentPower[i] = 0;
+                                this.enchantmentId[i] = -1;
+                                this.enchantmentLevel[i] = -1;
+                            }
+                        } else if (playerAlchemyLevel < (int) enchantingTableList.get(5)) {
+                            for (int i = 1; i < 3; ++i) {
+                                this.enchantmentPower[i] = 0;
+                                this.enchantmentId[i] = -1;
+                                this.enchantmentLevel[i] = -1;
+                            }
+                        } else if (playerAlchemyLevel < (int) enchantingTableList.get(6)) {
+                            this.enchantmentPower[2] = 0;
+                            this.enchantmentId[2] = -1;
+                            this.enchantmentLevel[2] = -1;
                         }
-                    } else if (playerAlchemyLevel < (int) LevelLists.enchantingTableList.get(5)) {
-                        for (int i = 1; i < 3; ++i) {
-                            this.enchantmentPower[i] = 0;
-                            this.enchantmentId[i] = -1;
-                            this.enchantmentLevel[i] = -1;
-                        }
-                    } else if (playerAlchemyLevel < (int) LevelLists.enchantingTableList.get(6)) {
-                        this.enchantmentPower[2] = 0;
-                        this.enchantmentId[2] = -1;
-                        this.enchantmentLevel[2] = -1;
                     }
                 }
             }
