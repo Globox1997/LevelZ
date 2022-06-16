@@ -9,19 +9,17 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.compat.InventorioScreenCompatibility;
-import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.init.RenderInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class LevelzScreen extends CottonClientScreen {
-
-    private boolean sliderOpen = false;
 
     public LevelzScreen(GuiDescription description) {
         super(description);
@@ -55,29 +53,25 @@ public class LevelzScreen extends CottonClientScreen {
             RenderSystem.disableDepthTest();
         }
 
-        if (ConfigInit.CONFIG.inventoryButton) {
-            RenderSystem.setShaderTexture(0, RenderInit.GUI_ICONS);
-            if (LibGui.isDarkMode())
-                this.drawTexture(matrices, this.left - 6, this.top + 6, 72, 80, 6, 20);
-            else
-                this.drawTexture(matrices, this.left - 6, this.top + 6, 48, 80, 6, 20);
-            if (this.isPointWithinBounds(-18, 18, (double) mouseX, (double) mouseY)) {
-                if (this.isPointWithinBounds(-6, 7, (double) mouseX, (double) mouseY))
-                    this.sliderOpen = true;
-                if (this.sliderOpen)
-                    if (LibGui.isDarkMode())
-                        this.drawTexture(matrices, this.left - 18, this.top + 6, 78, 80, 18, 20);
-                    else
-                        this.drawTexture(matrices, this.left - 18, this.top + 6, 54, 80, 18, 20);
-            } else
-                this.sliderOpen = false;
+        RenderSystem.setShaderTexture(0, RenderInit.GUI_ICONS);
+        if (LibGui.isDarkMode()) {
+            // bag icon
+            this.drawTexture(matrices, this.left, this.top - 21, 120, 110, 24, 25);
+            // skill icon
+            this.drawTexture(matrices, this.left + 25, this.top - 23, 168, 110, 24, 27);
+        } else {
+            // bag icon
+            this.drawTexture(matrices, this.left, this.top - 21, 24, 110, 24, 25);
+            // skill icon
+            this.drawTexture(matrices, this.left + 25, this.top - 23, 72, 110, 24, 27);
         }
+        if (this.isPointWithinIconBounds(1, 23, (double) mouseX, (double) mouseY))
+            this.renderTooltip(matrices, Text.translatable("container.inventory"), mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        if (this.sliderOpen) {
-            assert this.client != null;
+        if (this.client != null && this.isPointWithinIconBounds(1, 23, (double) mouseX, (double) mouseY)) {
             assert this.client.player != null;
             if (RenderInit.isInventorioLoaded)
                 InventorioScreenCompatibility.setInventorioScreen(client);
@@ -97,10 +91,10 @@ public class LevelzScreen extends CottonClientScreen {
 
     }
 
-    private boolean isPointWithinBounds(int x, int width, double pointX, double pointY) {
+    private boolean isPointWithinIconBounds(int x, int width, double pointX, double pointY) {
         int i = this.left;
         int j = this.top;
-        return (pointX -= (double) i) >= (double) (x - 1) && pointX < (double) (x + width + 1) && (pointY -= (double) j) >= (double) (6 - 1) && pointY < (double) (6 + 20 + 1);
+        return (pointX -= (double) i) >= (double) (x - 1) && pointX < (double) (x + width + 1) && (pointY -= (double) j) >= (double) (-20 - 1) && pointY < (double) (3 + 1);
     }
 
 }

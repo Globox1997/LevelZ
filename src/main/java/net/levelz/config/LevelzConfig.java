@@ -140,8 +140,7 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("gui_settings")
     public boolean sortCraftingRecipesBySkill = false; // Client only
     @ConfigEntry.Category("gui_settings")
-    @Comment("Roughly Enough Items exclusion zone")
-    public boolean reiExclusionzone = true; // Client only
+    public boolean inventorySkillLevel = true; // Client only
 
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart

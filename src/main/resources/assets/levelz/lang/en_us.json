@@ -76,8 +76,8 @@
   "text.autoconfig.levelz.option.tradingXPMultiplier": "Trading XP Multiplier",
   "text.autoconfig.levelz.option.mobXPMultiplier": "Mob XP Multiplier",
   "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
-  "text.autoconfig.levelz.option.reiExclusionzone": "REI Exclusion Zone",
   "text.autoconfig.levelz.option.inventoryButton": "Inventory Button",
+  "text.autoconfig.levelz.option.inventorySkillLevel": "Inventory Level",
 
   "text.autoconfig.levelz.option.miningProgression": "Mining Progression",
   "text.autoconfig.levelz.option.itemProgression": "Item Progression",
@@ -282,6 +282,8 @@
   "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info",
 
   "entity.levelz.level_experience_orb": "Experience Orb",
+
+  "screen.levelz.skill_screen": "Skills",
 
   "advancements.adventure.level_100.title": "Level 100",
   "advancements.adventure.level_100.description": "Reach the unreachable level"
