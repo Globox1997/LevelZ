@@ -29,6 +29,7 @@ import net.minecraft.item.FoodComponent;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
@@ -117,12 +118,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     }
 
     private float getUnlockedDamage(float original, boolean zero) {
-        if (playerEntity.getMainHandStack().getItem() instanceof ToolItem) {
+        Item item = playerEntity.getMainHandStack().getItem();
+        if (!item.equals(Items.AIR)) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            Item item = playerEntity.getMainHandStack().getItem();
-            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
+            if (!levelList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
                 return zero ? 0 : 1.0F;
-            else {
+            else if (item instanceof ToolItem) {
                 levelList = null;
                 if (item instanceof SwordItem) {
                     levelList = LevelLists.swordList;

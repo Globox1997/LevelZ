@@ -12,6 +12,9 @@ import net.levelz.network.PlayerStatsClientPacket;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
@@ -29,6 +32,9 @@ import net.minecraft.util.registry.Registry;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Map;
+
+import com.google.common.collect.Multimap;
 
 @Environment(EnvType.CLIENT)
 public class LevelzGui extends LightweightGuiDescription {
@@ -319,33 +325,40 @@ public class LevelzGui extends LightweightGuiDescription {
     private String getDamageLabel(PlayerStatsManager playerStatsManager, PlayerEntity playerEntity) {
         float damage = 0.0F;
         Item item = playerEntity.getMainHandStack().getItem();
-        if (item instanceof ToolItem) {
-            ArrayList<Object> levelList = LevelLists.customItemList;
-            if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), false)) {
-                if (item instanceof SwordItem)
-                    damage = ((SwordItem) item).getAttackDamage();
-                else if (item instanceof MiningToolItem)
-                    damage = ((MiningToolItem) item).getAttackDamage();
-            } else {
-                levelList = null;
-                if (item instanceof SwordItem) {
-                    levelList = LevelLists.swordList;
-                } else if (item instanceof AxeItem)
-                    levelList = LevelLists.axeList;
-                else if (item instanceof HoeItem)
-                    levelList = LevelLists.hoeList;
-                else if (item instanceof PickaxeItem || item instanceof ShovelItem)
-                    levelList = LevelLists.toolList;
-                if (levelList != null)
-                    if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) item).getMaterial().toString().toLowerCase(), false)) {
-                        if (item instanceof SwordItem)
-                            damage = ((SwordItem) item).getAttackDamage();
-                        else if (item instanceof MiningToolItem)
-                            damage = ((MiningToolItem) item).getAttackDamage();
+        ArrayList<Object> levelList = LevelLists.customItemList;
+        if (!levelList.isEmpty() && PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), false)) {
+            if (item instanceof SwordItem)
+                damage = ((SwordItem) item).getAttackDamage();
+            else if (item instanceof MiningToolItem)
+                damage = ((MiningToolItem) item).getAttackDamage();
+            else if (!item.getAttributeModifiers(EquipmentSlot.MAINHAND).isEmpty() && item.getAttributeModifiers(EquipmentSlot.MAINHAND).containsKey(EntityAttributes.GENERIC_ATTACK_DAMAGE)) {
+                Multimap<EntityAttribute, EntityAttributeModifier> multimap = item.getAttributeModifiers(EquipmentSlot.MAINHAND);
+                for (Map.Entry<EntityAttribute, EntityAttributeModifier> entry : multimap.entries()) {
+                    if (entry.getKey().equals(EntityAttributes.GENERIC_ATTACK_DAMAGE)) {
+                        damage = (float) entry.getValue().getValue();
+                        break;
                     }
+                }
             }
-
+        } else if (item instanceof ToolItem) {
+            levelList = null;
+            if (item instanceof SwordItem) {
+                levelList = LevelLists.swordList;
+            } else if (item instanceof AxeItem)
+                levelList = LevelLists.axeList;
+            else if (item instanceof HoeItem)
+                levelList = LevelLists.hoeList;
+            else if (item instanceof PickaxeItem || item instanceof ShovelItem)
+                levelList = LevelLists.toolList;
+            if (levelList != null)
+                if (PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) item).getMaterial().toString().toLowerCase(), false)) {
+                    if (item instanceof SwordItem)
+                        damage = ((SwordItem) item).getAttackDamage();
+                    else if (item instanceof MiningToolItem)
+                        damage = ((MiningToolItem) item).getAttackDamage();
+                }
         }
+
         damage += playerEntity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         return "" + BigDecimal.valueOf(damage).setScale(2, RoundingMode.HALF_DOWN).floatValue();
     }
