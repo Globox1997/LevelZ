@@ -74,14 +74,30 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
         hungerManager.addExhaustion(exhaustion);
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), ordinal = 2, require = 0)
-    private boolean attackMixin(boolean original) {
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockback(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 0, require = 0)
+    private boolean attacGetKnockbackkMixin(boolean original) {
         if (playerEntity.world.random.nextFloat() < (float) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckCritBonus) {
             isCrit = true;
             return true;
         } else
             isCrit = false;
         return original;
+    }
+
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSprinting()Z", ordinal = 0), ordinal = 1, require = 0)
+    private boolean attackIsSprintingMixin(boolean original) {
+        if (isCrit) {
+            return true;
+        } else
+            return original;
+    }
+
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getFireAspect(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 2, require = 0)
+    private boolean attackGetFireAspectMixin(boolean original) {
+        if (isCrit) {
+            return true;
+        } else
+            return original;
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0, require = 0)
