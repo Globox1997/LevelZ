@@ -61,7 +61,8 @@
   "text.autoconfig.levelz.option.miningTntBonus": "Mining Tnt Blast Bonus",
   "text.autoconfig.levelz.option.miningOreChance": "Mining Ore Extra Chance",
   "text.autoconfig.levelz.option.miningLockedMultiplicator": "Locked Block Multiplicator",
-  "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
+
+
   "text.autoconfig.levelz.option.dropPlayerXP": "Drop Player XP",
   "text.autoconfig.levelz.option.enableStartPoints": "Starter Points",
   "text.autoconfig.levelz.option.mobKillCount": "Mob Kill Count",
@@ -75,9 +76,12 @@
   "text.autoconfig.levelz.option.oreXPMultiplier": "Ore XP Multiplier",
   "text.autoconfig.levelz.option.tradingXPMultiplier": "Trading XP Multiplier",
   "text.autoconfig.levelz.option.mobXPMultiplier": "Mob XP Multiplier",
+
   "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
   "text.autoconfig.levelz.option.inventoryButton": "Inventory Button",
   "text.autoconfig.levelz.option.inventorySkillLevel": "Inventory Level",
+  "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
+  "text.autoconfig.levelz.option.showLevelList": "Show Level List",
 
   "text.autoconfig.levelz.option.miningProgression": "Mining Progression",
   "text.autoconfig.levelz.option.itemProgression": "Item Progression",
@@ -117,6 +121,8 @@
   "text.levelz.gui.level": "Level %d",
   "text.levelz.gui.points": "Points %d",
   "text.levelz.gui.short_level": "Lv. %d",
+
+  "text.levelz.scoreboard": "Lv. %d %s",
 
   "text.levelz.level": "Level %d",
   "text.levelz.locked_list": "%s list",

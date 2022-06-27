@@ -17,6 +17,7 @@ import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.encryption.PlayerPublicKey;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -66,6 +67,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
                 PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, playerEntity);
                 PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
                 CriteriaInit.LEVEL_UP.trigger((ServerPlayerEntity) playerEntity, playerStatsManager.overallLevel);
+                playerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, playerEntity));
                 if (playerStatsManager.overallLevel > 0) {
                     playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), 1.0F, 1.0F);
                 }

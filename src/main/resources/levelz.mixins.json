@@ -86,15 +86,19 @@
     "player.PlayerEntityMixin",
     "player.PlayerInventoryMixin",
     "player.PlayerManagerMixin",
-    "player.ServerPlayerEntityMixin"
+    "player.ServerPlayerEntityMixin",
+    "player.PlayerListS2CPacketMixin"
   ],
   "client": [
     "item.ItemStackClientMixin",
     "misc.EnchantmentScreenMixin",
     "misc.WorldRendererMixin",
+    "misc.ClientPlayNetworkHandlerMixin",
     "player.ClientPlayerEntityMixin",
     "player.InGameHudMixin",
     "player.InventoryScreenMixin",
+    "player.PlayerListHudMixin",
+    "player.PlayerListEntryMixin",
     "compat.InventorioScreenMixin"
   ],
   "injectors": {

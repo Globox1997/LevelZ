@@ -13,9 +13,11 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 public class LevelzConfig implements ConfigData {
     // Level settings
     @ConfigEntry.Category("level_settings")
+    @ConfigEntry.Gui.RequiresRestart
     @Comment("Maximum level per skills")
     public int maxLevel = 20;
     @ConfigEntry.Category("level_settings")
+    @ConfigEntry.Gui.RequiresRestart
     @Comment("Applies if bonus chest world setting is enabled")
     public int startPoints = 5;
     @ConfigEntry.Category("level_settings")
@@ -33,28 +35,38 @@ public class LevelzConfig implements ConfigData {
     public int mobKillCount = 5;
 
     // Skill settings
+    @ConfigEntry.Gui.RequiresRestart
     @Comment("Attribute values - Bonus for each lvl")
     public double healthBase = 6D;
+    @ConfigEntry.Gui.RequiresRestart
     public double healthBonus = 1D;
     @Comment("Absorption Bonus at max lvl")
     public float healthAbsorptionBonus = 6F;
+    @ConfigEntry.Gui.RequiresRestart
     @Comment("Levelz Screen Multiplies it by 10")
     public double movementBase = 0.09D;
+    @ConfigEntry.Gui.RequiresRestart
     public double movementBonus = 0.001D;
     @Comment("Chance of damage misses player at max lvl")
     public float movementMissChance = 0.05F;
     @Comment("Reduces fall damage")
     public float movementFallBonus = 0.25F;
+    @ConfigEntry.Gui.RequiresRestart
     public double attackBase = 1D;
+    @ConfigEntry.Gui.RequiresRestart
     public double attackBonus = 0.2D;
     @Comment("Chance of double meele damage at max lvl")
     public float attackDoubleDamageChance = 0.03F;
     public float attackCritDmgBonus = 0.2F;
+    @ConfigEntry.Gui.RequiresRestart
     public double defenseBase = 0D;
+    @ConfigEntry.Gui.RequiresRestart
     public double defenseBonus = 0.2D;
     @Comment("Chance of damage reflection at max lvl")
     public float defenseReflectChance = 0.05F;
+    @ConfigEntry.Gui.RequiresRestart
     public double luckBase = 0D;
+    @ConfigEntry.Gui.RequiresRestart
     public double luckBonus = 0.05D;
     public float luckCritBonus = 0.01F;
     @Comment("Chance of not dying at max lvl")
@@ -141,6 +153,9 @@ public class LevelzConfig implements ConfigData {
     public boolean sortCraftingRecipesBySkill = false; // Client only
     @ConfigEntry.Category("gui_settings")
     public boolean inventorySkillLevel = true; // Client only
+    @ConfigEntry.Category("gui_settings")
+    @ConfigEntry.Gui.RequiresRestart
+    public boolean showLevelList = true; // Client only
 
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart
