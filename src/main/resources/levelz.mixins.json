@@ -81,6 +81,7 @@
     "misc.SmithingScreenHandlerMixin",
     "misc.VehicleInventoryMixin",
     "misc.BucketableMixin",
+    "misc.ScoreboardCriterionAccessor",
     "player.CraftingScreenHandlerMixin",
     "player.HungerManagerMixin",
     "player.PlayerEntityMixin",
