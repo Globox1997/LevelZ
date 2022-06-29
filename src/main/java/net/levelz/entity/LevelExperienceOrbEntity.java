@@ -1,6 +1,11 @@
 package net.levelz.entity;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.levelz.access.PlayerSyncAccess;
 import net.levelz.init.EntityInit;
@@ -21,12 +26,17 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+// Improvements inspiried by Clumps made by jaredlll08 which is licensed under MIT and can be found here:
+// https://github.com/jaredlll08/Clumps/blob/1.19/Common/src/main/java/com/blamejared/clumps/mixin/MixinExperienceOrb.java
+
 public class LevelExperienceOrbEntity extends Entity {
+
     private int orbAge;
     private int health = 5;
     private int amount;
     private int pickingCount = 1;
     private PlayerEntity target;
+    private Map<Integer, Integer> clumpedMap;
 
     public LevelExperienceOrbEntity(World world, double x, double y, double z, int amount) {
         this((EntityType<? extends LevelExperienceOrbEntity>) EntityInit.LEVEL_EXPERIENCE_ORB, world);
@@ -123,7 +133,10 @@ public class LevelExperienceOrbEntity extends Entity {
         List<LevelExperienceOrbEntity> list = world.getEntitiesByType(TypeFilter.instanceOf(LevelExperienceOrbEntity.class), box, orb -> LevelExperienceOrbEntity.isMergeable(orb, i, amount));
         if (!list.isEmpty()) {
             LevelExperienceOrbEntity experienceOrbEntity = list.get(0);
-            ++experienceOrbEntity.pickingCount;
+            Map<Integer, Integer> clumpedMap = experienceOrbEntity.getClumpedMap();
+            experienceOrbEntity.setClumpedMap(Stream.of(clumpedMap, Collections.singletonMap(amount, 1)).flatMap(map -> map.entrySet().stream())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum)));
+            experienceOrbEntity.pickingCount = clumpedMap.values().stream().reduce(Integer::sum).orElse(1);
             experienceOrbEntity.orbAge = 0;
             return true;
         }
@@ -131,15 +144,17 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     private boolean isMergeable(LevelExperienceOrbEntity other) {
-        return other != this && LevelExperienceOrbEntity.isMergeable(other, this.getId(), this.amount);
+        return other.isAlive() && other != this;
     }
 
     private static boolean isMergeable(LevelExperienceOrbEntity orb, int seed, int amount) {
-        return !orb.isRemoved() && (orb.getId() - seed) % 40 == 0 && orb.amount == amount;
+        return orb.isAlive();
     }
 
     private void merge(LevelExperienceOrbEntity other) {
-        this.pickingCount += other.pickingCount;
+        Map<Integer, Integer> otherMap = other.getClumpedMap();
+        setClumpedMap(Stream.of(getClumpedMap(), otherMap).flatMap(map -> map.entrySet().stream()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum)));
+        this.pickingCount = getClumpedMap().values().stream().reduce(Integer::sum).orElse(1);
         this.orbAge = Math.min(this.orbAge, other.orbAge);
         other.discard();
     }
@@ -172,6 +187,10 @@ public class LevelExperienceOrbEntity extends Entity {
         nbt.putShort("Age", (short) this.orbAge);
         nbt.putShort("Value", (short) this.amount);
         nbt.putInt("Count", this.pickingCount);
+
+        NbtCompound map = new NbtCompound();
+        getClumpedMap().forEach((value, count) -> map.putInt(value + "", count));
+        nbt.put("clumpedMap", map);
     }
 
     @Override
@@ -180,21 +199,35 @@ public class LevelExperienceOrbEntity extends Entity {
         this.orbAge = nbt.getShort("Age");
         this.amount = nbt.getShort("Value");
         this.pickingCount = Math.max(nbt.getInt("Count"), 1);
+
+        Map<Integer, Integer> map = new HashMap<>();
+        if (nbt.contains("clumpedMap")) {
+            NbtCompound clumpedMap = nbt.getCompound("clumpedMap");
+            for (String s : clumpedMap.getKeys()) {
+                map.put(Integer.parseInt(s), clumpedMap.getInt(s));
+            }
+        } else {
+            map.put(this.amount, this.pickingCount);
+        }
+        setClumpedMap(map);
     }
 
     @Override
     public void onPlayerCollision(PlayerEntity player) {
-        if (this.world.isClient) {
-            return;
-        }
-        if (player.experiencePickUpDelay == 0) {
+        if (!this.world.isClient) {
+            if (player.experiencePickUpDelay != 0) {
+                return;
+            }
+            // player.experiencePickUpDelay = 0;
             player.experiencePickUpDelay = 2;
             player.sendPickup(this, 1);
-            ((PlayerSyncAccess) player).addLevelExperience(this.amount);
-            --this.pickingCount;
-            if (this.pickingCount == 0) {
-                this.discard();
-            }
+            getClumpedMap().forEach((value, amount) -> {
+                for (int i = 0; i < amount; i++) {
+                    ((PlayerSyncAccess) player).addLevelExperience(amount);
+                }
+            });
+
+            this.discard();
         }
     }
 
@@ -283,5 +316,18 @@ public class LevelExperienceOrbEntity extends Entity {
     @Override
     public SoundCategory getSoundCategory() {
         return SoundCategory.AMBIENT;
+    }
+
+    private Map<Integer, Integer> getClumpedMap() {
+        if (this.clumpedMap == null) {
+            this.clumpedMap = new HashMap<>();
+            this.clumpedMap.put(this.amount, 1);
+        }
+        return this.clumpedMap;
+    }
+
+    private void setClumpedMap(Map<Integer, Integer> map) {
+        this.clumpedMap = map;
+        this.amount = getClumpedMap().entrySet().stream().map(entry -> entry.getKey() * entry.getValue()).reduce(Integer::sum).orElse(1);
     }
 }
