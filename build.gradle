@@ -38,8 +38,8 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // Inventorio
-    modCompileOnly("net.fabricmc:fabric-language-kotlin:1.7.4+kotlin.1.6.21")
-    modCompileOnly("curse.maven:inventorio-491073:3764520")
+    modCompileOnly("net.fabricmc:fabric-language-kotlin:1.8.1+kotlin.1.7.0")
+    modCompileOnly("curse.maven:inventorio-491073:3842567")
     // Wthit
     modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
     // REI
@@ -49,11 +49,11 @@ dependencies {
     // }
     // modCompileOnly modRuntime("de.siphalor:spiceoffabric-1.17:1.4.1+1.17.1:1+")
 	// MCDA
-	modCompileOnly ('curse.maven:mcda-426206:3709059') {
+	modCompileOnly ('curse.maven:mcda-426206:3821450') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // DragonLoot
-	modCompileOnly ('curse.maven:dragonloot-424480:3683636') {
+	modCompileOnly ('curse.maven:dragonloot-424480:3831053') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Trinkets
