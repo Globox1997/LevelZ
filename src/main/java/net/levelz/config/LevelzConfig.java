@@ -156,6 +156,8 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("gui_settings")
     @ConfigEntry.Gui.RequiresRestart
     public boolean showLevelList = true; // Client only
+    @ConfigEntry.Category("gui_settings")
+    public boolean showLevel = true; // Client only
 
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart

@@ -82,6 +82,7 @@
   "text.autoconfig.levelz.option.inventorySkillLevel": "Inventory Level",
   "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
   "text.autoconfig.levelz.option.showLevelList": "Show Level List",
+  "text.autoconfig.levelz.option.showLevel": "Show Level",
 
   "text.autoconfig.levelz.option.miningProgression": "Mining Progression",
   "text.autoconfig.levelz.option.itemProgression": "Item Progression",
