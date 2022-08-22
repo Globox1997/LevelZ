@@ -139,7 +139,7 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("experience_settings")
     public float oreXPMultiplier = 1.0F;
     @ConfigEntry.Category("experience_settings")
-    public float tradingXPMultiplier = 0.5F;
+    public float tradingXPMultiplier = 0.3F;
     @ConfigEntry.Category("experience_settings")
     public float mobXPMultiplier = 1.0F;
 
