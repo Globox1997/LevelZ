@@ -32,7 +32,9 @@ public class ArmorItemMixin {
         if (livingEntity instanceof PlayerEntity && armor.getItem() instanceof ArmorItem) {
             ArrayList<Object> levelList = LevelLists.armorList;
             try {
-                if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, ((ArmorItem) (Object) armor.getItem()).getMaterial().getName().toLowerCase(), true)) {
+                if ((!LevelLists.customItemList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, LevelLists.customItemList,
+                        ((ArmorItem) armor.getItem()).getMaterial().getName().toLowerCase(), true))
+                        || !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, ((ArmorItem) armor.getItem()).getMaterial().getName().toLowerCase(), true)) {
                     info.setReturnValue(false);
                 }
             } catch (AbstractMethodError ignore) {
@@ -46,7 +48,8 @@ public class ArmorItemMixin {
         try {
             ArrayList<Object> levelList = LevelLists.armorList;
             String string = ((ArmorItem) (Object) this).getMaterial().getName().toLowerCase();
-            if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
+            if ((!LevelLists.customItemList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.customItemList, string, true))
+                    || !PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
                 user.sendMessage(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
                         true);
                 info.setReturnValue(TypedActionResult.fail(itemStack));

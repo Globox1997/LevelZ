@@ -51,7 +51,9 @@ public class ScreenHandlerMixin {
                 && this.slots.get(slotIndex).canInsert(cursorStack)) {
             if (cursorStack.getItem() instanceof ArmorItem)
                 try {
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                    if ((!LevelLists.customItemList.isEmpty()
+                            && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                            || !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true))
                         info.cancel();
                 } catch (AbstractMethodError ignore) {
                 }
@@ -72,7 +74,9 @@ public class ScreenHandlerMixin {
                 && (this.slots.get(slotIndex).toString().contains("PlayerScreenHandler") || this.slots.get(slotIndex).toString().contains("class_1723"))) {
             if (cursorStack.getItem() instanceof ArmorItem)
                 try {
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                    if ((!LevelLists.customItemList.isEmpty()
+                            && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                            || !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true))
                         info.cancel();
                 } catch (AbstractMethodError ignore) {
                 }
@@ -94,7 +98,9 @@ public class ScreenHandlerMixin {
                 && (this.slots.get(slotIndex).toString().contains("PlayerScreenHandler") || this.slots.get(slotIndex).toString().contains("class_1723"))) {
             if (itemStack.getItem() instanceof ArmorItem)
                 try {
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                    if ((!LevelLists.customItemList.isEmpty()
+                            && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                            || !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName().toLowerCase(), true))
                         info.cancel();
                 } catch (AbstractMethodError ignore) {
                 }
@@ -116,7 +122,9 @@ public class ScreenHandlerMixin {
                 && (this.slots.get(slotIndex).toString().contains("PlayerScreenHandler") || this.slots.get(slotIndex).toString().contains("class_1723"))) {
             if (itemStack.getItem() instanceof ArmorItem)
                 try {
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                    if ((!LevelLists.customItemList.isEmpty()
+                            && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                            || !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName().toLowerCase(), true))
                         info.cancel();
                 } catch (AbstractMethodError ignore) {
                 }
@@ -135,7 +143,9 @@ public class ScreenHandlerMixin {
         ItemStack itemStack = this.slots.get(slotIndex).getStack();
         if (itemStack.getItem() instanceof ArmorItem)
             try {
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                if ((!LevelLists.customItemList.isEmpty()
+                        && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, ((ArmorItem) cursorStack.getItem()).getMaterial().getName().toLowerCase(), true))
+                        || !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.armorList, ((ArmorItem) itemStack.getItem()).getMaterial().getName().toLowerCase(), true))
                     info.cancel();
             } catch (AbstractMethodError ignore) {
             }
