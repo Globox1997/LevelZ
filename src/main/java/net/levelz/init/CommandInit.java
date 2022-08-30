@@ -11,6 +11,9 @@ import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ToolItem;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -25,6 +28,14 @@ import java.util.List;
 public class CommandInit {
 
     public static void init() {
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
+            dispatcher.register((CommandManager.literal("info").requires((serverCommandSource) -> {
+                return serverCommandSource.hasPermissionLevel(3);
+            })).then(CommandManager.literal("material").executes((commandContext) -> {
+                return executeInfoMaterial(commandContext.getSource());
+            })));
+        });
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
             dispatcher.register((CommandManager.literal("playerstats").requires((serverCommandSource) -> {
@@ -291,6 +302,23 @@ public class CommandInit {
         }
 
         return targets.size();
+    }
+
+    private static int executeInfoMaterial(ServerCommandSource source) {
+        if (source.getPlayer() != null && !source.getPlayer().getMainHandStack().isEmpty()) {
+            Item item = source.getPlayer().getMainHandStack().getItem();
+            Text text = null;
+
+            if (item instanceof ArmorItem)
+                text = Text.of("Material id: \"" + ((ArmorItem) item).getMaterial().getName().toLowerCase() + "\"");
+
+            if (item instanceof ToolItem)
+                text = Text.of("Material id: \"" + ((ToolItem) item).getMaterial().toString().toLowerCase() + "\"");
+
+            source.getPlayer().sendMessage(text != null ? text : Text.of(item.getName().getString() + " does not have a material id"));
+        }
+
+        return 1;
     }
 
     private static List<String> skillStrings() {
