@@ -23,7 +23,7 @@ public class InGameHudMixin {
 
     @ModifyConstant(method = "renderExperienceBar", constant = @Constant(intValue = 8453920), require = 0)
     private int modifyExperienceNumberColor(int original) {
-        if (((PlayerStatsManagerAccess) client.player).getPlayerStatsManager(client.player).getLevel("points") > 0)
+        if (((PlayerStatsManagerAccess) client.player).getPlayerStatsManager(client.player).hasAvailableLevel())
             return 1507303;
         else
             return original;

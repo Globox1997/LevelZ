@@ -183,6 +183,10 @@ public class PlayerStatsManager {
         return this.overallLevel >= ConfigInit.CONFIG.maxLevel * 12;
     }
 
+    public boolean hasAvailableLevel() {
+        return this.skillPoints > 0;
+    }
+
     // Recommend to use https://www.geogebra.org/graphing
     public int getNextLevelExperience() {
         if (isMaxLevel())
