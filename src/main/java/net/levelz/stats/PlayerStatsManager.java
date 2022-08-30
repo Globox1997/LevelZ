@@ -180,7 +180,7 @@ public class PlayerStatsManager {
     }
 
     public boolean isMaxLevel() {
-        return this.overallLevel >= ConfigInit.CONFIG.maxLevel * 12;
+        return this.overallLevel >= ConfigInit.CONFIG.maxLevel * 12 || (ConfigInit.CONFIG.overallMaxLevel != 0 && this.overallLevel >= ConfigInit.CONFIG.overallMaxLevel);
     }
 
     public boolean hasAvailableLevel() {
