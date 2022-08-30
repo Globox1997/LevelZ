@@ -387,7 +387,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     // + new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")) + " : " + BlockTags.ACACIA_LOGS.toString());
                     LOGGER.info("{} might be a block tag but tags are not supported (yet?)", data.getAsJsonArray("block").get(i).getAsString());
                     continue;
-                } else if (Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())).toString().equals("air")) {
+                } else if (Registry.BLOCK.get(new Identifier(data.getAsJsonArray("block").get(i).getAsString())).toString().equals("Block{minecraft:air}")) {
                     LOGGER.info("{} is not a valid block identifier", data.getAsJsonArray("block").get(i).getAsString());
                     continue;
                 }
