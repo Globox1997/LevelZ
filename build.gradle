@@ -62,8 +62,10 @@ dependencies {
     modCompileOnly ('com.github.emilyploszaj:trinkets:3.4.0') {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.472"
+    // REI
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
     //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
+    //modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.472"
     // Dualwielding
 	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT') {
 		exclude(group: "net.fabricmc.fabric-api")
