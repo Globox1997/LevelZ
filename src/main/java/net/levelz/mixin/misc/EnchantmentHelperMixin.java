@@ -45,9 +45,10 @@ public class EnchantmentHelperMixin {
             if (item instanceof ToolItem) {
                 PlayerEntity playerEntity = (PlayerEntity) user;
                 ArrayList<Object> levelList = LevelLists.customItemList;
-                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
-                    info.cancel();
-                else {
+                if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
+                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
+                        info.cancel();
+                } else {
                     levelList = null;
                     if (item instanceof SwordItem) {
                         levelList = LevelLists.swordList;
@@ -72,9 +73,10 @@ public class EnchantmentHelperMixin {
             if (item instanceof ToolItem) {
                 PlayerEntity playerEntity = (PlayerEntity) user;
                 ArrayList<Object> levelList = LevelLists.customItemList;
-                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
-                    info.cancel();
-                else {
+                if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
+                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
+                        info.cancel();
+                } else {
                     levelList = null;
                     if (item instanceof SwordItem) {
                         levelList = LevelLists.swordList;

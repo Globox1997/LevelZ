@@ -31,9 +31,11 @@ public class DualWieldingOffhandAttackMixin {
         Item item = playerEntity.getMainHandStack().getItem();
         if (!item.equals(Items.AIR)) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!levelList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true)) {
-                target.damage(DamageSource.player(playerEntity), 1.0F);
-                info.cancel();
+            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true)) {
+                    target.damage(DamageSource.player(playerEntity), 1.0F);
+                    info.cancel();
+                }
             } else if (item instanceof ToolItem) {
                 levelList = null;
                 if (item instanceof SwordItem) {

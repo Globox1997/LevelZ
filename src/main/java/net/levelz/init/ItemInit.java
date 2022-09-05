@@ -33,7 +33,7 @@ public class ItemInit {
             if (!player.isCreative() && !player.isSpectator()) {
                 ArrayList<Object> customList = LevelLists.customItemList;
                 String string = Registry.ITEM.getId(player.getStackInHand(hand).getItem()).toString();
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
+                if (!customList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
                     player.sendMessage(
                             Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
                             true);
@@ -49,7 +49,7 @@ public class ItemInit {
                 if (world.canPlayerModifyAt(player, blockPos)) {
                     String string = Registry.BLOCK.getId(world.getBlockState(blockPos).getBlock()).toString();
                     ArrayList<Object> customList = LevelLists.customBlockList;
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
+                    if (!customList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
                         player.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2))
                                 .formatted(Formatting.RED), true);
                         return ActionResult.success(false);
@@ -63,7 +63,7 @@ public class ItemInit {
             if (!player.isCreative() && !player.isSpectator()) {
                 String string = Registry.ENTITY_TYPE.getId(entity.getType()).toString();
                 ArrayList<Object> customList = LevelLists.customEntityList;
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
+                if (!customList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
                     player.sendMessage(
                             Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
                             true);

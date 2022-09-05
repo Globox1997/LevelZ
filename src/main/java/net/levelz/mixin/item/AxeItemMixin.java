@@ -24,15 +24,16 @@ public class AxeItemMixin {
     private void useOnBlockMixin(ItemUsageContext context, CallbackInfoReturnable<ActionResult> info) {
         PlayerEntity playerEntity = context.getPlayer();
         ArrayList<Object> levelList;
-        String material = ((AxeItem) context.getStack().getItem()).getMaterial().toString().toLowerCase();
 
         levelList = LevelLists.customItemList;
-        if (!levelList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(context.getStack().getItem()).toString(), true))
-            info.setReturnValue(ActionResult.PASS);
-        else {
+        if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(context.getStack().getItem()).toString())) {
+            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(context.getStack().getItem()).toString(), true))
+                info.setReturnValue(ActionResult.PASS);
+        } else {
+            String material = ((AxeItem) context.getStack().getItem()).getMaterial().toString().toLowerCase();
             levelList = LevelLists.axeList;
             if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, material, true)) {
-                context.getPlayer().sendMessage(
+                playerEntity.sendMessage(
                         Text.translatable("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
                                 .formatted(Formatting.RED),
                         true);
