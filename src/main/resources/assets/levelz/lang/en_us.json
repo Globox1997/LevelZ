@@ -56,6 +56,7 @@
   "text.autoconfig.levelz.option.farmingTwinChance": "Farming Twin Chance",
   "text.autoconfig.levelz.option.alchemyPotionChance": "Alchemy Potion Chance",
   "text.autoconfig.levelz.option.alchemyEnchantmentChance": "Alchemy Enchantment Chance",
+  "text.autoconfig.levelz.option.archeryInaccuracyBonus": "Archery Inaccuracy Bonus",
   "text.autoconfig.levelz.option.archeryBowExtraDamage": "Archery Bow Extra Damage",
   "text.autoconfig.levelz.option.archeryCrossbowExtraDamage": "Archery Crossbow Extra Damage",
   "text.autoconfig.levelz.option.archeryDoubleDamageChance": "Archery Double Damage Chance",

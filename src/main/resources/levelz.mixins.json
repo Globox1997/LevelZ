@@ -49,6 +49,7 @@
     "entity.TadpoleEntityMixin",
     "entity.AllayEntityMixin",
     "entity.GoatEntityMixin",
+    "entity.ProjectileEntityMixin",
     "item.AliasedBlockItemMixin",
     "item.ArmorItemMixin",
     "item.AxeItemMixin",
