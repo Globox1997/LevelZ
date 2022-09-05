@@ -34,10 +34,9 @@ public abstract class AbstractFurnaceBlockMixin extends BlockWithEntity {
     @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/AbstractFurnaceBlock;openScreen(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
     private void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
         if (!((Object) this instanceof BlastFurnaceBlock) && !((Object) this instanceof SmokerBlock)) {
-
             String string = Registry.BLOCK.getId(world.getBlockState(pos).getBlock()).toString();
             ArrayList<Object> customList = LevelLists.customBlockList;
-            if (customList.contains(string)) {
+            if (!customList.isEmpty()&&customList.contains(string)) {
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
                     player.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2))
                     .formatted(Formatting.RED), true);

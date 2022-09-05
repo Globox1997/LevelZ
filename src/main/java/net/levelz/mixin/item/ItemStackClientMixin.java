@@ -162,7 +162,7 @@ public class ItemStackClientMixin {
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                     list.add(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                 }
-            } else if (!LevelLists.customBlockList.isEmpty() && LevelLists.customBlockList.contains(block.getTranslationKey().replace("block.", "").replace(".", ":"))) {
+            } else if (!LevelLists.customBlockList.isEmpty() && LevelLists.customBlockList.contains(Registry.BLOCK.getId(block).toString())) {
                 levelList = LevelLists.customBlockList;
                 String string = Registry.BLOCK.getId(block).toString();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
