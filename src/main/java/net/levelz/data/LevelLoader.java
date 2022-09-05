@@ -502,6 +502,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.listOfAllLists.add(LevelLists.tadpoleList);
         LevelLists.listOfAllLists.add(LevelLists.allayList);
         LevelLists.listOfAllLists.add(LevelLists.compassList);
+        LevelLists.listOfAllLists.add(LevelLists.goatList);
 
         LevelLists.listOfAllLists.add(LevelLists.customBlockList);
         LevelLists.listOfAllLists.add(LevelLists.customItemList);
@@ -556,6 +557,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.tadpoleList.clear();
         LevelLists.allayList.clear();
         LevelLists.compassList.clear();
+        LevelLists.goatList.clear();
 
         LevelLists.customBlockList.clear();
         LevelLists.customItemList.clear();

@@ -109,7 +109,8 @@ example how the json file should look like is here:
 
 "entity": has to be one of the following strings:\
 "minecraft:cow","minecraft:mooshroom","minecraft:sheep","minecraft:snow_golem","minecraft:villager","minecraft:
-wandering_trader","minecraft:axolotl","minecraft:piglin","minecraft:wolf","minecraft:tadpole","minecraft:allay"
+wandering_trader","minecraft:axolotl","minecraft:piglin","minecraft:wolf","minecraft:tadpole","minecraft:allay",
+"minecraft:goat"
 
 It will only cancel the interaction with the entity.
 

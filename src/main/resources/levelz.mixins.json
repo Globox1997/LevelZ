@@ -48,6 +48,7 @@
     "entity.ExperienceBottleEntityMixin",
     "entity.TadpoleEntityMixin",
     "entity.AllayEntityMixin",
+    "entity.GoatEntityMixin",
     "item.AliasedBlockItemMixin",
     "item.ArmorItemMixin",
     "item.AxeItemMixin",

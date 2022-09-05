@@ -37,6 +37,7 @@ public class LevelLists {
     public static final ArrayList<Object> piglinList = new ArrayList<Object>();
     public static final ArrayList<Object> tadpoleList = new ArrayList<Object>();
     public static final ArrayList<Object> allayList = new ArrayList<Object>();
+    public static final ArrayList<Object> goatList = new ArrayList<Object>();
     // Item
     public static final ArrayList<Object> elytraList = new ArrayList<Object>();
     public static final ArrayList<Object> armorList = new ArrayList<Object>();
@@ -180,6 +181,8 @@ public class LevelLists {
             return tadpoleList;
         case "minecraft:allay":
             return allayList;
+        case "minecraft:goat":
+            return goatList;
         case "minecraft:custom_entity":
             return customEntityList;
         default:
@@ -237,6 +240,7 @@ public class LevelLists {
         listNames.add("minecraft:tadpole");
         listNames.add("minecraft:allay");
         listNames.add("minecraft:compass");
+        listNames.add("minecraft:goat");
         // Custom
         listNames.add("minecraft:custom_block");
         listNames.add("minecraft:custom_item");
