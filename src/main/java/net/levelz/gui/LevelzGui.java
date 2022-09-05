@@ -49,12 +49,12 @@ public class LevelzGui extends LightweightGuiDescription {
         WLabel topLlabel = new WLabel(Text.translatable("text.levelz.gui.title", playerEntity.getName().getString()));
         root.add(topLlabel, 80, 7);
         // Small icons
-        WSprite lifeIcon = new WSprite(RenderInit.GUI_ICONS, 0F, 0F, 1F / 28.2865F, 1F / 28.2865F);
-        WSprite protectionIcon = new WSprite(RenderInit.GUI_ICONS, 1F / 28.2865F, 0F, 2F / 28.305F, 1F / 28.2865F);
-        WSprite speedIcon = new WSprite(RenderInit.GUI_ICONS, 2F / 28.2865F, 0F, 3F / 28.355F, 1F / 28.2865F);
-        WSprite damageIcon = new WSprite(RenderInit.GUI_ICONS, 3F / 28.2865F, 0F, 4F / 28.4F, 1F / 28.2865F);
-        WSprite foodIcon = new WSprite(RenderInit.GUI_ICONS, 4F / 28.2865F, 0F, 5F / 28.4F, 1F / 28.2865F);
-        WSprite fortuneIcon = new WSprite(RenderInit.GUI_ICONS, 5F / 28.2865F, 0F, 6F / 28.2865F, 1F / 28.2865F);
+        WSprite lifeIcon = new WSprite(RenderInit.GUI_ICONS, 0F, 0F, 0.03515625F, 0.03515625F);
+        WSprite protectionIcon = new WSprite(RenderInit.GUI_ICONS, 0.03515625F, 0F, 0.0703125F, 0.03515625F);
+        WSprite speedIcon = new WSprite(RenderInit.GUI_ICONS, 0.0703125F, 0F, 0.10546875F, 0.03515625F);
+        WSprite damageIcon = new WSprite(RenderInit.GUI_ICONS, 0.10546875F, 0F, 0.140625F, 0.03515625F);
+        WSprite foodIcon = new WSprite(RenderInit.GUI_ICONS, 0.140625F, 0F, 0.17578125F, 0.03515625F);
+        WSprite fortuneIcon = new WSprite(RenderInit.GUI_ICONS, 0.17578125F, 0F, 0.2109375F, 0.03515625F);
 
         root.add(lifeIcon, 58, 21, 10, 10);
         root.add(protectionIcon, 58, 34, 10, 10);
