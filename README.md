@@ -274,3 +274,19 @@ It triggers when the player reached the set level.
         }
     }
 ```
+
+### Commands
+`/playerstats playername add skill integer`
+- Increase the specific skill by the integer value
+  
+`/playerstats playername remove skill integer`
+- Decrease the specific skill by the integer value
+
+`/playerstats playername set skill integer`
+- Set the specific skill to the integer value
+
+`/playerstats playername get skill`
+- Print the specific skill level
+
+### Info
+Inside the config there is a developer mode setting, when set to true, inside the creative menu, hover over an item/block with your mouse and press f8 (default key) to create or append the item/block id to the file called idlist.json inside your minecraft folder for easier datapack creation.
