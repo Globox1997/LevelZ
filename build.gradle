@@ -19,6 +19,7 @@ repositories {
     maven { url "https://www.cursemaven.com" }
     // maven { url "https://maven.siphalor.de/" }
     maven { url "https://server.bbkr.space/artifactory/libs-release" }
+    maven { url "https://maven.nucleoid.xyz/" }
 }
 
 dependencies {
@@ -72,7 +73,8 @@ dependencies {
 	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-
+    // PlaceHolder
+    modImplementation ("eu.pb4:placeholder-api:2.0.0-beta.7+1.19")
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
 }

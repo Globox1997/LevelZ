@@ -9,6 +9,7 @@ public class LevelzMain implements ModInitializer {
     @Override
     public void onInitialize() {
         CommandInit.init();
+        CompatInit.init();
         ConfigInit.init();
         CriteriaInit.init();
         EntityInit.init();
