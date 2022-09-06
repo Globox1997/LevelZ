@@ -97,6 +97,7 @@
     "misc.EnchantmentScreenMixin",
     "misc.WorldRendererMixin",
     "misc.ClientPlayNetworkHandlerMixin",
+    "misc.CreativeInventoryScreenMixin",
     "player.ClientPlayerEntityMixin",
     "player.InGameHudMixin",
     "player.InventoryScreenMixin",

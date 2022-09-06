@@ -5,6 +5,7 @@
 
   "category.levelz.keybind": "LevelZ Keybinds",
   "key.levelz.openskillscreen": "Skill Screen",
+  "key.levelz.dev": "Dev Key",
 
   "text.autoconfig.levelz.title": "LevelZ Config",
   "text.autoconfig.levelz.category.gui_settings": "GUI Settings",
@@ -12,6 +13,7 @@
   "text.autoconfig.levelz.category.level_settings": "Level Settings",
   "text.autoconfig.levelz.category.experience_settings": "Experience Settings",
   "text.autoconfig.levelz.category.progression_settings": "Progression Settings",
+  "text.autoconfig.levelz.option.devMode": "Dev Mode",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",

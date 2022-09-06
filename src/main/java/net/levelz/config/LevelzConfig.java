@@ -37,6 +37,9 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_settings")
     @Comment("Amount of allowed mob kills in a chunk")
     public int mobKillCount = 5;
+    @ConfigEntry.Category("level_settings")
+    @Comment("Only for Devs")
+    public boolean devMode = false;
 
     // Skill settings
     @ConfigEntry.Gui.RequiresRestart
