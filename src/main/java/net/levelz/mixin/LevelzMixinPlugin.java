@@ -43,6 +43,8 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
 
         if (!FabricLoader.getInstance().isModLoaded("dualwielding") && mixinClassName.contains("DualWieldingOffhandAttackMixin"))
             return false;
+        if (!FabricLoader.getInstance().isModLoaded("inmis") && mixinClassName.contains("BackpackItemMixin"))
+            return false;
 
         return true;
     }
