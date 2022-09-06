@@ -64,6 +64,8 @@ dependencies {
     }
     // REI
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
+    // EMI
+    modCompileOnly "dev.emi:emi:0.4.0+1.19"
     //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
     //modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.472"
     // Dualwielding

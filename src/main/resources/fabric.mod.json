@@ -25,6 +25,9 @@
     "modmenu": [
       "net.levelz.config.ModMenuIntegration"
     ],
+    "emi": [
+      "net.levelz.compat.LevelzEmiPlugin"
+    ],
     "rei_client": [
       "net.levelz.compat.LevelzReiPlugin"
     ]
