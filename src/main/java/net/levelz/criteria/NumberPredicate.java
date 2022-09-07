@@ -2,7 +2,6 @@ package net.levelz.criteria;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.JsonHelper;
 
 public class NumberPredicate {
@@ -12,7 +11,7 @@ public class NumberPredicate {
         this.levelZ = levelZ;
     }
 
-    public boolean test(ServerPlayerEntity player, int level) {
+    public boolean test(int level) {
         if (this.levelZ == level)
             return true;
         else
