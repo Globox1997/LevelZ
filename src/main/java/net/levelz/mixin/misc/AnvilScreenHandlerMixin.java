@@ -29,7 +29,7 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
     @Final
     private Property levelCost;
 
-    private int smithingLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("smithing");
+    private int smithingLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("smithing");
 
     public AnvilScreenHandlerMixin(@Nullable ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
         super(type, syncId, playerInventory, context);

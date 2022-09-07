@@ -31,8 +31,8 @@ public class EnchantmentHelperMixin {
 
     @ModifyVariable(method = "getEquipmentLevel", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/lang/Iterable;iterator()Ljava/util/Iterator;"), ordinal = 0)
     private static int getEquipmentLevelMixin(int original, Enchantment enchantment, LivingEntity entity) {
-        if (original != 0 && entity instanceof PlayerEntity && (float) ((PlayerStatsManagerAccess) entity).getPlayerStatsManager((PlayerEntity) entity).getLevel("alchemy")
-                * ConfigInit.CONFIG.alchemyEnchantmentChance > entity.world.random.nextFloat())
+        if (original != 0 && entity instanceof PlayerEntity player
+                && (float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("alchemy") * ConfigInit.CONFIG.alchemyEnchantmentChance > entity.world.random.nextFloat())
             return original += 1;
         else
             return original;

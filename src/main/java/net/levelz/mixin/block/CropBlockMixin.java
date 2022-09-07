@@ -28,7 +28,7 @@ public abstract class CropBlockMixin extends PlantBlock {
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         super.onBreak(world, pos, state, player);
         if (!world.isClient && player != null && !player.isCreative()) {
-            int farmingLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("farming");
+            int farmingLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("farming");
             if (farmingLevel >= ConfigInit.CONFIG.farmingBase && (float) farmingLevel * ConfigInit.CONFIG.farmingChanceBonus > world.random.nextFloat()) {
                 List<ItemStack> list = Block.getDroppedStacks(state, (ServerWorld) world, pos, null);
                 for (int i = 0; i < list.size(); i++) {

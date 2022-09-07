@@ -78,8 +78,8 @@ public class BlockMixin {
     @Inject(method = "Lnet/minecraft/block/Block;getDroppedStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getDroppedStacks(Lnet/minecraft/loot/context/LootContext$Builder;)Ljava/util/List;"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private static void getDroppedStacksMixin(BlockState state, ServerWorld world, BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity entity, ItemStack stack,
             CallbackInfoReturnable<List<ItemStack>> info, LootContext.Builder builder) {
-        if (entity != null && state.getBlock() instanceof OreBlock && entity instanceof PlayerEntity) {
-            if ((float) ((PlayerStatsManagerAccess) entity).getPlayerStatsManager((PlayerEntity) entity).getLevel("mining") * ConfigInit.CONFIG.miningOreChance > world.random.nextFloat()
+        if (entity != null && state.getBlock() instanceof OreBlock && entity instanceof PlayerEntity playerEntity) {
+            if ((float) ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getLevel("mining") * ConfigInit.CONFIG.miningOreChance > world.random.nextFloat()
                     && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, stack) == 0) {
                 Block.dropStack(world, pos, state.getDroppedStacks(builder).get(0).split(1));
             }
@@ -92,7 +92,7 @@ public class BlockMixin {
             LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
                     (int) (size * ConfigInit.CONFIG.oreXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity).getLevel("level")
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getLevel("level")
                                     : 1.0F)));
     }
 

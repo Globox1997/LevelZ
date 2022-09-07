@@ -53,10 +53,10 @@ public class AbstractFurnaceBlockEntityMixin {
                     float f = MathHelper.fractionalPart((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
                     if (f != 0.0f && Math.random() < (double) f)
                         ++i;
-                    LevelExperienceOrbEntity
-                            .spawn(world, pos,
-                                    (int) (i * ConfigInit.CONFIG.furnaceXPMultiplier * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
-                                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity).getLevel("level")
+                    LevelExperienceOrbEntity.spawn(world, pos,
+                            (int) (i * ConfigInit.CONFIG.furnaceXPMultiplier
+                                    * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
+                                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getLevel("level")
                                             : 1.0F)));
                 });
             }

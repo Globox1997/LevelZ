@@ -63,7 +63,7 @@ public abstract class InventorioScreenMixin extends AbstractInventoryScreen<Play
 
         assert this.client != null;
         assert this.client.player != null;
-        PlayerStatsManager playerStatsManager = (((PlayerStatsManagerAccess) this.client.player).getPlayerStatsManager(this.client.player));
+        PlayerStatsManager playerStatsManager = (((PlayerStatsManagerAccess) this.client.player).getPlayerStatsManager());
         // 0xAARRGGBB Format
         int color = 0xFFFFFF;
         if (playerStatsManager.getLevel("points") > 0)

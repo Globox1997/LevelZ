@@ -63,7 +63,7 @@ public class LevelzGui extends LightweightGuiDescription {
         root.add(foodIcon, 155, 21, 10, 10);
         root.add(fortuneIcon, 155, 34, 10, 10);
 
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager();
         // Small icon labels
         WDynamicLabel lifeLabel = new WDynamicLabel(() -> "" + Math.round(playerEntity.getHealth()));
         WDynamicLabel protectionLabel = new WDynamicLabel(

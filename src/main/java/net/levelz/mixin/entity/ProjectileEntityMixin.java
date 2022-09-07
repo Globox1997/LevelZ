@@ -22,7 +22,7 @@ public class ProjectileEntityMixin {
     @ModifyArg(method = "Lnet/minecraft/entity/projectile/ProjectileEntity;setVelocity(Lnet/minecraft/entity/Entity;FFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/ProjectileEntity;setVelocity(DDDFF)V", ordinal = 0), index = 4)
     private float setVelocityMixin(float original) {
         if (owner != null && owner instanceof PlayerEntity playerEntity) {
-            int archeryLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("archery");
+            int archeryLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getLevel("archery");
             if (archeryLevel < ConfigInit.CONFIG.maxLevel)
                 return Math.abs(archeryLevel - ConfigInit.CONFIG.maxLevel) * ConfigInit.CONFIG.archeryInaccuracyBonus + ConfigInit.CONFIG.archeryInaccuracyBonus;
         }

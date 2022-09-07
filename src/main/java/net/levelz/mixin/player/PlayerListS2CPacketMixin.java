@@ -28,12 +28,12 @@ public abstract class PlayerListS2CPacketMixin implements PlayerListAccess {
     @Inject(method = "Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket;<init>(Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket$Action;[Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
     public void playerListS2CPacketMixin(PlayerListS2CPacket.Action action, ServerPlayerEntity players[], CallbackInfo info, ServerPlayerEntity var3[], int var4, int var5,
             ServerPlayerEntity serverPlayerEntity) {
-        levelMap.put(serverPlayerEntity.getUuid(), ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity).getLevel("level"));
+        levelMap.put(serverPlayerEntity.getUuid(), ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getLevel("level"));
     }
 
     @Inject(method = "Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket;<init>(Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket$Action;Ljava/util/Collection;)V", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
     public void playerListS2CPacketMixin(PlayerListS2CPacket.Action action, Collection<ServerPlayerEntity> players, CallbackInfo info, Iterator var3, ServerPlayerEntity serverPlayerEntity) {
-        levelMap.put(serverPlayerEntity.getUuid(), ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity).getLevel("level"));
+        levelMap.put(serverPlayerEntity.getUuid(), ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getLevel("level"));
     }
 
     @Inject(method = "Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket;<init>(Lnet/minecraft/network/PacketByteBuf;)V", at = @At("TAIL"))

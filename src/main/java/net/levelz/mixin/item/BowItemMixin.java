@@ -51,7 +51,7 @@ public class BowItemMixin {
     @Inject(method = "onStoppedUsing", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getLevel(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)I", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void onStoppedUsingMixin(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, boolean bl, ItemStack itemStack, int i,
             float f, boolean bl2, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity, int j) {
-        int archeryLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity).getLevel("archery");
+        int archeryLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getLevel("archery");
         persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage()
                 + (archeryLevel >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > world.random.nextFloat() ? persistentProjectileEntity.getDamage() * 2D
                         : (double) archeryLevel * ConfigInit.CONFIG.archeryBowExtraDamage));

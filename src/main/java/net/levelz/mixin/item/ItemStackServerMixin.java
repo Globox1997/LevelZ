@@ -17,7 +17,7 @@ public class ItemStackServerMixin {
     @ModifyVariable(method = "Lnet/minecraft/item/ItemStack;damage(ILnet/minecraft/util/math/random/Random;Lnet/minecraft/server/network/ServerPlayerEntity;)Z", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getLevel(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)I"), ordinal = 1)
     private int damageMixin(int original, int amount, Random random, @Nullable ServerPlayerEntity player) {
         if (player != null) {
-            if ((float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("smithing") * ConfigInit.CONFIG.smithingToolChance > random.nextFloat()) {
+            if ((float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("smithing") * ConfigInit.CONFIG.smithingToolChance > random.nextFloat()) {
                 return original + 1;
             }
         }

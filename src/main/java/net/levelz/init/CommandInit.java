@@ -227,7 +227,7 @@ public class CommandInit {
         // loop over players
         while (var3.hasNext()) {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) var3.next();
-            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity);
+            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager();
             if (skill.equals("experience")) {
                 if (reference == 0)
                     ((PlayerSyncAccess) serverPlayerEntity).addLevelExperience(i);

@@ -44,18 +44,17 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyVariable(method = "modifyAppliedDamage", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getProtectionAmount(Ljava/lang/Iterable;Lnet/minecraft/entity/damage/DamageSource;)I", shift = At.Shift.AFTER), ordinal = 0)
     private int modifyAppliedDamageMixin(int original, DamageSource source, float amount) {
-        if (source == DamageSource.FALL && (Object) this instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) (Object) this;
-            return (int) (original + ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("agility") * ConfigInit.CONFIG.movementFallBonus);
+        if (source == DamageSource.FALL && (Object) this instanceof PlayerEntity player) {
+            return (int) (original + ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("agility") * ConfigInit.CONFIG.movementFallBonus);
         } else
             return original;
     }
 
     @ModifyVariable(method = "tryUseTotem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;", ordinal = 0))
     private ItemStack tryUseTotemMixin(ItemStack original) {
-        if ((Object) this instanceof PlayerEntity) {
+        if ((Object) this instanceof PlayerEntity player) {
             ArrayList<Object> levelList = LevelLists.totemList;
-            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) (Object) this, levelList, null, true))
+            if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true))
                 return ItemStack.EMPTY;
         }
         return original;
@@ -63,10 +62,8 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "tryUseTotem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/Hand;values()[Lnet/minecraft/util/Hand;"), cancellable = true)
     private void tryUseTotemMixin(DamageSource source, CallbackInfoReturnable<Boolean> info) {
-        if ((Object) this instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) (Object) this;
-            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("luck") >= ConfigInit.CONFIG.maxLevel
-                    && player.world.random.nextFloat() < ConfigInit.CONFIG.luckSurviveChance) {
+        if ((Object) this instanceof PlayerEntity player) {
+            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("luck") >= ConfigInit.CONFIG.maxLevel && player.world.random.nextFloat() < ConfigInit.CONFIG.luckSurviveChance) {
                 player.setHealth(1.0F);
                 player.clearStatusEffects();
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
@@ -91,10 +88,10 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "dropXp", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
     protected void dropXpMixin(CallbackInfo info) {
         if (ConfigInit.CONFIG.mobXPMultiplier > 0.0F)
-            LevelExperienceOrbEntity
-                    .spawn((ServerWorld) world, this.getPos(),
-                            (int) (this.getXpToDrop() * ConfigInit.CONFIG.mobXPMultiplier * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.attackingPlayer != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.attackingPlayer).getPlayerStatsManager(this.attackingPlayer).getLevel("level")
+            LevelExperienceOrbEntity.spawn((ServerWorld) world, this.getPos(),
+                    (int) (this.getXpToDrop() * ConfigInit.CONFIG.mobXPMultiplier
+                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.attackingPlayer != null
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.attackingPlayer).getPlayerStatsManager().getLevel("level")
                                     : 1.0F)));
     }
 

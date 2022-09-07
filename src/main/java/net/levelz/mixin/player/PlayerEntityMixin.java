@@ -178,7 +178,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     }
 
     @Override
-    public PlayerStatsManager getPlayerStatsManager(PlayerEntity player) {
+    public PlayerStatsManager getPlayerStatsManager() {
         return this.playerStatsManager;
     }
 

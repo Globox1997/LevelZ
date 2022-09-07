@@ -51,7 +51,7 @@ public class AbstractBlockStateMixin {
             ((PlayerBreakBlockAccess) player.getInventory()).setInventoryBlockBreakable(true);
 
         // Set abstract block calculation here
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
         int playerMiningLevel = playerStatsManager.getLevel("mining");
         if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
             if (PlayerStatsManager.listContainsItemOrBlock(player, 1, Registry.BLOCK.getRawId(world.getBlockState(pos).getBlock()))) {
