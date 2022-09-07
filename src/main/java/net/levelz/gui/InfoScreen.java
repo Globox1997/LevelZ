@@ -7,6 +7,7 @@ import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LibGui;
 import net.fabricmc.api.Environment;
 import net.levelz.compat.InventorioScreenCompatibility;
+import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.init.RenderInit;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -66,8 +67,12 @@ public class InfoScreen extends CottonClientScreen {
     @Override
     public boolean keyPressed(int ch, int keyCode, int modifiers) {
         if (client.options.inventoryKey.matchesKey(ch, keyCode)) {
-            this.close();
+            if (ConfigInit.CONFIG.switch_screen)
+                this.client.setScreen(new LevelzScreen(new LevelzGui(client)));
+            else
+                this.close();
             return true;
+
         } else if (KeyInit.screenKey.matchesKey(ch, keyCode)) {
             this.client.setScreen(new LevelzScreen(new LevelzGui(client)));
             return true;

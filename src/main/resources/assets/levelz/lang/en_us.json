@@ -87,6 +87,7 @@
   "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
   "text.autoconfig.levelz.option.showLevelList": "Show Level List",
   "text.autoconfig.levelz.option.showLevel": "Show Level",
+  "text.autoconfig.levelz.option.switch_screen": "Switch Screen",
 
   "text.autoconfig.levelz.option.miningProgression": "Mining Progression",
   "text.autoconfig.levelz.option.itemProgression": "Item Progression",

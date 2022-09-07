@@ -166,6 +166,9 @@ public class LevelzConfig implements ConfigData {
     public boolean showLevelList = true; // Client only
     @ConfigEntry.Category("gui_settings")
     public boolean showLevel = true; // Client only
+    @ConfigEntry.Category("gui_settings")
+    @Comment("Switch levelz screen instead of closing with inventory key")
+    public boolean switch_screen = false; // Client only
 
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart
