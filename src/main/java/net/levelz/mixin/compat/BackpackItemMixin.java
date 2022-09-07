@@ -19,10 +19,12 @@ public class BackpackItemMixin {
 
     @Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)
     private static void openScreenMixin(PlayerEntity player, ItemStack backpackItemStack, CallbackInfo info) {
-        ArrayList<Object> customList = LevelLists.customItemList;
-        if (!customList.isEmpty() && customList.contains(Registry.ITEM.getId(backpackItemStack.getItem()).toString())) {
-            if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, Registry.ITEM.getId(backpackItemStack.getItem()).toString(), true))
-                info.cancel();
+        if (player.world != null && !player.world.isClient) {
+            ArrayList<Object> customList = LevelLists.customItemList;
+            if (!customList.isEmpty() && customList.contains(Registry.ITEM.getId(backpackItemStack.getItem()).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, Registry.ITEM.getId(backpackItemStack.getItem()).toString(), true))
+                    info.cancel();
+            }
         }
     }
 }
