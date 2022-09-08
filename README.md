@@ -288,5 +288,8 @@ It triggers when the player reached the set level.
 `/playerstats playername get skill`
 - Print the specific skill level
 
+`/info material`
+- Print the material string of the item in hand
+
 ### Info
 Inside the config there is a developer mode setting, when set to true, inside the creative menu, hover over an item/block with your mouse and press f8 (default key) to create or append the item/block id to the file called idlist.json inside your minecraft folder for easier datapack creation.
