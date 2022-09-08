@@ -69,7 +69,6 @@
     "item.ShieldItemMixin",
     "item.SwordItemMixin",
     "item.TridentItemMixin",
-    "misc.AbstractFurnaceScreenHandlerMixin",
     "misc.AnvilScreenHandlerMixin",
     "misc.BrewingRecipeRegistryMixin",
     "misc.BrewingStandScreenHandlerMixin",
