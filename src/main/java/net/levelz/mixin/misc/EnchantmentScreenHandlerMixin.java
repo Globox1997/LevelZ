@@ -44,7 +44,7 @@ public abstract class EnchantmentScreenHandlerMixin {
 
     @Inject(method = "onContentChanged", at = @At(value = "TAIL"))
     private void onContentChangedMixin(Inventory inventory, CallbackInfo info) {
-        if (inventory == this.inventory && playerInventory != null) {
+        if (inventory == this.inventory && playerInventory != null && !playerInventory.player.isCreative()) {
             ItemStack itemStack = inventory.getStack(0);
             if (!itemStack.isEmpty() && itemStack.isEnchantable()) {
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerInventory.player).getPlayerStatsManager();
