@@ -9,7 +9,6 @@ import net.levelz.init.ConfigInit;
 import net.levelz.init.TagInit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.CropBlock;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -17,10 +16,10 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-@Mixin(CropBlock.class)
-public abstract class CropBlockMixin extends PlantBlock {
+@Mixin(PlantBlock.class)
+public abstract class PlantBlockMixin extends Block {
 
-    public CropBlockMixin(Settings settings) {
+    public PlantBlockMixin(Settings settings) {
         super(settings);
     }
 

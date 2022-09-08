@@ -19,7 +19,7 @@
     "block.BrewingStandBlockMixin",
     "block.CartographyTableBlockMixin",
     "block.ComposterBlockMixin",
-    "block.CropBlockMixin",
+    "block.PlantBlockMixin",
     "block.EnchantingTableBlockMixin",
     "block.GrindstoneBlockMixin",
     "block.LecternBlockMixin",
