@@ -30,7 +30,7 @@
     "block.StonecutterBlockMixin",
     "compat.SurvivalTrinketSlotMixin",
     "compat.TrinketItemMixin",
-    "compat.CreatePlayerStatsManagerMixin",
+    "compat.PlayerStatsManagerCompatMixin",
     "compat.BackpackItemMixin",
     "entity.AnimalEntityMixin",
     "entity.AxolotlEntityMixin",

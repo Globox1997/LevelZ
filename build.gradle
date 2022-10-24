@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.0-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -58,19 +58,19 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Trinkets
-    modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.0.0-beta.1")
-	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.0.0-beta.1")
+    modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.0.2")
+	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.0.2")
     modCompileOnly ('com.github.emilyploszaj:trinkets:3.4.0') {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // REI
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
     // EMI
-    modCompileOnly "dev.emi:emi:0.4.0+1.19"
-    //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
-    //modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.472"
+    modImplementation "dev.emi:emi:0.4.0+1.19"
+    // //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
+    // //modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.472"
     // Dualwielding
-	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT') {
+	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT'),{
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // PlaceHolder
