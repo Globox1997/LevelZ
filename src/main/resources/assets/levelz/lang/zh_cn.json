@@ -1,23 +1,29 @@
 {
  "commands.playerstats.changed": "您的属性已改变",
- 
  "commands.playerstats.printProgress": "%s XP: %s / %s",
  "commands.playerstats.printLevel": "%s %s %s",
  
  "category.levelz.keybind": "LevelZ 按键绑定",
  "key.levelz.openskillscreen": "打开技能界面",
+ "key.levelz.dev": "开发模式",
+
  "text.autoconfig.levelz.title": "LevelZ 配置",
- "text.autoconfig.levelz.category.default": "技能设置",
  "text.autoconfig.levelz.category.gui_settings": "GUI设置",
+ "text.autoconfig.levelz.category.default": "技能设置",
  "text.autoconfig.levelz.category.level_settings": "等级设置",
  "text.autoconfig.levelz.category.experience_settings": "经验设置",
+ "text.autoconfig.levelz.category.progression_settings": "进度设置",
+ "text.autoconfig.levelz.option.devMode": "开发模式",
  "text.autoconfig.levelz.option.hardMode": "极限模式 (开启后玩家死亡时清除所有点数和经验)",
  "text.autoconfig.levelz.option.disableMobFarms": "禁用刷怪塔",
- "text.autoconfig.levelz.option.maxLevel": "最大等级",
+ "text.autoconfig.levelz.option.maxLevel": "技能最大等级",
+ "text.autoconfig.levelz.option.overallMaxLevel": "总最大等级",
  "text.autoconfig.levelz.option.startPoints": "初始点数 (开启奖励箱生效)",
+ "text.autoconfig.levelz.option.pointsPerLevel": "每级获得点数",
  "text.autoconfig.levelz.option.resetCurrentXP": "死亡时重置当前经验条",
  "text.autoconfig.levelz.option.xpBaseCost": "基础经验",
- "text.autoconfig.levelz.option.xpCostMultiplicator": "经验乘数 (公式: 等级 ^ 2 x 经验乘数 + 基础经验)",
+ "text.autoconfig.levelz.option.xpCostMultiplicator": "经验乘数 (等级^2 x 经验乘数 + 基础经验)",
+ "text.autoconfig.levelz.option.xpExponent": "经验指数",
  "text.autoconfig.levelz.option.xpMaxCost": "最大经验值",
  "text.autoconfig.levelz.option.healthBase": "基础生命",
  "text.autoconfig.levelz.option.healthBonus": "每级生命加成",
@@ -34,11 +40,11 @@
  "text.autoconfig.levelz.option.defenseReflectChance": "伤害反弹几率",
  "text.autoconfig.levelz.option.luckBase": "基础幸运值",
  "text.autoconfig.levelz.option.luckBonus": "每级幸运值加成",
- "text.autoconfig.levelz.option.luckCritBonus": "每级幸运一击加成",
+ "text.autoconfig.levelz.option.luckCritBonus": "每级暴击加成",
  "text.autoconfig.levelz.option.luckSurviveChance": "免疫致死伤害几率",
- "text.autoconfig.levelz.option.critDmgBonus": "幸运一击伤害加成",
- "text.autoconfig.levelz.option.staminaBase": "基础饥饿消耗",
- "text.autoconfig.levelz.option.staminaBonus": "每级饥饿消耗减少",
+ "text.autoconfig.levelz.option.attackCritDmgBonus": "暴击伤害加成",
+ "text.autoconfig.levelz.option.staminaBase": "基础饱食度消耗",
+ "text.autoconfig.levelz.option.staminaBonus": "每级饱食度消耗减少",
  "text.autoconfig.levelz.option.staminaHealthBonus": "生命再生加成",
  "text.autoconfig.levelz.option.staminaFoodBonus": "食物加成",
  "text.autoconfig.levelz.option.tradeBonus": "每级交易加成",
@@ -52,13 +58,15 @@
  "text.autoconfig.levelz.option.farmingTwinChance": "动物繁殖双胞胎几率",
  "text.autoconfig.levelz.option.alchemyPotionChance": "双倍药水效果几率",
  "text.autoconfig.levelz.option.alchemyEnchantmentChance": "额外附魔等级几率",
+ "text.autoconfig.levelz.option.archeryInaccuracyBonus": "射箭精准度修正",
  "text.autoconfig.levelz.option.archeryBowExtraDamage": "每级弓箭额外伤害",
  "text.autoconfig.levelz.option.archeryCrossbowExtraDamage": "每级弩箭额外伤害",
  "text.autoconfig.levelz.option.archeryDoubleDamageChance": "远程双倍伤害几率",
  "text.autoconfig.levelz.option.miningTntBonus": "TNT威力加成",
  "text.autoconfig.levelz.option.miningOreChance": "额外矿物掉落几率",
  "text.autoconfig.levelz.option.miningLockedMultiplicator": "未解锁的方块破坏速度减慢倍数",
- "text.autoconfig.levelz.option.highlightLocked": "高亮显示锁定的方块",
+
+
  "text.autoconfig.levelz.option.dropPlayerXP": "玩家经验掉落",
  "text.autoconfig.levelz.option.enableStartPoints": "初始点数",
  "text.autoconfig.levelz.option.mobKillCount": "单区块最大杀死怪物数",
@@ -72,10 +80,24 @@
  "text.autoconfig.levelz.option.oreXPMultiplier": "挖矿经验倍率",
  "text.autoconfig.levelz.option.tradingXPMultiplier": "交易经验倍率",
  "text.autoconfig.levelz.option.mobXPMultiplier": "怪物经验倍率",
- "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "通过技能排序合成",
- "text.autoconfig.levelz.option.inventoryButton": "库存按钮",
+
+ "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "按技能分类排序配方书",
+ "text.autoconfig.levelz.option.inventoryButton": "物品栏界面按钮",
+ "text.autoconfig.levelz.option.inventorySkillLevel": "物品栏界面显示等级",
+ "text.autoconfig.levelz.option.highlightLocked": "高亮显示锁定的方块",
+ "text.autoconfig.levelz.option.showLevelList": "显示技能列表",
+ "text.autoconfig.levelz.option.showLevel": "显示等级",
+ "text.autoconfig.levelz.option.switch_screen": "物品栏按键切换界面而不是关闭物品栏",
+
+ "text.autoconfig.levelz.option.miningProgression": "采矿解锁进度",
+ "text.autoconfig.levelz.option.itemProgression": "物品解锁进度",
+ "text.autoconfig.levelz.option.blockProgression": "方块解锁进度",
+ "text.autoconfig.levelz.option.entityProgression": "生物解锁进度",
+ "text.autoconfig.levelz.option.brewingProgression": "炼金解锁进度",
+ "text.autoconfig.levelz.option.smithingProgression": "锻造解锁进度",
  
  "item.levelz.strange_potion": "奇异药水",
+ "item.levelz.rare_candy": "奇异糖果",
  
  "item.levelz.locked.tooltip": "未解锁",
  "item.levelz.farming.tooltip": "§7需要§c农耕 %d",
@@ -95,6 +117,7 @@
  "item.levelz.alchemy_restriction.tooltip": "§7需要§c炼金 %d",
  "item.levelz.smithing_restriction.tooltip": "§7需要§c锻造 %d",
  "item.levelz.crafting_restriction.tooltip": "§7合成限制需要§c%s %d",
+
  "item.levelz.sheep_restriction.tooltip": "§7剪羊毛需要§c%s %d",
  
  "block.levelz.locked.tooltip": "§c未解锁",
@@ -103,8 +126,10 @@
  "text.levelz.gui.title": "%s 技能面板",
  "text.levelz.gui.level": "等级 %d",
  "text.levelz.gui.points": "技能点 %d",
- 
  "text.levelz.gui.short_level": "Lv. %d",
+
+ "text.levelz.scoreboard": "Lv. %d %s",
+
  "text.levelz.level": "Lv.%d",
  "text.levelz.locked_list": "%s列表",
  "text.levelz.info": "%s技能信息",
@@ -113,8 +138,8 @@
  "text.levelz.object_info_1": "%s",
  "text.levelz.object_info_2": "%s%s",
  "text.levelz.more_info": "点击技能图标获取更多信息",
- 
  "text.levelz.crafting_info": "合成等级限制列表",
+
  "text.levelz.health_info_1": "玩家初始生命值：%d",
  "text.levelz.health_info_2_1": "每级增加%d生命值",
  "text.levelz.health_info_2_2": "",
@@ -193,6 +218,8 @@
  "text.levelz.farming_max_lvl_2": "",
  
  "text.levelz.alchemy_info_1": "炼药材料的解锁与等级关联",
+ "text.levelz.alchemy_info_2_1": "每一个技能点提升附魔等级的几率提高%d",
+ "text.levelz.alchemy_info_2_2": "",
  "text.levelz.alchemy_max_lvl_1": "有%d%%几率获得双倍药水效果",
  "text.levelz.alchemy_max_lvl_2": "",
  
@@ -244,12 +271,14 @@
  "spritetip.levelz.crafting_skill": "合成",
  
  "container.levelz.enchanting_tier": "附魔等级 %d 需要 %s 等级 %d 解锁",
+
  "text.levelz.object_info.sword": "剑",
  "text.levelz.object_info.tool": "工具",
  "text.levelz.object_info.hoe": "锄",
  "text.levelz.object_info.axe": "斧",
  "text.levelz.object_info.armor": "护甲",
  "text.levelz.object_info.breeding": "繁殖",
+
  "text.levelz.object_prefix.wood": "木",
  "text.levelz.object_prefix.stone": "石",
  "text.levelz.object_prefix.iron": "铁",
@@ -264,5 +293,10 @@
  "config.waila.plugin_levelz.mineable_info": "可挖掘状态显示",
  "config.waila.plugin_levelz.mineable_level_info": "可挖掘等级显示",
  
- "entity.levelz.level_experience_orb": "经验球"
+ "entity.levelz.level_experience_orb": "LevelZ经验球",
+
+ "screen.levelz.skill_screen": "技能面板",
+
+ "advancements.adventure.level_100.title": "100级",
+ "advancements.adventure.level_100.description": "达到无法达到的等级"
 }
