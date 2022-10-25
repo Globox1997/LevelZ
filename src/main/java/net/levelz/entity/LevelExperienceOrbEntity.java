@@ -1,13 +1,11 @@
 package net.levelz.entity;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.levelz.access.PlayerSyncAccess;
+import net.levelz.init.ConfigInit;
 import net.levelz.init.EntityInit;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.entity.Entity;
@@ -118,6 +116,9 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     public static void spawn(ServerWorld world, Vec3d pos, int amount) {
+        if (!ConfigInit.CONFIG.useIndependentExp) {
+            return;
+        }
         while (amount > 0) {
             int i = LevelExperienceOrbEntity.roundToOrbSize(amount);
             amount -= i;

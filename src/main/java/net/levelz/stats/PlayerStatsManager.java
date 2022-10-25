@@ -341,4 +341,25 @@ public class PlayerStatsManager {
     public static void onLevelUp(PlayerEntity playerEntity, int playerLevel) {
     }
 
+    public float getLevelProgress(PlayerEntity playerEntity) {
+        if (!ConfigInit.CONFIG.useIndependentExp) {
+            return Math.min(getPlayerExp(playerEntity) / (float) this.getNextLevelExperience(), 1F);
+        }
+        return levelProgress;
+    }
+
+    public static int getPlayerExp(PlayerEntity playerEntity) {
+        int level = playerEntity.experienceLevel;
+        int exp = 0;
+        for (int i = 0; i < level; i++) {
+            if (i >= 30) {
+                exp += 112 + (i - 30) * 9;
+            } else {
+                exp += i >= 15 ? 37 + (i - 15) * 5 : 7 + i * 2;
+            }
+        }
+        exp += playerEntity.getNextLevelExperience() * playerEntity.experienceProgress;
+        return exp;
+    }
+
 }

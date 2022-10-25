@@ -56,18 +56,26 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Override
     public void addLevelExperience(int experience) {
-        boolean isEndLvl = this.playerStatsManager.isMaxLevel();
-        if (!isEndLvl) {
+        if (!playerStatsManager.isMaxLevel()) {
             ServerPlayerEntity playerEntity = (ServerPlayerEntity) (Object) this;
-            playerStatsManager.levelProgress += (float) experience / (float) playerStatsManager.getNextLevelExperience();
+            int nextLevelExperience = playerStatsManager.getNextLevelExperience();
+            if (!ConfigInit.CONFIG.useIndependentExp) {
+                if (playerStatsManager.getLevelProgress(playerEntity) >= 1) {
+                    experience = nextLevelExperience;
+                }
+            }
+            playerStatsManager.levelProgress += Math.max((float) experience / nextLevelExperience, 0);
             playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
             while (playerStatsManager.levelProgress >= 1.0F && !playerStatsManager.isMaxLevel()) {
                 playerStatsManager.levelProgress = (playerStatsManager.levelProgress - 1.0F) * (float) playerStatsManager.getNextLevelExperience();
                 playerStatsManager.addExperienceLevels(1);
                 playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
+                if (!ConfigInit.CONFIG.useIndependentExp) {
+                    playerEntity.addExperience(-experience);
+                }
                 PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, playerEntity);
                 PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
-                CriteriaInit.LEVEL_UP.trigger((ServerPlayerEntity) playerEntity, playerStatsManager.overallLevel);
+                CriteriaInit.LEVEL_UP.trigger(playerEntity, playerStatsManager.overallLevel);
                 playerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, playerEntity));
                 playerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, this.getEntityName(), ScoreboardPlayerScore::incrementScore);
                 if (playerStatsManager.overallLevel > 0) {

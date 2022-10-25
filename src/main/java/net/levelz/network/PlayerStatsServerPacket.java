@@ -6,6 +6,7 @@ import java.util.List;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
+import net.levelz.access.PlayerSyncAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
@@ -30,6 +31,8 @@ public class PlayerStatsServerPacket {
     public static final Identifier CONFIG_SYNC_PACKET = new Identifier("levelz", "config_sync_packet");
     public static final Identifier TAG_PACKET = new Identifier("levelz", "tag_packet");
     public static final Identifier SEND_TAG_PACKET = new Identifier("levelz", "send_tag_packet");
+    public static final Identifier LEVEL_UP_BUTTON_PACKET = new Identifier("levelz", "level_up_button");
+
 
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
@@ -67,7 +70,10 @@ public class PlayerStatsServerPacket {
         ServerPlayNetworking.registerGlobalReceiver(SEND_TAG_PACKET, (server, player, handler, buffer, sender) -> {
             writeS2CTagPacket(player, buffer.readIdentifier());
         });
-
+        ServerPlayNetworking.registerGlobalReceiver(LEVEL_UP_BUTTON_PACKET, (server, player, handler, buffer, sender) -> {
+            if (player == null) return;
+            ((PlayerSyncAccess) player).addLevelExperience(0);
+        });
     }
 
     public static void writeS2CXPPacket(PlayerStatsManager playerStatsManager, ServerPlayerEntity serverPlayerEntity) {

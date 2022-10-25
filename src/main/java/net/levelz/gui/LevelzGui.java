@@ -75,8 +75,18 @@ public class LevelzGui extends LightweightGuiDescription {
         WDynamicLabel fortuneLabel = new WDynamicLabel(() -> "" + BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_LUCK)).setScale(2, RoundingMode.HALF_DOWN).floatValue());
         WDynamicLabel overallLevel = new WDynamicLabel(() -> String.format(Language.getInstance().get("text.levelz.gui.level"), playerStatsManager.getLevel("level")));
         WDynamicLabel skillPoints = new WDynamicLabel(() -> String.format(Language.getInstance().get("text.levelz.gui.points"), playerStatsManager.getLevel("points")));
-        WDynamicLabel nextLevel = new WDynamicLabel(
-                () -> "XP " + (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()) + " / " + playerStatsManager.getNextLevelExperience());
+//        WDynamicLabel nextLevel = new WDynamicLabel(
+//                () -> "XP " + (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()) + " / " + playerStatsManager.getNextLevelExperience());
+        WDynamicLabel nextLevel;
+        ZWButton levelUp = new ZWButton(Text.translatable("text.levelz.gui.level_up"), 10);
+        if (!ConfigInit.CONFIG.useIndependentExp) {
+            nextLevel = new WDynamicLabel(() -> String.format("XP %d / %d", PlayerStatsManager.getPlayerExp(playerEntity), playerStatsManager.getNextLevelExperience()));
+            levelUp.setEnabled(playerStatsManager.getLevelProgress(playerEntity) >= 1 && !playerStatsManager.isMaxLevel());
+            root.add(levelUp, 110, 49);
+        } else {
+            nextLevel = new WDynamicLabel(
+                    () -> "XP " + (int) (playerStatsManager.levelProgress * playerStatsManager.getNextLevelExperience()) + " / " + playerStatsManager.getNextLevelExperience());
+        }
 
         root.add(lifeLabel, 74, 22);
         root.add(protectionLabel, 74, 36);
@@ -211,6 +221,13 @@ public class LevelzGui extends LightweightGuiDescription {
         ZWButton miningButton = new ZWButton();
         ZWButton farmingButton = new ZWButton();
         ZWButton alchemyButton = new ZWButton();
+        levelUp.setOnClick(() -> {
+            PlayerStatsClientPacket.writeC2SLevelUpPacket();
+            levelUp.setEnabled(playerStatsManager.getLevelProgress(playerEntity) >= 1 && !playerStatsManager.isMaxLevel());
+            // Button mechanic
+            setButtonEnabled(healthButton, strengthButton, agilityButton, defenseButton, staminaButton, luckButton, archeryButton, tradeButton, smithingButton, miningButton, farmingButton, alchemyButton,
+                    playerStatsManager);
+        });
 
         root.add(healthButton, 77, 91);
         root.add(strengthButton, 77, 111);

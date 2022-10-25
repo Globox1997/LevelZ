@@ -2,17 +2,20 @@
  "commands.playerstats.changed": "您的属性已改变",
  "commands.playerstats.printProgress": "%s XP: %s / %s",
  "commands.playerstats.printLevel": "%s %s %s",
- 
+
  "category.levelz.keybind": "LevelZ 按键绑定",
  "key.levelz.openskillscreen": "打开技能界面",
  "key.levelz.dev": "开发模式",
 
  "text.autoconfig.levelz.title": "LevelZ 配置",
+
  "text.autoconfig.levelz.category.gui_settings": "GUI设置",
  "text.autoconfig.levelz.category.default": "技能设置",
  "text.autoconfig.levelz.category.level_settings": "等级设置",
  "text.autoconfig.levelz.category.experience_settings": "经验设置",
  "text.autoconfig.levelz.category.progression_settings": "进度设置",
+
+ "text.autoconfig.levelz.option.useIndependentExp": "使用LevelZ的经验系统",
  "text.autoconfig.levelz.option.devMode": "开发模式",
  "text.autoconfig.levelz.option.hardMode": "极限模式 (开启后玩家死亡时清除所有点数和经验)",
  "text.autoconfig.levelz.option.disableMobFarms": "禁用刷怪塔",
@@ -95,10 +98,10 @@
  "text.autoconfig.levelz.option.entityProgression": "生物解锁进度",
  "text.autoconfig.levelz.option.brewingProgression": "炼金解锁进度",
  "text.autoconfig.levelz.option.smithingProgression": "锻造解锁进度",
- 
+
  "item.levelz.strange_potion": "奇异药水",
  "item.levelz.rare_candy": "奇异糖果",
- 
+
  "item.levelz.locked.tooltip": "未解锁",
  "item.levelz.farming.tooltip": "§7需要§c农耕 %d",
  "item.levelz.mining.tooltip": "§7需要§c采矿 %d",
@@ -112,21 +115,22 @@
  "item.levelz.stamina.tooltip": "§7需要§c耐力 %d",
  "item.levelz.luck.tooltip": "§7需要§c幸运 %d",
  "item.levelz.trade.tooltip": "§7需要§c贸易 %d",
- 
+
  "item.levelz.mining_restriction.tooltip": "§7需要§c采矿 %d",
  "item.levelz.alchemy_restriction.tooltip": "§7需要§c炼金 %d",
  "item.levelz.smithing_restriction.tooltip": "§7需要§c锻造 %d",
  "item.levelz.crafting_restriction.tooltip": "§7合成限制需要§c%s %d",
 
  "item.levelz.sheep_restriction.tooltip": "§7剪羊毛需要§c%s %d",
- 
+
  "block.levelz.locked.tooltip": "§c未解锁",
  "block.levelz.locked_with_level.tooltip": "未解锁，当前等级：%d",
- 
+
  "text.levelz.gui.title": "%s 技能面板",
  "text.levelz.gui.level": "等级 %d",
  "text.levelz.gui.points": "技能点 %d",
  "text.levelz.gui.short_level": "Lv. %d",
+ "text.levelz.gui.level_up": "升级",
 
  "text.levelz.scoreboard": "Lv. %d %s",
 
@@ -145,13 +149,13 @@
  "text.levelz.health_info_2_2": "",
  "text.levelz.health_max_lvl_1": "生命值或饱食度全满时获得%d伤害吸收",
  "text.levelz.health_max_lvl_2": "",
- 
+
  "text.levelz.strength_info_1": "玩家初始攻击伤害：%d",
  "text.levelz.strength_info_2_1": "每级增加%d攻击伤害",
  "text.levelz.strength_info_2_2": "",
  "text.levelz.strength_max_lvl_1": "使用近战武器有%d%%几率造成双倍伤害",
  "text.levelz.strength_max_lvl_2": "",
- 
+
  "text.levelz.agility_info_1": "玩家初始移动速度：%d",
  "text.levelz.agility_info_2_1": "每级增加%d移动速度",
  "text.levelz.agility_info_2_2": "",
@@ -159,13 +163,13 @@
  "text.levelz.agility_info_3_2": "",
  "text.levelz.agility_max_lvl_1": "有%d%%几率闪避敌人攻击",
  "text.levelz.agility_max_lvl_2": "",
- 
+
  "text.levelz.defense_info_1": "玩家初始防御：%d",
  "text.levelz.defense_info_2_1": "每级增加%d防御",
  "text.levelz.defense_info_2_2": "",
  "text.levelz.defense_max_lvl_1": "有%d%%几率反弹敌人的攻击",
  "text.levelz.defense_max_lvl_2": "",
- 
+
  "text.levelz.stamina_info_1": "玩家初始饥饿消耗：%d",
  "text.levelz.stamina_info_2_1": "每级减少%d饥饿消耗",
  "text.levelz.stamina_info_2_2": "",
@@ -173,7 +177,7 @@
  "text.levelz.stamina_info_3_2": "",
  "text.levelz.stamina_max_lvl_1": "获得%d%%额外食物效果加成",
  "text.levelz.stamina_max_lvl_2": "",
- 
+
  "text.levelz.luck_info_1": "玩家初始幸运：%d",
  "text.levelz.luck_info_1_2": "幸运额外增加战利品掉落",
  "text.levelz.luck_info_2_1": "每级增加%d幸运",
@@ -182,94 +186,94 @@
  "text.levelz.luck_info_3_2": "",
  "text.levelz.luck_max_lvl_1": "有%d%%几率免疫致死伤害",
  "text.levelz.luck_max_lvl_2": "",
- 
+
  "text.levelz.archery_info_2_1": "每级增加%d弓箭伤害",
  "text.levelz.archery_info_2_2": "",
  "text.levelz.archery_info_3_1": "每级增加%d弩箭伤害",
  "text.levelz.archery_info_3_2": "",
  "text.levelz.archery_max_lvl_1": "使用远程武器有%d%%几率造成双倍伤害",
  "text.levelz.archery_max_lvl_2": "",
- 
+
  "text.levelz.trade_info_2_1": "每级增加%d交易经验",
  "text.levelz.trade_info_2_2": "",
  "text.levelz.trade_info_3_1": "每级降低%d交易价格",
  "text.levelz.trade_info_3_2": "",
  "text.levelz.trade_max_lvl_1": "不会失去从村民处获取的声望",
  "text.levelz.trade_max_lvl_2": "",
- 
+
  "text.levelz.smithing_info_2_1": "每级降低%d工具损坏几率",
  "text.levelz.smithing_info_2_2": "",
  "text.levelz.smithing_info_3_1": "每级降低%d锻造经验消耗",
  "text.levelz.smithing_info_3_2": "",
  "text.levelz.smithing_max_lvl_1": "锻造有%d%%几率不消耗经验",
  "text.levelz.smithing_max_lvl_2": "并额外获得与等级上限相当的经验值",
- 
+
  "text.levelz.mining_info_1": "可开采的矿物与等级关联",
  "text.levelz.mining_info_2_1": "每级增加%d%%粗矿额外掉落几率",
  "text.levelz.mining_info_2_2": "",
  "text.levelz.mining_max_lvl_1": "增加%d%%TNT威力",
  "text.levelz.mining_max_lvl_2": "",
- 
+
  "text.levelz.farming_info_2_1": "%s级时解锁几率双倍收获作物",
  "text.levelz.farming_info_2_2": "",
  "text.levelz.farming_info_3_1": "每级增加%d%%双倍收获几率",
  "text.levelz.farming_info_3_2": "",
  "text.levelz.farming_max_lvl_1": "动物有%d%%几率繁殖双胞胎",
  "text.levelz.farming_max_lvl_2": "",
- 
+
  "text.levelz.alchemy_info_1": "炼药材料的解锁与等级关联",
  "text.levelz.alchemy_info_2_1": "每一个技能点提升附魔等级的几率提高%d",
  "text.levelz.alchemy_info_2_2": "",
  "text.levelz.alchemy_max_lvl_1": "有%d%%几率获得双倍药水效果",
  "text.levelz.alchemy_max_lvl_2": "",
- 
+
  "spritetip.levelz.health_skill": "生命",
  "spritetip.levelz.health_skill_info": "提高生命值",
- 
+
  "spritetip.levelz.strength_skill": "力量",
  "spritetip.levelz.strength_skill_info_1": "提高近战伤害",
  "spritetip.levelz.strength_skill_info_2": "解锁剑类物品",
- 
+
  "spritetip.levelz.agility_skill": "敏捷",
  "spritetip.levelz.agility_skill_info_1": "提高移动速度",
  "spritetip.levelz.agility_skill_info_2": "减少摔落伤害",
- 
+
  "spritetip.levelz.defense_skill": "防御",
  "spritetip.levelz.defense_skill_info_1": "提高防御力",
  "spritetip.levelz.defense_skill_info_2": "解锁防具",
- 
+
  "spritetip.levelz.stamina_skill": "耐力",
  "spritetip.levelz.stamina_skill_info_1": "减少饥饿消耗",
  "spritetip.levelz.stamina_skill_info_2": "增加生命回复",
- 
+
  "spritetip.levelz.luck_skill": "幸运",
  "spritetip.levelz.luck_skill_info_1": "提高额外战利品掉落",
  "spritetip.levelz.luck_skill_info_2": "提高幸运一击几率",
- 
+
  "spritetip.levelz.archery_skill": "箭术",
  "spritetip.levelz.archery_skill_info_1": "提高弓箭伤害",
  "spritetip.levelz.archery_skill_info_2": "提高弩箭伤害",
  "spritetip.levelz.archery_skill_info_3": "解锁箭术物品",
- 
+
  "spritetip.levelz.trade_skill": "贸易",
  "spritetip.levelz.trade_skill_info": "降低交易价格",
- 
+
  "spritetip.levelz.smithing_skill": "锻造",
  "spritetip.levelz.smithing_skill_info_1": "降低锻造经验消耗",
  "spritetip.levelz.smithing_skill_info_2": "解锁锻造物品",
- 
+
  "spritetip.levelz.mining_skill": "采矿",
  "spritetip.levelz.mining_skill_info_1": "解锁工具",
  "spritetip.levelz.mining_skill_info_2": "解锁矿物资源",
- 
+
  "spritetip.levelz.farming_skill": "农耕",
  "spritetip.levelz.farming_skill_info": "解锁农耕物品",
- 
+
  "spritetip.levelz.alchemy_skill": "炼金",
  "spritetip.levelz.alchemy_skill_info": "解锁炼金物品",
- 
+
  "spritetip.levelz.crafting_skill": "合成",
- 
+
  "container.levelz.enchanting_tier": "附魔等级 %d 需要 %s 等级 %d 解锁",
 
  "text.levelz.object_info.sword": "剑",
@@ -288,11 +292,11 @@
  "text.levelz.object_prefix.turtle": "龟甲",
  "text.levelz.object_prefix.chainmail": "链甲",
  "text.levelz.object_prefix.leather": "皮革",
- 
+
  "config.waila.plugin_levelz": "LevelZ",
  "config.waila.plugin_levelz.mineable_info": "可挖掘状态显示",
  "config.waila.plugin_levelz.mineable_level_info": "可挖掘等级显示",
- 
+
  "entity.levelz.level_experience_orb": "LevelZ经验球",
 
  "screen.levelz.skill_screen": "技能面板",

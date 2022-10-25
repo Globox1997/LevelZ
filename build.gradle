@@ -70,13 +70,13 @@ dependencies {
     // //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
     // //modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.472"
     // Dualwielding
-	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT'),{
+	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // PlaceHolder
     modImplementation ("eu.pb4:placeholder-api:2.0.0-beta.7+1.19")
     // Inmis
-	modCompileOnly ("curse.maven:inmis-369254:3853651"),{
+	modCompileOnly ("curse.maven:inmis-369254:3853651") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
