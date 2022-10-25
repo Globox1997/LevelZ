@@ -222,9 +222,10 @@ public class LevelExperienceOrbEntity extends Entity {
             player.experiencePickUpDelay = 2;
             player.sendPickup(this, 1);
             getClumpedMap().forEach((value, amount) -> {
-                for (int i = 0; i < amount; i++) {
-                    ((PlayerSyncAccess) player).addLevelExperience(amount);
-                }
+//                for (int i = 0; i < amount; i++) {
+//                    ((PlayerSyncAccess) player).addLevelExperience(value);
+//                }
+                ((PlayerSyncAccess) player).addLevelExperience(value * amount);
             });
 
             this.discard();

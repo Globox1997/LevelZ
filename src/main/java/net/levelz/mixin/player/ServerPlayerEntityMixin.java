@@ -61,7 +61,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             ServerPlayerEntity playerEntity = (ServerPlayerEntity) (Object) this;
             playerStatsManager.levelProgress += (float) experience / (float) playerStatsManager.getNextLevelExperience();
             playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
-            while (playerStatsManager.levelProgress >= 1.0F && !isEndLvl) {
+            while (playerStatsManager.levelProgress >= 1.0F && !playerStatsManager.isMaxLevel()) {
                 playerStatsManager.levelProgress = (playerStatsManager.levelProgress - 1.0F) * (float) playerStatsManager.getNextLevelExperience();
                 playerStatsManager.addExperienceLevels(1);
                 playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
