@@ -182,7 +182,7 @@
  "text.levelz.luck_info_1_2": "幸运额外增加战利品掉落",
  "text.levelz.luck_info_2_1": "每级增加%d幸运",
  "text.levelz.luck_info_2_2": "",
- "text.levelz.luck_info_3_1": "每级增加%d%%幸运一击几率",
+ "text.levelz.luck_info_3_1": "每级增加%d%%暴击几率",
  "text.levelz.luck_info_3_2": "",
  "text.levelz.luck_max_lvl_1": "有%d%%几率免疫致死伤害",
  "text.levelz.luck_max_lvl_2": "",
@@ -248,7 +248,7 @@
 
  "spritetip.levelz.luck_skill": "幸运",
  "spritetip.levelz.luck_skill_info_1": "提高额外战利品掉落",
- "spritetip.levelz.luck_skill_info_2": "提高幸运一击几率",
+ "spritetip.levelz.luck_skill_info_2": "提高暴击几率",
 
  "spritetip.levelz.archery_skill": "箭术",
  "spritetip.levelz.archery_skill_info_1": "提高弓箭伤害",
