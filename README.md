@@ -254,6 +254,12 @@ should look like is here:
 }
 ```
 
+#### Disable access to entities
+To permanently disable access to an entity, simply set the skill requirement higher than the `maxLevel` property configured in `levelz.json5`.
+
+#### Full list of available entities
+See https://github.com/Globox1997/LevelZ/tree/1.19/src/main/resources/data/levelz
+
 ### Example Datapack
 
 Check out the exampleDatapack folder for an example how it can look like.\
@@ -274,6 +280,11 @@ It triggers when the player reached the set level.
         }
     }
 ```
+
+### Additional configuration
+Levelz exposes configuration settings for many attributes, such as
+setting max levels, experience rates from different mobs, etc..
+These configuration settings are found in `${MINECRAFTDIR}/config/levelz.json5`
 
 ### Commands
 `/playerstats playername add skill integer`
