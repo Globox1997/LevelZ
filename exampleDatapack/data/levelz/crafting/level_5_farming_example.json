@@ -1,0 +1,8 @@
+{
+    "replace": true,
+    "level": 5,
+    "skill": "farming",
+    "item": [
+        "minecraft:composter"
+    ]
+}
