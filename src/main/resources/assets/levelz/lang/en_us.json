@@ -195,16 +195,16 @@
   "text.levelz.archery_max_lvl_2": "double dmg with range weapons",
 
   "text.levelz.trade_info_2_1": "Each skill point increases trade",
-  "text.levelz.trade_info_2_2": "xp drop by %d",
+  "text.levelz.trade_info_2_2": "xp drop by %d%%",
   "text.levelz.trade_info_3_1": "Each skill point decreases trade",
-  "text.levelz.trade_info_3_2": "price by %d",
+  "text.levelz.trade_info_3_2": "price by %d%%",
   "text.levelz.trade_max_lvl_1": "Player gains reputation from",
   "text.levelz.trade_max_lvl_2": "villagers and can't lose it",
 
   "text.levelz.smithing_info_2_1": "Each skill point decreases rate",
-  "text.levelz.smithing_info_2_2": "to damage used tools by %d",
+  "text.levelz.smithing_info_2_2": "to damage used tools by %d%%",
   "text.levelz.smithing_info_3_1": "Each skill point decreases",
-  "text.levelz.smithing_info_3_2": "anvil xp cost by %d",
+  "text.levelz.smithing_info_3_2": "anvil xp cost by %d%%",
   "text.levelz.smithing_max_lvl_1": "Player gains %d%% chance to regain",
   "text.levelz.smithing_max_lvl_2": "used anvil experience + caps max lvl",
 

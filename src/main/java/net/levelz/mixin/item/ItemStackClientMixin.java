@@ -64,7 +64,7 @@ public class ItemStackClientMixin {
                 this.itemId = itemId;
                 this.tooltipAddition = getAdditionalTooltip(player);
             }
-            if (this.tooltipAddition != null & !this.tooltipAddition.isEmpty())
+            if (this.tooltipAddition != null && !this.tooltipAddition.isEmpty())
                 list.addAll(this.tooltipAddition);
         }
     }
