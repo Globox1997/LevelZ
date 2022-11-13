@@ -11,6 +11,13 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name = "levelz")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class LevelzConfig implements ConfigData {
+
+    public int test0 = 0;
+    public int test1 = 0;
+    public int test2 = 0;
+    public int test3 = 0;
+    public int test4 = 0;
+
     // Level settings
     @ConfigEntry.Category("level_settings")
     @ConfigEntry.Gui.RequiresRestart
@@ -161,6 +168,8 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("gui_settings")
     @Comment("Highlight locked blocks in red.")
     public boolean highlightLocked = false; // Client only
+    @ConfigEntry.Category("gui_settings")
+    public boolean showLockedBlockInfo = false; // Client only
     @ConfigEntry.Category("gui_settings")
     public boolean sortCraftingRecipesBySkill = false; // Client only
     @ConfigEntry.Category("gui_settings")
