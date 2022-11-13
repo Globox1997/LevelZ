@@ -25,7 +25,7 @@
  "text.autoconfig.levelz.option.pointsPerLevel": "每级获得点数",
  "text.autoconfig.levelz.option.resetCurrentXP": "死亡时重置当前经验条",
  "text.autoconfig.levelz.option.xpBaseCost": "基础经验",
- "text.autoconfig.levelz.option.xpCostMultiplicator": "经验乘数 (等级^2 x 经验乘数 + 基础经验)",
+ "text.autoconfig.levelz.option.xpCostMultiplicator": "经验乘数 (等级^指数 x 乘数 + 基础经验)",
  "text.autoconfig.levelz.option.xpExponent": "经验指数",
  "text.autoconfig.levelz.option.xpMaxCost": "最大经验值",
  "text.autoconfig.levelz.option.healthBase": "基础生命",
@@ -91,6 +91,7 @@
  "text.autoconfig.levelz.option.showLevelList": "显示技能列表",
  "text.autoconfig.levelz.option.showLevel": "显示等级",
  "text.autoconfig.levelz.option.switch_screen": "物品栏按键切换界面而不是关闭物品栏",
+ "text.autoconfig.levelz.option.showLockedBlockInfo": "显示未解锁的方块信息",
 
  "text.autoconfig.levelz.option.miningProgression": "采矿解锁进度",
  "text.autoconfig.levelz.option.itemProgression": "物品解锁进度",

@@ -130,6 +130,7 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("experience_settings")
     @Comment("XP equation: lvl^exponent * multiplicator + base")
     public float xpCostMultiplicator = 0.1F;
+    @ConfigEntry.Category("experience_settings")
     public int xpExponent = 2;
     @ConfigEntry.Category("experience_settings")
     public int xpBaseCost = 50;

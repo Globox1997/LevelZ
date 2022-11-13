@@ -352,6 +352,7 @@ public class PlayerStatsManager {
         int level = playerEntity.experienceLevel;
         int exp = 0;
         for (int i = 0; i < level; i++) {
+            // PlayerEntity.getNextLevelExperience()
             if (i >= 30) {
                 exp += 112 + (i - 30) * 9;
             } else {

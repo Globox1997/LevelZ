@@ -99,7 +99,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         }
         if (this.tinySyncTicker > 0) {
             this.tinySyncTicker--;
-            if (this.tinySyncTicker < 1) {
+            if (this.tinySyncTicker % 20 == 0) {
                 syncStats(false);
             }
         }
@@ -123,7 +123,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         this.syncTeleportStats = true;
         this.syncedLevelExperience = -1;
         if (syncDelay) {
-            this.tinySyncTicker = 5;
+            // Multiple synchronization is to prevent server delay
+            this.tinySyncTicker = 2 * 20;   // every second
         }
     }
 

@@ -91,8 +91,7 @@
     "player.PlayerInventoryMixin",
     "player.PlayerManagerMixin",
     "player.ServerPlayerEntityMixin",
-    "player.PlayerListS2CPacketMixin",
-    "server.world.ServerWorldMixin"
+    "player.PlayerListS2CPacketMixin"
   ],
   "client": [
     "item.ItemStackClientMixin",

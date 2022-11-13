@@ -15,7 +15,7 @@
   "text.autoconfig.levelz.category.experience_settings": "Experience Settings",
   "text.autoconfig.levelz.category.progression_settings": "Progression Settings",
 
-  "text.autoconfig.levelz.option.useIndependentExp": "Use LevelZ XP System",
+  "text.autoconfig.levelz.option.useIndependentExp": "Use Independent XP",
   "text.autoconfig.levelz.option.devMode": "Dev Mode",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
