@@ -25,21 +25,24 @@ import net.minecraft.world.World;
 @Mixin(AbstractBlock.AbstractBlockState.class)
 public class AbstractBlockStateMixin {
 
+    // Set player inventory calculation here
     @Inject(method = "onBlockBreakStart", at = @At(value = "HEAD"))
     private void onBlockBreakStartMixin(World world, BlockPos pos, PlayerEntity player, CallbackInfo info) {
 
-        // Set player inventory calculation here
         Item item = player.getStackInHand(player.getActiveHand()).getItem();
-        if (item instanceof MiningToolItem) {
-            ArrayList<Object> itemList;
+        ArrayList<Object> levelList = LevelLists.customItemList;
+
+        if (!levelList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registry.ITEM.getId(item).toString(), true))
+            ((PlayerBreakBlockAccess) player.getInventory()).setInventoryBlockBreakable(false);
+        else if (item instanceof MiningToolItem) {
             if (item instanceof HoeItem) {
-                itemList = LevelLists.hoeList;
+                levelList = LevelLists.hoeList;
             } else if (item instanceof AxeItem) {
-                itemList = LevelLists.axeList;
+                levelList = LevelLists.axeList;
             } else {
-                itemList = LevelLists.toolList;
+                levelList = LevelLists.toolList;
             }
-            if (!PlayerStatsManager.playerLevelisHighEnough(player, itemList, ((MiningToolItem) item).getMaterial().toString().toLowerCase(), true)) {
+            if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, ((MiningToolItem) item).getMaterial().toString().toLowerCase(), true)) {
                 ((PlayerBreakBlockAccess) player.getInventory()).setInventoryBlockBreakable(false);
             } else
                 ((PlayerBreakBlockAccess) player.getInventory()).setInventoryBlockBreakable(true);

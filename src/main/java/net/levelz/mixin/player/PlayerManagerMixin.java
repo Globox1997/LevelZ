@@ -2,11 +2,14 @@ package net.levelz.mixin.player;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
+import net.levelz.init.CriteriaInit;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -93,6 +96,10 @@ public class PlayerManagerMixin {
             serverPlayerStatsManager.setLevel("mining", playerStatsManager.getLevel("mining"));
             serverPlayerStatsManager.setLevel("farming", playerStatsManager.getLevel("farming"));
             serverPlayerStatsManager.setLevel("alchemy", playerStatsManager.getLevel("alchemy"));
+        }
+        if (ConfigInit.CONFIG.hardMode) {
+            serverPlayerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
+            serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, serverPlayerEntity.getEntityName(), ScoreboardPlayerScore::clearScore);
         }
     }
 

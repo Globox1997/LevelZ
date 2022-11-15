@@ -2,6 +2,7 @@ package net.levelz.init;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.apache.commons.lang3.StringUtils;
 
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -11,10 +12,15 @@ import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ToolItem;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Collection;
@@ -24,6 +30,14 @@ import java.util.List;
 public class CommandInit {
 
     public static void init() {
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            dispatcher.register((CommandManager.literal("info").requires((serverCommandSource) -> {
+                return serverCommandSource.hasPermissionLevel(3);
+            })).then(CommandManager.literal("material").executes((commandContext) -> {
+                return executeInfoMaterial(commandContext.getSource());
+            })));
+        });
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             dispatcher.register((CommandManager.literal("playerstats").requires((serverCommandSource) -> {
@@ -277,6 +291,11 @@ public class CommandInit {
                 } else if (skill.equals("luck")) {
                     serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerSkillLevel * ConfigInit.CONFIG.luckBonus);
                 }
+                if (skill.equals("level")) {
+                    final int level = playerSkillLevel;
+                    serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, serverPlayerEntity.getEntityName(), score -> score.setScore(level));
+                    serverPlayerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
+                }
             }
             PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, serverPlayerEntity);
 
@@ -285,6 +304,23 @@ public class CommandInit {
         }
 
         return targets.size();
+    }
+
+    private static int executeInfoMaterial(ServerCommandSource source) throws CommandSyntaxException {
+        if (source.getPlayer() != null && !source.getPlayer().getMainHandStack().isEmpty()) {
+            Item item = source.getPlayer().getMainHandStack().getItem();
+            Text text = null;
+
+            if (item instanceof ArmorItem)
+                text = Text.of("Material id: \"" + ((ArmorItem) item).getMaterial().getName().toLowerCase() + "\"");
+
+            if (item instanceof ToolItem)
+                text = Text.of("Material id: \"" + ((ToolItem) item).getMaterial().toString().toLowerCase() + "\"");
+
+            source.getPlayer().sendMessage(text != null ? text : Text.of(item.getName().getString() + " does not have a material id"), true);
+        }
+
+        return 1;
     }
 
     private static List<String> skillStrings() {

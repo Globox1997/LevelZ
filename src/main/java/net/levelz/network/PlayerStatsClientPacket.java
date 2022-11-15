@@ -129,6 +129,7 @@ public class PlayerStatsClientPacket {
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.CONFIG_SYNC_PACKET, (client, handler, buf, sender) -> {
             int maxLevel = buf.readInt();
+            int overallMaxLevel = buf.readInt();
 
             double healthBase = buf.readDouble();
             double healthBonus = buf.readDouble();
@@ -185,6 +186,7 @@ public class PlayerStatsClientPacket {
 
             client.execute(() -> {
                 ConfigInit.CONFIG.maxLevel = maxLevel;
+                ConfigInit.CONFIG.overallMaxLevel = overallMaxLevel;
                 ConfigInit.CONFIG.xpBaseCost = xpBaseCost;
                 ConfigInit.CONFIG.xpMaxCost = xpMaxCost;
                 ConfigInit.CONFIG.xpCostMultiplicator = xpCostMultiplicator;

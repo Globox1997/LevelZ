@@ -15,6 +15,7 @@
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",
+  "text.autoconfig.levelz.option.overallMaxLevel": "Overall Max Level",
   "text.autoconfig.levelz.option.startPoints": "Start Points",
   "text.autoconfig.levelz.option.pointsPerLevel": "Points Per Lvl",
   "text.autoconfig.levelz.option.resetCurrentXP": "Reset Current Experience",
@@ -61,11 +62,13 @@
   "text.autoconfig.levelz.option.miningTntBonus": "Mining Tnt Blast Bonus",
   "text.autoconfig.levelz.option.miningOreChance": "Mining Ore Extra Chance",
   "text.autoconfig.levelz.option.miningLockedMultiplicator": "Locked Block Multiplicator",
+
   "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
   "text.autoconfig.levelz.option.dropPlayerXP": "Drop Player XP",
   "text.autoconfig.levelz.option.enableStartPoints": "Starter Points",
   "text.autoconfig.levelz.option.mobKillCount": "Mob Kill Count",
   "text.autoconfig.levelz.option.dropXPbasedOnLvl": "Drop XP Based On Level",
+
   "text.autoconfig.levelz.option.basedOnMultiplier": "Based On Level Multiplier",
   "text.autoconfig.levelz.option.breedingXPMultiplier": "Breeding XP Multiplier",
   "text.autoconfig.levelz.option.bottleXPMultiplier": "XP Bottle XP Multiplier",
@@ -75,9 +78,13 @@
   "text.autoconfig.levelz.option.oreXPMultiplier": "Ore XP Multiplier",
   "text.autoconfig.levelz.option.tradingXPMultiplier": "Trading XP Multiplier",
   "text.autoconfig.levelz.option.mobXPMultiplier": "Mob XP Multiplier",
+
   "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
-  "text.autoconfig.levelz.option.reiExclusionzone": "REI Exclusion Zone",
   "text.autoconfig.levelz.option.inventoryButton": "Inventory Button",
+  "text.autoconfig.levelz.option.inventorySkillLevel": "Inventory Level",
+  "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
+  "text.autoconfig.levelz.option.showLevelList": "Show Level List",
+  "text.autoconfig.levelz.option.showLevel": "Show Level",
 
   "text.autoconfig.levelz.option.miningProgression": "Mining Progression",
   "text.autoconfig.levelz.option.itemProgression": "Item Progression",
@@ -117,6 +124,8 @@
   "text.levelz.gui.level": "Level %d",
   "text.levelz.gui.points": "Points %d",
   "text.levelz.gui.short_level": "Lv. %d",
+
+  "text.levelz.scoreboard": "Lv. %d %s",
 
   "text.levelz.level": "Level %d",
   "text.levelz.locked_list": "%s list",
@@ -282,6 +291,8 @@
   "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info",
 
   "entity.levelz.level_experience_orb": "Experience Orb",
+
+  "screen.levelz.skill_screen": "Skills",
 
   "advancements.adventure.level_100.title": "Level 100",
   "advancements.adventure.level_100.description": "Reach the unreachable level"

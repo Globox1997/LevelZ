@@ -29,6 +29,7 @@ import net.minecraft.item.FoodComponent;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
@@ -73,14 +74,30 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
         hungerManager.addExhaustion(exhaustion);
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), ordinal = 2, require = 0)
-    private boolean attackMixin(boolean original) {
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockback(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 0, require = 0)
+    private boolean attacGetKnockbackkMixin(boolean original) {
         if (playerEntity.world.random.nextFloat() < (float) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckCritBonus) {
             isCrit = true;
             return true;
         } else
             isCrit = false;
         return original;
+    }
+
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSprinting()Z", ordinal = 0), ordinal = 1, require = 0)
+    private boolean attackIsSprintingMixin(boolean original) {
+        if (isCrit) {
+            return true;
+        } else
+            return original;
+    }
+
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getFireAspect(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 2, require = 0)
+    private boolean attackGetFireAspectMixin(boolean original) {
+        if (isCrit) {
+            return true;
+        } else
+            return original;
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0, require = 0)
@@ -102,8 +119,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getFireAspect(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 1, require = 0)
-    private int attackGetFireAspectMixin(int original) {
-        return (int) getUnlockedDamage((float) original, true);
+    private float attackGetFireAspectMixin(float original) {
+        return (int) getUnlockedDamage(original, true);
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockback(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 0, require = 0)
@@ -117,12 +134,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     }
 
     private float getUnlockedDamage(float original, boolean zero) {
-        if (playerEntity.getMainHandStack().getItem() instanceof ToolItem) {
+        Item item = playerEntity.getMainHandStack().getItem();
+        if (!item.equals(Items.AIR)) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            Item item = playerEntity.getMainHandStack().getItem();
-            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
+            if (!levelList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
                 return zero ? 0 : 1.0F;
-            else {
+            else if (item instanceof ToolItem) {
                 levelList = null;
                 if (item instanceof SwordItem) {
                     levelList = LevelLists.swordList;
