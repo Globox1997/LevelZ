@@ -66,8 +66,7 @@ The block category stands for the use of a few vanilla blocks. An example how th
 "level": is the level when the player unlocks the interaction of the block.\
 "block": has to be one of the following strings:\
 "minecraft:anvil","minecraft:barrel","minecraft:beacon","minecraft:beehive","minecraft:blast_furnace","minecraft:brewing_stand"
-,"minecraft:
-cartography","minecraft:cauldron","minecraft:composter","minecraft:enchanting_table","minecraft:grindstone","minecraft:
+,"minecraft:cartography","minecraft:cauldron","minecraft:composter","minecraft:enchanting_table","minecraft:grindstone","minecraft:
 lectern","minecraft:loom","minecraft:pumpkin","minecraft:smithing_table","minecraft:smoker","minecraft:stonecutter"
 
 It will only cancel the interaction with the block.\
@@ -110,7 +109,7 @@ example how the json file should look like is here:
 
 "entity": has to be one of the following strings:\
 "minecraft:cow","minecraft:mooshroom","minecraft:sheep","minecraft:snow_golem","minecraft:villager","minecraft:
-wandering_trader","minecraft:axolotl","minecraft:piglin","minecraft:wolf"
+wandering_trader","minecraft:axolotl","minecraft:piglin","minecraft:wolf","minecraft:goat"
 
 It will only cancel the interaction with the entity.
 
@@ -141,7 +140,8 @@ The item category stands for the use of items. An example how the json file shou
 
 "item": has to be one of the following strings:\
 "minecraft:bow","minecraft:bucket,"minecraft:crossbow","minecraft:dragon_breath","minecraft:elytra","minecraft:
-fishing_rod","minecraft:flint_and_steel","minecraft:shield","minecraft:totem_of_undying","minecraft:shears"
+fishing_rod","minecraft:flint_and_steel","minecraft:shield","minecraft:totem_of_undying","minecraft:shears","minecraft:compass",
+"minecraft:trident"
 
 The item category also has 4 special categories:
 
@@ -253,6 +253,12 @@ should look like is here:
 }
 ```
 
+#### Disable access to entities
+To permanently disable access to an entity, simply set the skill requirement higher than the `maxLevel` property configured in `levelz.json5`.
+
+#### Full list of available entities
+See https://github.com/Globox1997/LevelZ/tree/1.18/src/main/resources/data/levelz
+
 ### Example Datapack
 
 Check out the exampleDatapack folder for an example how it can look like.\
@@ -273,3 +279,27 @@ It triggers when the player reached the set level.
         }
     }
 ```
+
+### Additional configuration
+Levelz exposes configuration settings for many attributes, such as
+setting max levels, experience rates from different mobs, etc..
+These configuration settings are found in `${MINECRAFTDIR}/config/levelz.json5`
+
+### Commands
+`/playerstats playername add skill integer`
+- Increase the specific skill by the integer value
+
+`/playerstats playername remove skill integer`
+- Decrease the specific skill by the integer value
+
+`/playerstats playername set skill integer`
+- Set the specific skill to the integer value
+
+`/playerstats playername get skill`
+- Print the specific skill level
+
+`/info material`
+- Print the material string of the item in hand
+
+### Info
+Inside the config there is a developer mode setting, when set to true, inside the creative menu, hover over an item/block with your mouse and press f8 (default key) to create or append the item/block id to the file called idlist.json inside your minecraft folder for easier datapack creation.
