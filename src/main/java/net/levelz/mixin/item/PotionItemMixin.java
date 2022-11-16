@@ -22,7 +22,7 @@ public class PotionItemMixin {
     @ModifyVariable(method = "finishUsing", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/potion/PotionUtil;getPotionEffects(Lnet/minecraft/item/ItemStack;)Ljava/util/List;"), ordinal = 0)
     private List<StatusEffectInstance> finishUsingMixin(List<StatusEffectInstance> original, ItemStack stack, World world, LivingEntity user) {
         if (user instanceof PlayerEntity) {
-            int alchemyLevel = ((PlayerStatsManagerAccess) (PlayerEntity) user).getPlayerStatsManager((PlayerEntity) user).getLevel("alchemy");
+            int alchemyLevel = ((PlayerStatsManagerAccess) (PlayerEntity) user).getPlayerStatsManager().getLevel("alchemy");
             if (alchemyLevel >= ConfigInit.CONFIG.maxLevel && (float) alchemyLevel * ConfigInit.CONFIG.alchemyPotionChance > world.random.nextFloat()) {
                 List<StatusEffectInstance> newEffectList = new ArrayList<>();
                 for (int i = 0; i < original.size(); i++) {

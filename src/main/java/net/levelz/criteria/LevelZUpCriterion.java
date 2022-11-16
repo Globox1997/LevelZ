@@ -37,7 +37,7 @@ public class LevelZUpCriterion extends AbstractCriterion<LevelZUpCriterion.Condi
         }
 
         public boolean matches(ServerPlayerEntity player, int level) {
-            return this.numberPredicate.test(player, level);
+            return this.numberPredicate.test(level);
         }
 
         @Override

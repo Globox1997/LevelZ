@@ -29,10 +29,16 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
     @Final
     private Property levelCost;
 
-    private int smithingLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("smithing");
+    private int smithingLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("smithing");
 
     public AnvilScreenHandlerMixin(@Nullable ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
         super(type, syncId, playerInventory, context);
+    }
+
+    @Inject(method = "canTakeOutput", at = @At("HEAD"), cancellable = true)
+    protected void canTakeOutputMixin(PlayerEntity player, boolean present, CallbackInfoReturnable<Boolean> info) {
+        if (levelCost.get() <= 0 && (smithingLevel >= ConfigInit.CONFIG.maxLevel || (int) (1F - smithingLevel * ConfigInit.CONFIG.smithingCostBonus) <= 0))
+            info.setReturnValue(true);
     }
 
     @Inject(method = "Lnet/minecraft/screen/AnvilScreenHandler;updateResult()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/CraftingResultInventory;setStack(ILnet/minecraft/item/ItemStack;)V", ordinal = 4))
@@ -42,7 +48,7 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
             if (levelCost > 30 && smithingLevel >= ConfigInit.CONFIG.maxLevel) {
                 this.levelCost.set(30);
             } else
-                this.levelCost.set(levelCost);
+                this.levelCost.set(levelCost < 0 ? 0 : levelCost);
         }
     }
 

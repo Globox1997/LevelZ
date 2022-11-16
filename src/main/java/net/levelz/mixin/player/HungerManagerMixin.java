@@ -22,14 +22,14 @@ public class HungerManagerMixin {
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;heal(F)V", ordinal = 1))
     private void updateStaminaMixin(PlayerEntity player, CallbackInfo info) {
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
         player.heal((float) playerStatsManager.getLevel("stamina") * ConfigInit.CONFIG.staminaHealthBonus);
 
     }
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V", shift = Shift.AFTER, ordinal = 0))
     private void updateAbsorptionMixin(PlayerEntity player, CallbackInfo info) {
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
         if (player.getMaxHealth() <= player.getHealth() && player.getAbsorptionAmount() <= 0.0F && playerStatsManager.getLevel("health") >= ConfigInit.CONFIG.maxLevel)
             player.setAbsorptionAmount(ConfigInit.CONFIG.healthAbsorptionBonus);
     }

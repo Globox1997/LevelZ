@@ -36,7 +36,7 @@ public abstract class EnderDragonEntityMixin extends MobEntity {
             LevelExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(),
                     MathHelper.floor((float) g * 0.08f * ConfigInit.CONFIG.dragonXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity).getLevel("level")
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getLevel("level")
                                     : 1.0F)));
     }
 
@@ -46,7 +46,7 @@ public abstract class EnderDragonEntityMixin extends MobEntity {
             LevelExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(),
                     MathHelper.floor((float) g * 0.2f * ConfigInit.CONFIG.dragonXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity).getLevel("level")
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getLevel("level")
                                     : 1.0F)));
     }
 

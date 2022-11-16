@@ -85,7 +85,7 @@ public class PlayerStatsClientPacket {
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.RESET_PACKET, (client, handler, buf, sender) -> {
             if (client.player != null) {
                 String skill = buf.readString();
-                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager(client.player);
+                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager();
                 playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") + playerStatsManager.getLevel(skill));
                 playerStatsManager.setLevel(skill, 0);
                 // Sync attributes on client
@@ -267,14 +267,14 @@ public class PlayerStatsClientPacket {
 
     // Private executes
     private static void executeXPPacket(PlayerEntity player, PacketByteBuf buf) {
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
         playerStatsManager.levelProgress = buf.readFloat();
         playerStatsManager.totalLevelExperience = buf.readInt();
         playerStatsManager.setLevel("level", buf.readInt());
     }
 
     private static void executeLevelPacket(PlayerEntity player, PacketByteBuf buf) {
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
         playerStatsManager.levelProgress = buf.readFloat();
         playerStatsManager.totalLevelExperience = buf.readInt();
         playerStatsManager.setLevel("level", buf.readInt());
@@ -359,7 +359,7 @@ public class PlayerStatsClientPacket {
         }
         LevelLists.listOfAllLists.clear();
         LevelLoader.addAllInOneList();
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
         player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);
         player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
                 .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);

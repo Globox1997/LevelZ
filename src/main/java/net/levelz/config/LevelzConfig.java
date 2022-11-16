@@ -11,6 +11,13 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name = "levelz")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class LevelzConfig implements ConfigData {
+
+    public int test0 = 0;
+    public int test1 = 0;
+    public int test2 = 0;
+    public int test3 = 0;
+    public int test4 = 0;
+
     // Level settings
     @ConfigEntry.Category("level_settings")
     @ConfigEntry.Gui.RequiresRestart
@@ -37,6 +44,9 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_settings")
     @Comment("Amount of allowed mob kills in a chunk")
     public int mobKillCount = 5;
+    @ConfigEntry.Category("level_settings")
+    @Comment("Only for Devs")
+    public boolean devMode = false;
 
     // Skill settings
     @ConfigEntry.Gui.RequiresRestart
@@ -154,6 +164,7 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("gui_settings")
     @Comment("Highlight locked blocks in red.")
     public boolean highlightLocked = false; // Client only
+    public boolean showLockedBlockInfo = false; // Client only
     @ConfigEntry.Category("gui_settings")
     public boolean sortCraftingRecipesBySkill = false; // Client only
     @ConfigEntry.Category("gui_settings")
@@ -163,6 +174,9 @@ public class LevelzConfig implements ConfigData {
     public boolean showLevelList = true; // Client only
     @ConfigEntry.Category("gui_settings")
     public boolean showLevel = true; // Client only
+    @ConfigEntry.Category("gui_settings")
+    @Comment("Switch levelz screen instead of closing with inventory key")
+    public boolean switch_screen = false; // Client only
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart
     public boolean miningProgression = true;

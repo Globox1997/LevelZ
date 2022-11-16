@@ -45,11 +45,11 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
     @Inject(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
     protected void afterUsingMixin(TradeOffer offer, CallbackInfo info, int i) {
         if (ConfigInit.CONFIG.tradingXPMultiplier > 0.0F)
-            LevelExperienceOrbEntity.spawn((ServerWorld) world, this.getPos().add(0.0D, 0.5D, 0.0D), (int) (i * ConfigInit.CONFIG.tradingXPMultiplier
-                    * (this.getCustomer() != null ? 1.0F + ((PlayerStatsManagerAccess) this.getCustomer()).getPlayerStatsManager(this.getCustomer()).getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus
-                            : 1.0F)
-                    * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.getCustomer() != null
-                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.getCustomer()).getPlayerStatsManager(this.getCustomer()).getLevel("level")
+            LevelExperienceOrbEntity.spawn((ServerWorld) world, this.getPos().add(0.0D, 0.5D, 0.0D),
+                    (int) (i * ConfigInit.CONFIG.tradingXPMultiplier
+                            * (this.getCustomer() != null ? 1.0F + ((PlayerStatsManagerAccess) this.getCustomer()).getPlayerStatsManager().getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus : 1.0F)
+                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.getCustomer() != null
+                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.getCustomer()).getPlayerStatsManager().getLevel("level")
                             : 1.0F)));
     }
 }

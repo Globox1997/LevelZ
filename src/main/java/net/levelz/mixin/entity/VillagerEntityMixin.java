@@ -58,9 +58,9 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
         if (ConfigInit.CONFIG.tradingXPMultiplier > 0.0F)
             LevelExperienceOrbEntity.spawn((ServerWorld) world, this.getPos().add(0.0D, 0.5D, 0.0D),
                     (int) (i * ConfigInit.CONFIG.tradingXPMultiplier
-                            * (lastCustomer != null ? 1.0F + ((PlayerStatsManagerAccess) lastCustomer).getPlayerStatsManager(lastCustomer).getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus : 1.0F)
+                            * (lastCustomer != null ? 1.0F + ((PlayerStatsManagerAccess) lastCustomer).getPlayerStatsManager().getLevel("trade") * ConfigInit.CONFIG.tradeXPBonus : 1.0F)
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && lastCustomer != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) lastCustomer).getPlayerStatsManager(lastCustomer).getLevel("level")
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) lastCustomer).getPlayerStatsManager().getLevel("level")
                                     : 1.0F)));
     }
 
@@ -70,7 +70,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
             Iterator<TradeOffer> var5 = this.getOffers().iterator();
             while (var5.hasNext()) {
                 TradeOffer tradeOffer2 = (TradeOffer) var5.next();
-                tradeOffer2.increaseSpecialPrice(-(int) (((PlayerStatsManagerAccess) player).getPlayerStatsManager(player).getLevel("trade") * ConfigInit.CONFIG.tradeBonus / 100.0D
+                tradeOffer2.increaseSpecialPrice(-(int) (((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("trade") * ConfigInit.CONFIG.tradeBonus / 100.0D
                         * tradeOffer2.getOriginalFirstBuyItem().getCount()));
             }
 
@@ -80,7 +80,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
     @Inject(method = "setAttacker", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;handleInteraction(Lnet/minecraft/entity/EntityInteraction;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/InteractionObserver;)V"), cancellable = true)
     private void setAttackerMixin(@Nullable LivingEntity attacker, CallbackInfo info) {
         if (attacker != null && attacker instanceof PlayerEntity && ConfigInit.CONFIG.tradeReputation
-                && ((PlayerStatsManagerAccess) (PlayerEntity) attacker).getPlayerStatsManager((PlayerEntity) attacker).getLevel("trade") >= ConfigInit.CONFIG.maxLevel) {
+                && ((PlayerStatsManagerAccess) (PlayerEntity) attacker).getPlayerStatsManager().getLevel("trade") >= ConfigInit.CONFIG.maxLevel) {
             super.setAttacker(attacker);
             info.cancel();
         }

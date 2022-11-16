@@ -47,7 +47,7 @@ public abstract class EnchantmentScreenHandlerMixin {
         if (inventory == this.inventory && playerInventory != null && !playerInventory.player.isCreative()) {
             ItemStack itemStack = inventory.getStack(0);
             if (!itemStack.isEmpty() && itemStack.isEnchantable()) {
-                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerInventory.player).getPlayerStatsManager(playerInventory.player);
+                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerInventory.player).getPlayerStatsManager();
                 ArrayList<Object> enchantingTableList = LevelLists.enchantingTableList;
                 if (enchantingTableList != null && !enchantingTableList.isEmpty()) {
                     int playerAlchemyLevel = playerStatsManager.getLevel(enchantingTableList.get(0).toString());

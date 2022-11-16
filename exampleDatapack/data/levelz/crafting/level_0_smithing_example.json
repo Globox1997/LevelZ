@@ -1,0 +1,16 @@
+{
+    "replace": true,
+    "level": 0,
+    "skill": "smithing",
+    "item": [
+        "minecraft:iron_axe",
+        "minecraft:iron_sword",
+        "minecraft:iron_pickaxe",
+        "minecraft:iron_hoe",
+        "minecraft:iron_shovel",
+        "minecraft:iron_horse_armor",
+        "minecraft:iron_boots",
+        "minecraft:iron_leggings",
+        "minecraft:iron_chestplate"
+    ]
+}

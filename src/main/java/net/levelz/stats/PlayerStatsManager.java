@@ -200,7 +200,7 @@ public class PlayerStatsManager {
 
     public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, List<Object> list, String string, boolean creativeRequired) {
         if (!playerEntity.isCreative() || !creativeRequired) {
-            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
+            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager();
             int playerLevel = 0;
             int maxLevel = ConfigInit.CONFIG.maxLevel;
             if (string != null) {
@@ -227,7 +227,7 @@ public class PlayerStatsManager {
 
     // 1 = mining, 2 = alchemy, 3 = smithing, 4 = crafting
     public static boolean listContainsItemOrBlock(PlayerEntity playerEntity, int id, int reference) {
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager();
         if (reference == 1) {
             if (playerStatsManager.getLevel("mining") < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedBlockIds.contains(id))
                 return true;
@@ -279,7 +279,7 @@ public class PlayerStatsManager {
     }
 
     public static boolean resetSkill(PlayerEntity playerEntity, String skill) {
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager(playerEntity);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager();
         if (playerStatsManager.getLevel(skill) > 0) {
             playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") + playerStatsManager.getLevel(skill));
             playerStatsManager.setLevel(skill, 0);

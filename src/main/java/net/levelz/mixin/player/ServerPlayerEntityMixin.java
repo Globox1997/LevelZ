@@ -32,7 +32,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         super(world, pos, yaw, profile);
     }
 
-    PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) this).getPlayerStatsManager((PlayerEntity) (Object) this);
+    private PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) this).getPlayerStatsManager();
     private int syncedLevelExperience = -99999999;
     private boolean syncTeleportStats = false;
     private int tinySyncTicker = 0;

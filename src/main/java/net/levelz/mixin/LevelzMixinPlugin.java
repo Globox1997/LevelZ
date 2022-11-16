@@ -29,7 +29,7 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
         if (!FabricLoader.getInstance().isModLoaded("inventorio") && mixinClassName.contains("InventorioScreenMixin"))
             return false;
 
-        if (!FabricLoader.getInstance().isModLoaded("create") && mixinClassName.contains("CreatePlayerStatsManagerMixin"))
+        if (!FabricLoader.getInstance().isModLoaded("create") && !FabricLoader.getInstance().isModLoaded("computercraft") && mixinClassName.contains("PlayerStatsManagerCompatMixin"))
             return false;
 
         if (FabricLoader.getInstance().isModLoaded("go-fish") && mixinClassName.contains("FishingRodItemMixin"))
@@ -39,6 +39,9 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
             return false;
 
         if (FabricLoader.getInstance().isModLoaded("limitless") && mixinClassName.contains("AnvilScreenHandler"))
+            return false;
+
+        if (!FabricLoader.getInstance().isModLoaded("inmis") && mixinClassName.contains("BackpackItemMixin"))
             return false;
 
         return true;

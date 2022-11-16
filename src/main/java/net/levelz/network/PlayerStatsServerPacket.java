@@ -35,7 +35,7 @@ public class PlayerStatsServerPacket {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
             if (player != null) {
                 String stat = buffer.readString();
-                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager(player);
+                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
                 playerStatsManager.setLevel(stat, buffer.readInt());
                 playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") - 1);
                 if (stat.equals("health")) {
@@ -230,7 +230,7 @@ public class PlayerStatsServerPacket {
 
     public static void writeS2CResetSkillPacket(ServerPlayerEntity serverPlayerEntity, String skill) {
         // Sync attributes on server
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager(serverPlayerEntity);
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager();
         if (skill.equals("health")) {
             serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
                     .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);

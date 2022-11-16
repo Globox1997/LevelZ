@@ -12,7 +12,7 @@ public class NumberPredicate {
         this.levelZ = levelZ;
     }
 
-    public boolean test(ServerPlayerEntity player, int level) {
+    public boolean test(int level) {
         if (this.levelZ == level)
             return true;
         else

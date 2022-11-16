@@ -84,7 +84,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                     list.remove(removeLines);
                                 }
                             } else {
-                                if (!(boolean) list.get(list.indexOf(data.get("material")) + 4)) {
+                                if (!(boolean) list.get(list.indexOf(data.get("material").getAsString()) + 4)) {
                                     LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
                                 }
                                 continue;
@@ -104,7 +104,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                     list.remove(removeLines);
                                 }
                             } else {
-                                if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
+                                if (!(boolean) list.get(list.indexOf(data.get("object").getAsString()) + 4)) {
                                     LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
                                 }
                                 continue;
@@ -162,7 +162,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                     list.remove(removeLines);
                                 }
                             } else {
-                                if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
+                                if (!(boolean) list.get(list.indexOf(data.get("object").getAsString()) + 4)) {
                                     LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
                                 }
                                 continue;
@@ -226,7 +226,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                     list.remove(removeLines);
                                 }
                             } else {
-                                if (!(boolean) list.get(list.indexOf(data.get("object")) + 4)) {
+                                if (!(boolean) list.get(list.indexOf(data.get("object").getAsString()) + 4)) {
                                     LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
                                 }
                                 continue;

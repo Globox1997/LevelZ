@@ -41,7 +41,7 @@ public class LevelzScreen extends CottonClientScreen {
             RenderSystem.enableBlend();
             RenderSystem.enableDepthTest();
             RenderSystem.setShaderTexture(0, RenderInit.GUI_ICONS);
-            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) this.client.player).getPlayerStatsManager(this.client.player);
+            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) this.client.player).getPlayerStatsManager();
             int m = (int) (playerStatsManager.levelProgress * 131.0F);
             int x = scaledWidth / 2 - 41;
             int n = scaledHeight / 2 - 45;
