@@ -63,14 +63,14 @@ public class ItemStackClientMixin {
             int itemId = Registry.ITEM.getRawId(stack.getItem());
             if (this.itemId != itemId) {
                 this.itemId = itemId;
-                this.tooltipAddition = getAdditionalToolip(player);
+                this.tooltipAddition = getAdditionalTooltip(player);
             }
             if (this.tooltipAddition != null && !this.tooltipAddition.isEmpty())
                 list.addAll(this.tooltipAddition);
         }
     }
 
-    private List<Text> getAdditionalToolip(PlayerEntity player) {
+    private List<Text> getAdditionalTooltip(PlayerEntity player) {
         List<Text> list = Lists.newArrayList();
         ItemStack stack = (ItemStack) (Object) this;
         ArrayList<Object> levelList = new ArrayList<Object>();
@@ -163,7 +163,7 @@ public class ItemStackClientMixin {
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                     list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                 }
-            } else if (!LevelLists.customBlockList.isEmpty() && LevelLists.customBlockList.contains(block.getTranslationKey().replace("block.", "").replace(".", ":"))) {
+            } else if (!LevelLists.customBlockList.isEmpty() && LevelLists.customBlockList.contains(Registry.BLOCK.getId(block).toString())) {
                 levelList = LevelLists.customBlockList;
                 String string = Registry.BLOCK.getId(block).toString();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
@@ -181,7 +181,7 @@ public class ItemStackClientMixin {
         } else {
             // Item
             Item item = stack.getItem();
-            if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(item.getTranslationKey().replace("item.", "").replace(".", ":"))) {
+            if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registry.ITEM.getId(item).toString())) {
                 levelList = LevelLists.customItemList;
                 String string = Registry.ITEM.getId(item).toString();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
@@ -248,40 +248,19 @@ public class ItemStackClientMixin {
                     list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                 }
             } else if (item instanceof BowItem) {
-                ArrayList<Object> customList = LevelLists.customItemList;
-                String string = Registry.ITEM.getId(item).toString();
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, false)) {
-                    list.add(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1).toString() + ".tooltip", customList.get(customList.indexOf(string) + 2).toString())
-                            .formatted(Formatting.RED));
-                } else {
-                    levelList = LevelLists.bowList;
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
-                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
-                    }
+                levelList = LevelLists.bowList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                 }
             } else if (item instanceof TridentItem) {
-                ArrayList<Object> customList = LevelLists.customItemList;
-                String string = Registry.ITEM.getId(item).toString();
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, false)) {
-                    list.add(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1).toString() + ".tooltip", customList.get(customList.indexOf(string) + 2).toString())
-                            .formatted(Formatting.RED));
-                } else {
-                    levelList = LevelLists.tridentList;
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
-                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
-                    }
+                levelList = LevelLists.tridentList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                 }
             } else if (item instanceof CrossbowItem) {
-                ArrayList<Object> customList = LevelLists.customItemList;
-                String string = Registry.ITEM.getId(item).toString();
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, false)) {
-                    list.add(new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1).toString() + ".tooltip", customList.get(customList.indexOf(string) + 2).toString())
-                            .formatted(Formatting.RED));
-                } else {
-                    levelList = LevelLists.crossbowList;
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
-                        list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
-                    }
+                levelList = LevelLists.crossbowList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
+                    list.add(new TranslatableText("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                 }
             } else if (item instanceof ArmorItem) {
                 try {

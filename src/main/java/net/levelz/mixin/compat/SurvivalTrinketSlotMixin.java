@@ -41,7 +41,7 @@ public class SurvivalTrinketSlotMixin {
                 && TrinketsApi.getTrinket(stack.getItem()).canEquip(stack, new SlotReference(trinketInventory, slotOffset), trinketInventory.getComponent().getEntity())) {
             ArrayList<Object> customList = LevelLists.customItemList;
             String string = Registry.ITEM.getId(stack.getItem()).toString();
-            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) trinketInventory.getComponent().getEntity(), customList, string, true)) {
+            if (!customList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) trinketInventory.getComponent().getEntity(), customList, string, true)) {
                 ((PlayerEntity) trinketInventory.getComponent().getEntity()).sendMessage(
                         new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
                         true);

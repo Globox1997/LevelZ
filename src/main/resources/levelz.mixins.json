@@ -46,6 +46,8 @@
     "entity.WanderingTraderEntityMixin",
     "entity.WolfEntityMixin",
     "entity.ExperienceBottleEntityMixin",
+    "entity.GoatEntityMixin",
+    "entity.ProjectileEntityMixin",
     "item.AliasedBlockItemMixin",
     "item.ArmorItemMixin",
     "item.AxeItemMixin",

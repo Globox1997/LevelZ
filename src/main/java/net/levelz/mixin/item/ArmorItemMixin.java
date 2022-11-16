@@ -22,6 +22,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(ArmorItem.class)
@@ -30,12 +31,15 @@ public class ArmorItemMixin {
     @Inject(method = "dispenseArmor", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;getPreferredEquipmentSlot(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/entity/EquipmentSlot;"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private static void dispenseArmorMixin(BlockPointer pointer, ItemStack armor, CallbackInfoReturnable<Boolean> info, BlockPos blockPos, List<LivingEntity> list, LivingEntity livingEntity) {
         if (livingEntity instanceof PlayerEntity && armor.getItem() instanceof ArmorItem) {
-            ArrayList<Object> levelList = LevelLists.armorList;
+            ArrayList<Object> levelList = LevelLists.customItemList;
             try {
-                if ((!LevelLists.customItemList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, LevelLists.customItemList,
-                        ((ArmorItem) armor.getItem()).getMaterial().getName().toLowerCase(), true))
-                        || !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, ((ArmorItem) armor.getItem()).getMaterial().getName().toLowerCase(), true)) {
-                    info.setReturnValue(false);
+                if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armor.getItem()).toString())) {
+                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, Registry.ITEM.getId(armor.getItem()).toString(), true))
+                        info.setReturnValue(false);
+                } else {
+                    levelList = LevelLists.armorList;
+                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, ((ArmorItem) armor.getItem()).getMaterial().getName().toLowerCase(), true))
+                        info.setReturnValue(false);
                 }
             } catch (AbstractMethodError ignore) {
             }
@@ -46,14 +50,21 @@ public class ArmorItemMixin {
     private void useMixin(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack, EquipmentSlot equipmentSlot,
             ItemStack itemStack2) {
         try {
-            ArrayList<Object> levelList = LevelLists.armorList;
-            String string = ((ArmorItem) (Object) this).getMaterial().getName().toLowerCase();
-            if ((!LevelLists.customItemList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.customItemList, string, true))
-                    || !PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
-                user.sendMessage(
-                        new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
-                        true);
-                info.setReturnValue(TypedActionResult.fail(itemStack));
+            ArrayList<Object> levelList = LevelLists.customItemList;
+            ArmorItem armor = (ArmorItem) (Object) this;
+
+            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armor).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, Registry.ITEM.getId(armor).toString(), true))
+                    info.setReturnValue(TypedActionResult.fail(itemStack));
+            } else {
+                String string = ((ArmorItem) (Object) this).getMaterial().getName().toLowerCase();
+                levelList = LevelLists.armorList;
+                if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
+                    user.sendMessage(
+                            new TranslatableText("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
+                            true);
+                    info.setReturnValue(TypedActionResult.fail(itemStack));
+                }
             }
         } catch (AbstractMethodError ignore) {
         }

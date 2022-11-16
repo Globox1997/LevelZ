@@ -23,7 +23,7 @@ public class TrinketItemMixin {
     private static void equipItemMixin(PlayerEntity user, ItemStack stack, CallbackInfoReturnable<Boolean> info) {
         ArrayList<Object> customList = LevelLists.customItemList;
         String string = Registry.ITEM.getId(stack.getItem()).toString();
-        if (!PlayerStatsManager.playerLevelisHighEnough(user, customList, string, true)) {
+        if (!customList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(user, customList, string, true)) {
             user.sendMessage(
                     new TranslatableText("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
                     true);

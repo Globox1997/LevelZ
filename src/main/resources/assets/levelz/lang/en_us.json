@@ -5,6 +5,7 @@
 
   "category.levelz.keybind": "LevelZ Keybinds",
   "key.levelz.openskillscreen": "Skill Screen",
+  "key.levelz.dev": "Dev Key",
 
   "text.autoconfig.levelz.title": "LevelZ Config",
   "text.autoconfig.levelz.category.gui_settings": "GUI Settings",
@@ -12,6 +13,7 @@
   "text.autoconfig.levelz.category.level_settings": "Level Settings",
   "text.autoconfig.levelz.category.experience_settings": "Experience Settings",
   "text.autoconfig.levelz.category.progression_settings": "Progression Settings",
+  "text.autoconfig.levelz.option.devMode": "Dev Mode",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.maxLevel": "Max Level",
@@ -56,6 +58,7 @@
   "text.autoconfig.levelz.option.farmingTwinChance": "Farming Twin Chance",
   "text.autoconfig.levelz.option.alchemyPotionChance": "Alchemy Potion Chance",
   "text.autoconfig.levelz.option.alchemyEnchantmentChance": "Alchemy Enchantment Chance",
+  "text.autoconfig.levelz.option.archeryInaccuracyBonus": "Archery Inaccuracy Bonus",
   "text.autoconfig.levelz.option.archeryBowExtraDamage": "Archery Bow Extra Damage",
   "text.autoconfig.levelz.option.archeryCrossbowExtraDamage": "Archery Crossbow Extra Damage",
   "text.autoconfig.levelz.option.archeryDoubleDamageChance": "Archery Double Damage Chance",
@@ -63,12 +66,11 @@
   "text.autoconfig.levelz.option.miningOreChance": "Mining Ore Extra Chance",
   "text.autoconfig.levelz.option.miningLockedMultiplicator": "Locked Block Multiplicator",
 
-  "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
+
   "text.autoconfig.levelz.option.dropPlayerXP": "Drop Player XP",
   "text.autoconfig.levelz.option.enableStartPoints": "Starter Points",
   "text.autoconfig.levelz.option.mobKillCount": "Mob Kill Count",
   "text.autoconfig.levelz.option.dropXPbasedOnLvl": "Drop XP Based On Level",
-
   "text.autoconfig.levelz.option.basedOnMultiplier": "Based On Level Multiplier",
   "text.autoconfig.levelz.option.breedingXPMultiplier": "Breeding XP Multiplier",
   "text.autoconfig.levelz.option.bottleXPMultiplier": "XP Bottle XP Multiplier",
@@ -85,6 +87,8 @@
   "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
   "text.autoconfig.levelz.option.showLevelList": "Show Level List",
   "text.autoconfig.levelz.option.showLevel": "Show Level",
+  "text.autoconfig.levelz.option.switch_screen": "Switch Screen",
+  "text.autoconfig.levelz.option.showLockedBlockInfo": "Show Locked Block Info",
 
   "text.autoconfig.levelz.option.miningProgression": "Mining Progression",
   "text.autoconfig.levelz.option.itemProgression": "Item Progression",
@@ -188,16 +192,16 @@
   "text.levelz.archery_max_lvl_2": "double dmg with range weapons",
 
   "text.levelz.trade_info_2_1": "Each skill point increases trade",
-  "text.levelz.trade_info_2_2": "xp drop by %d",
+  "text.levelz.trade_info_2_2": "xp drop by %d%%",
   "text.levelz.trade_info_3_1": "Each skill point decreases trade",
-  "text.levelz.trade_info_3_2": "price by %d",
+  "text.levelz.trade_info_3_2": "price by %d%%",
   "text.levelz.trade_max_lvl_1": "Player gains reputation from",
   "text.levelz.trade_max_lvl_2": "villagers and can't lose it",
 
   "text.levelz.smithing_info_2_1": "Each skill point decreases rate",
-  "text.levelz.smithing_info_2_2": "to damage used tools by %d",
+  "text.levelz.smithing_info_2_2": "to damage used tools by %d%%",
   "text.levelz.smithing_info_3_1": "Each skill point decreases",
-  "text.levelz.smithing_info_3_2": "anvil xp cost by %d",
+  "text.levelz.smithing_info_3_2": "anvil xp cost by %d%%",
   "text.levelz.smithing_max_lvl_1": "Player gains %d%% chance to regain",
   "text.levelz.smithing_max_lvl_2": "used anvil experience + caps max lvl",
 

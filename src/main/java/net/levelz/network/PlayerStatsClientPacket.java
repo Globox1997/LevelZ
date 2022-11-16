@@ -166,6 +166,7 @@ public class PlayerStatsClientPacket {
             float farmingTwinChance = buf.readFloat();
             float alchemyEnchantmentChance = buf.readFloat();
             float alchemyPotionChance = buf.readFloat();
+            float archeryInaccuracyBonus = buf.readFloat();
             float archeryBowExtraDamage = buf.readFloat();
             float archeryCrossbowExtraDamage = buf.readFloat();
             float archeryDoubleDamageChance = buf.readFloat();
@@ -225,6 +226,7 @@ public class PlayerStatsClientPacket {
                 ConfigInit.CONFIG.farmingTwinChance = farmingTwinChance;
                 ConfigInit.CONFIG.alchemyEnchantmentChance = alchemyEnchantmentChance;
                 ConfigInit.CONFIG.alchemyPotionChance = alchemyPotionChance;
+                ConfigInit.CONFIG.archeryInaccuracyBonus = archeryInaccuracyBonus;
                 ConfigInit.CONFIG.archeryBowExtraDamage = archeryBowExtraDamage;
                 ConfigInit.CONFIG.archeryCrossbowExtraDamage = archeryCrossbowExtraDamage;
                 ConfigInit.CONFIG.archeryDoubleDamageChance = archeryDoubleDamageChance;

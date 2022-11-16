@@ -32,9 +32,10 @@ public class AbstractBlockStateMixin {
         Item item = player.getStackInHand(player.getActiveHand()).getItem();
         ArrayList<Object> levelList = LevelLists.customItemList;
 
-        if (!levelList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registry.ITEM.getId(item).toString(), true))
-            ((PlayerBreakBlockAccess) player.getInventory()).setInventoryBlockBreakable(false);
-        else if (item instanceof MiningToolItem) {
+        if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
+            if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registry.ITEM.getId(item).toString(), true))
+                ((PlayerBreakBlockAccess) player.getInventory()).setInventoryBlockBreakable(false);
+        } else if (item instanceof MiningToolItem) {
             if (item instanceof HoeItem) {
                 levelList = LevelLists.hoeList;
             } else if (item instanceof AxeItem) {

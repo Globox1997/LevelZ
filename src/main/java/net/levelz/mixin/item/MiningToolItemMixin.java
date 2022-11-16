@@ -30,9 +30,10 @@ public class MiningToolItemMixin {
     private void postHitMixin(ItemStack stack, LivingEntity target, LivingEntity attacker, CallbackInfoReturnable<Boolean> info) {
         if (attacker instanceof PlayerEntity) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true))
-                info.setReturnValue(false);
-            else {
+            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(stack.getItem()).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) attacker, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true))
+                    info.setReturnValue(false);
+            } else {
                 levelList = null;
                 Item item = stack.getItem();
                 if (item instanceof AxeItem)
@@ -52,9 +53,10 @@ public class MiningToolItemMixin {
     private void postMineMixin(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfoReturnable<Boolean> info) {
         if (miner instanceof PlayerEntity) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true))
-                info.setReturnValue(false);
-            else {
+            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(stack.getItem()).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) miner, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true))
+                    info.setReturnValue(false);
+            } else {
                 levelList = null;
                 Item item = stack.getItem();
                 if (item instanceof AxeItem)
