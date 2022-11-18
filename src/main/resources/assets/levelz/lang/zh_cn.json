@@ -223,7 +223,7 @@
  "text.levelz.farming_max_lvl_2": "",
 
  "text.levelz.alchemy_info_1": "炼药材料的解锁与等级关联",
- "text.levelz.alchemy_info_2_1": "每一个技能点提升附魔等级的几率提高%d",
+ "text.levelz.alchemy_info_2_1": "每个技能点解锁 %d 附魔等级",
  "text.levelz.alchemy_info_2_2": "",
  "text.levelz.alchemy_max_lvl_1": "有%d%%几率获得双倍药水效果",
  "text.levelz.alchemy_max_lvl_2": "",
