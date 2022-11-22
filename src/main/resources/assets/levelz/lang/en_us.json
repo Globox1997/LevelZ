@@ -8,11 +8,14 @@
   "key.levelz.dev": "Dev Key",
 
   "text.autoconfig.levelz.title": "LevelZ Config",
+
   "text.autoconfig.levelz.category.gui_settings": "GUI Settings",
   "text.autoconfig.levelz.category.default": "Skill Settings",
   "text.autoconfig.levelz.category.level_settings": "Level Settings",
   "text.autoconfig.levelz.category.experience_settings": "Experience Settings",
   "text.autoconfig.levelz.category.progression_settings": "Progression Settings",
+
+  "text.autoconfig.levelz.option.useIndependentExp": "Use Independent XP",
   "text.autoconfig.levelz.option.devMode": "Dev Mode",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
@@ -128,6 +131,7 @@
   "text.levelz.gui.level": "Level %d",
   "text.levelz.gui.points": "Points %d",
   "text.levelz.gui.short_level": "Lv. %d",
+  "text.levelz.gui.level_up": "Level up",
 
   "text.levelz.scoreboard": "Lv. %d %s",
 

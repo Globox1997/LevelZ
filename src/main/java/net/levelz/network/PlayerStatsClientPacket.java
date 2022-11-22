@@ -2,6 +2,7 @@ package net.levelz.network;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -173,6 +174,7 @@ public class PlayerStatsClientPacket {
             float miningOreChance = buf.readFloat();
             float miningTntBonus = buf.readFloat();
 
+            boolean useIndependentExp = buf.readBoolean();
             float xpCostMultiplicator = buf.readFloat();
             int xpExponent = buf.readInt();
             int xpBaseCost = buf.readInt();
@@ -186,6 +188,7 @@ public class PlayerStatsClientPacket {
             boolean smithingProgression = buf.readBoolean();
 
             client.execute(() -> {
+                ConfigInit.CONFIG.useIndependentExp = useIndependentExp;
                 ConfigInit.CONFIG.maxLevel = maxLevel;
                 ConfigInit.CONFIG.overallMaxLevel = overallMaxLevel;
                 ConfigInit.CONFIG.xpBaseCost = xpBaseCost;
@@ -380,6 +383,13 @@ public class PlayerStatsClientPacket {
             LevelLists.getList(listName).add(Boolean.parseBoolean(object));
         } else
             LevelLists.getList(listName).add(object);
+    }
+
+    public static void writeC2SLevelUpPacket() {
+        // Levelz level up
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PlayerStatsServerPacket.LEVEL_UP_BUTTON_PACKET, buf);
+        Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).sendPacket(packet);
     }
 
 }
