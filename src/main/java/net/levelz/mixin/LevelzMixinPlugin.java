@@ -47,6 +47,9 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
         if (!FabricLoader.getInstance().isModLoaded("inmis") && mixinClassName.contains("BackpackItemMixin"))
             return false;
 
+        if (!FabricLoader.getInstance().isModLoaded("easymagic") && mixinClassName.contains("EasyMagicEnchantingTableMixin"))
+            return false;
+
         return true;
     }
 
