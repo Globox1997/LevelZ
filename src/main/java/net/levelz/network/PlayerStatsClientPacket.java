@@ -271,14 +271,14 @@ public class PlayerStatsClientPacket {
     // Private executes
     private static void executeXPPacket(PlayerEntity player, PacketByteBuf buf) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
-        playerStatsManager.levelProgress = buf.readFloat();
+        playerStatsManager.setLevelProgress(buf.readFloat());
         playerStatsManager.totalLevelExperience = buf.readInt();
         playerStatsManager.setLevel("level", buf.readInt());
     }
 
     private static void executeLevelPacket(PlayerEntity player, PacketByteBuf buf) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
-        playerStatsManager.levelProgress = buf.readFloat();
+        playerStatsManager.setLevelProgress(buf.readFloat());
         playerStatsManager.totalLevelExperience = buf.readInt();
         playerStatsManager.setLevel("level", buf.readInt());
         playerStatsManager.setLevel("points", buf.readInt());

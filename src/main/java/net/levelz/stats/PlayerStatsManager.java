@@ -15,8 +15,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class PlayerStatsManager {
     // Level
     public int overallLevel;
-    public float levelProgress;
     public int totalLevelExperience;
+    private float levelProgress;
     private int skillPoints;
     // Skill
     private int healthLevel;
@@ -179,6 +179,10 @@ public class PlayerStatsManager {
         }
     }
 
+    public void setLevelProgress(float levelprogress) {
+        this.levelProgress = levelprogress;
+    }
+
     public boolean isMaxLevel() {
         return this.overallLevel >= ConfigInit.CONFIG.maxLevel * 12 || (ConfigInit.CONFIG.overallMaxLevel != 0 && this.overallLevel >= ConfigInit.CONFIG.overallMaxLevel);
     }
@@ -196,6 +200,27 @@ public class PlayerStatsManager {
             return experienceCost >= ConfigInit.CONFIG.xpMaxCost ? ConfigInit.CONFIG.xpMaxCost : experienceCost;
         else
             return experienceCost;
+    }
+
+    public float getLevelProgress(PlayerEntity playerEntity) {
+        if (!ConfigInit.CONFIG.useIndependentExp) {
+            return Math.min(getNonIndependentExperience(playerEntity) / (float) this.getNextLevelExperience(), 1F);
+        }
+        return levelProgress;
+    }
+
+    public int getNonIndependentExperience(PlayerEntity playerEntity) {
+        int level = playerEntity.experienceLevel;
+        int exp = 0;
+        for (int i = 0; i < level; i++) {
+            if (i >= 30) {
+                exp += 112 + (i - 30) * 9;
+            } else {
+                exp += i >= 15 ? 37 + (i - 15) * 5 : 7 + i * 2;
+            }
+        }
+        exp += playerEntity.getNextLevelExperience() * playerEntity.experienceProgress;
+        return exp;
     }
 
     public static boolean playerLevelisHighEnough(PlayerEntity playerEntity, List<Object> list, String string, boolean creativeRequired) {
@@ -339,28 +364,6 @@ public class PlayerStatsManager {
 
     // Called on server only
     public static void onLevelUp(PlayerEntity playerEntity, int playerLevel) {
-    }
-
-    public float getLevelProgress(PlayerEntity playerEntity) {
-        if (!ConfigInit.CONFIG.useIndependentExp) {
-            return Math.min(getPlayerExp(playerEntity) / (float) this.getNextLevelExperience(), 1F);
-        }
-        return levelProgress;
-    }
-
-    public static int getPlayerExp(PlayerEntity playerEntity) {
-        int level = playerEntity.experienceLevel;
-        int exp = 0;
-        for (int i = 0; i < level; i++) {
-            // PlayerEntity.getNextLevelExperience()
-            if (i >= 30) {
-                exp += 112 + (i - 30) * 9;
-            } else {
-                exp += i >= 15 ? 37 + (i - 15) * 5 : 7 + i * 2;
-            }
-        }
-        exp += playerEntity.getNextLevelExperience() * playerEntity.experienceProgress;
-        return exp;
     }
 
 }

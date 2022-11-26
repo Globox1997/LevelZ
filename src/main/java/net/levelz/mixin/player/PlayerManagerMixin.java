@@ -78,7 +78,8 @@ public class PlayerManagerMixin {
             PlayerStatsServerPacket.writeS2CStrengthPacket(serverPlayerEntity);
             // Check if Client will set to 0 after death
             boolean keepInventory = serverWorld.getGameRules().getBoolean(GameRules.KEEP_INVENTORY);
-            serverPlayerStatsManager.levelProgress = keepInventory ? playerStatsManager.levelProgress : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.levelProgress;
+            serverPlayerStatsManager
+                    .setLevelProgress(keepInventory ? playerStatsManager.getLevelProgress(player) : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.getLevelProgress(player));
             serverPlayerStatsManager.totalLevelExperience = keepInventory ? playerStatsManager.totalLevelExperience : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.totalLevelExperience;
             // Level
             serverPlayerStatsManager.setLevel("level", playerStatsManager.getLevel("level"));

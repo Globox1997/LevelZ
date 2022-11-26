@@ -33,7 +33,6 @@ public class PlayerStatsServerPacket {
     public static final Identifier SEND_TAG_PACKET = new Identifier("levelz", "send_tag_packet");
     public static final Identifier LEVEL_UP_BUTTON_PACKET = new Identifier("levelz", "level_up_button");
 
-
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
             if (player != null) {
@@ -71,14 +70,15 @@ public class PlayerStatsServerPacket {
             writeS2CTagPacket(player, buffer.readIdentifier());
         });
         ServerPlayNetworking.registerGlobalReceiver(LEVEL_UP_BUTTON_PACKET, (server, player, handler, buffer, sender) -> {
-            if (player == null) return;
+            if (player == null)
+                return;
             ((PlayerSyncAccess) player).addLevelExperience(0);
         });
     }
 
     public static void writeS2CXPPacket(PlayerStatsManager playerStatsManager, ServerPlayerEntity serverPlayerEntity) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeFloat(playerStatsManager.levelProgress);
+        buf.writeFloat(playerStatsManager.getLevelProgress(serverPlayerEntity));
         buf.writeInt(playerStatsManager.totalLevelExperience);
         buf.writeInt(playerStatsManager.getLevel("level"));
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(XP_PACKET, buf);
@@ -87,7 +87,7 @@ public class PlayerStatsServerPacket {
 
     public static void writeS2CSkillPacket(PlayerStatsManager playerStatsManager, ServerPlayerEntity serverPlayerEntity) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeFloat(playerStatsManager.levelProgress);
+        buf.writeFloat(playerStatsManager.getLevelProgress(serverPlayerEntity));
         buf.writeInt(playerStatsManager.totalLevelExperience);
         buf.writeInt(playerStatsManager.getLevel("level"));
         buf.writeInt(playerStatsManager.getLevel("points"));

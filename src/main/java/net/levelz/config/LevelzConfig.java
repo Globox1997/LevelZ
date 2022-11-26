@@ -125,7 +125,7 @@ public class LevelzConfig implements ConfigData {
     // Experience settings
     @ConfigEntry.Category("experience_settings")
     @ConfigEntry.Gui.RequiresRestart
-    @Comment("Level up use independent xp system")
+    @Comment("Caution! Level up use independent levelz xp system")
     public boolean useIndependentExp = true;
     @ConfigEntry.Category("experience_settings")
     @Comment("XP equation: lvl^exponent * multiplicator + base")
@@ -211,8 +211,8 @@ public class LevelzConfig implements ConfigData {
                 attackBase, attackBonus, attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus, luckSurviveChance,
                 staminaBase, staminaBonus, staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance, smithingAnvilChance, farmingBase,
                 farmingChanceBonus, farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryInaccuracyBonus, archeryBowExtraDamage, archeryCrossbowExtraDamage,
-                archeryDoubleDamageChance, miningOreChance, miningTntBonus, useIndependentExp, xpCostMultiplicator, xpExponent, xpBaseCost, xpMaxCost, miningProgression, itemProgression, blockProgression,
-                entityProgression, brewingProgression, smithingProgression));
+                archeryDoubleDamageChance, miningOreChance, miningTntBonus, useIndependentExp, xpCostMultiplicator, xpExponent, xpBaseCost, xpMaxCost, miningProgression, itemProgression,
+                blockProgression, entityProgression, brewingProgression, smithingProgression));
     }
 
 }

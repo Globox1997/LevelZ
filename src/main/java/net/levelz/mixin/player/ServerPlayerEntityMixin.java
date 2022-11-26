@@ -59,29 +59,27 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         if (!playerStatsManager.isMaxLevel()) {
             ServerPlayerEntity playerEntity = (ServerPlayerEntity) (Object) this;
             int nextLevelExperience = playerStatsManager.getNextLevelExperience();
-            if (!ConfigInit.CONFIG.useIndependentExp) {
-                if (playerStatsManager.getLevelProgress(playerEntity) >= 1) {
-                    experience = nextLevelExperience;
-                }
-            }
-            playerStatsManager.levelProgress += Math.max((float) experience / nextLevelExperience, 0);
+
+            if (!ConfigInit.CONFIG.useIndependentExp && playerStatsManager.getLevelProgress(playerEntity) >= 1)
+                experience = nextLevelExperience;
+
+            playerStatsManager.setLevelProgress(playerStatsManager.getLevelProgress(playerEntity) + Math.max((float) experience / nextLevelExperience, 0));
             playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
-            while (playerStatsManager.levelProgress >= 1.0F && !playerStatsManager.isMaxLevel()) {
-                playerStatsManager.levelProgress = (playerStatsManager.levelProgress - 1.0F) * (float) playerStatsManager.getNextLevelExperience();
+            while (playerStatsManager.getLevelProgress(playerEntity) >= 1.0F && !playerStatsManager.isMaxLevel()) {
+                playerStatsManager.setLevelProgress((playerStatsManager.getLevelProgress(playerEntity) - 1.0F) * (float) playerStatsManager.getNextLevelExperience());
                 playerStatsManager.addExperienceLevels(1);
-                playerStatsManager.levelProgress /= (float) playerStatsManager.getNextLevelExperience();
-                if (!ConfigInit.CONFIG.useIndependentExp) {
+                playerStatsManager.setLevelProgress(playerStatsManager.getLevelProgress(playerEntity) / (float) playerStatsManager.getNextLevelExperience());
+
+                if (!ConfigInit.CONFIG.useIndependentExp)
                     playerEntity.addExperience(-experience);
-                }
+
                 PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, playerEntity);
                 PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
                 CriteriaInit.LEVEL_UP.trigger(playerEntity, playerStatsManager.overallLevel);
                 playerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, playerEntity));
                 playerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, this.getEntityName(), ScoreboardPlayerScore::incrementScore);
-                if (playerStatsManager.overallLevel > 0) {
-
+                if (playerStatsManager.overallLevel > 0)
                     playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), 1.0F, 1.0F);
-                }
             }
         }
         this.syncedLevelExperience = -1;
@@ -101,6 +99,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
             this.tinySyncTicker--;
             if (this.tinySyncTicker % 20 == 0) {
                 syncStats(false);
+                System.out.println("SYNC TOO OFTEN " + this.tinySyncTicker);
             }
         }
 
@@ -122,10 +121,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     public void syncStats(boolean syncDelay) {
         this.syncTeleportStats = true;
         this.syncedLevelExperience = -1;
-        if (syncDelay) {
-            // Multiple synchronization is to prevent server delay
-            this.tinySyncTicker = 2 * 20;   // every second
-        }
+        if (syncDelay)
+            this.tinySyncTicker = 40;
     }
 
 }
