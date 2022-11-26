@@ -26,28 +26,28 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
                 && (mixinClassName.equals("net.levelz.mixin.compat.TrinketItemMixin") || mixinClassName.equals("net.levelz.mixin.compat.SurvivalTrinketSlotMixin")))
             return false;
 
-        if (!FabricLoader.getInstance().isModLoaded("inventorio") && mixinClassName.contains("InventorioScreenMixin"))
+        if (mixinClassName.contains("InventorioScreenMixin") && !FabricLoader.getInstance().isModLoaded("inventorio"))
             return false;
 
         if (!FabricLoader.getInstance().isModLoaded("create") && !FabricLoader.getInstance().isModLoaded("computercraft") && mixinClassName.contains("PlayerStatsManagerCompatMixin"))
             return false;
 
-        if (FabricLoader.getInstance().isModLoaded("go-fish") && mixinClassName.contains("FishingRodItemMixin"))
+        if (mixinClassName.contains("FishingRodItemMixin") && FabricLoader.getInstance().isModLoaded("go-fish"))
             return false;
 
-        if (FabricLoader.getInstance().isModLoaded("cardboard") && mixinClassName.contains("ArmorItemMixin"))
+        if (mixinClassName.contains("ArmorItemMixin") && FabricLoader.getInstance().isModLoaded("cardboard"))
             return false;
 
-        if (FabricLoader.getInstance().isModLoaded("limitless") && mixinClassName.contains("AnvilScreenHandlerMixin"))
+        if (mixinClassName.contains("AnvilScreenHandlerMixin") && FabricLoader.getInstance().isModLoaded("limitless"))
             return false;
 
-        if (!FabricLoader.getInstance().isModLoaded("dualwielding") && mixinClassName.contains("DualWieldingOffhandAttackMixin"))
+        if (mixinClassName.contains("DualWieldingOffhandAttackMixin") && !FabricLoader.getInstance().isModLoaded("dualwielding"))
             return false;
 
-        if (!FabricLoader.getInstance().isModLoaded("inmis") && mixinClassName.contains("BackpackItemMixin"))
+        if (mixinClassName.contains("BackpackItemMixin") && !FabricLoader.getInstance().isModLoaded("inmis"))
             return false;
 
-        if (!FabricLoader.getInstance().isModLoaded("easymagic") && mixinClassName.contains("EasyMagicEnchantingTableMixin"))
+        if (mixinClassName.contains("EasyMagicEnchantingTableMixin") && !FabricLoader.getInstance().isModLoaded("easymagic"))
             return false;
 
         return true;
