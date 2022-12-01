@@ -1,9 +1,7 @@
 package net.levelz.item;
 
-import java.util.Iterator;
-import java.util.List;
-
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,20 +30,9 @@ public class StrangePotionItem extends Item {
                 Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity) playerEntity, stack);
             }
 
-            List<String> list = PlayerStatsManager.getAllSkills();
-            boolean foundSkill = false;
-            for (int i = 0; i < list.size(); i++) {
-                if (PlayerStatsManager.resetSkill(playerEntity, list.get(world.random.nextInt(list.size())))) {
-                    foundSkill = true;
+            for (Skill skill : Skill.listInRandomOrder(world.random)) {
+                if (PlayerStatsManager.resetSkill(playerEntity, skill))
                     break;
-                }
-            }
-            if (!foundSkill) {
-                Iterator<String> iterator = list.iterator();
-                while (iterator.hasNext()) {
-                    if (PlayerStatsManager.resetSkill(playerEntity, iterator.next()))
-                        break;
-                }
             }
 
             if (!playerEntity.getAbilities().creativeMode) {

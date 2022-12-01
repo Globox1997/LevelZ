@@ -1,9 +1,5 @@
 package net.levelz.stats;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
@@ -12,25 +8,31 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class PlayerStatsManager {
+
+    private final PlayerEntity playerEntity;
+
     // Level
-    public int overallLevel;
-    public int totalLevelExperience;
+    private int overallLevel;
+    private int totalLevelExperience;
     private float levelProgress;
     private int skillPoints;
     // Skill
-    private int healthLevel;
-    private int strengthLevel;
-    private int agilityLevel;
-    private int defenseLevel;
-    private int staminaLevel;
-    private int luckLevel;
-    private int archeryLevel;
-    private int tradeLevel;
-    private int smithingLevel;
-    private int miningLevel;
-    private int farmingLevel;
-    private int alchemyLevel;
+    private final Map<Skill, Integer> skillLevel = new HashMap<>();
+
+    public PlayerStatsManager(PlayerEntity playerEntity) {
+        this.playerEntity = playerEntity;
+    }
+
+    public PlayerEntity getPlayerEntity() {
+        return playerEntity;
+    }
+
     // Other
     public List<Integer> lockedBlockIds = new ArrayList<Integer>();
     public List<Integer> lockedbrewingItemIds = new ArrayList<Integer>();
@@ -40,26 +42,16 @@ public class PlayerStatsManager {
     // Wood, Stone, Iron, Gold, Diamond, Netherite
 
     public void readNbt(NbtCompound tag) {
-        if (tag.contains("HealthLevel", 99)) {
+        if (tag.contains("SkillPoints", 99)) {
             // Level
             this.overallLevel = tag.getInt("Level");
             this.levelProgress = tag.getFloat("LevelProgress");
             this.totalLevelExperience = tag.getInt("TotalLevelExperience");
             this.skillPoints = tag.getInt("SkillPoints");
             // Skill
-            this.healthLevel = tag.getInt("HealthLevel");
-            this.strengthLevel = tag.getInt("StrengthLevel");
-            this.agilityLevel = tag.getInt("AgilityLevel");
-            this.defenseLevel = tag.getInt("DefenseLevel");
-            this.staminaLevel = tag.getInt("StaminaLevel");
-            this.luckLevel = tag.getInt("LuckLevel");
-            this.archeryLevel = tag.getInt("ArcheryLevel");
-            this.tradeLevel = tag.getInt("TradeLevel");
-            this.smithingLevel = tag.getInt("SmithingLevel");
-            this.miningLevel = tag.getInt("MiningLevel");
-            this.farmingLevel = tag.getInt("FarmingLevel");
-            this.alchemyLevel = tag.getInt("AlchemyLevel");
-
+            for (Skill stats : Skill.values()) {
+                skillLevel.put(stats, tag.getInt(stats.getNbt()));
+            }
         }
     }
 
@@ -70,103 +62,73 @@ public class PlayerStatsManager {
         tag.putInt("TotalLevelExperience", this.totalLevelExperience);
         tag.putInt("SkillPoints", this.skillPoints);
         // Skill
-        tag.putInt("HealthLevel", this.healthLevel);
-        tag.putInt("StrengthLevel", this.strengthLevel);
-        tag.putInt("AgilityLevel", this.agilityLevel);
-        tag.putInt("DefenseLevel", this.defenseLevel);
-        tag.putInt("StaminaLevel", this.staminaLevel);
-        tag.putInt("LuckLevel", this.luckLevel);
-        tag.putInt("ArcheryLevel", this.archeryLevel);
-        tag.putInt("TradeLevel", this.tradeLevel);
-        tag.putInt("SmithingLevel", this.smithingLevel);
-        tag.putInt("MiningLevel", this.miningLevel);
-        tag.putInt("FarmingLevel", this.farmingLevel);
-        tag.putInt("AlchemyLevel", this.alchemyLevel);
+        skillLevel.forEach((k, v) -> tag.putInt(k.getNbt(), v));
 
     }
 
+    public void setOverallLevel(int overallLevel) {
+        this.overallLevel = overallLevel;
+    }
+
+    public int getOverallLevel() {
+        return overallLevel;
+    }
+
+    public void setTotalLevelExperience(int totalLevelExperience) {
+        this.totalLevelExperience = totalLevelExperience;
+    }
+
+    public int getTotalLevelExperience() {
+        return totalLevelExperience;
+    }
+
+    public void setSkillPoints(int skillPoints) {
+        this.skillPoints = skillPoints;
+    }
+
+    public int getSkillPoints() {
+        return skillPoints;
+    }
+
+    public void setLevelProgress(float levelProgress) {
+        this.levelProgress = ConfigInit.CONFIG.useIndependentExp ? levelProgress : 0;
+    }
+
+    public float getLevelProgress() {
+        if (!ConfigInit.CONFIG.useIndependentExp) {
+            return Math.min(getNonIndependentExperience() / (float) this.getNextLevelExperience(), 1F);
+        }
+        return levelProgress;
+    }
+
+    public void setSkillLevel(Skill skill, int level) {
+        skillLevel.put(skill, level);
+    }
+
+    public int getSkillLevel(Skill skill) {
+        if (skillLevel.containsKey(skill)) {
+            return skillLevel.get(skill);
+        }
+        return 0;
+    }
+
+
+    @Deprecated
     public void setLevel(String string, int level) {
         switch (string) {
-        case "level":
-            this.overallLevel = level;
-            break;
-        case "health":
-            this.healthLevel = level;
-            break;
-        case "strength":
-            this.strengthLevel = level;
-            break;
-        case "agility":
-            this.agilityLevel = level;
-            break;
-        case "defense":
-            this.defenseLevel = level;
-            break;
-        case "stamina":
-            this.staminaLevel = level;
-            break;
-        case "luck":
-            this.luckLevel = level;
-            break;
-        case "archery":
-            this.archeryLevel = level;
-            break;
-        case "trade":
-            this.tradeLevel = level;
-            break;
-        case "smithing":
-            this.smithingLevel = level;
-            break;
-        case "mining":
-            this.miningLevel = level;
-            break;
-        case "farming":
-            this.farmingLevel = level;
-            break;
-        case "alchemy":
-            this.alchemyLevel = level;
-            break;
-        case "points":
-            this.skillPoints = level;
-            break;
-        default:
-            break;
+            case "level" -> this.overallLevel = level;
+            case "points" -> this.skillPoints = level;
+            default -> setSkillLevel(Skill.valueOf(string.toUpperCase()), level);
         }
     }
 
+    @Deprecated
     public int getLevel(String string) {
-        switch (string) {
-        case "level":
-            return this.overallLevel;
-        case "health":
-            return this.healthLevel;
-        case "strength":
-            return this.strengthLevel;
-        case "agility":
-            return this.agilityLevel;
-        case "defense":
-            return this.defenseLevel;
-        case "stamina":
-            return this.staminaLevel;
-        case "luck":
-            return this.luckLevel;
-        case "archery":
-            return this.archeryLevel;
-        case "trade":
-            return this.tradeLevel;
-        case "smithing":
-            return this.smithingLevel;
-        case "mining":
-            return this.miningLevel;
-        case "farming":
-            return this.farmingLevel;
-        case "alchemy":
-            return this.alchemyLevel;
-        case "points":
-            return this.skillPoints;
-        default:
-            return 0;
-        }
+        return switch (string) {
+            case "level" -> this.overallLevel;
+            case "points" -> this.skillPoints;
+            default -> getSkillLevel(Skill.valueOf(string.toUpperCase()));
+        };
     }
 
     public void addExperienceLevels(int levels) {
@@ -177,10 +139,6 @@ public class PlayerStatsManager {
             this.levelProgress = 0.0F;
             this.totalLevelExperience = 0;
         }
-    }
-
-    public void setLevelProgress(float levelprogress) {
-        this.levelProgress = levelprogress;
     }
 
     public boolean isMaxLevel() {
@@ -202,16 +160,17 @@ public class PlayerStatsManager {
             return experienceCost;
     }
 
-    public float getLevelProgress(PlayerEntity playerEntity) {
-        if (!ConfigInit.CONFIG.useIndependentExp) {
-            return Math.min(getNonIndependentExperience(playerEntity) / (float) this.getNextLevelExperience(), 1F);
-        }
-        return levelProgress;
-    }
+    private int lastExperienceLevel = -1;
+    private float lastExperienceProgress = -1;
+    private long lastExperience = -1;
 
-    public int getNonIndependentExperience(PlayerEntity playerEntity) {
+    public long getNonIndependentExperience() {
         int level = playerEntity.experienceLevel;
-        int exp = 0;
+        float experienceProgress = playerEntity.experienceProgress;
+        if (level == lastExperienceLevel && experienceProgress == lastExperienceProgress) {
+            return lastExperience;
+        }
+        long exp = 0;
         for (int i = 0; i < level; i++) {
             if (i >= 30) {
                 exp += 112 + (i - 30) * 9;
@@ -219,7 +178,10 @@ public class PlayerStatsManager {
                 exp += i >= 15 ? 37 + (i - 15) * 5 : 7 + i * 2;
             }
         }
-        exp += playerEntity.getNextLevelExperience() * playerEntity.experienceProgress;
+        exp += playerEntity.getNextLevelExperience() * experienceProgress;
+        lastExperienceLevel = level;
+        lastExperienceProgress = experienceProgress;
+        lastExperience = exp;
         return exp;
     }
 
@@ -254,13 +216,13 @@ public class PlayerStatsManager {
     public static boolean listContainsItemOrBlock(PlayerEntity playerEntity, int id, int reference) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager();
         if (reference == 1) {
-            if (playerStatsManager.getLevel("mining") < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedBlockIds.contains(id))
+            if (playerStatsManager.getSkillLevel(Skill.MINING) < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedBlockIds.contains(id))
                 return true;
         } else if (reference == 2) {
-            if (playerStatsManager.getLevel("alchemy") < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedbrewingItemIds.contains(id))
+            if (playerStatsManager.getSkillLevel(Skill.ALCHEMY) < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedbrewingItemIds.contains(id))
                 return true;
         } else if (reference == 3) {
-            if (playerStatsManager.getLevel("smithing") < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedSmithingItemIds.contains(id))
+            if (playerStatsManager.getSkillLevel(Skill.SMITHING) < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedSmithingItemIds.contains(id))
                 return true;
         } else if (reference == 4) {
             if (playerStatsManager.lockedCraftingItemIds.contains(id))
@@ -303,63 +265,20 @@ public class PlayerStatsManager {
         return 0;
     }
 
-    public static boolean resetSkill(PlayerEntity playerEntity, String skill) {
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager();
-        if (playerStatsManager.getLevel(skill) > 0) {
-            playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") + playerStatsManager.getLevel(skill));
-            playerStatsManager.setLevel(skill, 0);
+    public boolean resetSkill(Skill skill) {
+        int sLevel = this.getSkillLevel(skill);
+        if (sLevel > 0) {
+            this.setSkillPoints(this.getSkillPoints() + sLevel);
+            this.setSkillLevel(skill, 0);
             PlayerStatsServerPacket.writeS2CResetSkillPacket((ServerPlayerEntity) playerEntity, skill);
             return true;
         } else
             return false;
     }
 
-    public static List<String> getAllSkills() {
-        List<String> list = new ArrayList<>();
-        list.add("health");
-        list.add("strength");
-        list.add("agility");
-        list.add("defense");
-        list.add("stamina");
-        list.add("luck");
-        list.add("archery");
-        list.add("trade");
-        list.add("smithing");
-        list.add("farming");
-        list.add("alchemy");
-        list.add("mining");
-        return list;
-    }
-
-    public static String getRandomSkillString(Random random) {
-        switch (random.nextInt(12)) {
-        case 0:
-            return "health";
-        case 1:
-            return "strength";
-        case 2:
-            return "agility";
-        case 3:
-            return "defense";
-        case 4:
-            return "stamina";
-        case 5:
-            return "luck";
-        case 6:
-            return "archery";
-        case 7:
-            return "trade";
-        case 8:
-            return "smithing";
-        case 9:
-            return "farming";
-        case 10:
-            return "alchemy";
-        case 11:
-            return "mining";
-        default:
-            return "health";
-        }
+    public static boolean resetSkill(PlayerEntity playerEntity, Skill skill) {
+        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager();
+        return playerStatsManager.resetSkill(skill);
     }
 
     // Called on server only

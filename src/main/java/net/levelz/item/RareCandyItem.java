@@ -2,6 +2,7 @@ package net.levelz.item;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.access.PlayerSyncAccess;
+import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -24,8 +25,11 @@ public class RareCandyItem extends Item {
             if (!user.isCreative())
                 stack.decrement(1);
             PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) user).getPlayerStatsManager();
-            ((PlayerSyncAccess) user)
-                    .addLevelExperience(playerStatsManager.getNextLevelExperience() - ((int) (playerStatsManager.getLevelProgress(user) * playerStatsManager.getNextLevelExperience())));
+            if (ConfigInit.CONFIG.useIndependentExp)
+                ((PlayerSyncAccess) user)
+                        .addLevelExperience(playerStatsManager.getNextLevelExperience() - ((int) (playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience())));
+            else
+                ((PlayerSyncAccess) user).levelUp(1, false, false);
         }
         return TypedActionResult.success(stack, world.isClient());
     }

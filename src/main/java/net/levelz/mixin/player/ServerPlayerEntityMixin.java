@@ -2,6 +2,7 @@ package net.levelz.mixin.player;
 
 import com.mojang.authlib.GameProfile;
 
+import net.levelz.stats.Skill;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,43 +44,96 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     private void initMixin(MinecraftServer server, ServerWorld world, GameProfile profile, @Nullable PlayerPublicKey publicKey, CallbackInfo info) {
         ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) (Object) this;
         serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
-                .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);
+                .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getSkillLevel(Skill.HEALTH) * ConfigInit.CONFIG.healthBonus);
         serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
+                .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getSkillLevel(Skill.AGILITY) * ConfigInit.CONFIG.movementBonus);
         serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getLevel("strength") * ConfigInit.CONFIG.attackBonus);
+                .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.STRENGTH) * ConfigInit.CONFIG.attackBonus);
         serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
-                .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getLevel("defense") * ConfigInit.CONFIG.defenseBonus);
-        serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
+                .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getSkillLevel(Skill.DEFENSE) * ConfigInit.CONFIG.defenseBonus);
+        serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getSkillLevel(Skill.LUCK) * ConfigInit.CONFIG.luckBonus);
         // Init stats - Can't send to client cause network hander is null -> onSpawn packet
     }
 
+//    @Override
+//    public void addLevelExperience(int experience) {
+//        if (!playerStatsManager.isMaxLevel()) {
+//            ServerPlayerEntity playerEntity = (ServerPlayerEntity) (Object) this;
+//            int nextLevelExperience = playerStatsManager.getNextLevelExperience();
+//
+//            if (!ConfigInit.CONFIG.useIndependentExp && playerStatsManager.getLevelProgress(playerEntity) >= 1)
+//                experience = nextLevelExperience;
+//
+//            playerStatsManager.setLevelProgress(playerStatsManager.getLevelProgress(playerEntity) + Math.max((float) experience / nextLevelExperience, 0));
+//            playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
+//            while (playerStatsManager.getLevelProgress(playerEntity) >= 1.0F && !playerStatsManager.isMaxLevel()) {
+//                playerStatsManager.setLevelProgress((playerStatsManager.getLevelProgress(playerEntity) - 1.0F) * (float) playerStatsManager.getNextLevelExperience());
+//                playerStatsManager.addExperienceLevels(1);
+//                playerStatsManager.setLevelProgress(playerStatsManager.getLevelProgress(playerEntity) / (float) playerStatsManager.getNextLevelExperience());
+//
+//                if (!ConfigInit.CONFIG.useIndependentExp)
+//                    playerEntity.addExperience(-experience);
+//
+//                PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, playerEntity);
+//                PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
+//                CriteriaInit.LEVEL_UP.trigger(playerEntity, playerStatsManager.overallLevel);
+//                playerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, playerEntity));
+//                playerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, this.getEntityName(), ScoreboardPlayerScore::incrementScore);
+//                if (playerStatsManager.overallLevel > 0)
+//                    playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), 1.0F, 1.0F);
+//            }
+//        }
+//        this.syncedLevelExperience = -1;
+//    }
+
+
     @Override
     public void addLevelExperience(int experience) {
+        ServerPlayerEntity playerEntity = (ServerPlayerEntity) (Object) this;
+        if (!ConfigInit.CONFIG.useIndependentExp) {
+            playerEntity.addExperience(experience);
+            return;
+        }
         if (!playerStatsManager.isMaxLevel()) {
-            ServerPlayerEntity playerEntity = (ServerPlayerEntity) (Object) this;
-            int nextLevelExperience = playerStatsManager.getNextLevelExperience();
+            playerStatsManager.setLevelProgress(playerStatsManager.getLevelProgress() + Math.max((float) experience / playerStatsManager.getNextLevelExperience(), 0));
+            playerStatsManager.setTotalLevelExperience(MathHelper.clamp(playerStatsManager.getTotalLevelExperience() + experience, 0, Integer.MAX_VALUE));
+//            playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
+            levelUp(ConfigInit.CONFIG.overallMaxLevel, true, false);
+        }
+    }
 
-            if (!ConfigInit.CONFIG.useIndependentExp && playerStatsManager.getLevelProgress(playerEntity) >= 1)
-                experience = nextLevelExperience;
-
-            playerStatsManager.setLevelProgress(playerStatsManager.getLevelProgress(playerEntity) + Math.max((float) experience / nextLevelExperience, 0));
-            playerStatsManager.totalLevelExperience = MathHelper.clamp(playerStatsManager.totalLevelExperience + experience, 0, Integer.MAX_VALUE);
-            while (playerStatsManager.getLevelProgress(playerEntity) >= 1.0F && !playerStatsManager.isMaxLevel()) {
-                playerStatsManager.setLevelProgress((playerStatsManager.getLevelProgress(playerEntity) - 1.0F) * (float) playerStatsManager.getNextLevelExperience());
-                playerStatsManager.addExperienceLevels(1);
-                playerStatsManager.setLevelProgress(playerStatsManager.getLevelProgress(playerEntity) / (float) playerStatsManager.getNextLevelExperience());
-
-                if (!ConfigInit.CONFIG.useIndependentExp)
-                    playerEntity.addExperience(-experience);
-
-                PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, playerEntity);
-                PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.overallLevel);
-                CriteriaInit.LEVEL_UP.trigger(playerEntity, playerStatsManager.overallLevel);
-                playerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, playerEntity));
-                playerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, this.getEntityName(), ScoreboardPlayerScore::incrementScore);
-                if (playerStatsManager.overallLevel > 0)
-                    playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), 1.0F, 1.0F);
+    @Override
+    public void levelUp(int levels, boolean deductXp, boolean ignoreMaxLevel) {
+        if (levels == 0) {
+            levels = Integer.MAX_VALUE;
+        }
+        ServerPlayerEntity playerEntity = (ServerPlayerEntity) (Object) this;
+        for (int i = 0; i < levels; i++) {
+            if (!ignoreMaxLevel && playerStatsManager.isMaxLevel()) {
+                break;
+            }
+            if (deductXp) {
+                if (playerStatsManager.getLevelProgress() < 1) {
+                    break;
+                }
+                int nextLevelExperience = playerStatsManager.getNextLevelExperience();
+                if (!ConfigInit.CONFIG.useIndependentExp) {
+                    playerEntity.addExperience(-nextLevelExperience);
+                } else {
+                    playerStatsManager.setLevelProgress((playerStatsManager.getLevelProgress() - 1.0F) * nextLevelExperience);
+                }
+            }
+            playerStatsManager.addExperienceLevels(1);
+            playerStatsManager.setLevelProgress(playerStatsManager.getLevelProgress() / playerStatsManager.getNextLevelExperience());
+            PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, playerEntity);
+            PlayerStatsManager.onLevelUp(playerEntity, playerStatsManager.getOverallLevel());
+            CriteriaInit.LEVEL_UP.trigger(playerEntity, playerStatsManager.getOverallLevel());
+            playerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, playerEntity));
+            playerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, this.getEntityName(), ScoreboardPlayerScore::incrementScore);
+            if (playerStatsManager.getOverallLevel() > 0) {
+                playerEntity.world.playSound(null, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), 1.0F, 1.0F);
+                // Actually I want to play only to the current player
+                // playerEntity.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, playerEntity.getSoundCategory(), 1.0F, 1.0F);
             }
         }
         this.syncedLevelExperience = -1;
@@ -87,8 +141,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Inject(method = "playerTick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;totalExperience:I", ordinal = 0, shift = At.Shift.BEFORE))
     private void playerTickMixin(CallbackInfo info) {
-        if (playerStatsManager.totalLevelExperience != this.syncedLevelExperience) {
-            this.syncedLevelExperience = playerStatsManager.totalLevelExperience;
+        if (playerStatsManager.getTotalLevelExperience() != this.syncedLevelExperience) {
+            this.syncedLevelExperience = playerStatsManager.getTotalLevelExperience();
             PlayerStatsServerPacket.writeS2CXPPacket(playerStatsManager, ((ServerPlayerEntity) (Object) this));
             if (this.syncTeleportStats) {
                 PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, (ServerPlayerEntity) (Object) this);
