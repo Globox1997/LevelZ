@@ -92,6 +92,8 @@
   "text.autoconfig.levelz.option.showLevel": "Show Level",
   "text.autoconfig.levelz.option.switch_screen": "Switch Screen",
   "text.autoconfig.levelz.option.showLockedBlockInfo": "Show Locked Block Info",
+  "text.autoconfig.levelz.option.lockedBlockInfoPosX": "Locked Block Info Pos X",
+  "text.autoconfig.levelz.option.lockedBlockInfoPosY": "Locked Block Info Pos Y",
 
   "text.autoconfig.levelz.option.miningProgression": "Mining Progression",
   "text.autoconfig.levelz.option.itemProgression": "Item Progression",
