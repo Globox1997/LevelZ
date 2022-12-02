@@ -18,9 +18,9 @@ public class PlayerStatsManager {
     private final PlayerEntity playerEntity;
 
     // Level
-    private int overallLevel;
+    public int overallLevel;
     private int totalLevelExperience;
-    private float levelProgress;
+    public float levelProgress;
     private int skillPoints;
     // Skill
     private final Map<Skill, Integer> skillLevel = new HashMap<>();
