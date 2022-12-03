@@ -32,6 +32,8 @@
     "compat.TrinketItemMixin",
     "compat.PlayerStatsManagerCompatMixin",
     "compat.BackpackItemMixin",
+    "compat.EasyMagicEnchantingTableMixin",
+    "compat.EasyAnvilsAnvilMixin",
     "entity.AnimalEntityMixin",
     "entity.AxolotlEntityMixin",
     "entity.CowEntityMixin",
