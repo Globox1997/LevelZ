@@ -65,6 +65,7 @@ public class InGameHudMixin {
     private void renderCrosshairMixin(MatrixStack matrices, CallbackInfo info) {
         if (this.client.crosshairTarget != null && ConfigInit.CONFIG.showLockedBlockInfo) {
             HitResult hitResult = this.client.crosshairTarget;
+            // Add entity tooltip?
             // if (hitResult.getType() == HitResult.Type.ENTITY) {
             // ((EntityHitResult) hitResult).getEntity();
             // // return ((EntityHitResult) hitResult).getEntity() instanceof NamedScreenHandlerFactory;
@@ -74,7 +75,7 @@ public class InGameHudMixin {
                 int blockId = Registry.BLOCK.getRawId(block);
                 if (PlayerStatsManager.listContainsItemOrBlock(this.client.player, blockId, 1)) {
                     renderTooltip(matrices, Arrays.asList(Text.of(block.getName().getString()), Text.of("Mineable Lv. " + PlayerStatsManager.getUnlockLevel(blockId, 1))), Registry.BLOCK.getId(block),
-                            this.scaledWidth / 2, 0);
+                            this.scaledWidth / 2 + ConfigInit.CONFIG.lockedBlockInfoPosX, 0 + ConfigInit.CONFIG.lockedBlockInfoPosY);
                 }
             }
         }
@@ -121,12 +122,12 @@ public class InGameHudMixin {
         RenderSystem.enableTexture();
         VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         matrices.translate(0.0, 0.0, 400.0);
-        this.client.textRenderer.draw(matrices, text.get(0), x - k / 2 + ConfigInit.CONFIG.test2, y + ConfigInit.CONFIG.test3, 0xFFFFFF);
-        this.client.textRenderer.draw(matrices, text.get(1), x - k / 2 + ConfigInit.CONFIG.test2, y + ConfigInit.CONFIG.test4, 0xFFFFFF);
+        this.client.textRenderer.draw(matrices, text.get(0), x - k / 2 + 30, y + 4, 0xFFFFFF);
+        this.client.textRenderer.draw(matrices, text.get(1), x - k / 2 + 30, y + 14, 0xFFFFFF);
         immediate.draw();
         matrices.pop();
 
-        this.client.getItemRenderer().renderInGui(Registry.ITEM.get(identifier).getDefaultStack(), x - k / 2 + ConfigInit.CONFIG.test0, y + ConfigInit.CONFIG.test1);
+        this.client.getItemRenderer().renderInGui(Registry.ITEM.get(identifier).getDefaultStack(), x - k / 2 + 11, y + 5);
 
         this.client.getItemRenderer().zOffset = f;
     }
