@@ -39,7 +39,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // Inventorio
-    modCompileOnly("net.fabricmc:fabric-language-kotlin:1.8.1+kotlin.1.7.0")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.8.1+kotlin.1.7.0")
     modCompileOnly("curse.maven:inventorio-491073:3842567")
     // Wthit
     modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")

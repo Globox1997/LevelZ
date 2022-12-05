@@ -132,6 +132,8 @@
  "text.levelz.gui.points": "技能点 %d",
  "text.levelz.gui.short_level": "Lv. %d",
  "text.levelz.gui.level_up": "升级",
+ "text.levelz.gui.level_up.tooltip": "左键: 1\n右键: 10\n中键: 100",
+ "text.levelz.gui.level_up_skill.tooltip": "升级\n左键: 1\n右键: 5\n中键: 10",
 
  "text.levelz.scoreboard": "Lv. %d %s",
 

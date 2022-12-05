@@ -11,6 +11,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
@@ -36,29 +37,28 @@ public class PlayerStatsServerPacket {
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
             if (player != null) {
-                String stat = buffer.readString();
+                Skill skill = Skill.valueOf(buffer.readString().toUpperCase());
+                int level = buffer.readInt();
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
-                playerStatsManager.setLevel(stat, buffer.readInt());
-                playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") - 1);
-                if (stat.equals("health")) {
-                    player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus);
-                    player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus);
-                } else if (stat.equals("strength"))
-                    player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus);
-                else if (stat.equals("agility"))
-                    player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus);
-                else if (stat.equals("defense"))
-                    player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus);
-                else if (stat.equals("luck"))
-                    player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus);
-                else if (stat.equals("mining"))
-                    syncLockedBlockList(playerStatsManager);
-                else if (stat.equals("alchemy"))
-                    syncLockedBrewingItemList(playerStatsManager);
-                else if (stat.equals("smithing"))
-                    syncLockedSmithingItemList(playerStatsManager);
+                playerStatsManager.setSkillLevel(skill, playerStatsManager.getSkillLevel(skill) + level);
+                playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() - level);
+                switch (skill) {
+                    case HEALTH -> {
+                        player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus * level);
+                        player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus * level);
+                    }
+                    case STRENGTH -> player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus * level);
+                    case AGILITY -> player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus * level);
+                    case DEFENSE ->
+                            player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus * level);
+                    case LUCK ->
+                            player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus * level);
+                    case MINING -> syncLockedBlockList(playerStatsManager);
+                    case ALCHEMY -> syncLockedBrewingItemList(playerStatsManager);
+                    case SMITHING -> syncLockedSmithingItemList(playerStatsManager);
+                }
                 syncLockedCraftingItemList(playerStatsManager);
             }
         });
@@ -72,37 +72,42 @@ public class PlayerStatsServerPacket {
         ServerPlayNetworking.registerGlobalReceiver(LEVEL_UP_BUTTON_PACKET, (server, player, handler, buffer, sender) -> {
             if (player == null)
                 return;
-            ((PlayerSyncAccess) player).addLevelExperience(0);
+            ((PlayerSyncAccess) player).levelUp(buffer.readInt(), true, false);
         });
     }
 
     public static void writeS2CXPPacket(PlayerStatsManager playerStatsManager, ServerPlayerEntity serverPlayerEntity) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeFloat(playerStatsManager.getLevelProgress(serverPlayerEntity));
-        buf.writeInt(playerStatsManager.totalLevelExperience);
-        buf.writeInt(playerStatsManager.getLevel("level"));
+        buf.writeFloat(playerStatsManager.getLevelProgress());
+        buf.writeInt(playerStatsManager.getTotalLevelExperience());
+        buf.writeInt(playerStatsManager.getOverallLevel());
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(XP_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
     }
 
     public static void writeS2CSkillPacket(PlayerStatsManager playerStatsManager, ServerPlayerEntity serverPlayerEntity) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeFloat(playerStatsManager.getLevelProgress(serverPlayerEntity));
-        buf.writeInt(playerStatsManager.totalLevelExperience);
-        buf.writeInt(playerStatsManager.getLevel("level"));
-        buf.writeInt(playerStatsManager.getLevel("points"));
-        buf.writeInt(playerStatsManager.getLevel("health"));
-        buf.writeInt(playerStatsManager.getLevel("strength"));
-        buf.writeInt(playerStatsManager.getLevel("agility"));
-        buf.writeInt(playerStatsManager.getLevel("defense"));
-        buf.writeInt(playerStatsManager.getLevel("stamina"));
-        buf.writeInt(playerStatsManager.getLevel("luck"));
-        buf.writeInt(playerStatsManager.getLevel("archery"));
-        buf.writeInt(playerStatsManager.getLevel("trade"));
-        buf.writeInt(playerStatsManager.getLevel("smithing"));
-        buf.writeInt(playerStatsManager.getLevel("mining"));
-        buf.writeInt(playerStatsManager.getLevel("farming"));
-        buf.writeInt(playerStatsManager.getLevel("alchemy"));
+        buf.writeFloat(playerStatsManager.getLevelProgress());
+        buf.writeInt(playerStatsManager.getTotalLevelExperience());
+        buf.writeInt(playerStatsManager.getOverallLevel());
+        buf.writeInt(playerStatsManager.getSkillPoints());
+        for (Skill skill : Skill.values()) {
+            buf.writeInt(playerStatsManager.getSkillLevel(skill));
+        }
+//        buf.writeInt(playerStatsManager.getLevel("level"));
+//        buf.writeInt(playerStatsManager.getLevel("points"));
+//        buf.writeInt(playerStatsManager.getLevel("health"));
+//        buf.writeInt(playerStatsManager.getLevel("strength"));
+//        buf.writeInt(playerStatsManager.getLevel("agility"));
+//        buf.writeInt(playerStatsManager.getLevel("defense"));
+//        buf.writeInt(playerStatsManager.getLevel("stamina"));
+//        buf.writeInt(playerStatsManager.getLevel("luck"));
+//        buf.writeInt(playerStatsManager.getLevel("archery"));
+//        buf.writeInt(playerStatsManager.getLevel("trade"));
+//        buf.writeInt(playerStatsManager.getLevel("smithing"));
+//        buf.writeInt(playerStatsManager.getLevel("mining"));
+//        buf.writeInt(playerStatsManager.getLevel("farming"));
+//        buf.writeInt(playerStatsManager.getLevel("alchemy"));
 
         // Set on server
         syncLockedBlockList(playerStatsManager);
@@ -124,7 +129,7 @@ public class PlayerStatsServerPacket {
     public static void syncLockedBlockList(PlayerStatsManager playerStatsManager) {
         playerStatsManager.lockedBlockIds.clear();
         for (int i = 0; i < LevelLists.miningLevelList.size(); i++) {
-            if (LevelLists.miningLevelList.get(i) > playerStatsManager.getLevel("mining")) {
+            if (LevelLists.miningLevelList.get(i) > playerStatsManager.getSkillLevel(Skill.MINING)) {
                 for (int u = 0; u < LevelLists.miningBlockList.get(i).size(); u++) {
                     if (!playerStatsManager.lockedBlockIds.contains(LevelLists.miningBlockList.get(i).get(u)))
                         playerStatsManager.lockedBlockIds.add(LevelLists.miningBlockList.get(i).get(u));
@@ -136,7 +141,7 @@ public class PlayerStatsServerPacket {
     public static void syncLockedBrewingItemList(PlayerStatsManager playerStatsManager) {
         playerStatsManager.lockedbrewingItemIds.clear();
         for (int i = 0; i < LevelLists.brewingLevelList.size(); i++) {
-            if (LevelLists.brewingLevelList.get(i) > playerStatsManager.getLevel("alchemy")) {
+            if (LevelLists.brewingLevelList.get(i) > playerStatsManager.getSkillLevel(Skill.ALCHEMY)) {
                 for (int u = 0; u < LevelLists.brewingItemList.get(i).size(); u++) {
                     if (!playerStatsManager.lockedbrewingItemIds.contains(LevelLists.brewingItemList.get(i).get(u)))
                         playerStatsManager.lockedbrewingItemIds.add(LevelLists.brewingItemList.get(i).get(u));
@@ -148,7 +153,7 @@ public class PlayerStatsServerPacket {
     public static void syncLockedSmithingItemList(PlayerStatsManager playerStatsManager) {
         playerStatsManager.lockedSmithingItemIds.clear();
         for (int i = 0; i < LevelLists.smithingLevelList.size(); i++) {
-            if (LevelLists.smithingLevelList.get(i) > playerStatsManager.getLevel("smithing")) {
+            if (LevelLists.smithingLevelList.get(i) > playerStatsManager.getSkillLevel(Skill.SMITHING)) {
                 for (int u = 0; u < LevelLists.smithingItemList.get(i).size(); u++) {
                     if (!playerStatsManager.lockedSmithingItemIds.contains(LevelLists.smithingItemList.get(i).get(u)))
                         playerStatsManager.lockedSmithingItemIds.add(LevelLists.smithingItemList.get(i).get(u));
@@ -234,28 +239,27 @@ public class PlayerStatsServerPacket {
         serverPlayerEntity.networkHandler.sendPacket(packet);
     }
 
-    public static void writeS2CResetSkillPacket(ServerPlayerEntity serverPlayerEntity, String skill) {
+    public static void writeS2CResetSkillPacket(ServerPlayerEntity serverPlayerEntity, Skill skill) {
         // Sync attributes on server
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager();
-        if (skill.equals("health")) {
-            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
-                    .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);
-            serverPlayerEntity.setHealth(serverPlayerEntity.getMaxHealth());
-        } else if (skill.equals("strength")) {
-            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                    .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getLevel("strength") * ConfigInit.CONFIG.attackBonus);
-        } else if (skill.equals("agility")) {
-            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                    .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
-        } else if (skill.equals("defense")) {
-            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
-                    .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getLevel("defense") * ConfigInit.CONFIG.defenseBonus);
-        } else if (skill.equals("luck")) {
-            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
-                    .setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
+        int skillLevel = playerStatsManager.getSkillLevel(skill);
+        switch (skill) {
+            case HEALTH -> {
+                serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                        .setBaseValue(ConfigInit.CONFIG.healthBase + skillLevel * ConfigInit.CONFIG.healthBonus);
+                serverPlayerEntity.setHealth(serverPlayerEntity.getMaxHealth());
+            }
+            case STRENGTH -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                    .setBaseValue(ConfigInit.CONFIG.attackBase + skillLevel * ConfigInit.CONFIG.attackBonus);
+            case AGILITY -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                    .setBaseValue(ConfigInit.CONFIG.movementBase + skillLevel * ConfigInit.CONFIG.movementBonus);
+            case DEFENSE -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
+                    .setBaseValue(ConfigInit.CONFIG.defenseBase + skillLevel * ConfigInit.CONFIG.defenseBonus);
+            case LUCK -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
+                    .setBaseValue(ConfigInit.CONFIG.luckBase + skillLevel * ConfigInit.CONFIG.luckBonus);
         }
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeString(skill);
+        buf.writeString(skill.name());
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(RESET_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
     }

@@ -232,21 +232,23 @@ public class CommandInit {
                 if (reference == 0)
                     ((PlayerSyncAccess) serverPlayerEntity).addLevelExperience(i);
                 if (reference == 1) {
-                    int currentXP = (int) (playerStatsManager.getLevelProgress(serverPlayerEntity) * playerStatsManager.getNextLevelExperience());
-                    float oldProgress = playerStatsManager.getLevelProgress(serverPlayerEntity);
+                    int currentXP = (int) (playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience());
+                    float oldProgress = playerStatsManager.getLevelProgress();
                     playerStatsManager.setLevelProgress(currentXP - i > 0 ? (float) (currentXP - 1) / (float) playerStatsManager.getNextLevelExperience() : 0.0F);
-                    playerStatsManager.totalLevelExperience = currentXP - i > 0 ? playerStatsManager.totalLevelExperience - i
-                            : playerStatsManager.totalLevelExperience - (int) (oldProgress * playerStatsManager.getNextLevelExperience());
+                    playerStatsManager.setTotalLevelExperience(currentXP - i > 0 ? playerStatsManager.getTotalLevelExperience() - i : playerStatsManager.getTotalLevelExperience() - (int) (oldProgress * playerStatsManager.getNextLevelExperience()));
+//                    playerStatsManager.totalLevelExperience = currentXP - i > 0 ? playerStatsManager.totalLevelExperience - i
+//                            : playerStatsManager.totalLevelExperience - (int) (oldProgress * playerStatsManager.getNextLevelExperience());
                 }
                 if (reference == 2) {
-                    float oldProgress = playerStatsManager.getLevelProgress(serverPlayerEntity);
+                    float oldProgress = playerStatsManager.getLevelProgress();
                     playerStatsManager.setLevelProgress(i >= playerStatsManager.getNextLevelExperience() ? 1.0F : (float) i / playerStatsManager.getNextLevelExperience());
-                    playerStatsManager.totalLevelExperience = (int) (playerStatsManager.totalLevelExperience - oldProgress * playerStatsManager.getNextLevelExperience()
-                            + playerStatsManager.getLevelProgress(serverPlayerEntity) * playerStatsManager.getNextLevelExperience());
+                    playerStatsManager.setTotalLevelExperience((int) (playerStatsManager.getTotalLevelExperience() - oldProgress * playerStatsManager.getNextLevelExperience() + playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience()));
+//                    playerStatsManager.totalLevelExperience = (int) (playerStatsManager.totalLevelExperience - oldProgress * playerStatsManager.getNextLevelExperience()
+//                            + playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience());
                 }
                 if (reference == 3)
                     source.sendFeedback(Text.translatable("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
-                            (int) (playerStatsManager.getLevelProgress(serverPlayerEntity) * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()), true);
+                            (int) (playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()), true);
             } else {
                 int playerSkillLevel = playerStatsManager.getLevel(skill);
                 if (reference == 0)
@@ -261,7 +263,7 @@ public class CommandInit {
                             skill = skillStrings().get(u);
                             if (skill.equals("experience"))
                                 source.sendFeedback(Text.translatable("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
-                                        (int) (playerStatsManager.getLevelProgress(serverPlayerEntity) * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()),
+                                        (int) (playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()),
                                         true);
                             else
                                 source.sendFeedback(Text.translatable("commands.playerstats.printLevel", serverPlayerEntity.getDisplayName(),

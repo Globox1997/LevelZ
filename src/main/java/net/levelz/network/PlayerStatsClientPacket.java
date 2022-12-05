@@ -12,6 +12,7 @@ import net.levelz.data.LevelLoader;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -85,27 +86,26 @@ public class PlayerStatsClientPacket {
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.RESET_PACKET, (client, handler, buf, sender) -> {
             if (client.player != null) {
-                String skill = buf.readString();
+                Skill skill = Skill.valueOf(buf.readString().toUpperCase());
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager();
-                playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") + playerStatsManager.getLevel(skill));
-                playerStatsManager.setLevel(skill, 0);
+                int skillLevel = playerStatsManager.getSkillLevel(skill);
+                playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() + skillLevel);
+                playerStatsManager.setSkillLevel(skill, 0);
                 // Sync attributes on client
-                if (skill.equals("health")) {
-                    client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
-                            .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);
-                    client.player.setHealth(client.player.getMaxHealth());
-                } else if (skill.equals("strength")) {
-                    client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                            .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getLevel("strength") * ConfigInit.CONFIG.attackBonus);
-                } else if (skill.equals("agility")) {
-                    client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                            .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
-                } else if (skill.equals("defense")) {
-                    client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
-                            .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getLevel("defense") * ConfigInit.CONFIG.defenseBonus);
-                } else if (skill.equals("luck")) {
-                    client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
-                            .setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
+                switch (skill) {
+                    case HEALTH -> {
+                        client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                                .setBaseValue(ConfigInit.CONFIG.healthBase);
+                        client.player.setHealth(client.player.getMaxHealth());
+                    }
+                    case STRENGTH -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                            .setBaseValue(ConfigInit.CONFIG.attackBase);
+                    case AGILITY -> client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                            .setBaseValue(ConfigInit.CONFIG.movementBase);
+                    case DEFENSE -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
+                            .setBaseValue(ConfigInit.CONFIG.defenseBase);
+                    case LUCK -> client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
+                            .setBaseValue(ConfigInit.CONFIG.luckBase);
                 }
             }
         });
@@ -247,12 +247,21 @@ public class PlayerStatsClientPacket {
         });
     }
 
-    public static void writeC2SIncreaseLevelPacket(PlayerStatsManager playerStatsManager, String string) {
-        playerStatsManager.setLevel(string, playerStatsManager.getLevel(string) + 1);
-        playerStatsManager.setLevel("points", playerStatsManager.getLevel("points") - 1);
+    public static void writeC2SIncreaseLevelPacket(PlayerStatsManager playerStatsManager, Skill skill, int level) {
+        int skillLevel = playerStatsManager.getSkillLevel(skill);
+        level = Math.min(playerStatsManager.getSkillPoints(), level);
+        level = Math.min(ConfigInit.CONFIG.maxLevel - skillLevel, level);
+        if (level < 1)
+            return;
+        playerStatsManager.setSkillLevel(skill, skillLevel + level);
+        playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() - level);
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeString(string);
-        buf.writeInt(playerStatsManager.getLevel(string));
+        buf.writeString(skill.name());
+        buf.writeInt(level);
+        if (skill == Skill.STRENGTH) {
+            playerStatsManager.getPlayerEntity().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                    .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.STRENGTH) * ConfigInit.CONFIG.attackBonus);
+        }
 
         CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PlayerStatsServerPacket.STATS_INCREASE_PACKET, buf);
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
@@ -272,28 +281,34 @@ public class PlayerStatsClientPacket {
     private static void executeXPPacket(PlayerEntity player, PacketByteBuf buf) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
         playerStatsManager.setLevelProgress(buf.readFloat());
-        playerStatsManager.totalLevelExperience = buf.readInt();
-        playerStatsManager.setLevel("level", buf.readInt());
+        playerStatsManager.setTotalLevelExperience(buf.readInt());
+        playerStatsManager.setOverallLevel(buf.readInt());
+//        playerStatsManager.setLevel("level", buf.readInt());
     }
 
     private static void executeLevelPacket(PlayerEntity player, PacketByteBuf buf) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
         playerStatsManager.setLevelProgress(buf.readFloat());
-        playerStatsManager.totalLevelExperience = buf.readInt();
-        playerStatsManager.setLevel("level", buf.readInt());
-        playerStatsManager.setLevel("points", buf.readInt());
-        playerStatsManager.setLevel("health", buf.readInt());
-        playerStatsManager.setLevel("strength", buf.readInt());
-        playerStatsManager.setLevel("agility", buf.readInt());
-        playerStatsManager.setLevel("defense", buf.readInt());
-        playerStatsManager.setLevel("stamina", buf.readInt());
-        playerStatsManager.setLevel("luck", buf.readInt());
-        playerStatsManager.setLevel("archery", buf.readInt());
-        playerStatsManager.setLevel("trade", buf.readInt());
-        playerStatsManager.setLevel("smithing", buf.readInt());
-        playerStatsManager.setLevel("mining", buf.readInt());
-        playerStatsManager.setLevel("farming", buf.readInt());
-        playerStatsManager.setLevel("alchemy", buf.readInt());
+        playerStatsManager.setTotalLevelExperience(buf.readInt());
+        playerStatsManager.setOverallLevel(buf.readInt());
+        playerStatsManager.setSkillPoints(buf.readInt());
+        for (Skill skill : Skill.values()) {
+            playerStatsManager.setSkillLevel(skill, buf.readInt());
+        }
+//        playerStatsManager.setLevel("level", buf.readInt());
+//        playerStatsManager.setLevel("points", );
+//        playerStatsManager.setLevel("health", buf.readInt());
+//        playerStatsManager.setLevel("strength", buf.readInt());
+//        playerStatsManager.setLevel("agility", buf.readInt());
+//        playerStatsManager.setLevel("defense", buf.readInt());
+//        playerStatsManager.setLevel("stamina", buf.readInt());
+//        playerStatsManager.setLevel("luck", buf.readInt());
+//        playerStatsManager.setLevel("archery", buf.readInt());
+//        playerStatsManager.setLevel("trade", buf.readInt());
+//        playerStatsManager.setLevel("smithing", buf.readInt());
+//        playerStatsManager.setLevel("mining", buf.readInt());
+//        playerStatsManager.setLevel("farming", buf.readInt());
+//        playerStatsManager.setLevel("alchemy", buf.readInt());
         // Set unlocked list
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
@@ -385,9 +400,10 @@ public class PlayerStatsClientPacket {
             LevelLists.getList(listName).add(object);
     }
 
-    public static void writeC2SLevelUpPacket() {
+    public static void writeC2SLevelUpPacket(int levels) {
         // Levelz level up
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeInt(levels);
         CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PlayerStatsServerPacket.LEVEL_UP_BUTTON_PACKET, buf);
         Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).sendPacket(packet);
     }
