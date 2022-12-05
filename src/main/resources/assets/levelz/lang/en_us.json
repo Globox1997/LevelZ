@@ -233,7 +233,7 @@
   "text.levelz.alchemy_max_lvl_2": "double potion effects",
 
   "spritetip.levelz.health_skill": "Health",
-  "spritetip.levelz.health_skill_info": "Increases HP",
+  "spritetip.levelz.health_skill_info_1": "Increases HP",
 
   "spritetip.levelz.strength_skill": "Strength",
   "spritetip.levelz.strength_skill_info_1": "Increases Melee Damage",
@@ -261,7 +261,7 @@
   "spritetip.levelz.archery_skill_info_3": "Unlocks Archery Items",
 
   "spritetip.levelz.trade_skill": "Trade",
-  "spritetip.levelz.trade_skill_info": "Decreases Trade Price",
+  "spritetip.levelz.trade_skill_info_1": "Decreases Trade Price",
 
   "spritetip.levelz.smithing_skill": "Smithing",
   "spritetip.levelz.smithing_skill_info_1": "Decreases Smithing XP Price",
@@ -272,10 +272,10 @@
   "spritetip.levelz.mining_skill_info_2": "Unlocks Mining Sources",
 
   "spritetip.levelz.farming_skill": "Farming",
-  "spritetip.levelz.farming_skill_info": "Unlocks Farming Items",
+  "spritetip.levelz.farming_skill_info_1": "Unlocks Farming Items",
 
   "spritetip.levelz.alchemy_skill": "Alchemy",
-  "spritetip.levelz.alchemy_skill_info": "Unlocks Alchemy Items",
+  "spritetip.levelz.alchemy_skill_info_1": "Unlocks Alchemy Items",
 
   "spritetip.levelz.crafting_skill": "Crafting",
 
