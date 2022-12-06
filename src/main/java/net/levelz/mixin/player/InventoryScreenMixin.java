@@ -56,13 +56,13 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
             PlayerStatsManager playerStatsManager = (((PlayerStatsManagerAccess) this.client.player).getPlayerStatsManager());
             // 0xAARRGGBB Format
             int color = 0xFFFFFF;
-            if (playerStatsManager.getLevel("points") > 0)
+            if (playerStatsManager.getSkillPoints() > 0)
                 color = 1507303;
 
             matrices.push();
             matrices.scale(0.6F, 0.6F, 1F);
             matrices.translate((28 + this.x) / 0.6F, (8 + this.y + textRenderer.fontHeight / 2F) / 0.6F, 0);
-            textRenderer.draw(matrices, Text.translatable("text.levelz.gui.short_level", playerStatsManager.getLevel("level")), 0, -textRenderer.fontHeight / 2F, color);
+            textRenderer.draw(matrices, Text.translatable("text.levelz.gui.short_level", playerStatsManager.getOverallLevel()), 0, -textRenderer.fontHeight / 2F, color);
             matrices.pop();
         }
     }

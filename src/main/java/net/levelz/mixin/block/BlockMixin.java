@@ -17,6 +17,7 @@ import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.EntityInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.OreBlock;
@@ -79,7 +80,7 @@ public class BlockMixin {
     private static void getDroppedStacksMixin(BlockState state, ServerWorld world, BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity entity, ItemStack stack,
             CallbackInfoReturnable<List<ItemStack>> info, LootContext.Builder builder) {
         if (entity != null && state.getBlock() instanceof OreBlock && entity instanceof PlayerEntity playerEntity) {
-            if ((float) ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getLevel("mining") * ConfigInit.CONFIG.miningOreChance > world.random.nextFloat()
+            if ((float) ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getSkillLevel(Skill.MINING) * ConfigInit.CONFIG.miningOreChance > world.random.nextFloat()
                     && EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, stack) == 0) {
                 Block.dropStack(world, pos, state.getDroppedStacks(builder).get(0).split(1));
             }
@@ -92,7 +93,7 @@ public class BlockMixin {
             LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
                     (int) (size * ConfigInit.CONFIG.oreXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getLevel("level")
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getOverallLevel()
                                     : 1.0F)));
     }
 

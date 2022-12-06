@@ -36,20 +36,6 @@ public class LevelzScreen extends CottonClientScreen {
             int scaledWidth = this.client.getWindow().getScaledWidth();
             int scaledHeight = this.client.getWindow().getScaledHeight();
             InventoryScreen.drawEntity(scaledWidth / 2 - 75, scaledHeight / 2 - 40, 30, -28, 0, this.client.player);
-//            RenderSystem.enableBlend();
-//            RenderSystem.enableDepthTest();
-//            RenderSystem.setShaderTexture(0, RenderInit.GUI_ICONS);
-//            PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) this.client.player).getPlayerStatsManager();
-//            float levelProgress = playerStatsManager.getLevelProgress();
-//            int m = (int) (levelProgress * 129.0F);
-//            int x = scaledWidth / 2 - 41;
-//            int n = scaledHeight / 2 - 45;
-//            LevelzScreen.drawTexture(matrices, x, n, 130, 5, 0F, 100F, 182, 5, 256, 256);
-//            if (m > 0) {
-//                this.drawTexture(matrices, x, n, 0, 105, m, 5);
-//            }
-//            RenderSystem.disableBlend();
-//            RenderSystem.disableDepthTest();
         }
 
         RenderSystem.setShaderTexture(0, RenderInit.GUI_ICONS);

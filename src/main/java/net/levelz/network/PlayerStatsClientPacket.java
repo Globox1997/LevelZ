@@ -93,19 +93,15 @@ public class PlayerStatsClientPacket {
                 playerStatsManager.setSkillLevel(skill, 0);
                 // Sync attributes on client
                 switch (skill) {
-                    case HEALTH -> {
-                        client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
-                                .setBaseValue(ConfigInit.CONFIG.healthBase);
-                        client.player.setHealth(client.player.getMaxHealth());
-                    }
-                    case STRENGTH -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                            .setBaseValue(ConfigInit.CONFIG.attackBase);
-                    case AGILITY -> client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                            .setBaseValue(ConfigInit.CONFIG.movementBase);
-                    case DEFENSE -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
-                            .setBaseValue(ConfigInit.CONFIG.defenseBase);
-                    case LUCK -> client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
-                            .setBaseValue(ConfigInit.CONFIG.luckBase);
+                case HEALTH -> {
+                    client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase);
+                    client.player.setHealth(client.player.getMaxHealth());
+                }
+                case STRENGTH -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase);
+                case AGILITY -> client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase);
+                case DEFENSE -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase);
+                case LUCK -> client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase);
+                default -> throw new IllegalArgumentException("Unexpected value: " + skill);
                 }
             }
         });
@@ -283,7 +279,7 @@ public class PlayerStatsClientPacket {
         playerStatsManager.setLevelProgress(buf.readFloat());
         playerStatsManager.setTotalLevelExperience(buf.readInt());
         playerStatsManager.setOverallLevel(buf.readInt());
-//        playerStatsManager.setLevel("level", buf.readInt());
+        // playerStatsManager.setLevel("level", buf.readInt());
     }
 
     private static void executeLevelPacket(PlayerEntity player, PacketByteBuf buf) {
@@ -295,20 +291,6 @@ public class PlayerStatsClientPacket {
         for (Skill skill : Skill.values()) {
             playerStatsManager.setSkillLevel(skill, buf.readInt());
         }
-//        playerStatsManager.setLevel("level", buf.readInt());
-//        playerStatsManager.setLevel("points", );
-//        playerStatsManager.setLevel("health", buf.readInt());
-//        playerStatsManager.setLevel("strength", buf.readInt());
-//        playerStatsManager.setLevel("agility", buf.readInt());
-//        playerStatsManager.setLevel("defense", buf.readInt());
-//        playerStatsManager.setLevel("stamina", buf.readInt());
-//        playerStatsManager.setLevel("luck", buf.readInt());
-//        playerStatsManager.setLevel("archery", buf.readInt());
-//        playerStatsManager.setLevel("trade", buf.readInt());
-//        playerStatsManager.setLevel("smithing", buf.readInt());
-//        playerStatsManager.setLevel("mining", buf.readInt());
-//        playerStatsManager.setLevel("farming", buf.readInt());
-//        playerStatsManager.setLevel("alchemy", buf.readInt());
         // Set unlocked list
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
@@ -378,13 +360,15 @@ public class PlayerStatsClientPacket {
         LevelLists.listOfAllLists.clear();
         LevelLoader.addAllInOneList();
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
-        player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getLevel("health") * ConfigInit.CONFIG.healthBonus);
+        player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerStatsManager.getSkillLevel(Skill.HEALTH) * ConfigInit.CONFIG.healthBonus);
         player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
+                .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getSkillLevel(Skill.AGILITY) * ConfigInit.CONFIG.movementBonus);
         player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getLevel("strength") * ConfigInit.CONFIG.attackBonus);
-        player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getLevel("defense") * ConfigInit.CONFIG.defenseBonus);
-        player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckBonus);
+                .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.STRENGTH) * ConfigInit.CONFIG.attackBonus);
+        player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
+                .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getSkillLevel(Skill.DEFENSE) * ConfigInit.CONFIG.defenseBonus);
+        player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getSkillLevel(Skill.LUCK) * ConfigInit.CONFIG.luckBonus);
         PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
         PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);

@@ -14,6 +14,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
+import net.levelz.stats.Skill;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.AnvilScreenHandler;
@@ -29,7 +30,7 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
     @Final
     private Property levelCost;
 
-    private int smithingLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("smithing");
+    private int smithingLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.SMITHING);
 
     public AnvilScreenHandlerMixin(@Nullable ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
         super(type, syncId, playerInventory, context);

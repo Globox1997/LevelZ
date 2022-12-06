@@ -24,7 +24,7 @@ public class FishingBobberEntityMixin {
             LevelExperienceOrbEntity.spawn((ServerWorld) getPlayerOwner().world, getPlayerOwner().getPos().add(0.0D, 0.5D, 0.0D),
                     (int) ((getPlayerOwner().world.random.nextInt(6) + 1) * ConfigInit.CONFIG.fishingXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && getPlayerOwner() != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) getPlayerOwner()).getPlayerStatsManager().getLevel("level")
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) getPlayerOwner()).getPlayerStatsManager().getOverallLevel()
                                     : 1.0F)));
     }
 

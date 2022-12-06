@@ -133,9 +133,9 @@
   "text.levelz.gui.level": "Level %d",
   "text.levelz.gui.points": "Points %d",
   "text.levelz.gui.short_level": "Lv. %d",
-  "text.levelz.gui.level_up": "Level up",
-  "text.levelz.gui.level_up.tooltip": "Left button: 1\nRight button: 10\nMiddle button: 100",
-  "text.levelz.gui.level_up_skill.tooltip": "Level up\nLeft button: 1\nRight button: 5\nMiddle button: 10",
+  "text.levelz.gui.level_up": "Level Up",
+  "text.levelz.gui.level_up.tooltip": "Left click button: 1\nRight click button: 10\nMiddle click button: 100",
+  "text.levelz.gui.level_up_skill.tooltip": "On level up button:\nLeft click button: 1\nRight click button: 5\nMiddle click button: 10",
 
   "text.levelz.scoreboard": "Lv. %d %s",
 

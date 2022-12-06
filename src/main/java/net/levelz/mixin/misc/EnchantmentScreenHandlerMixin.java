@@ -11,6 +11,7 @@ import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -50,7 +51,7 @@ public abstract class EnchantmentScreenHandlerMixin {
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerInventory.player).getPlayerStatsManager();
                 ArrayList<Object> enchantingTableList = LevelLists.enchantingTableList;
                 if (enchantingTableList != null && !enchantingTableList.isEmpty()) {
-                    int playerAlchemyLevel = playerStatsManager.getLevel(enchantingTableList.get(0).toString());
+                    int playerAlchemyLevel = playerStatsManager.getSkillLevel(Skill.valueOf(enchantingTableList.get(0).toString().toUpperCase()));
                     if (playerAlchemyLevel < ConfigInit.CONFIG.maxLevel) {
                         if (playerAlchemyLevel < (int) enchantingTableList.get(4)) {
                             for (int i = 0; i < 3; ++i) {

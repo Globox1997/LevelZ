@@ -8,7 +8,6 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.RenderInit;
 import net.levelz.stats.PlayerStatsManager;
@@ -57,7 +56,6 @@ public class LevelzGui extends LightweightGuiDescription {
         root.add(foodIcon, 155, 21, 10, 10);
         root.add(fortuneIcon, 155, 34, 10, 10);
 
-        PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager();
         // Small icon labels
         WDynamicLabel lifeLabel = new WDynamicLabel(() -> "" + Math.round(playerEntity.getHealth()));
         WDynamicLabel protectionLabel = new WDynamicLabel(
@@ -81,6 +79,7 @@ public class LevelzGui extends LightweightGuiDescription {
         // Info button
         ZWSprite infoIcon = new ZWSprite("info", null, 1);
         infoIcon.addText(Text.translatable("text.levelz.more_info").getString());
+        infoIcon.addText(Text.translatable("text.levelz.gui.level_up_skill.tooltip").getString().split("\n"));
         root.add(infoIcon, 178, 73, 11, 13);
 
         if (!LevelLists.craftingItemList.isEmpty()) {

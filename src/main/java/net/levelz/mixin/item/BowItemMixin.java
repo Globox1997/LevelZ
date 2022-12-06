@@ -13,6 +13,7 @@ import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -51,7 +52,7 @@ public class BowItemMixin {
     @Inject(method = "onStoppedUsing", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getLevel(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)I", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void onStoppedUsingMixin(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, boolean bl, ItemStack itemStack, int i,
             float f, boolean bl2, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity, int j) {
-        int archeryLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getLevel("archery");
+        int archeryLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getSkillLevel(Skill.ARCHERY);
         persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage()
                 + (archeryLevel >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > world.random.nextFloat() ? persistentProjectileEntity.getDamage() * 2D
                         : (double) archeryLevel * ConfigInit.CONFIG.archeryBowExtraDamage));

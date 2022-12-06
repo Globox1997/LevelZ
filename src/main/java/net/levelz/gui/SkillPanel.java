@@ -39,7 +39,6 @@ public class SkillPanel extends WPlainPanel {
         }
         this.add(icon, 0, 0, height, height);
         button = new ZWButton();
-        button.addTooltip(Text.translatable("text.levelz.gui.level_up_skill.tooltip").getString().split("\n"));
         button.setOnClick(() -> {
             int level = 1;
             if (button.wasRightButtonClicked())
@@ -52,12 +51,11 @@ public class SkillPanel extends WPlainPanel {
                 case SMITHING -> PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
                 case MINING -> PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
                 case ALCHEMY -> PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
+                default -> throw new IllegalArgumentException("Unexpected value: " + skill);
             }
         });
         this.add(button, width - button.getWidth(), (height - button.getHeight()) / 2);
-        label = new WLabel(Text.of("0/0"))
-                .setHorizontalAlignment(HorizontalAlignment.RIGHT)
-                .setVerticalAlignment(VerticalAlignment.CENTER);
+        label = new WLabel(Text.of("0/0")).setHorizontalAlignment(HorizontalAlignment.RIGHT).setVerticalAlignment(VerticalAlignment.CENTER);
         this.add(label, icon.getWidth(), 0, (int) ((width - icon.getWidth() - button.getWidth()) * 0.8), height + 2);
     }
 

@@ -12,6 +12,7 @@ import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -51,7 +52,7 @@ public class CrossbowItemMixin {
     private static void createArrowMixin(World world, LivingEntity entity, ItemStack crossbow, ItemStack arrow, CallbackInfoReturnable<PersistentProjectileEntity> info, ArrowItem arrowItem,
             PersistentProjectileEntity persistentProjectileEntity) {
         if (entity instanceof PlayerEntity player) {
-            int archeryLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("archery");
+            int archeryLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.ARCHERY);
             persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage()
                     + (archeryLevel >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > entity.world.random.nextFloat() ? persistentProjectileEntity.getDamage() * 2D
                             : (double) archeryLevel * ConfigInit.CONFIG.archeryCrossbowExtraDamage));

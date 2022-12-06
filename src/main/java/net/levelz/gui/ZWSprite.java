@@ -45,6 +45,11 @@ public class ZWSprite extends WSprite {
         text.add(Text.of(string).asOrderedText());
     }
 
+    public void addText(String[] string) {
+        for (String stringArray : string)
+            text.add(Text.of(stringArray).asOrderedText());
+    }
+
     @Override
     public void paint(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
         if (type != 0 && name != null) {

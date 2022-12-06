@@ -17,6 +17,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -45,7 +46,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyVariable(method = "modifyAppliedDamage", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getProtectionAmount(Ljava/lang/Iterable;Lnet/minecraft/entity/damage/DamageSource;)I", shift = At.Shift.AFTER), ordinal = 0)
     private int modifyAppliedDamageMixin(int original, DamageSource source, float amount) {
         if (source == DamageSource.FALL && (Object) this instanceof PlayerEntity player) {
-            return (int) (original + ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("agility") * ConfigInit.CONFIG.movementFallBonus);
+            return (int) (original + ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.AGILITY) * ConfigInit.CONFIG.movementFallBonus);
         } else
             return original;
     }
@@ -63,7 +64,8 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "tryUseTotem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/Hand;values()[Lnet/minecraft/util/Hand;"), cancellable = true)
     private void tryUseTotemMixin(DamageSource source, CallbackInfoReturnable<Boolean> info) {
         if ((Object) this instanceof PlayerEntity player) {
-            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("luck") >= ConfigInit.CONFIG.maxLevel && player.world.random.nextFloat() < ConfigInit.CONFIG.luckSurviveChance) {
+            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.LUCK) >= ConfigInit.CONFIG.maxLevel
+                    && player.world.random.nextFloat() < ConfigInit.CONFIG.luckSurviveChance) {
                 player.setHealth(1.0F);
                 player.clearStatusEffects();
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
@@ -91,7 +93,7 @@ public abstract class LivingEntityMixin extends Entity {
             LevelExperienceOrbEntity.spawn((ServerWorld) world, this.getPos(),
                     (int) (this.getXpToDrop() * ConfigInit.CONFIG.mobXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.attackingPlayer != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.attackingPlayer).getPlayerStatsManager().getLevel("level")
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.attackingPlayer).getPlayerStatsManager().getOverallLevel()
                                     : 1.0F)));
     }
 

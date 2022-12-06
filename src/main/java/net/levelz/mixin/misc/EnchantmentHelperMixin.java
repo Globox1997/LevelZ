@@ -12,6 +12,7 @@ import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -32,7 +33,7 @@ public class EnchantmentHelperMixin {
     @ModifyVariable(method = "getEquipmentLevel", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/lang/Iterable;iterator()Ljava/util/Iterator;"), ordinal = 0)
     private static int getEquipmentLevelMixin(int original, Enchantment enchantment, LivingEntity entity) {
         if (original != 0 && entity instanceof PlayerEntity player
-                && (float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getLevel("alchemy") * ConfigInit.CONFIG.alchemyEnchantmentChance > entity.world.random.nextFloat())
+                && (float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.ALCHEMY) * ConfigInit.CONFIG.alchemyEnchantmentChance > entity.world.random.nextFloat())
             return original += 1;
         else
             return original;

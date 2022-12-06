@@ -43,21 +43,23 @@ public class PlayerStatsServerPacket {
                 playerStatsManager.setSkillLevel(skill, playerStatsManager.getSkillLevel(skill) + level);
                 playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() - level);
                 switch (skill) {
-                    case HEALTH -> {
-                        player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus * level);
-                        player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus * level);
-                    }
-                    case STRENGTH -> player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus * level);
-                    case AGILITY -> player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus * level);
-                    case DEFENSE ->
-                            player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus * level);
-                    case LUCK ->
-                            player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus * level);
-                    case MINING -> syncLockedBlockList(playerStatsManager);
-                    case ALCHEMY -> syncLockedBrewingItemList(playerStatsManager);
-                    case SMITHING -> syncLockedSmithingItemList(playerStatsManager);
+                case HEALTH -> {
+                    player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus * level);
+                    player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus * level);
+                }
+                case STRENGTH -> player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus * level);
+                case AGILITY -> player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus * level);
+                case DEFENSE -> player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
+                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus * level);
+                case LUCK -> player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
+                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus * level);
+                case MINING -> syncLockedBlockList(playerStatsManager);
+                case ALCHEMY -> syncLockedBrewingItemList(playerStatsManager);
+                case SMITHING -> syncLockedSmithingItemList(playerStatsManager);
+                default -> throw new IllegalArgumentException("Unexpected value: " + skill);
                 }
                 syncLockedCraftingItemList(playerStatsManager);
             }
@@ -94,20 +96,6 @@ public class PlayerStatsServerPacket {
         for (Skill skill : Skill.values()) {
             buf.writeInt(playerStatsManager.getSkillLevel(skill));
         }
-//        buf.writeInt(playerStatsManager.getLevel("level"));
-//        buf.writeInt(playerStatsManager.getLevel("points"));
-//        buf.writeInt(playerStatsManager.getLevel("health"));
-//        buf.writeInt(playerStatsManager.getLevel("strength"));
-//        buf.writeInt(playerStatsManager.getLevel("agility"));
-//        buf.writeInt(playerStatsManager.getLevel("defense"));
-//        buf.writeInt(playerStatsManager.getLevel("stamina"));
-//        buf.writeInt(playerStatsManager.getLevel("luck"));
-//        buf.writeInt(playerStatsManager.getLevel("archery"));
-//        buf.writeInt(playerStatsManager.getLevel("trade"));
-//        buf.writeInt(playerStatsManager.getLevel("smithing"));
-//        buf.writeInt(playerStatsManager.getLevel("mining"));
-//        buf.writeInt(playerStatsManager.getLevel("farming"));
-//        buf.writeInt(playerStatsManager.getLevel("alchemy"));
 
         // Set on server
         syncLockedBlockList(playerStatsManager);
@@ -165,7 +153,7 @@ public class PlayerStatsServerPacket {
     public static void syncLockedCraftingItemList(PlayerStatsManager playerStatsManager) {
         playerStatsManager.lockedCraftingItemIds.clear();
         for (int i = 0; i < LevelLists.craftingLevelList.size(); i++) {
-            if (LevelLists.craftingLevelList.get(i) > playerStatsManager.getLevel(LevelLists.craftingSkillList.get(i).toString())) {
+            if (LevelLists.craftingLevelList.get(i) > playerStatsManager.getSkillLevel(Skill.valueOf(LevelLists.craftingSkillList.get(i).toString().toUpperCase()))) {
                 for (int u = 0; u < LevelLists.craftingItemList.get(i).size(); u++) {
                     if (!playerStatsManager.lockedCraftingItemIds.contains(LevelLists.craftingItemList.get(i).get(u)))
                         playerStatsManager.lockedCraftingItemIds.add(LevelLists.craftingItemList.get(i).get(u));
@@ -244,19 +232,15 @@ public class PlayerStatsServerPacket {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager();
         int skillLevel = playerStatsManager.getSkillLevel(skill);
         switch (skill) {
-            case HEALTH -> {
-                serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
-                        .setBaseValue(ConfigInit.CONFIG.healthBase + skillLevel * ConfigInit.CONFIG.healthBonus);
-                serverPlayerEntity.setHealth(serverPlayerEntity.getMaxHealth());
-            }
-            case STRENGTH -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                    .setBaseValue(ConfigInit.CONFIG.attackBase + skillLevel * ConfigInit.CONFIG.attackBonus);
-            case AGILITY -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                    .setBaseValue(ConfigInit.CONFIG.movementBase + skillLevel * ConfigInit.CONFIG.movementBonus);
-            case DEFENSE -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
-                    .setBaseValue(ConfigInit.CONFIG.defenseBase + skillLevel * ConfigInit.CONFIG.defenseBonus);
-            case LUCK -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
-                    .setBaseValue(ConfigInit.CONFIG.luckBase + skillLevel * ConfigInit.CONFIG.luckBonus);
+        case HEALTH -> {
+            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase + skillLevel * ConfigInit.CONFIG.healthBonus);
+            serverPlayerEntity.setHealth(serverPlayerEntity.getMaxHealth());
+        }
+        case STRENGTH -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase + skillLevel * ConfigInit.CONFIG.attackBonus);
+        case AGILITY -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase + skillLevel * ConfigInit.CONFIG.movementBonus);
+        case DEFENSE -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase + skillLevel * ConfigInit.CONFIG.defenseBonus);
+        case LUCK -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + skillLevel * ConfigInit.CONFIG.luckBonus);
+        default -> throw new IllegalArgumentException("Unexpected value: " + skill);
         }
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeString(skill.name());

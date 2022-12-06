@@ -12,6 +12,7 @@ import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
@@ -52,7 +53,7 @@ public class AbstractBlockStateMixin {
 
         // Set abstract block calculation here
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
-        int playerMiningLevel = playerStatsManager.getLevel("mining");
+        int playerMiningLevel = playerStatsManager.getSkillLevel(Skill.MINING);
         if (playerMiningLevel < ConfigInit.CONFIG.maxLevel) {
             if (PlayerStatsManager.listContainsItemOrBlock(player, 1, Registry.BLOCK.getRawId(world.getBlockState(pos).getBlock()))) {
                 ((PlayerBreakBlockAccess) player.getInventory()).setAbstractBlockBreakDelta(ConfigInit.CONFIG.miningLockedMultiplicator);

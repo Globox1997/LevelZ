@@ -16,6 +16,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
@@ -48,7 +49,7 @@ public abstract class AnimalEntityMixin extends PassiveEntity {
     private void breedMixin(ServerWorld world, AnimalEntity other, CallbackInfo info, PassiveEntity passiveEntity) {
         if (getLovingPlayer() != null || other.getLovingPlayer() != null) {
             PlayerEntity playerEntity = getLovingPlayer() != null ? getLovingPlayer() : other.getLovingPlayer();
-            if (((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getLevel("farming") >= ConfigInit.CONFIG.maxLevel
+            if (((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getSkillLevel(Skill.FARMING) >= ConfigInit.CONFIG.maxLevel
                     && world.random.nextFloat() < ConfigInit.CONFIG.farmingTwinChance) {
                 PassiveEntity extraPassiveEntity = this.createChild(world, other);
                 extraPassiveEntity.setBaby(true);
@@ -64,7 +65,7 @@ public abstract class AnimalEntityMixin extends PassiveEntity {
             LevelExperienceOrbEntity.spawn(world, this.getPos().add(0.0D, 0.1D, 0.0D),
                     (int) ((this.getRandom().nextInt(7) + 1) * ConfigInit.CONFIG.breedingXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && getLovingPlayer() != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) getLovingPlayer()).getPlayerStatsManager().getLevel("level")
+                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) getLovingPlayer()).getPlayerStatsManager().getOverallLevel()
                                     : 1.0F)));
     }
 

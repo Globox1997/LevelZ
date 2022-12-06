@@ -56,7 +56,7 @@ public class AbstractFurnaceBlockEntityMixin {
                     LevelExperienceOrbEntity.spawn(world, pos,
                             (int) (i * ConfigInit.CONFIG.furnaceXPMultiplier
                                     * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
-                                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getLevel("level")
+                                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getOverallLevel()
                                             : 1.0F)));
                 });
             }

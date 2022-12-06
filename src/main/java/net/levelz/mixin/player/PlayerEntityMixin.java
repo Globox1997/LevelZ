@@ -18,6 +18,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
+import net.levelz.stats.Skill;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.LivingEntity;
@@ -60,7 +61,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     public void readCustomDataFromNbtMixin(NbtCompound tag, CallbackInfo info) {
         this.playerStatsManager.readNbt(tag);
         playerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getLevel("agility") * ConfigInit.CONFIG.movementBonus);
+                .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getSkillLevel(Skill.AGILITY) * ConfigInit.CONFIG.movementBonus);
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At(value = "TAIL"))
@@ -70,13 +71,13 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     @Redirect(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"), require = 0)
     private void addExhaustion(HungerManager hungerManager, float exhaustion) {
-        exhaustion *= ConfigInit.CONFIG.staminaBase - ((float) playerStatsManager.getLevel("stamina") * ConfigInit.CONFIG.staminaBonus);
+        exhaustion *= ConfigInit.CONFIG.staminaBase - ((float) playerStatsManager.getSkillLevel(Skill.STAMINA) * ConfigInit.CONFIG.staminaBonus);
         hungerManager.addExhaustion(exhaustion);
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockback(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 0, require = 0)
     private boolean attacGetKnockbackkMixin(boolean original) {
-        if (playerEntity.world.random.nextFloat() < (float) playerStatsManager.getLevel("luck") * ConfigInit.CONFIG.luckCritBonus) {
+        if (playerEntity.world.random.nextFloat() < (float) playerStatsManager.getSkillLevel(Skill.LUCK) * ConfigInit.CONFIG.luckCritBonus) {
             isCrit = true;
             return true;
         } else
@@ -102,7 +103,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0, require = 0)
     private float attackGetItemMixin(float original) {
-        if (playerStatsManager.getLevel("strength") >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.world.random.nextFloat()) {
+        if (playerStatsManager.getSkillLevel(Skill.STRENGTH) >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.world.random.nextFloat()) {
             return original * 2F;
         } else
             return isCrit ? original * ConfigInit.CONFIG.attackCritDmgBonus : original;
@@ -160,17 +161,18 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;dropShoulderEntities()V", shift = Shift.AFTER), cancellable = true)
     private void damageMixin(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
-        if (playerStatsManager.getLevel("defense") >= ConfigInit.CONFIG.maxLevel && source.getAttacker() != null && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.defenseReflectChance) {
+        if (playerStatsManager.getSkillLevel(Skill.DEFENSE) >= ConfigInit.CONFIG.maxLevel && source.getAttacker() != null
+                && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.defenseReflectChance) {
             source.getAttacker().damage(source, amount);
         }
-        if (playerStatsManager.getLevel("agility") >= ConfigInit.CONFIG.maxLevel && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.movementMissChance) {
+        if (playerStatsManager.getSkillLevel(Skill.AGILITY) >= ConfigInit.CONFIG.maxLevel && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.movementMissChance) {
             info.setReturnValue(false);
         }
     }
 
     @Inject(method = "eatFood", at = @At(value = "HEAD"))
     private void eatFoodMixin(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
-        if (stack.getItem().isFood() && playerStatsManager.getLevel("stamina") >= ConfigInit.CONFIG.maxLevel) {
+        if (stack.getItem().isFood() && playerStatsManager.getSkillLevel(Skill.STAMINA) >= ConfigInit.CONFIG.maxLevel) {
             FoodComponent foodComponent = stack.getItem().getFoodComponent();
             float multiplier = ConfigInit.CONFIG.staminaFoodBonus;
             playerEntity.getHungerManager().add((int) (foodComponent.getHunger() * multiplier), foodComponent.getSaturationModifier() * multiplier);

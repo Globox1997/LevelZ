@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
+import net.levelz.stats.Skill;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,7 +23,7 @@ public class PotionItemMixin {
     @ModifyVariable(method = "finishUsing", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/potion/PotionUtil;getPotionEffects(Lnet/minecraft/item/ItemStack;)Ljava/util/List;"), ordinal = 0)
     private List<StatusEffectInstance> finishUsingMixin(List<StatusEffectInstance> original, ItemStack stack, World world, LivingEntity user) {
         if (user instanceof PlayerEntity) {
-            int alchemyLevel = ((PlayerStatsManagerAccess) (PlayerEntity) user).getPlayerStatsManager().getLevel("alchemy");
+            int alchemyLevel = ((PlayerStatsManagerAccess) (PlayerEntity) user).getPlayerStatsManager().getSkillLevel(Skill.ALCHEMY);
             if (alchemyLevel >= ConfigInit.CONFIG.maxLevel && (float) alchemyLevel * ConfigInit.CONFIG.alchemyPotionChance > world.random.nextFloat()) {
                 List<StatusEffectInstance> newEffectList = new ArrayList<>();
                 for (int i = 0; i < original.size(); i++) {

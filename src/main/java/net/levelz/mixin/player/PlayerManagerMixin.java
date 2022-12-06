@@ -51,7 +51,6 @@ public class PlayerManagerMixin {
         boolean isFirstTimeJoin = nbtCompound == null;
         if (isFirstTimeJoin && server != null && (server.getSaveProperties().getGeneratorOptions().hasBonusChest() || ConfigInit.CONFIG.enableStartPoints)) {
             playerStatsManager.setSkillPoints(ConfigInit.CONFIG.startPoints);
-//            playerStatsManager.setLevel("points", ConfigInit.CONFIG.startPoints);
         }
         PlayerStatsServerPacket.writeS2CListPacket(player);
         if (isFirstTimeJoin) {
@@ -80,31 +79,16 @@ public class PlayerManagerMixin {
             PlayerStatsServerPacket.writeS2CStrengthPacket(serverPlayerEntity);
             // Check if Client will set to 0 after death
             boolean keepInventory = serverWorld.getGameRules().getBoolean(GameRules.KEEP_INVENTORY);
+            serverPlayerStatsManager.setLevelProgress(keepInventory ? playerStatsManager.getLevelProgress() : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.getLevelProgress());
             serverPlayerStatsManager
-                    .setLevelProgress(keepInventory ? playerStatsManager.getLevelProgress() : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.getLevelProgress());
-            serverPlayerStatsManager.setTotalLevelExperience(keepInventory ? playerStatsManager.getTotalLevelExperience() : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.getTotalLevelExperience());
-//            serverPlayerStatsManager.totalLevelExperience = keepInventory ? playerStatsManager.totalLevelExperience : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.totalLevelExperience;
+                    .setTotalLevelExperience(keepInventory ? playerStatsManager.getTotalLevelExperience() : ConfigInit.CONFIG.resetCurrentXP ? 0 : playerStatsManager.getTotalLevelExperience());
             // Level
             serverPlayerStatsManager.setOverallLevel(playerStatsManager.getOverallLevel());
             serverPlayerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints());
-//            serverPlayerStatsManager.setLevel("level", playerStatsManager.getLevel("level"));
-//            serverPlayerStatsManager.setLevel("points", playerStatsManager.getLevel("points"));
             // Skill
             for (Skill skill : Skill.values()) {
                 serverPlayerStatsManager.setSkillLevel(skill, playerStatsManager.getSkillLevel(skill));
             }
-//            serverPlayerStatsManager.setLevel("health", playerStatsManager.getLevel("health"));
-//            serverPlayerStatsManager.setLevel("strength", playerStatsManager.getLevel("strength"));
-//            serverPlayerStatsManager.setLevel("agility", playerStatsManager.getLevel("agility"));
-//            serverPlayerStatsManager.setLevel("defense", playerStatsManager.getLevel("defense"));
-//            serverPlayerStatsManager.setLevel("stamina", playerStatsManager.getLevel("stamina"));
-//            serverPlayerStatsManager.setLevel("luck", playerStatsManager.getLevel("luck"));
-//            serverPlayerStatsManager.setLevel("archery", playerStatsManager.getLevel("archery"));
-//            serverPlayerStatsManager.setLevel("trade", playerStatsManager.getLevel("trade"));
-//            serverPlayerStatsManager.setLevel("smithing", playerStatsManager.getLevel("smithing"));
-//            serverPlayerStatsManager.setLevel("mining", playerStatsManager.getLevel("mining"));
-//            serverPlayerStatsManager.setLevel("farming", playerStatsManager.getLevel("farming"));
-//            serverPlayerStatsManager.setLevel("alchemy", playerStatsManager.getLevel("alchemy"));
         }
         if (ConfigInit.CONFIG.hardMode) {
             serverPlayerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
