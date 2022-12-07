@@ -92,6 +92,8 @@
  "text.autoconfig.levelz.option.showLevel": "显示等级",
  "text.autoconfig.levelz.option.switch_screen": "物品栏按键切换界面而不是关闭物品栏",
  "text.autoconfig.levelz.option.showLockedBlockInfo": "显示未解锁的方块信息",
+ "text.autoconfig.levelz.option.lockedBlockInfoPosX": "未解锁的方块信息 X 坐标",
+ "text.autoconfig.levelz.option.lockedBlockInfoPosY": "未解锁的方块信息 Y 坐标",
 
  "text.autoconfig.levelz.option.miningProgression": "采矿解锁进度",
  "text.autoconfig.levelz.option.itemProgression": "物品解锁进度",
@@ -101,7 +103,7 @@
  "text.autoconfig.levelz.option.smithingProgression": "锻造解锁进度",
 
  "item.levelz.strange_potion": "奇异药水",
- "item.levelz.rare_candy": "奇异糖果",
+ "item.levelz.rare_candy": "稀有糖果",
 
  "item.levelz.locked.tooltip": "未解锁",
  "item.levelz.farming.tooltip": "§7需要§c农耕 %d",
@@ -133,7 +135,7 @@
  "text.levelz.gui.short_level": "Lv. %d",
  "text.levelz.gui.level_up": "升级",
  "text.levelz.gui.level_up.tooltip": "左键: 1\n右键: 10\n中键: 100",
- "text.levelz.gui.level_up_skill.tooltip": "升级\n左键: 1\n右键: 5\n中键: 10",
+ "text.levelz.gui.level_up_skill.tooltip": "技能升级按钮\n左键: 1 级\n右键: 5 级\n中键: 10 级",
 
  "text.levelz.scoreboard": "Lv. %d %s",
 
@@ -231,7 +233,7 @@
  "text.levelz.alchemy_max_lvl_2": "",
 
  "spritetip.levelz.health_skill": "生命",
- "spritetip.levelz.health_skill_info": "提高生命值",
+ "spritetip.levelz.health_skill_info_1": "提高生命值",
 
  "spritetip.levelz.strength_skill": "力量",
  "spritetip.levelz.strength_skill_info_1": "提高近战伤害",
@@ -259,7 +261,7 @@
  "spritetip.levelz.archery_skill_info_3": "解锁箭术物品",
 
  "spritetip.levelz.trade_skill": "贸易",
- "spritetip.levelz.trade_skill_info": "降低交易价格",
+ "spritetip.levelz.trade_skill_info_1": "降低交易价格",
 
  "spritetip.levelz.smithing_skill": "锻造",
  "spritetip.levelz.smithing_skill_info_1": "降低锻造经验消耗",
@@ -270,10 +272,10 @@
  "spritetip.levelz.mining_skill_info_2": "解锁矿物资源",
 
  "spritetip.levelz.farming_skill": "农耕",
- "spritetip.levelz.farming_skill_info": "解锁农耕物品",
+ "spritetip.levelz.farming_skill_info_1": "解锁农耕物品",
 
  "spritetip.levelz.alchemy_skill": "炼金",
- "spritetip.levelz.alchemy_skill_info": "解锁炼金物品",
+ "spritetip.levelz.alchemy_skill_info_1": "解锁炼金物品",
 
  "spritetip.levelz.crafting_skill": "合成",
 
@@ -305,5 +307,5 @@
  "screen.levelz.skill_screen": "技能面板",
 
  "advancements.adventure.level_100.title": "100级",
- "advancements.adventure.level_100.description": "达到无法达到的等级"
+ "advancements.adventure.level_100.description": "达到无可企及的等级"
 }

@@ -51,7 +51,7 @@ public class SkillPanel extends WPlainPanel {
                 case SMITHING -> PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
                 case MINING -> PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
                 case ALCHEMY -> PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
-                default -> throw new IllegalArgumentException("Unexpected value: " + skill);
+                default -> {}
             }
         });
         this.add(button, width - button.getWidth(), (height - button.getHeight()) / 2);
