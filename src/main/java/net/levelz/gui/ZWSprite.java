@@ -41,13 +41,9 @@ public class ZWSprite extends WSprite {
         this.name = name;
     }
 
-    public void addText(String string) {
-        text.add(Text.of(string).asOrderedText());
-    }
-
-    public void addText(String[] string) {
-        for (String stringArray : string)
-            text.add(Text.of(stringArray).asOrderedText());
+    public void addText(String... strings) {
+        for (String string : strings)
+            text.add(Text.of(string).asOrderedText());
     }
 
     @Override
