@@ -12,6 +12,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.ActionResult;
 
 public class ConfigInit {
+
+    public static final boolean isOriginsLoaded = FabricLoader.getInstance().isModLoaded("origins");
+
     public static LevelzConfig CONFIG = new LevelzConfig();
 
     public static void init() {

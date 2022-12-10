@@ -7,6 +7,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import net.levelz.init.ConfigInit;
 
 @Config(name = "levelz")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
@@ -45,7 +46,7 @@ public class LevelzConfig implements ConfigData {
     // Skill settings
     @ConfigEntry.Gui.RequiresRestart
     @Comment("Attribute values - Bonus for each lvl")
-    public double healthBase = 6D;
+    public double healthBase = ConfigInit.isOriginsLoaded ? 20D : 6D;
     @ConfigEntry.Gui.RequiresRestart
     public double healthBonus = 1D;
     @Comment("Absorption Bonus at max lvl")
