@@ -34,6 +34,7 @@
     "compat.BackpackItemMixin",
     "compat.EasyMagicEnchantingTableMixin",
     "compat.EasyAnvilsAnvilMixin",
+    "compat.CosmeticArmorMixin",
     "entity.AnimalEntityMixin",
     "entity.AxolotlEntityMixin",
     "entity.CowEntityMixin",

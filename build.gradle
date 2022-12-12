@@ -17,9 +17,9 @@ repositories {
     maven { url "https://ladysnake.jfrog.io/artifactory/mods" }
     maven { url 'https://jitpack.io' }
     maven { url "https://www.cursemaven.com" }
-    // maven { url "https://maven.siphalor.de/" }
     maven { url "https://server.bbkr.space/artifactory/libs-release" }
     maven { url "https://maven.nucleoid.xyz/" }
+        // maven { url "https://maven.siphalor.de/" }
 }
 
 dependencies {
@@ -43,12 +43,7 @@ dependencies {
     modCompileOnly("curse.maven:inventorio-491073:3842567")
     // Wthit
     modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
-    // REI
-    // modCompileOnly ("me.shedaniel:RoughlyEnoughItems-fabric:6.0.268-alpha") {
-    //     exclude(group: "net.fabricmc.fabric-api")
-    //     exclude(group: "me.shedaniel.cloth")
-    // }
-    // modCompileOnly modRuntime("de.siphalor:spiceoffabric-1.17:1.4.1+1.17.1:1+")
+
 	// MCDA
 	modCompileOnly ('curse.maven:mcda-426206:3821450') {
 		exclude(group: "net.fabricmc.fabric-api")
@@ -67,8 +62,7 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
     // EMI
     modImplementation "dev.emi:emi:0.4.0+1.19"
-    // //modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
-    // //modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:9.0.472"
+
     // Dualwielding
 	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT') {
 		exclude(group: "net.fabricmc.fabric-api")
@@ -79,8 +73,10 @@ dependencies {
 	modCompileOnly ("curse.maven:inmis-369254:3853651") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-    //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
-    //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
+    // CosmeticArmor
+	modCompileOnly ('curse.maven:cosmetic-armor-fabric-436659:3857698') {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 }
 
 

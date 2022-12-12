@@ -49,7 +49,11 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
 
         if (mixinClassName.contains("EasyMagicEnchantingTableMixin") && !FabricLoader.getInstance().isModLoaded("easymagic"))
             return false;
+
         if (mixinClassName.contains("EasyAnvilsAnvilMixin") && !FabricLoader.getInstance().isModLoaded("easyanvils"))
+            return false;
+
+        if (mixinClassName.contains("CosmeticArmorMixin") && !FabricLoader.getInstance().isModLoaded("cosmetic-armor"))
             return false;
 
         return true;
