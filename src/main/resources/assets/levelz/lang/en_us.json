@@ -87,6 +87,8 @@
   "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
   "text.autoconfig.levelz.option.inventoryButton": "Inventory Button",
   "text.autoconfig.levelz.option.inventorySkillLevel": "Inventory Level",
+  "text.autoconfig.levelz.option.inventorySkillLevelPosX": "Inventory Level Pos X",
+  "text.autoconfig.levelz.option.inventorySkillLevelPosY": "Inventory Level Pos Y",
   "text.autoconfig.levelz.option.highlightLocked": "Highlight locked blocks",
   "text.autoconfig.levelz.option.showLevelList": "Show Level List",
   "text.autoconfig.levelz.option.showLevel": "Show Level",

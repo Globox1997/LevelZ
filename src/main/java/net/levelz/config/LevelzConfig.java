@@ -169,6 +169,10 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("gui_settings")
     public boolean inventorySkillLevel = true; // Client only
     @ConfigEntry.Category("gui_settings")
+    public int inventorySkillLevelPosX = 0; // Client only
+    @ConfigEntry.Category("gui_settings")
+    public int inventorySkillLevelPosY = 0; // Client only
+    @ConfigEntry.Category("gui_settings")
     @ConfigEntry.Gui.RequiresRestart
     public boolean showLevelList = true; // Client only
     @ConfigEntry.Category("gui_settings")
