@@ -41,6 +41,9 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
         if (FabricLoader.getInstance().isModLoaded("limitless") && mixinClassName.contains("AnvilScreenHandler"))
             return false;
 
+        if (!FabricLoader.getInstance().isModLoaded("identity") && mixinClassName.contains("PlayerIdentityMixin"))
+            return false;
+
         return true;
     }
 

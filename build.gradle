@@ -66,6 +66,10 @@ dependencies {
 
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
     //de/siphalor/spiceoffabric-1.17/1.4.1+1.17.1/spiceoffabric-1.17-1.4.1+1.17.1.pom
+    // Identity
+    modCompileOnly ('curse.maven:identity-391390:3956105') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 }
 
 

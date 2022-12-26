@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.levelz.access.PlayerHealthAccess;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.access.PlayerSyncAccess;
 import net.levelz.init.ConfigInit;
@@ -24,7 +25,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerSyncAccess {
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerSyncAccess, PlayerHealthAccess {
+
+    private float oldHealth;
 
     public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
         super(world, pos, yaw, profile);
@@ -112,4 +115,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
         }
     }
 
+    @Override
+    public void setOldHealth(float health) {
+        this.oldHealth = health;
+    }
+
+    @Override
+    public float getOldHealth() {
+        return this.oldHealth;
+    }
 }

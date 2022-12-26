@@ -31,6 +31,7 @@
     "compat.SurvivalTrinketSlotMixin",
     "compat.TrinketItemMixin",
     "compat.CreatePlayerStatsManagerMixin",
+    "compat.PlayerIdentityMixin",
     "entity.AnimalEntityMixin",
     "entity.AxolotlEntityMixin",
     "entity.CowEntityMixin",
