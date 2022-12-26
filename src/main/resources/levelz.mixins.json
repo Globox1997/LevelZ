@@ -28,6 +28,8 @@
     "block.SmithingTableBlockMixin",
     "block.SmokerBlockMixin",
     "block.StonecutterBlockMixin",
+    "block.FletchingTableBlockMixin",
+    "block.CraftingTableBlockMixin",
     "compat.SurvivalTrinketSlotMixin",
     "compat.TrinketItemMixin",
     "compat.PlayerStatsManagerCompatMixin",

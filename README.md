@@ -65,9 +65,11 @@ The block category stands for the use of a few vanilla blocks. An example how th
 "skill": has to be one of the mentioned skills.\
 "level": is the level when the player unlocks the interaction of the block.\
 "block": has to be one of the following strings:\
-"minecraft:anvil","minecraft:barrel","minecraft:beacon","minecraft:beehive","minecraft:blast_furnace","minecraft:brewing_stand"
-,"minecraft:cartography","minecraft:cauldron","minecraft:composter","minecraft:enchanting_table","minecraft:grindstone","minecraft:
-lectern","minecraft:loom","minecraft:pumpkin","minecraft:smithing_table","minecraft:smoker","minecraft:stonecutter"
+``
+"minecraft:anvil","minecraft:barrel","minecraft:beacon","minecraft:beehive","minecraft:blast_furnace","minecraft:brewing_stand",
+"minecraft:cartography","minecraft:cauldron","minecraft:composter","minecraft:enchanting_table","minecraft:grindstone","minecraft:lectern",
+"minecraft:loom","minecraft:pumpkin","minecraft:smithing_table","minecraft:smoker","minecraft:stonecutter","minecraft:fletching_table","minecraft:crafting_table"
+``
 
 It will only cancel the interaction with the block.\
 Since version 1.1.0: Custom block restrictions got added:
@@ -108,9 +110,10 @@ example how the json file should look like is here:
 ```
 
 "entity": has to be one of the following strings:\
-"minecraft:cow","minecraft:mooshroom","minecraft:sheep","minecraft:snow_golem","minecraft:villager","minecraft:
-wandering_trader","minecraft:axolotl","minecraft:piglin","minecraft:wolf","minecraft:tadpole","minecraft:allay",
-"minecraft:goat"
+``
+"minecraft:cow","minecraft:mooshroom","minecraft:sheep","minecraft:snow_golem","minecraft:villager","minecraft:wandering_trader",
+"minecraft:axolotl","minecraft:piglin","minecraft:wolf","minecraft:tadpole","minecraft:allay","minecraft:goat"
+``
 
 It will only cancel the interaction with the entity.
 
@@ -140,9 +143,10 @@ The item category stands for the use of items. An example how the json file shou
 ```
 
 "item": has to be one of the following strings:\
-"minecraft:bow","minecraft:bucket,"minecraft:crossbow","minecraft:dragon_breath","minecraft:elytra","minecraft:
-fishing_rod","minecraft:flint_and_steel","minecraft:shield","minecraft:totem_of_undying","minecraft:shears","minecraft:compass",
-"minecraft:trident"
+``
+"minecraft:bow","minecraft:bucket,"minecraft:crossbow","minecraft:dragon_breath","minecraft:elytra","minecraft:fishing_rod",
+"minecraft:flint_and_steel","minecraft:shield","minecraft:totem_of_undying","minecraft:shears","minecraft:compass","minecraft:trident"
+``
 
 The item category also has 4 special categories:
 
