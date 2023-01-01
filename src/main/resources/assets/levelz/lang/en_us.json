@@ -28,6 +28,8 @@
   "text.autoconfig.levelz.option.xpCostMultiplicator": "XP Multiplicator",
   "text.autoconfig.levelz.option.xpExponent": "XP Exponent",
   "text.autoconfig.levelz.option.xpMaxCost": "XP Max Cost",
+  "text.autoconfig.levelz.option.opStrangePotion": "Op Strange Potion",
+
   "text.autoconfig.levelz.option.healthBase": "Health Base",
   "text.autoconfig.levelz.option.healthBonus": "Health Bonus",
   "text.autoconfig.levelz.option.healthAbsorptionBonus": "Health Absorption Bonus",

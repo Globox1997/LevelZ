@@ -1,5 +1,6 @@
 package net.levelz.item;
 
+import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.stats.Skill;
 import net.minecraft.advancement.criterion.Criteria;
@@ -31,7 +32,7 @@ public class StrangePotionItem extends Item {
             }
 
             for (Skill skill : Skill.listInRandomOrder(world.random)) {
-                if (PlayerStatsManager.resetSkill(playerEntity, skill))
+                if (PlayerStatsManager.resetSkill(playerEntity, skill) && !ConfigInit.CONFIG.opStrangePotion)
                     break;
             }
 

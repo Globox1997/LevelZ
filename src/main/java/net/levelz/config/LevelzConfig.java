@@ -40,6 +40,9 @@ public class LevelzConfig implements ConfigData {
     @Comment("Amount of allowed mob kills in a chunk")
     public int mobKillCount = 5;
     @ConfigEntry.Category("level_settings")
+    @Comment("Strange potion resets all stats instead of one")
+    public boolean opStrangePotion = false;
+    @ConfigEntry.Category("level_settings")
     @Comment("Only for Devs")
     public boolean devMode = false;
 
