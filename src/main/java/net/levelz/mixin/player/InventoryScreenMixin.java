@@ -61,7 +61,8 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
             matrices.push();
             matrices.scale(0.6F, 0.6F, 1F);
-            matrices.translate((28 + ConfigInit.CONFIG.inventorySkillLevelPosX + this.x) / 0.6F, (8 + ConfigInit.CONFIG.inventorySkillLevelPosY + this.y + textRenderer.fontHeight / 2F) / 0.6F, 0);
+            matrices.translate((28 + ConfigInit.CONFIG.inventorySkillLevelPosX + this.x) / 0.6F, (8 + ConfigInit.CONFIG.inventorySkillLevelPosY + this.y + textRenderer.fontHeight / 2F) / 0.6F,
+                    70.0D);
             textRenderer.draw(matrices, Text.translatable("text.levelz.gui.short_level", playerStatsManager.getOverallLevel()), 0, -textRenderer.fontHeight / 2F, color);
             matrices.pop();
         }
