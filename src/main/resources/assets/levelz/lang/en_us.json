@@ -28,6 +28,7 @@
   "text.autoconfig.levelz.option.xpCostMultiplicator": "XP Multiplicator",
   "text.autoconfig.levelz.option.xpExponent": "XP Exponent",
   "text.autoconfig.levelz.option.xpMaxCost": "XP Max Cost",
+  "text.autoconfig.levelz.option.lockedHandUsage": "Locked Hand Usage",
   "text.autoconfig.levelz.option.opStrangePotion": "Op Strange Potion",
 
   "text.autoconfig.levelz.option.healthBase": "Health Base",

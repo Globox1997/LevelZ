@@ -111,6 +111,7 @@
     "player.PlayerListEntryMixin",
     "player.PlayerEntityRendererMixin",
     "player.AbstractClientPlayerEntityMixin",
+    "player.MinecraftClientMixin",
     "compat.InventorioScreenMixin"
   ],
   "injectors": {

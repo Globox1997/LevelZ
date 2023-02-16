@@ -43,6 +43,9 @@ public class LevelzConfig implements ConfigData {
     @Comment("Strange potion resets all stats instead of one")
     public boolean opStrangePotion = false;
     @ConfigEntry.Category("level_settings")
+    @Comment("restrict hand usage when item not unlocked")
+    public boolean lockedHandUsage = false; // Client only
+    @ConfigEntry.Category("level_settings")
     @Comment("Only for Devs")
     public boolean devMode = false;
 
