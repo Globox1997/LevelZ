@@ -59,7 +59,15 @@ public class BlockMixin {
                 info.cancel();
             else if (stack.getItem() instanceof MiningToolItem) {
                 Item item = stack.getItem();
-                ArrayList<Object> levelList = null;
+                ArrayList<Object> levelList = LevelLists.customItemList;
+                try {
+                    if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
+                        if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) entity, levelList, Registry.ITEM.getId(item).toString(), true))
+                            info.cancel();
+                    }
+                } catch (AbstractMethodError ignore) {
+                }
+                levelList = null;
                 if (item instanceof AxeItem)
                     levelList = LevelLists.axeList;
                 else if (item instanceof HoeItem)
