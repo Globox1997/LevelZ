@@ -54,8 +54,13 @@ public class ArmorItemMixin {
             ArmorItem armor = (ArmorItem) (Object) this;
 
             if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armor).toString())) {
-                if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, Registry.ITEM.getId(armor).toString(), true))
+                String string = Registry.ITEM.getId(armor).toString();
+                if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
+                    user.sendMessage(
+                            Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
+                            true);
                     info.setReturnValue(TypedActionResult.fail(itemStack));
+                }
             } else {
                 String string = ((ArmorItem) (Object) this).getMaterial().getName().toLowerCase();
                 levelList = LevelLists.armorList;

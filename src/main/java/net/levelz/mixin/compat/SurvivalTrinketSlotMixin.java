@@ -17,9 +17,9 @@ import dev.emi.trinkets.api.TrinketsApi;
 import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
 
 @Mixin(SurvivalTrinketSlot.class)
@@ -37,15 +37,30 @@ public class SurvivalTrinketSlotMixin {
 
     @Inject(method = "canInsert", at = @At("HEAD"), cancellable = true)
     private void canInsertMixin(ItemStack stack, CallbackInfoReturnable<Boolean> info) {
-        if (trinketInventory.getComponent().getEntity() instanceof PlayerEntity
+        if (trinketInventory.getComponent().getEntity() instanceof PlayerEntity player
                 && TrinketsApi.getTrinket(stack.getItem()).canEquip(stack, new SlotReference(trinketInventory, slotOffset), trinketInventory.getComponent().getEntity())) {
-            ArrayList<Object> customList = LevelLists.customItemList;
-            String string = Registry.ITEM.getId(stack.getItem()).toString();
-            if (!customList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) trinketInventory.getComponent().getEntity(), customList, string, true)) {
-                ((PlayerEntity) trinketInventory.getComponent().getEntity()).sendMessage(
-                        Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
-                        true);
-                info.setReturnValue(false);
+            ArrayList<Object> levelList = LevelLists.customItemList;
+            if (stack.getItem() instanceof ArmorItem armorItem) {
+                try {
+                    if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armorItem).toString())) {
+                        String string = Registry.ITEM.getId(stack.getItem()).toString();
+                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, string, true)) {
+                            info.setReturnValue(false);
+                        }
+                    } else {
+                        levelList = LevelLists.armorList;
+                        String string = armorItem.getMaterial().getName().toLowerCase();
+                        if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, true)) {
+                            info.setReturnValue(false);
+                        }
+                    }
+                } catch (AbstractMethodError ignore) {
+                }
+            } else {
+                levelList = LevelLists.elytraList;
+                if (stack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
+                    info.setReturnValue(false);
+                }
             }
         }
     }
