@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
+import net.levelz.init.TagInit;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.recipe.AbstractCookingRecipe;
 import net.minecraft.recipe.Recipe;
@@ -46,20 +47,24 @@ public class AbstractFurnaceBlockEntityMixin {
 
     @Inject(method = "getRecipesUsedAndDropExperience", at = @At(value = "TAIL"))
     private void getRecipesUsedAndDropExperienceMixin(ServerWorld world, Vec3d pos, CallbackInfoReturnable<List<Recipe<?>>> info) {
-        if (ConfigInit.CONFIG.furnaceXPMultiplier > 0.0F)
+        if (ConfigInit.CONFIG.furnaceXPMultiplier > 0.0F) {
             for (Object2IntMap.Entry<Identifier> entry : this.recipesUsed.object2IntEntrySet()) {
                 world.getRecipeManager().get((Identifier) entry.getKey()).ifPresent(recipe -> {
-                    int i = MathHelper.floor((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
-                    float f = MathHelper.fractionalPart((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
-                    if (f != 0.0f && Math.random() < (double) f)
-                        ++i;
-                    LevelExperienceOrbEntity.spawn(world, pos,
-                            (int) (i * ConfigInit.CONFIG.furnaceXPMultiplier
-                                    * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
-                                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getOverallLevel()
-                                            : 1.0F)));
+                    if (!recipe.getOutput().isIn(TagInit.RESTRICTED_FURNACE_EXPERIENCE_ITEMS)) {
+                        int i = MathHelper.floor((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
+                        float f = MathHelper.fractionalPart((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
+                        if (f != 0.0f && Math.random() < (double) f) {
+                            ++i;
+                        }
+                        LevelExperienceOrbEntity.spawn(world, pos,
+                                (int) (i * ConfigInit.CONFIG.furnaceXPMultiplier
+                                        * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
+                                                ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getOverallLevel()
+                                                : 1.0F)));
+                    }
                 });
             }
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import net.minecraft.util.registry.Registry;
 public class TagInit {
 
     public static final TagKey<Item> FARM_ITEMS = TagKey.of(Registry.ITEM_KEY, new Identifier("levelz", "farm_items"));
+    public static final TagKey<Item> RESTRICTED_FURNACE_EXPERIENCE_ITEMS = TagKey.of(Registry.ITEM_KEY, new Identifier("levelz", "restricted_furnace_experience_items"));
 
     public static void init() {
     }
