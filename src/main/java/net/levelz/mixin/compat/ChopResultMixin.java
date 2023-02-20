@@ -34,12 +34,15 @@ public class ChopResultMixin {
         if (player != null && tool.getItem() instanceof MiningToolItem) {
             ArrayList<Object> levelList = LevelLists.customItemList;
             if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(tool.getItem()).toString())) {
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registry.ITEM.getId(tool.getItem()).toString(), true))
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registry.ITEM.getId(tool.getItem()).toString(), true)) {
+                    player.world.breakBlock(targetPos, false);
                     info.setReturnValue(false);
+                }
             } else {
                 if (tool.getItem() instanceof AxeItem) {
                     levelList = LevelLists.axeList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, ((AxeItem) tool.getItem()).getMaterial().toString().toLowerCase(), true)) {
+                        player.world.breakBlock(targetPos, false);
                         info.setReturnValue(false);
                     }
                 }
