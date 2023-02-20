@@ -40,7 +40,7 @@ public class CommandInit {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
             dispatcher.register((CommandManager.literal("playerstats").requires((serverCommandSource) -> {
-                return serverCommandSource.hasPermissionLevel(3);
+                return serverCommandSource.hasPermissionLevel(2);
             })).then(CommandManager.argument("targets", EntityArgumentType.players())
                     // Add values
                     .then(CommandManager.literal("add").then(CommandManager.literal("level").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
