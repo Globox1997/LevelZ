@@ -110,7 +110,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 return;
                             }
                         }
-                        if (Registry.ITEM.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
+                        if (Registry.ITEM.get(new Identifier(data.get("object").getAsString())).toString().equals("air") && JsonHelper.getBoolean(data, "required", true)) {
                             LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("object").getAsString());
                             return;
                         }
@@ -130,7 +130,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 return;
                             }
                         }
-                        if (Registry.ITEM.get(new Identifier(data.get("item").getAsString())).toString().equals("air")) {
+                        if (Registry.ITEM.get(new Identifier(data.get("item").getAsString())).toString().equals("air") && JsonHelper.getBoolean(data, "required", true)) {
                             LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("item").getAsString());
                             return;
                         }
