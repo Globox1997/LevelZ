@@ -37,6 +37,7 @@
     "compat.EasyMagicEnchantingTableMixin",
     "compat.EasyAnvilsAnvilMixin",
     "compat.CosmeticArmorMixin",
+    "compat.ChopResultMixin",
     "entity.AnimalEntityMixin",
     "entity.AxolotlEntityMixin",
     "entity.CowEntityMixin",

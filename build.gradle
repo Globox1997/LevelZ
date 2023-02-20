@@ -77,6 +77,10 @@ dependencies {
 	modCompileOnly ('curse.maven:cosmetic-armor-fabric-436659:3857698') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+    // TreeChop
+	modCompileOnly ('curse.maven:treechop-421377:4147540'),{
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 }
 
 

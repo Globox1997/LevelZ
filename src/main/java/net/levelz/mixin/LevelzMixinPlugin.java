@@ -56,6 +56,9 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.contains("CosmeticArmorMixin") && !FabricLoader.getInstance().isModLoaded("cosmetic-armor"))
             return false;
 
+        if (mixinClassName.contains("ChopResultMixin") && !FabricLoader.getInstance().isModLoaded("treechop"))
+            return false;
+
         return true;
     }
 
