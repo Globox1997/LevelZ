@@ -40,21 +40,16 @@ public class SurvivalTrinketSlotMixin {
         if (trinketInventory.getComponent().getEntity() instanceof PlayerEntity player
                 && TrinketsApi.getTrinket(stack.getItem()).canEquip(stack, new SlotReference(trinketInventory, slotOffset), trinketInventory.getComponent().getEntity())) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (stack.getItem() instanceof ArmorItem armorItem) {
-                try {
-                    if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armorItem).toString())) {
-                        String string = Registry.ITEM.getId(stack.getItem()).toString();
-                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, string, true)) {
-                            info.setReturnValue(false);
-                        }
-                    } else {
-                        levelList = LevelLists.armorList;
-                        String string = armorItem.getMaterial().getName().toLowerCase();
-                        if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, true)) {
-                            info.setReturnValue(false);
-                        }
-                    }
-                } catch (AbstractMethodError ignore) {
+            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(stack.getItem()).toString())) {
+                String string = Registry.ITEM.getId(stack.getItem()).toString();
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, string, true)) {
+                    info.setReturnValue(false);
+                }
+            } else if (stack.getItem() instanceof ArmorItem armorItem) {
+                levelList = LevelLists.armorList;
+                String string = armorItem.getMaterial().getName().toLowerCase();
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, true)) {
+                    info.setReturnValue(false);
                 }
             } else {
                 levelList = LevelLists.elytraList;
