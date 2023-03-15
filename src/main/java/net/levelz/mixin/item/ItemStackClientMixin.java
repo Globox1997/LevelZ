@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.fabricmc.api.Environment;
 import net.levelz.data.LevelLists;
+import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.fabricmc.api.EnvType;
 import net.minecraft.block.AnvilBlock;
@@ -202,6 +203,13 @@ public class ItemStackClientMixin {
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
                         list.add(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
                                 .formatted(Formatting.RED));
+                    }
+                    levelList = LevelLists.swordList;
+                    if (ConfigInit.CONFIG.bindAxeDamageToSwordRestriction && !PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, false)) {
+                        list.add(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + "_attack.tooltip",
+                                levelList.get(levelList.indexOf(material) + 2).toString()).formatted(Formatting.RED));
+
+                        // list.add(Text.translatable("item.levelz.smithing_restriction.tooltip", PlayerStatsManager.getUnlockLevel(itemId, 3)).formatted(Formatting.RED));
                     }
                 } else if (item instanceof HoeItem) {
                     levelList = LevelLists.hoeList;

@@ -39,19 +39,19 @@ public class MinecraftClientMixin {
 
     @Inject(method = "handleBlockBreaking", at = @At("HEAD"), cancellable = true)
     private void handleBlockBreakingMixin(boolean breaking, CallbackInfo info) {
-        if (restrictHandUsage()) {
+        if (restrictHandUsage(true)) {
             info.cancel();
         }
     }
 
     @Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
     private void doAttackMixin(CallbackInfoReturnable<Boolean> info) {
-        if (restrictHandUsage()) {
+        if (restrictHandUsage(false)) {
             info.setReturnValue(false);
         }
     }
 
-    private boolean restrictHandUsage() {
+    private boolean restrictHandUsage(boolean blockBreaking) {
         if (ConfigInit.CONFIG.lockedHandUsage && player != null && !player.isCreative()) {
             Item item = player.getMainHandStack().getItem();
             if (item != null && !item.equals(Items.AIR)) {
@@ -68,9 +68,12 @@ public class MinecraftClientMixin {
                     levelList = null;
                     if (item instanceof SwordItem) {
                         levelList = LevelLists.swordList;
-                    } else if (item instanceof AxeItem)
-                        levelList = LevelLists.axeList;
-                    else if (item instanceof HoeItem)
+                    } else if (item instanceof AxeItem) {
+                        if (ConfigInit.CONFIG.bindAxeDamageToSwordRestriction && !blockBreaking)
+                            levelList = LevelLists.swordList;
+                        else
+                            levelList = LevelLists.axeList;
+                    } else if (item instanceof HoeItem)
                         levelList = LevelLists.hoeList;
                     else if (item instanceof PickaxeItem || item instanceof ShovelItem)
                         levelList = LevelLists.toolList;

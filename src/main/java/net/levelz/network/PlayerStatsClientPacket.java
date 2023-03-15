@@ -93,15 +93,16 @@ public class PlayerStatsClientPacket {
                 playerStatsManager.setSkillLevel(skill, 0);
                 // Sync attributes on client
                 switch (skill) {
-                    case HEALTH -> {
-                        client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase);
-                        client.player.setHealth(client.player.getMaxHealth());
-                    }
-                    case STRENGTH -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase);
-                    case AGILITY -> client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase);
-                    case DEFENSE -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase);
-                    case LUCK -> client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase);
-                    default -> {}
+                case HEALTH -> {
+                    client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase);
+                    client.player.setHealth(client.player.getMaxHealth());
+                }
+                case STRENGTH -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase);
+                case AGILITY -> client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase);
+                case DEFENSE -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase);
+                case LUCK -> client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase);
+                default -> {
+                }
                 }
             }
         });
@@ -169,6 +170,7 @@ public class PlayerStatsClientPacket {
             float archeryDoubleDamageChance = buf.readFloat();
             float miningOreChance = buf.readFloat();
             float miningTntBonus = buf.readFloat();
+            boolean bindAxeDamageToSwordRestriction = buf.readBoolean();
 
             boolean useIndependentExp = buf.readBoolean();
             float xpCostMultiplicator = buf.readFloat();
@@ -231,6 +233,7 @@ public class PlayerStatsClientPacket {
                 ConfigInit.CONFIG.archeryDoubleDamageChance = archeryDoubleDamageChance;
                 ConfigInit.CONFIG.miningOreChance = miningOreChance;
                 ConfigInit.CONFIG.miningTntBonus = miningTntBonus;
+                ConfigInit.CONFIG.bindAxeDamageToSwordRestriction = bindAxeDamageToSwordRestriction;
 
                 ConfigInit.CONFIG.miningProgression = miningProgression;
                 ConfigInit.CONFIG.itemProgression = itemProgression;

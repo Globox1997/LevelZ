@@ -111,7 +111,7 @@ public class LevelzConfig implements ConfigData {
     public float alchemyEnchantmentChance = 0.005F;
     @Comment("Chance of drinking potion with double value at max lvl")
     public float alchemyPotionChance = 0.05F;
-    public float archeryInaccuracyBonus = 0.5F;
+    public float archeryInaccuracyBonus = 0.4F;
     public float archeryBowExtraDamage = 0.2F;
     public float archeryCrossbowExtraDamage = 0.2F;
     @Comment("Chance of double range damage at max lvl")
@@ -122,6 +122,7 @@ public class LevelzConfig implements ConfigData {
     public float miningTntBonus = 0.5F;
     @Comment("Locked blocks break slower factor")
     public float miningLockedMultiplicator = 2.0F;
+    public boolean bindAxeDamageToSwordRestriction = true;
 
     // Experience settings
     @ConfigEntry.Category("experience_settings")
@@ -220,8 +221,8 @@ public class LevelzConfig implements ConfigData {
                 attackBase, attackBonus, attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus, luckSurviveChance,
                 staminaBase, staminaBonus, staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance, smithingAnvilChance, farmingBase,
                 farmingChanceBonus, farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryInaccuracyBonus, archeryBowExtraDamage, archeryCrossbowExtraDamage,
-                archeryDoubleDamageChance, miningOreChance, miningTntBonus, useIndependentExp, xpCostMultiplicator, xpExponent, xpBaseCost, xpMaxCost, miningProgression, itemProgression,
-                blockProgression, entityProgression, brewingProgression, smithingProgression));
+                archeryDoubleDamageChance, miningOreChance, miningTntBonus, bindAxeDamageToSwordRestriction, useIndependentExp, xpCostMultiplicator, xpExponent, xpBaseCost, xpMaxCost,
+                miningProgression, itemProgression, blockProgression, entityProgression, brewingProgression, smithingProgression));
     }
 
 }

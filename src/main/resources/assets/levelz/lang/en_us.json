@@ -71,7 +71,7 @@
   "text.autoconfig.levelz.option.miningTntBonus": "Mining Tnt Blast Bonus",
   "text.autoconfig.levelz.option.miningOreChance": "Mining Ore Extra Chance",
   "text.autoconfig.levelz.option.miningLockedMultiplicator": "Locked Block Multiplicator",
-
+  "text.autoconfig.levelz.option.bindAxeDamageToSwordRestriction": "Bind Axe Dmg To Sword Restriction",
 
   "text.autoconfig.levelz.option.dropPlayerXP": "Drop Player XP",
   "text.autoconfig.levelz.option.enableStartPoints": "Starter Points",
@@ -123,6 +123,19 @@
   "item.levelz.stamina.tooltip": "Stamina %d",
   "item.levelz.luck.tooltip": "Luck %d",
   "item.levelz.trade.tooltip": "Trade %d",
+
+  "item.levelz.farming_attack.tooltip": "§7Attack: §cFarming %d",
+  "item.levelz.mining_attack.tooltip": "§7Attack: §cMining %d",
+  "item.levelz.strength_attack.tooltip": "§7Attack: §cStrength %d",
+  "item.levelz.archery_attack.tooltip": "§7Attack: §cArchery %d",
+  "item.levelz.defense_attack.tooltip": "§7Attack: §cDefense %d",
+  "item.levelz.agility_attack.tooltip": "§7Attack: §cAgility %d",
+  "item.levelz.smithing_attack.tooltip": "§7Attack: §cSmithing %d",
+  "item.levelz.alchemy_attack.tooltip": "§7Attack: §cAlchemy %d",
+  "item.levelz.health_attack.tooltip": "§7Attack: §cHealth %d",
+  "item.levelz.stamina_attack.tooltip": "§7Attack: §cStamina %d",
+  "item.levelz.luck_attack.tooltip": "§7Attack: §cLuck %d",
+  "item.levelz.trade_attack.tooltip": "§7Attack: §cTrade %d",
 
   "item.levelz.mining_restriction.tooltip": "§7Mineable: §cMining %d",
   "item.levelz.alchemy_restriction.tooltip": "§7Brewable: §cBrewing %d",

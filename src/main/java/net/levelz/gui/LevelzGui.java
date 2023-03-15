@@ -9,6 +9,7 @@ import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.data.LevelLists;
+import net.levelz.init.ConfigInit;
 import net.levelz.init.RenderInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.stats.Skill;
@@ -123,9 +124,12 @@ public class LevelzGui extends LightweightGuiDescription {
             levelList = null;
             if (item instanceof SwordItem) {
                 levelList = LevelLists.swordList;
-            } else if (item instanceof AxeItem)
-                levelList = LevelLists.axeList;
-            else if (item instanceof HoeItem)
+            } else if (item instanceof AxeItem) {
+                if (ConfigInit.CONFIG.bindAxeDamageToSwordRestriction)
+                    levelList = LevelLists.swordList;
+                else
+                    levelList = LevelLists.axeList;
+            } else if (item instanceof HoeItem)
                 levelList = LevelLists.hoeList;
             else if (item instanceof PickaxeItem || item instanceof ShovelItem)
                 levelList = LevelLists.toolList;

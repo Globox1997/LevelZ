@@ -24,8 +24,9 @@ public class ProjectileEntityMixin {
     private float setVelocityMixin(float original) {
         if (owner != null && owner instanceof PlayerEntity playerEntity) {
             int archeryLevel = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager().getSkillLevel(Skill.ARCHERY);
-            if (archeryLevel < ConfigInit.CONFIG.maxLevel)
+            if (archeryLevel < ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryInaccuracyBonus > 0.001f) {
                 return Math.abs(archeryLevel - ConfigInit.CONFIG.maxLevel) * ConfigInit.CONFIG.archeryInaccuracyBonus + ConfigInit.CONFIG.archeryInaccuracyBonus;
+            }
         }
         return original;
     }

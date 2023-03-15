@@ -145,9 +145,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
                 levelList = null;
                 if (item instanceof SwordItem) {
                     levelList = LevelLists.swordList;
-                } else if (item instanceof AxeItem)
-                    levelList = LevelLists.axeList;
-                else if (item instanceof HoeItem)
+                } else if (item instanceof AxeItem) {
+                    if (ConfigInit.CONFIG.bindAxeDamageToSwordRestriction)
+                        levelList = LevelLists.swordList;
+                    else
+                        levelList = LevelLists.axeList;
+                } else if (item instanceof HoeItem)
                     levelList = LevelLists.hoeList;
                 else if (item instanceof PickaxeItem || item instanceof ShovelItem)
                     levelList = LevelLists.toolList;
