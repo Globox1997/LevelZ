@@ -81,6 +81,10 @@ dependencies {
 	modCompileOnly ('curse.maven:treechop-421377:4147540'),{
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+    // Alloygery
+	modCompileOnly ('curse.maven:alloygery-573592:4406842'),{
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 }
 
 

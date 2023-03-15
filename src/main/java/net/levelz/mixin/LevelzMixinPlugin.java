@@ -59,6 +59,9 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.contains("ChopResultMixin") && !FabricLoader.getInstance().isModLoaded("treechop"))
             return false;
 
+        if (mixinClassName.contains("SmithingAnvilScreenHandlerMixin") && !FabricLoader.getInstance().isModLoaded("alloygery"))
+            return false;
+
         return true;
     }
 

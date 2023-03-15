@@ -38,6 +38,7 @@
     "compat.EasyAnvilsAnvilMixin",
     "compat.CosmeticArmorMixin",
     "compat.ChopResultMixin",
+    "compat.SmithingAnvilScreenHandlerMixin",
     "entity.AnimalEntityMixin",
     "entity.AxolotlEntityMixin",
     "entity.CowEntityMixin",
