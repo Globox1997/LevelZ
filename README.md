@@ -271,15 +271,29 @@ Every level is set to 0 in this pack.
 
 ### Advancement
 
-LevelZ provides an advancement criterion trigger called "levelz:level_up".\
-It triggers when the player reached the set level.
+LevelZ provides two advancement criterions trigger called `levelz:level` and `levelz:skill`.\
+The first one triggers when the player reached the set level.
 
-```
+```json
     "criteria": {
         "levelexample": {
-            "trigger": "levelz:level_up",
+            "trigger": "levelz:level",
             "conditions": {
                 "level": 100
+            }
+        }
+    }
+```
+
+The second one triggers when the player reached the set skill level.
+
+```json
+    "criteria": {
+        "otherlevelexample": {
+            "trigger": "levelz:skill",
+             "conditions": {
+                "skill_name": "health",
+                "skill_level": 20
             }
         }
     }

@@ -10,8 +10,8 @@ import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-public class LevelZUpCriterion extends AbstractCriterion<LevelZUpCriterion.Conditions> {
-    static final Identifier ID = new Identifier("levelz:level_up");
+public class LevelZCriterion extends AbstractCriterion<LevelZCriterion.Conditions> {
+    static final Identifier ID = new Identifier("levelz:level");
 
     @Override
     public Identifier getId() {

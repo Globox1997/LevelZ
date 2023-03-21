@@ -10,6 +10,7 @@ import net.levelz.access.PlayerSyncAccess;
 import net.levelz.data.LevelLists;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
+import net.levelz.init.CriteriaInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.stats.Skill;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -37,29 +38,36 @@ public class PlayerStatsServerPacket {
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
             if (player != null) {
-                Skill skill = Skill.valueOf(buffer.readString().toUpperCase());
+
+                String skillString = buffer.readString().toUpperCase();
+                Skill skill = Skill.valueOf(skillString);
                 int level = buffer.readInt();
+
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
+                for (int i = 1; i <= level; i++) {
+                    CriteriaInit.SKILL_UP.trigger(player, skillString.toLowerCase(), playerStatsManager.getSkillLevel(skill) + level);
+                }
                 playerStatsManager.setSkillLevel(skill, playerStatsManager.getSkillLevel(skill) + level);
                 playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() - level);
                 switch (skill) {
-                    case HEALTH -> {
-                        player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
-                                .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus * level);
-                        player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus * level);
-                    }
-                    case STRENGTH -> player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus * level);
-                    case AGILITY -> player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus * level);
-                    case DEFENSE -> player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus * level);
-                    case LUCK -> player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus * level);
-                    case MINING -> syncLockedBlockList(playerStatsManager);
-                    case ALCHEMY -> syncLockedBrewingItemList(playerStatsManager);
-                    case SMITHING -> syncLockedSmithingItemList(playerStatsManager);
-                    default -> {}
+                case HEALTH -> {
+                    player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus * level);
+                    player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus * level);
+                }
+                case STRENGTH -> player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus * level);
+                case AGILITY -> player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus * level);
+                case DEFENSE -> player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
+                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus * level);
+                case LUCK -> player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
+                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus * level);
+                case MINING -> syncLockedBlockList(playerStatsManager);
+                case ALCHEMY -> syncLockedBrewingItemList(playerStatsManager);
+                case SMITHING -> syncLockedSmithingItemList(playerStatsManager);
+                default -> {
+                }
                 }
                 syncLockedCraftingItemList(playerStatsManager);
             }
@@ -232,15 +240,16 @@ public class PlayerStatsServerPacket {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager();
         int skillLevel = playerStatsManager.getSkillLevel(skill);
         switch (skill) {
-            case HEALTH -> {
-                serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase + skillLevel * ConfigInit.CONFIG.healthBonus);
-                serverPlayerEntity.setHealth(serverPlayerEntity.getMaxHealth());
-            }
-            case STRENGTH -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase + skillLevel * ConfigInit.CONFIG.attackBonus);
-            case AGILITY -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase + skillLevel * ConfigInit.CONFIG.movementBonus);
-            case DEFENSE -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase + skillLevel * ConfigInit.CONFIG.defenseBonus);
-            case LUCK -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + skillLevel * ConfigInit.CONFIG.luckBonus);
-            default -> {}
+        case HEALTH -> {
+            serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase + skillLevel * ConfigInit.CONFIG.healthBonus);
+            serverPlayerEntity.setHealth(serverPlayerEntity.getMaxHealth());
+        }
+        case STRENGTH -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase + skillLevel * ConfigInit.CONFIG.attackBonus);
+        case AGILITY -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase + skillLevel * ConfigInit.CONFIG.movementBonus);
+        case DEFENSE -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase + skillLevel * ConfigInit.CONFIG.defenseBonus);
+        case LUCK -> serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + skillLevel * ConfigInit.CONFIG.luckBonus);
+        default -> {
+        }
         }
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeString(skill.name());

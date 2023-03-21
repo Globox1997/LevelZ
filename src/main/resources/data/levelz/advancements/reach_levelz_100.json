@@ -20,7 +20,7 @@
     },
     "criteria": {
         "level100": {
-            "trigger": "levelz:level_up",
+            "trigger": "levelz:level",
             "conditions": {
                 "level": 100
             }
