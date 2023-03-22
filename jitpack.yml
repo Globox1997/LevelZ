@@ -1,5 +1,5 @@
+jdk:
+  - openjdk17
 before_install:
-  - wget https://immortaldevs.net/install-jdk.sh
-  - source install-jdk.sh --feature 17
-env:
-  ENVIRONMENT: "production"
+  - sdk install java 17.0.3-tem
+  - sdk use java 17.0.3-tem
