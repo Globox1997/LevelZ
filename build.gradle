@@ -29,7 +29,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // LibGui
-    modImplementation include("io.github.cottonmc:LibGui:${project.cottonmc_version}")
+    modApi include("io.github.cottonmc:LibGui:${project.cottonmc_version}")
     // Cloth
     modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -43,7 +43,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Inventorio
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.8.1+kotlin.1.7.0")
+    modCompileOnly("net.fabricmc:fabric-language-kotlin:1.8.1+kotlin.1.7.0")
     modCompileOnly("curse.maven:inventorio-491073:3842567")
     // Wthit
     modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
@@ -57,22 +57,22 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Trinkets
-    modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.0.2")
-	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.0.2")
+    modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.0.2")
+	modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.0.2")
     modCompileOnly ('com.github.emilyploszaj:trinkets:3.4.0') {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // REI
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
     // EMI
-    modImplementation "dev.emi:emi:0.4.0+1.19"
+    modCompileOnly "dev.emi:emi:0.4.0+1.19"
 
     // Dualwielding
 	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // PlaceHolder
-    modImplementation ("eu.pb4:placeholder-api:2.0.0-beta.7+1.19")
+    modCompileOnly ("eu.pb4:placeholder-api:2.0.0-beta.7+1.19")
     // Inmis
 	modCompileOnly ("curse.maven:inmis-369254:3853651") {
 		exclude(group: "net.fabricmc.fabric-api")
