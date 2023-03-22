@@ -1,4 +1,4 @@
-package net.levelz.gui;
+package net.levelz.gui.widget;
 
 import java.util.List;
 
@@ -12,6 +12,11 @@ import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import io.github.cottonmc.cotton.gui.widget.data.Texture;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.levelz.gui.InfoGui;
+import net.levelz.gui.InfoScreen;
+import net.levelz.gui.LevelzGui;
+import net.levelz.gui.LevelzScreen;
+import net.levelz.gui.ListGui;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;

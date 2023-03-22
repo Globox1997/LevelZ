@@ -1,10 +1,12 @@
-package net.levelz.gui;
+package net.levelz.gui.widget;
 
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Texture;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.RenderInit;
@@ -14,6 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+@Environment(EnvType.CLIENT)
 public class PlayerStatsPanel extends WPlainPanel {
 
     private final WSprite bar;
@@ -75,7 +78,7 @@ public class PlayerStatsPanel extends WPlainPanel {
             levelUp.setEnabled(!playerStatsManager.isMaxLevel() && levelProgress >= 1);
         }
         bar.setSize((int) (levelProgress * (this.width - 1)), 5);
-//        int w = (int) (this.width * levelProgress);
+        // int w = (int) (this.width * levelProgress);
         bar.setFrames(new Texture(RenderInit.GUI_ICONS, 0, 105 / 256F, bar.getWidth() / 256F, 110 / 256F));
         xp.setText(Text.of("XP " + experience + " / " + nextLevelExperience));
     }

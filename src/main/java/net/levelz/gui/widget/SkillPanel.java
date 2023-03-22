@@ -1,9 +1,11 @@
-package net.levelz.gui;
+package net.levelz.gui.widget;
 
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.VerticalAlignment;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.RenderInit;
@@ -15,6 +17,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+@Environment(EnvType.CLIENT)
 public class SkillPanel extends WPlainPanel {
 
     private final WLabel label;
@@ -48,10 +51,11 @@ public class SkillPanel extends WPlainPanel {
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(this.playerStatsManager, this.skill, level);
             PlayerStatsServerPacket.syncLockedCraftingItemList(this.playerStatsManager);
             switch (skill) {
-                case SMITHING -> PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
-                case MINING -> PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
-                case ALCHEMY -> PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
-                default -> {}
+            case SMITHING -> PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
+            case MINING -> PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
+            case ALCHEMY -> PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
+            default -> {
+            }
             }
         });
         this.add(button, width - button.getWidth(), (height - button.getHeight()) / 2);

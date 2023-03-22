@@ -9,6 +9,9 @@ import io.github.cottonmc.cotton.gui.widget.WSprite;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.data.LevelLists;
+import net.levelz.gui.widget.PlayerStatsPanel;
+import net.levelz.gui.widget.SkillPanel;
+import net.levelz.gui.widget.ZWSprite;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.RenderInit;
 import net.levelz.stats.PlayerStatsManager;
@@ -98,7 +101,7 @@ public class LevelzGui extends LightweightGuiDescription {
         }
 
         // bottom blank
-        root.add(new WLabel(Text.empty()), 0, 206, 1, 10);
+        root.add(new WLabel(Text.empty()), 0, 205, 1, 10);
         root.validate(this);
     }
 

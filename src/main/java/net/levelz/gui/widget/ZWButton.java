@@ -1,4 +1,4 @@
-package net.levelz.gui;
+package net.levelz.gui.widget;
 
 import com.google.common.collect.Lists;
 import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
@@ -21,9 +21,7 @@ public class ZWButton extends WButton {
     private int iconSize = 13;
 
     /**
-     * 0: LEFT
-     * 1: RIGHT
-     * 2: MIDDLE
+     * 0: LEFT 1: RIGHT 2: MIDDLE
      */
     private int clickedKey = -1;
 

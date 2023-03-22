@@ -38,6 +38,10 @@ dependencies {
     modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+    // LibZ
+    modImplementation ('com.github.Globox1997:LibZ:0fb01dc87b') {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
     // Inventorio
     modImplementation("net.fabricmc:fabric-language-kotlin:1.8.1+kotlin.1.7.0")
     modCompileOnly("curse.maven:inventorio-491073:3842567")

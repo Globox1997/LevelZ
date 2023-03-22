@@ -1,4 +1,4 @@
-package net.levelz.gui;
+package net.levelz.gui.widget;
 
 import java.util.List;
 

@@ -6,6 +6,7 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import net.fabricmc.fabric.api.util.TriState;
 import net.levelz.data.LevelLists;
+import net.levelz.gui.widget.ZWSprite;
 import net.levelz.init.ConfigInit;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
