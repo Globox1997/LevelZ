@@ -9,7 +9,7 @@ import net.levelz.data.LevelLists;
 import net.levelz.gui.widget.ZWItemSprite;
 import net.levelz.gui.widget.ZWSprite;
 import net.levelz.init.ConfigInit;
-import net.levelz.util.SortList;
+import net.libz.util.SortList;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;

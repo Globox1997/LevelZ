@@ -14,7 +14,7 @@ import com.google.gson.JsonParser;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.levelz.init.ConfigInit;
-import net.levelz.util.SortList;
+import net.libz.util.SortList;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
