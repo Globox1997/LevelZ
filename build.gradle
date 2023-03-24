@@ -31,7 +31,7 @@ dependencies {
     // LibGui
     modApi include("io.github.cottonmc:LibGui:${project.cottonmc_version}")
     // LibZ
-    modApi ('com.github.Globox1997:LibZ:0fb01dc87b') {
+    modApi ('com.github.Globox1997:LibZ:c19da208d5') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Cloth
