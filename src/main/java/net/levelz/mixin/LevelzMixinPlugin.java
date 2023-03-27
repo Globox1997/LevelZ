@@ -62,6 +62,9 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.contains("SmithingAnvilScreenHandlerMixin") && !FabricLoader.getInstance().isModLoaded("alloygery"))
             return false;
 
+        if (mixinClassName.contains("BlockBreakerMixin") && !FabricLoader.getInstance().isModLoaded("magna"))
+            return false;
+
         return true;
     }
 

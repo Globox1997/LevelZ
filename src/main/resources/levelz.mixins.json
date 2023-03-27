@@ -39,6 +39,7 @@
     "compat.CosmeticArmorMixin",
     "compat.ChopResultMixin",
     "compat.SmithingAnvilScreenHandlerMixin",
+    "compat.BlockBreakerMixin",
     "entity.AnimalEntityMixin",
     "entity.AxolotlEntityMixin",
     "entity.CowEntityMixin",

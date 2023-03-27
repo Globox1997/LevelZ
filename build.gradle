@@ -19,6 +19,7 @@ repositories {
     maven { url "https://www.cursemaven.com" }
     maven { url "https://server.bbkr.space/artifactory/libs-release" }
     maven { url "https://maven.nucleoid.xyz/" }
+    maven { url "https://maven.jamieswhiteshirt.com/libs-release/" }
         // maven { url "https://maven.siphalor.de/" }
 }
 
@@ -87,6 +88,10 @@ dependencies {
 	}
     // Alloygery
 	modCompileOnly ('curse.maven:alloygery-573592:4406842'),{
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+    // Magna
+    modCompileOnly ('com.github.Draylar:magna:1.8.0-1.19.2') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 }
