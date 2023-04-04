@@ -30,6 +30,9 @@
     ],
     "rei_client": [
       "net.levelz.compat.LevelzReiPlugin"
+    ],
+    "jade": [
+      "net.levelz.waila.LevelJadePlugin"
     ]
   },
   "mixins": [

@@ -319,6 +319,7 @@
   "config.waila.plugin_levelz": "LevelZ",
   "config.waila.plugin_levelz.mineable_info": "Mineable Info",
   "config.waila.plugin_levelz.mineable_level_info": "Mineable Level Info",
+  "config.jade.plugin_levelz.mineable_info": "Mineable Info",
 
   "entity.levelz.level_experience_orb": "Experience Orb",
 
