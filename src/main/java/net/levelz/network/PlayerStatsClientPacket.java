@@ -23,6 +23,32 @@ import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 public class PlayerStatsClientPacket {
 
     public static void init() {
+        ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.STATS_SYNC_PACKET, (client, handler, buf, sender) -> {
+            String skillString = buf.readString().toUpperCase();
+            int level = buf.readInt();
+            int points = buf.readInt();
+            client.execute(() -> {
+                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager();
+                Skill skill = Skill.valueOf(skillString);
+
+                playerStatsManager.setSkillLevel(skill, level);
+                playerStatsManager.setSkillPoints(points);
+
+                if (skill == Skill.STRENGTH) {
+                    playerStatsManager.getPlayerEntity().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                            .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.STRENGTH) * ConfigInit.CONFIG.attackBonus);
+                }
+                PlayerStatsServerPacket.syncLockedCraftingItemList(playerStatsManager);
+                switch (skill) {
+                case SMITHING -> PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
+                case MINING -> PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
+                case ALCHEMY -> PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
+                default -> {
+                }
+                }
+            });
+        });
+
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.XP_PACKET, (client, handler, buf, sender) -> {
             PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
             newBuffer.writeFloat(buf.readFloat());
@@ -32,6 +58,7 @@ public class PlayerStatsClientPacket {
                 executeXPPacket(client.player, newBuffer);
             });
         });
+
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.LEVEL_PACKET, (client, handler, buf, sender) -> {
             PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
             newBuffer.writeFloat(buf.readFloat());
@@ -244,17 +271,13 @@ public class PlayerStatsClientPacket {
         int skillLevel = playerStatsManager.getSkillLevel(skill);
         level = Math.min(playerStatsManager.getSkillPoints(), level);
         level = Math.min(ConfigInit.CONFIG.maxLevel - skillLevel, level);
-        if (level < 1)
+        if (level < 1) {
             return;
-        playerStatsManager.setSkillLevel(skill, skillLevel + level);
-        playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() - level);
+        }
+
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeString(skill.name());
         buf.writeInt(level);
-        if (skill == Skill.STRENGTH) {
-            playerStatsManager.getPlayerEntity().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                    .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.STRENGTH) * ConfigInit.CONFIG.attackBonus);
-        }
 
         CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PlayerStatsServerPacket.STATS_INCREASE_PACKET, buf);
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);

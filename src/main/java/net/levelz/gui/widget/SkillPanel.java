@@ -10,7 +10,6 @@ import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.RenderInit;
 import net.levelz.network.PlayerStatsClientPacket;
-import net.levelz.network.PlayerStatsServerPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.stats.Skill;
 import net.minecraft.client.MinecraftClient;
@@ -44,19 +43,12 @@ public class SkillPanel extends WPlainPanel {
         button = new ZWButton();
         button.setOnClick(() -> {
             int level = 1;
-            if (button.wasRightButtonClicked())
+            if (button.wasRightButtonClicked()) {
                 level = 5;
-            else if (button.wasMiddleButtonClicked())
+            } else if (button.wasMiddleButtonClicked()) {
                 level = 10;
+            }
             PlayerStatsClientPacket.writeC2SIncreaseLevelPacket(this.playerStatsManager, this.skill, level);
-            PlayerStatsServerPacket.syncLockedCraftingItemList(this.playerStatsManager);
-            switch (skill) {
-            case SMITHING -> PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
-            case MINING -> PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
-            case ALCHEMY -> PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
-            default -> {
-            }
-            }
         });
         this.add(button, width - button.getWidth(), (height - button.getHeight()) / 2);
         label = new WLabel(Text.of("0/0")).setHorizontalAlignment(HorizontalAlignment.RIGHT).setVerticalAlignment(VerticalAlignment.CENTER);

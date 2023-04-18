@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 public class PlayerStatsServerPacket {
 
     public static final Identifier STATS_INCREASE_PACKET = new Identifier("levelz", "player_increase_stats");
+    public static final Identifier STATS_SYNC_PACKET = new Identifier("levelz", "player_sync_stats");
     public static final Identifier XP_PACKET = new Identifier("levelz", "player_level_xp");
     public static final Identifier LEVEL_PACKET = new Identifier("levelz", "player_level_stats");
     public static final Identifier LIST_PACKET = new Identifier("levelz", "unlocking_list");
@@ -40,34 +41,40 @@ public class PlayerStatsServerPacket {
             String skillString = buffer.readString().toUpperCase();
             int level = buffer.readInt();
             server.execute(() -> {
-                Skill skill = Skill.valueOf(skillString);
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
-                for (int i = 1; i <= level; i++) {
-                    CriteriaInit.SKILL_UP.trigger(player, skillString.toLowerCase(), playerStatsManager.getSkillLevel(skill) + level);
+                if (playerStatsManager.getSkillPoints() - level >= 0) {
+                    Skill skill = Skill.valueOf(skillString);
+
+                    for (int i = 1; i <= level; i++) {
+                        CriteriaInit.SKILL_UP.trigger(player, skillString.toLowerCase(), playerStatsManager.getSkillLevel(skill) + level);
+                    }
+                    playerStatsManager.setSkillLevel(skill, playerStatsManager.getSkillLevel(skill) + level);
+                    playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() - level);
+                    switch (skill) {
+                    case HEALTH -> {
+                        player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
+                                .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus * level);
+                        player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus * level);
+                    }
+                    case STRENGTH -> player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus * level);
+                    case AGILITY -> player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus * level);
+                    case DEFENSE -> player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
+                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus * level);
+                    case LUCK -> player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
+                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus * level);
+                    case MINING -> syncLockedBlockList(playerStatsManager);
+                    case ALCHEMY -> syncLockedBrewingItemList(playerStatsManager);
+                    case SMITHING -> syncLockedSmithingItemList(playerStatsManager);
+                    default -> {
+                    }
+                    }
+                    syncLockedCraftingItemList(playerStatsManager);
+
+                    writeS2CSyncLevelPacket(playerStatsManager, player, skill);
                 }
-                playerStatsManager.setSkillLevel(skill, playerStatsManager.getSkillLevel(skill) + level);
-                playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() - level);
-                switch (skill) {
-                case HEALTH -> {
-                    player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
-                            .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus * level);
-                    player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus * level);
-                }
-                case STRENGTH -> player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus * level);
-                case AGILITY -> player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus * level);
-                case DEFENSE -> player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
-                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus * level);
-                case LUCK -> player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
-                        .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus * level);
-                case MINING -> syncLockedBlockList(playerStatsManager);
-                case ALCHEMY -> syncLockedBrewingItemList(playerStatsManager);
-                case SMITHING -> syncLockedSmithingItemList(playerStatsManager);
-                default -> {
-                }
-                }
-                syncLockedCraftingItemList(playerStatsManager);
+
             });
         });
 
@@ -83,6 +90,15 @@ public class PlayerStatsServerPacket {
                 ((PlayerSyncAccess) player).levelUp(levelUp, true, false);
             });
         });
+    }
+
+    public static void writeS2CSyncLevelPacket(PlayerStatsManager playerStatsManager, ServerPlayerEntity serverPlayerEntity, Skill skill) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeString(skill.name());
+        buf.writeInt(playerStatsManager.getSkillLevel(skill));
+        buf.writeInt(playerStatsManager.getSkillPoints());
+        CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(STATS_SYNC_PACKET, buf);
+        serverPlayerEntity.networkHandler.sendPacket(packet);
     }
 
     public static void writeS2CXPPacket(PlayerStatsManager playerStatsManager, ServerPlayerEntity serverPlayerEntity) {
