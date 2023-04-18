@@ -47,16 +47,18 @@ public abstract class LivingEntityMixin extends Entity {
     private int modifyAppliedDamageMixin(int original, DamageSource source, float amount) {
         if (source == DamageSource.FALL && (Object) this instanceof PlayerEntity player) {
             return (int) (original + ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.AGILITY) * ConfigInit.CONFIG.movementFallBonus);
-        } else
+        } else {
             return original;
+        }
     }
 
     @ModifyVariable(method = "tryUseTotem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;", ordinal = 0))
     private ItemStack tryUseTotemMixin(ItemStack original) {
         if ((Object) this instanceof PlayerEntity player) {
             ArrayList<Object> levelList = LevelLists.totemList;
-            if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true))
+            if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
                 return ItemStack.EMPTY;
+            }
         }
         return original;
     }
@@ -77,24 +79,28 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "drop", at = @At(value = "HEAD"), cancellable = true)
     protected void dropMixin(DamageSource source, CallbackInfo info) {
-        if (!((Object) this instanceof PlayerEntity) && attackingPlayer != null && this.playerHitTimer > 0 && !((PlayerDropAccess) attackingPlayer).allowMobDrop())
+        if (!((Object) this instanceof PlayerEntity) && attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.CONFIG.disableMobFarms
+                && !((PlayerDropAccess) attackingPlayer).allowMobDrop()) {
             info.cancel();
+        }
     }
 
     @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;drop(Lnet/minecraft/entity/damage/DamageSource;)V"))
     private void onDeathMixin(DamageSource source, CallbackInfo info) {
-        if (attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.CONFIG.disableMobFarms)
+        if (attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.CONFIG.disableMobFarms) {
             ((PlayerDropAccess) attackingPlayer).increaseKilledMobStat(this.world.getChunk(this.getBlockPos()));
+        }
     }
 
     @Inject(method = "dropXp", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
     protected void dropXpMixin(CallbackInfo info) {
-        if (ConfigInit.CONFIG.mobXPMultiplier > 0.0F)
+        if (ConfigInit.CONFIG.mobXPMultiplier > 0.0F) {
             LevelExperienceOrbEntity.spawn((ServerWorld) world, this.getPos(),
                     (int) (this.getXpToDrop() * ConfigInit.CONFIG.mobXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.attackingPlayer != null
                                     ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.attackingPlayer).getPlayerStatsManager().getOverallLevel()
                                     : 1.0F)));
+        }
     }
 
     @Shadow
