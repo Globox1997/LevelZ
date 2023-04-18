@@ -111,7 +111,7 @@ public class LevelzConfig implements ConfigData {
     public float alchemyEnchantmentChance = 0.005F;
     @Comment("Chance of drinking potion with double value at max lvl")
     public float alchemyPotionChance = 0.05F;
-    public float archeryInaccuracyBonus = 0.4F;
+    public float archeryInaccuracyBonus = 0.015F;
     public float archeryBowExtraDamage = 0.2F;
     public float archeryCrossbowExtraDamage = 0.2F;
     @Comment("Chance of double range damage at max lvl")
