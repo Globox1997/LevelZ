@@ -326,5 +326,8 @@
   "screen.levelz.skill_screen": "Skills",
 
   "advancements.adventure.level_100.title": "Level 100",
-  "advancements.adventure.level_100.description": "Reach the unreachable level"
+  "advancements.adventure.level_100.description": "Reach the unreachable level",
+
+  "tag.levelz.farm_items": "Farm Items",
+  "tag.levelz.restricted_furnace_experience_items": "Restricted Furnace Experience Items"
 }
