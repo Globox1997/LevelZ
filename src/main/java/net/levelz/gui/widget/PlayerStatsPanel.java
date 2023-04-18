@@ -40,16 +40,17 @@ public class PlayerStatsPanel extends WPlainPanel {
         this.add(bar, 0, 14, 0, 5);
         xp = new WLabel(Text.of("XP 0 / 0")).setHorizontalAlignment(HorizontalAlignment.CENTER);
         this.add(xp, 0, 24, width, 18);
-        if (ConfigInit.CONFIG.useIndependentExp)
+        if (ConfigInit.CONFIG.useIndependentExp) {
             return;
+        }
         levelUp = new ZWButton(Text.translatable("text.levelz.gui.level_up"), 10);
         levelUp.addTooltip(Text.translatable("text.levelz.gui.level_up.tooltip").getString().split("\n"));
         levelUp.setOnClick(() -> {
             int level = 1;
             if (levelUp.wasRightButtonClicked())
-                level = 10;
+                level = 5;
             else if (levelUp.wasMiddleButtonClicked())
-                level = 100;
+                level = 10;
             PlayerStatsClientPacket.writeC2SLevelUpPacket(level);
         });
         this.add(levelUp, 0, 0);
