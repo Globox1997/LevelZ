@@ -40,6 +40,7 @@
     "compat.ChopResultMixin",
     "compat.SmithingAnvilScreenHandlerMixin",
     "compat.BlockBreakerMixin",
+    "entity.EntityAccessor",
     "entity.AnimalEntityMixin",
     "entity.AxolotlEntityMixin",
     "entity.CowEntityMixin",
