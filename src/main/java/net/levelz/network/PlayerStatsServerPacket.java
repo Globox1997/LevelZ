@@ -37,12 +37,10 @@ public class PlayerStatsServerPacket {
 
     public static void init() {
         ServerPlayNetworking.registerGlobalReceiver(STATS_INCREASE_PACKET, (server, player, handler, buffer, sender) -> {
-            if (player != null) {
-
-                String skillString = buffer.readString().toUpperCase();
+            String skillString = buffer.readString().toUpperCase();
+            int level = buffer.readInt();
+            server.execute(() -> {
                 Skill skill = Skill.valueOf(skillString);
-                int level = buffer.readInt();
-
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
                 for (int i = 1; i <= level; i++) {
                     CriteriaInit.SKILL_UP.trigger(player, skillString.toLowerCase(), playerStatsManager.getSkillLevel(skill) + level);
@@ -70,7 +68,7 @@ public class PlayerStatsServerPacket {
                 }
                 }
                 syncLockedCraftingItemList(playerStatsManager);
-            }
+            });
         });
 
         ServerPlayNetworking.registerGlobalReceiver(SEND_CONFIG_SYNC_PACKET, (server, player, handler, buffer, sender) -> {
@@ -80,9 +78,10 @@ public class PlayerStatsServerPacket {
             writeS2CTagPacket(player, buffer.readIdentifier());
         });
         ServerPlayNetworking.registerGlobalReceiver(LEVEL_UP_BUTTON_PACKET, (server, player, handler, buffer, sender) -> {
-            if (player == null)
-                return;
-            ((PlayerSyncAccess) player).levelUp(buffer.readInt(), true, false);
+            int levelUp = buffer.readInt();
+            server.execute(() -> {
+                ((PlayerSyncAccess) player).levelUp(levelUp, true, false);
+            });
         });
     }
 

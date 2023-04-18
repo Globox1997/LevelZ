@@ -24,57 +24,45 @@ public class PlayerStatsClientPacket {
 
     public static void init() {
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.XP_PACKET, (client, handler, buf, sender) -> {
-            if (client.player != null) {
-                executeXPPacket(client.player, buf);
-            } else {
-                PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
-                newBuffer.writeFloat(buf.readFloat());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                client.execute(() -> {
-                    executeXPPacket(client.player, newBuffer);
-                });
-            }
+            PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
+            newBuffer.writeFloat(buf.readFloat());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            client.execute(() -> {
+                executeXPPacket(client.player, newBuffer);
+            });
         });
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.LEVEL_PACKET, (client, handler, buf, sender) -> {
-            if (client.player != null) {
-                executeLevelPacket(client.player, buf);
-            } else {
-                PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
-                newBuffer.writeFloat(buf.readFloat());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                newBuffer.writeInt(buf.readInt());
-                client.execute(() -> {
-                    executeLevelPacket(client.player, newBuffer);
-                });
-            }
+            PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
+            newBuffer.writeFloat(buf.readFloat());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            newBuffer.writeInt(buf.readInt());
+            client.execute(() -> {
+                executeLevelPacket(client.player, newBuffer);
+            });
         });
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.LIST_PACKET, (client, handler, buf, sender) -> {
-            if (client.player != null) {
-                executeListPacket(buf, client.player);
-            } else {
-                PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
-                while (buf.isReadable()) {
-                    newBuffer.writeString(buf.readString());
-                }
-                client.execute(() -> {
-                    executeListPacket(newBuffer, client.player);
-                });
+            PacketByteBuf newBuffer = new PacketByteBuf(Unpooled.buffer());
+            while (buf.isReadable()) {
+                newBuffer.writeString(buf.readString());
             }
+            client.execute(() -> {
+                executeListPacket(newBuffer, client.player);
+            });
         });
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.STRENGTH_PACKET, (client, handler, buf, sender) -> {
@@ -86,24 +74,30 @@ public class PlayerStatsClientPacket {
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.RESET_PACKET, (client, handler, buf, sender) -> {
             if (client.player != null) {
-                Skill skill = Skill.valueOf(buf.readString().toUpperCase());
-                PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager();
-                int skillLevel = playerStatsManager.getSkillLevel(skill);
-                playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() + skillLevel);
-                playerStatsManager.setSkillLevel(skill, 0);
+                String skillString = buf.readString();
+
                 // Sync attributes on client
-                switch (skill) {
-                case HEALTH -> {
-                    client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase);
-                    client.player.setHealth(client.player.getMaxHealth());
-                }
-                case STRENGTH -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase);
-                case AGILITY -> client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase);
-                case DEFENSE -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase);
-                case LUCK -> client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase);
-                default -> {
-                }
-                }
+                client.execute(() -> {
+                    Skill skill = Skill.valueOf(skillString.toUpperCase());
+                    PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager();
+                    int skillLevel = playerStatsManager.getSkillLevel(skill);
+                    playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() + skillLevel);
+                    playerStatsManager.setSkillLevel(skill, 0);
+
+                    switch (skill) {
+                    case HEALTH -> {
+                        client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase);
+                        client.player.setHealth(client.player.getMaxHealth());
+                    }
+                    case STRENGTH -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase);
+                    case AGILITY -> client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase);
+                    case DEFENSE -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase);
+                    case LUCK -> client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase);
+                    default -> {
+                    }
+                    }
+                });
+
             }
         });
 
