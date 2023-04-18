@@ -168,7 +168,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 return;
                             }
                         }
-                        if (Registry.BLOCK.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
+                        if (Registry.BLOCK.get(new Identifier(data.get("object").getAsString())).toString().equals("Block{minecraft:air}")) {
                             LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("object").getAsString());
                             return;
                         }
@@ -188,7 +188,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 return;
                             }
                         }
-                        if (Registry.BLOCK.get(new Identifier(data.get("block").getAsString())).toString().equals("air")) {
+                        if (Registry.BLOCK.get(new Identifier(data.get("block").getAsString())).toString().equals("Block{minecraft:air}")) {
                             LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("block").getAsString());
                             return;
                         }
@@ -232,7 +232,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 return;
                             }
                         }
-                        if (Registry.ENTITY_TYPE.get(new Identifier(data.get("object").getAsString())).toString().equals("air")) {
+                        if (Registry.ENTITY_TYPE.get(new Identifier(data.get("object").getAsString())).toString().equals("entity.minecraft.pig")) {
                             LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("object").getAsString());
                             return;
                         }
@@ -252,7 +252,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 return;
                             }
                         }
-                        if (Registry.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("air")) {
+                        if (Registry.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("entity.minecraft.pig")) {
                             LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("entity").getAsString());
                             return;
                         }
