@@ -97,6 +97,10 @@ dependencies {
     modCompileOnly ('com.github.Draylar:magna:1.8.0-1.19.2') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+    // Spell-Engine
+	modCompileOnly ('curse.maven:spell-engine-807653:4428928') {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 }
 
 
