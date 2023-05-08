@@ -1,0 +1,55 @@
+name: publish
+
+on: 
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt-hotspot'
+          java-version: 17
+          cache: 'gradle'
+
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: build files
+        run: ./gradlew build
+
+      - name: read mod name, mod version and minecraft version
+        id: properties
+        uses: christian-draeger/read-properties@1.1.1
+        with:
+          path: './gradle.properties'
+          properties: 'archives_base_name mod_version minecraft_version'
+
+      - uses: Kir-Antipov/mc-publish@v3.2
+        with:
+          modrinth-featured: true
+          modrinth-unfeature-mode: subset
+
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          name: '${{ steps.properties.outputs.archives_base_name }}-${{ steps.properties.outputs.mod_version }}+${{ steps.properties.outputs.minecraft_version }}'
+          version: '${{ steps.properties.outputs.mod_version }}+${{ steps.properties.outputs.minecraft_version }}'
+          game-versions: |
+            ${{ steps.properties.outputs.minecraft_version }}
+
+          version-type: release
+          version-resolver: exact
+
+          dependencies: |
+            fabric-api | depends | *
+            cloth-config | depends | *
+            libz | depends | *
+
+          changelog-file: CHANGELOG.md
+
+          retry-attempts: 2
+          retry-delay: 10000
+          fail-mode: fail
