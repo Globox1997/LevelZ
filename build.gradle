@@ -32,7 +32,7 @@ dependencies {
     // LibGui
     modApi include("io.github.cottonmc:LibGui:${project.cottonmc_version}")
     // LibZ
-    modApi ('com.github.Globox1997:LibZ:c19da208d5') {
+    modApi ("com.github.Globox1997:LibZ:c19da208d5") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Cloth
@@ -108,8 +108,8 @@ processResources {
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
+		expand "version": project.version, "fabric_version": project.fabric_version, "loader_version": project.loader_version, "minecraft_version": project.minecraft_version, "cloth_config_version": project.cloth_config_version
+	}
 }
 
 tasks.withType(JavaCompile).configureEach {
