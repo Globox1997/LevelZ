@@ -140,7 +140,7 @@ public class LevelLists {
             return smokerList;
         case "minecraft:blast_furnace":
             return blastFurnaceList;
-        case "minecraft:cartography":
+        case "minecraft:cartography_table":
             return cartographyList;
         case "minecraft:barrel":
             return barrelList;
@@ -224,7 +224,7 @@ public class LevelLists {
         listNames.add("minecraft:loom");
         listNames.add("minecraft:smoker");
         listNames.add("minecraft:blast_furnace");
-        listNames.add("minecraft:cartography");
+        listNames.add("minecraft:cartography_table");
         listNames.add("minecraft:barrel");
         listNames.add("minecraft:composter");
         listNames.add("minecraft:lectern");

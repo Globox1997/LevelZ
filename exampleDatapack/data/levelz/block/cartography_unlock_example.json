@@ -2,5 +2,5 @@
     "replace": true,
     "skill": "archery",
     "level": 0,
-    "block": "minecraft:cartography"
+    "block": "minecraft:cartography_table"
 }

@@ -65,7 +65,7 @@ The block category stands for the use of a few vanilla blocks. An example how th
 "block": has to be one of the following strings:\
 ``
 "minecraft:anvil","minecraft:barrel","minecraft:beacon","minecraft:beehive","minecraft:blast_furnace","minecraft:brewing_stand",
-"minecraft:cartography","minecraft:cauldron","minecraft:composter","minecraft:enchanting_table","minecraft:grindstone","minecraft:lectern",
+"minecraft:cartography_table","minecraft:cauldron","minecraft:composter","minecraft:enchanting_table","minecraft:grindstone","minecraft:lectern",
 "minecraft:loom","minecraft:pumpkin","minecraft:smithing_table","minecraft:smoker","minecraft:stonecutter","minecraft:fletching_table","minecraft:crafting_table"
 ``
 

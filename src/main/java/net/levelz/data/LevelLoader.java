@@ -252,7 +252,8 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 return;
                             }
                         }
-                        if (Registry.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("entity.minecraft.pig")) {
+                        if (!data.get("entity").getAsString().equals("minecraft:breeding")
+                                && Registry.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("entity.minecraft.pig")) {
                             LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("entity").getAsString());
                             return;
                         }
