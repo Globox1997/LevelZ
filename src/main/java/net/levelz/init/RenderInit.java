@@ -9,6 +9,7 @@ import net.levelz.gui.InfoScreen;
 import net.levelz.gui.LevelzScreen;
 import net.levelz.gui.widget.LevelzTab;
 import net.levelz.gui.widget.VanillaInventoryTab;
+import net.levelz.screen.*;
 import net.libz.registry.TabRegistry;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.text.Text;
@@ -30,6 +31,7 @@ public class RenderInit {
         EntityRendererRegistry.register(EntityInit.LEVEL_EXPERIENCE_ORB, LevelExperienceOrbEntityRenderer::new);
 
         TabRegistry.registerInventoryTab(new VanillaInventoryTab(Text.translatable("container.crafting"), BAG_TAB_ICON, 0, InventoryScreen.class));
-        TabRegistry.registerInventoryTab(new LevelzTab(Text.translatable("screen.levelz.skill_screen"), SKILL_TAB_ICON, 1, LevelzScreen.class, InfoScreen.class));
+        // TabRegistry.registerInventoryTab(new LevelzTab(Text.translatable("screen.levelz.skill_screen"), SKILL_TAB_ICON, 1, LevelzScreen.class, InfoScreen.class));
+        TabRegistry.registerInventoryTab(new LevelzTab(Text.translatable("screen.levelz.skill_screen"), SKILL_TAB_ICON, 1, SkillScreen.class, SkillInfoScreen.class, SkillListScreen.class));
     }
 }

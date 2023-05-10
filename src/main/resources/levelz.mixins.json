@@ -108,6 +108,7 @@
     "misc.ClientPlayNetworkHandlerMixin",
     "misc.CreativeInventoryScreenMixin",
     "misc.DrawableHelperAccessor",
+    "misc.ItemRendererAccessor",
     "player.ClientPlayerEntityMixin",
     "player.InGameHudMixin",
     "player.InventoryScreenMixin",
