@@ -1,4 +1,4 @@
-package net.levelz.gui.widget;
+package net.levelz.screen.widget;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,10 +19,11 @@ public class VanillaInventoryTab extends InventoryTab {
 
     @Override
     public void onClick(MinecraftClient client) {
-        if (RenderInit.isInventorioLoaded)
+        if (RenderInit.isInventorioLoaded) {
             InventorioScreenCompatibility.setInventorioScreen(client);
-        else
+        } else {
             client.setScreen(new InventoryScreen(client.player));
+        }
     }
 
 }

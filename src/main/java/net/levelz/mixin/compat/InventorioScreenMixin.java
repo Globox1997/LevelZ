@@ -13,9 +13,8 @@ import me.lizardofoz.inventorio.client.ui.InventorioScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.gui.LevelzGui;
-import net.levelz.gui.LevelzScreen;
 import net.levelz.init.RenderInit;
+import net.levelz.screen.SkillScreen;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
@@ -43,7 +42,7 @@ public abstract class InventorioScreenMixin extends AbstractInventoryScreen<Play
     private void mouseClickedMixin(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> info) {
         if (this.sliderOpen && this.focusedSlot == null) {
             assert this.client != null;
-            this.client.setScreen(new LevelzScreen(new LevelzGui(client)));
+            this.client.setScreen(new SkillScreen());
         }
     }
 

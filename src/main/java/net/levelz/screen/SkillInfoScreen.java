@@ -12,6 +12,7 @@ import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.screen.widget.SkillScrollableWidget;
 import net.libz.api.Tab;
+import net.libz.util.DrawTabHelper;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
@@ -129,12 +130,6 @@ public class SkillInfoScreen extends Screen implements Tab {
             this.addDrawableChild(new SkillScreen.WidgetButtonPage(this.x + 180, this.y + 7, 12, 9, 45, 80, false, true, null, button -> {
                 this.client.setScreen(new SkillListScreen(this.title));
             }));
-
-            // if (!LevelLists.smithingItemList.isEmpty()) {
-            // ZWSprite smithingListIcon = new ZWSprite(name, client, 1);
-            // root.add(smithingListIcon, 180, 7, 12, 9);
-            // }
-
             break;
         case "mining":
             this.translatableText1A = Text.translatable("text.levelz.mining_info_1");
@@ -146,11 +141,6 @@ public class SkillInfoScreen extends Screen implements Tab {
             this.addDrawableChild(new SkillScreen.WidgetButtonPage(this.x + 180, this.y + 7, 12, 9, 45, 80, false, true, null, button -> {
                 this.client.setScreen(new SkillListScreen(this.title));
             }));
-            // if (!LevelLists.miningBlockList.isEmpty()) {
-            // ZWSprite miningListIcon = new ZWSprite(name, client, 1);
-            // root.add(miningListIcon, 180, 7, 12, 9);
-            // }
-
             break;
         case "farming":
             this.translatableText2A = Text.translatable("text.levelz.farming_info_2_1", ConfigInit.CONFIG.farmingBase);
@@ -171,16 +161,6 @@ public class SkillInfoScreen extends Screen implements Tab {
             this.addDrawableChild(new SkillScreen.WidgetButtonPage(this.x + 180, this.y + 7, 12, 9, 45, 80, false, true, null, button -> {
                 this.client.setScreen(new SkillListScreen(this.title));
             }));
-
-            // client.setScreen(new InfoScreen(new ListGui(name, client)));
-            // this.addDrawableChild(new SkillScreen.WidgetButtonPage(this.x+180, this.y+7, sizeX, sizeY, textureX, textureY, hoverOutline, clickable, tooltip, button -{
-
-            // }));
-            // if (!LevelLists.brewingItemList.isEmpty()) {
-            // ZWSprite alchemyListIcon = new ZWSprite(name, client, 1);
-            // root.add(alchemyListIcon, 180, 7, 12, 9);
-            // }
-
             break;
         default:
             break;
@@ -217,6 +197,7 @@ public class SkillInfoScreen extends Screen implements Tab {
 
         this.textRenderer.draw(matrices, Text.translatable("text.levelz.info", Text.translatable(String.format("spritetip.levelz.%s_skill", this.title))), this.x + 6, this.y + 7, 0x3F3F3F);
 
+        DrawTabHelper.drawTab(client, matrices, this, x, y, mouseX, mouseY);
         super.render(matrices, mouseX, mouseY, delta);
     }
 
@@ -235,6 +216,20 @@ public class SkillInfoScreen extends Screen implements Tab {
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, false);
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    public int getWidth() {
+        return this.backgroundWidth;
+    }
+
+    public int getHeight() {
+        return this.backgroundHeight;
     }
 
 }

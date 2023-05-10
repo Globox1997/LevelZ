@@ -22,6 +22,7 @@ import net.levelz.network.PlayerStatsClientPacket;
 import net.levelz.stats.PlayerStatsManager;
 import net.levelz.stats.Skill;
 import net.libz.api.Tab;
+import net.libz.util.DrawTabHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -215,6 +216,7 @@ public class SkillScreen extends Screen implements Tab {
         this.drawTexture(matrices, this.x + 155, this.y + 21, 36, 0, 9, 9); // foodIcon
         this.drawTexture(matrices, this.x + 155, this.y + 34, 45, 0, 9, 9); // fortuneIcon
 
+        DrawTabHelper.drawTab(client, matrices, this, x, y, mouseX, mouseY);
         super.render(matrices, mouseX, mouseY, delta);
     }
 
@@ -226,6 +228,20 @@ public class SkillScreen extends Screen implements Tab {
         } else {
             return super.keyPressed(keyCode, scanCode, modifiers);
         }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, this.getFocused() != null);
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    public int getWidth() {
+        return this.backgroundWidth;
+    }
+
+    public int getHeight() {
+        return this.backgroundHeight;
     }
 
     private String getDamageLabel() {

@@ -17,10 +17,8 @@ repositories {
     maven { url "https://ladysnake.jfrog.io/artifactory/mods" }
     maven { url 'https://jitpack.io' }
     maven { url "https://www.cursemaven.com" }
-    maven { url "https://server.bbkr.space/artifactory/libs-release" }
     maven { url "https://maven.nucleoid.xyz/" }
     maven { url "https://maven.jamieswhiteshirt.com/libs-release/" }
-        // maven { url "https://maven.siphalor.de/" }
 }
 
 dependencies {
@@ -29,8 +27,6 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // LibGui
-    modApi include("io.github.cottonmc:LibGui:${project.cottonmc_version}")
     // LibZ
     modApi ("com.github.Globox1997:LibZ:c19da208d5") {
 		exclude(group: "net.fabricmc.fabric-api")

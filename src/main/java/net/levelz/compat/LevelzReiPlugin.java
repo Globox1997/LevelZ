@@ -10,9 +10,10 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.displays.brewing.DefaultBrewingDisplay;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.levelz.gui.InfoScreen;
-import net.levelz.gui.LevelzScreen;
 import net.levelz.init.ItemInit;
+import net.levelz.screen.SkillInfoScreen;
+import net.levelz.screen.SkillListScreen;
+import net.levelz.screen.SkillScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -30,7 +31,7 @@ public class LevelzReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerScreens(ScreenRegistry registry) {
-        registry.registerDecider(new DisplayBoundsProvider<LevelzScreen>() {
+        registry.registerDecider(new DisplayBoundsProvider<SkillScreen>() {
 
             @Override
             public <R extends Screen> ActionResult shouldScreenBeOverlaid(R screen) {
@@ -38,21 +39,20 @@ public class LevelzReiPlugin implements REIClientPlugin {
             }
 
             @Override
-            public @Nullable Rectangle getScreenBounds(LevelzScreen screen) {
-                return new Rectangle(screen.width / 2 - (screen.getDescription().getRootPanel().getWidth() / 2), screen.height / 2 - (screen.getDescription().getRootPanel().getHeight() / 2),
-                        screen.getDescription().getRootPanel().getWidth(), screen.getDescription().getRootPanel().getHeight());
+            public @Nullable Rectangle getScreenBounds(SkillScreen screen) {
+                return new Rectangle(screen.width / 2 - (screen.getWidth() / 2), screen.height / 2 - (screen.getHeight() / 2), screen.getWidth(), screen.getHeight());
             }
 
             @Override
             public <R extends Screen> boolean isHandingScreen(Class<R> screen) {
-                if (screen.equals(LevelzScreen.class))
+                if (screen.equals(SkillScreen.class))
                     return true;
                 return false;
             }
 
         });
 
-        registry.registerDecider(new DisplayBoundsProvider<InfoScreen>() {
+        registry.registerDecider(new DisplayBoundsProvider<SkillInfoScreen>() {
 
             @Override
             public <R extends Screen> ActionResult shouldScreenBeOverlaid(R screen) {
@@ -60,14 +60,34 @@ public class LevelzReiPlugin implements REIClientPlugin {
             }
 
             @Override
-            public @Nullable Rectangle getScreenBounds(InfoScreen screen) {
-                return new Rectangle(screen.width / 2 - (screen.getDescription().getRootPanel().getWidth() / 2), screen.height / 2 - (screen.getDescription().getRootPanel().getHeight() / 2),
-                        screen.getDescription().getRootPanel().getWidth(), screen.getDescription().getRootPanel().getHeight());
+            public @Nullable Rectangle getScreenBounds(SkillInfoScreen screen) {
+                return new Rectangle(screen.width / 2 - (screen.getWidth() / 2), screen.height / 2 - (screen.getHeight() / 2), screen.getWidth(), screen.getHeight());
             }
 
             @Override
             public <R extends Screen> boolean isHandingScreen(Class<R> screen) {
-                if (screen.equals(InfoScreen.class))
+                if (screen.equals(SkillInfoScreen.class))
+                    return true;
+                return false;
+            }
+
+        });
+
+        registry.registerDecider(new DisplayBoundsProvider<SkillListScreen>() {
+
+            @Override
+            public <R extends Screen> ActionResult shouldScreenBeOverlaid(R screen) {
+                return ActionResult.SUCCESS;
+            }
+
+            @Override
+            public @Nullable Rectangle getScreenBounds(SkillListScreen screen) {
+                return new Rectangle(screen.width / 2 - (screen.getWidth() / 2), screen.height / 2 - (screen.getHeight() / 2), screen.getWidth(), screen.getHeight());
+            }
+
+            @Override
+            public <R extends Screen> boolean isHandingScreen(Class<R> screen) {
+                if (screen.equals(SkillListScreen.class))
                     return true;
                 return false;
             }

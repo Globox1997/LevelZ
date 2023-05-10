@@ -9,8 +9,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.levelz.gui.LevelzGui;
-import net.levelz.gui.LevelzScreen;
+import net.levelz.screen.SkillScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
@@ -29,11 +28,13 @@ public class KeyInit {
         // Callback
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (screenKey.wasPressed()) {
-                if (!keyBoolean)
-                    client.setScreen(new LevelzScreen(new LevelzGui(client)));
+                if (!keyBoolean) {
+                    client.setScreen(new SkillScreen());
+                }
                 keyBoolean = true;
-            } else if (keyBoolean)
+            } else if (keyBoolean) {
                 keyBoolean = false;
+            }
         });
     }
 

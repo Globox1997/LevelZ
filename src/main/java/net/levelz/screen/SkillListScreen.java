@@ -13,6 +13,7 @@ import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.screen.widget.SkillListScrollableWidget;
 import net.libz.api.Tab;
+import net.libz.util.DrawTabHelper;
 import net.libz.util.SortList;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -95,6 +96,7 @@ public class SkillListScreen extends Screen implements Tab {
 
         this.textRenderer.draw(matrices, Text.translatable("text.levelz.locked_list", Text.translatable(String.format("spritetip.levelz.%s_skill", this.title))), this.x + 6, this.y + 7, 0x3F3F3F);
 
+        DrawTabHelper.drawTab(client, matrices, this, x, y, mouseX, mouseY);
         super.render(matrices, mouseX, mouseY, delta);
     }
 
@@ -113,6 +115,20 @@ public class SkillListScreen extends Screen implements Tab {
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, false);
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    public int getWidth() {
+        return this.backgroundWidth;
+    }
+
+    public int getHeight() {
+        return this.backgroundHeight;
     }
 
 }
