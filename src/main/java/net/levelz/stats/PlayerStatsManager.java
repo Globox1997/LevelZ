@@ -112,7 +112,6 @@ public class PlayerStatsManager {
         return 0;
     }
 
-
     @Deprecated
     public void setLevel(String string, int level) {
         switch (string) {
@@ -142,7 +141,10 @@ public class PlayerStatsManager {
     }
 
     public boolean isMaxLevel() {
-        return this.overallLevel >= ConfigInit.CONFIG.maxLevel * 12 || (ConfigInit.CONFIG.overallMaxLevel != 0 && this.overallLevel >= ConfigInit.CONFIG.overallMaxLevel);
+        if (ConfigInit.CONFIG.overallMaxLevel != 0) {
+            return this.overallLevel >= ConfigInit.CONFIG.overallMaxLevel;
+        }
+        return this.overallLevel >= ConfigInit.CONFIG.maxLevel * 12;
     }
 
     public boolean hasAvailableLevel() {
@@ -151,8 +153,9 @@ public class PlayerStatsManager {
 
     // Recommend to use https://www.geogebra.org/graphing
     public int getNextLevelExperience() {
-        if (isMaxLevel())
+        if (isMaxLevel()) {
             return 0;
+        }
         int experienceCost = (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * Math.pow(this.overallLevel, ConfigInit.CONFIG.xpExponent));
         if (ConfigInit.CONFIG.xpMaxCost != 0)
             return experienceCost >= ConfigInit.CONFIG.xpMaxCost ? ConfigInit.CONFIG.xpMaxCost : experienceCost;
