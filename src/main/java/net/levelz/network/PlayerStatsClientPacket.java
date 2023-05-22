@@ -149,6 +149,7 @@ public class PlayerStatsClientPacket {
         ClientPlayNetworking.registerGlobalReceiver(PlayerStatsServerPacket.CONFIG_SYNC_PACKET, (client, handler, buf, sender) -> {
             int maxLevel = buf.readInt();
             int overallMaxLevel = buf.readInt();
+            boolean allowHigherSkillLevel = buf.readBoolean();
 
             double healthBase = buf.readDouble();
             double healthBonus = buf.readDouble();
@@ -210,6 +211,7 @@ public class PlayerStatsClientPacket {
                 ConfigInit.CONFIG.useIndependentExp = useIndependentExp;
                 ConfigInit.CONFIG.maxLevel = maxLevel;
                 ConfigInit.CONFIG.overallMaxLevel = overallMaxLevel;
+                ConfigInit.CONFIG.allowHigherSkillLevel = allowHigherSkillLevel;
                 ConfigInit.CONFIG.xpBaseCost = xpBaseCost;
                 ConfigInit.CONFIG.xpMaxCost = xpMaxCost;
                 ConfigInit.CONFIG.xpCostMultiplicator = xpCostMultiplicator;
@@ -271,6 +273,10 @@ public class PlayerStatsClientPacket {
         int skillLevel = playerStatsManager.getSkillLevel(skill);
         level = Math.min(playerStatsManager.getSkillPoints(), level);
         level = Math.min(ConfigInit.CONFIG.maxLevel - skillLevel, level);
+
+        if (ConfigInit.CONFIG.allowHigherSkillLevel) {
+            level = Math.min(Math.abs(ConfigInit.CONFIG.maxLevel - skillLevel), level);
+        }
         if (level < 1) {
             return;
         }

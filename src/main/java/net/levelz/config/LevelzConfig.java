@@ -23,6 +23,9 @@ public class LevelzConfig implements ConfigData {
     @Comment("Maximum level: 0 = disabled")
     public int overallMaxLevel = 0;
     @ConfigEntry.Category("level_settings")
+    @Comment("In combination with overallMaxLevel, only when all skills maxed")
+    public boolean allowHigherSkillLevel = false;
+    @ConfigEntry.Category("level_settings")
     @ConfigEntry.Gui.RequiresRestart
     @Comment("Applies if bonus chest world setting is enabled")
     public int startPoints = 5;
@@ -217,12 +220,12 @@ public class LevelzConfig implements ConfigData {
     // Arrays.asList returns an ArrayList of the Arrays class which is different to the ArrayList class
     // Returns a list which should be synced to the client
     public ArrayList<Object> getConfigList() {
-        return new ArrayList<Object>(Arrays.asList(maxLevel, overallMaxLevel, healthBase, healthBonus, healthAbsorptionBonus, movementBase, movementBonus, movementMissChance, movementFallBonus,
-                attackBase, attackBonus, attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus, luckSurviveChance,
-                staminaBase, staminaBonus, staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance, smithingAnvilChance, farmingBase,
-                farmingChanceBonus, farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryInaccuracyBonus, archeryBowExtraDamage, archeryCrossbowExtraDamage,
-                archeryDoubleDamageChance, miningOreChance, miningTntBonus, bindAxeDamageToSwordRestriction, useIndependentExp, xpCostMultiplicator, xpExponent, xpBaseCost, xpMaxCost,
-                miningProgression, itemProgression, blockProgression, entityProgression, brewingProgression, smithingProgression));
+        return new ArrayList<Object>(Arrays.asList(maxLevel, overallMaxLevel, allowHigherSkillLevel, healthBase, healthBonus, healthAbsorptionBonus, movementBase, movementBonus, movementMissChance,
+                movementFallBonus, attackBase, attackBonus, attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus,
+                luckSurviveChance, staminaBase, staminaBonus, staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance,
+                smithingAnvilChance, farmingBase, farmingChanceBonus, farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryInaccuracyBonus, archeryBowExtraDamage,
+                archeryCrossbowExtraDamage, archeryDoubleDamageChance, miningOreChance, miningTntBonus, bindAxeDamageToSwordRestriction, useIndependentExp, xpCostMultiplicator, xpExponent,
+                xpBaseCost, xpMaxCost, miningProgression, itemProgression, blockProgression, entityProgression, brewingProgression, smithingProgression));
     }
 
 }

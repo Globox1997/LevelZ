@@ -196,8 +196,17 @@ public class SkillScreen extends Screen implements Tab {
             Text currentXpText = Text.translatable("text.levelz.gui.current_xp", experience, nextLevelExperience);
             this.textRenderer.draw(matrices, currentXpText, this.x - this.textRenderer.getWidth(currentXpText) / 2 + 123, this.y + 74, 0x3F3F3F);
 
+            boolean skillsAllMaxed = true;
             for (int o = 0; o < this.levelButtons.length; o++) {
                 this.levelButtons[o].active = playerStatsManager.getSkillPoints() > 0 && this.playerStatsManager.getSkillLevel(Skill.values()[o]) < ConfigInit.CONFIG.maxLevel;
+                if (skillsAllMaxed) {
+                    skillsAllMaxed = this.playerStatsManager.getSkillLevel(Skill.values()[o]) >= ConfigInit.CONFIG.maxLevel;
+                }
+            }
+            if (skillsAllMaxed && ConfigInit.CONFIG.allowHigherSkillLevel) {
+                for (int o = 0; o < this.levelButtons.length; o++) {
+                    this.levelButtons[o].active = true;
+                }
             }
 
             // Small icons text

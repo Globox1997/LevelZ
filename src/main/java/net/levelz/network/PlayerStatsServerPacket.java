@@ -44,6 +44,9 @@ public class PlayerStatsServerPacket {
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) player).getPlayerStatsManager();
                 if (playerStatsManager.getSkillPoints() - level >= 0) {
                     Skill skill = Skill.valueOf(skillString);
+                    if (!ConfigInit.CONFIG.allowHigherSkillLevel && playerStatsManager.getSkillLevel(skill) >= ConfigInit.CONFIG.maxLevel) {
+                        return;
+                    }
 
                     for (int i = 1; i <= level; i++) {
                         CriteriaInit.SKILL_UP.trigger(player, skillString.toLowerCase(), playerStatsManager.getSkillLevel(skill) + level);
