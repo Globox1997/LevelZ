@@ -27,7 +27,7 @@ jobs:
           path: './gradle.properties'
           properties: 'archives_base_name mod_version minecraft_version'
 
-      - uses: Kir-Antipov/mc-publish@v3.2
+      - uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-featured: true
           modrinth-unfeature-mode: subset
@@ -53,3 +53,18 @@ jobs:
           retry-attempts: 2
           retry-delay: 10000
           fail-mode: fail
+
+      - name: read changelog
+        id: changelog
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: 'CHANGELOG.md'
+
+      - name: discord webhook
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          embed-title: "${{ steps.properties.outputs.archives_base_name }} ${{ steps.properties.outputs.mod_version }} for Minecraft ${{ steps.properties.outputs.minecraft_version }} has been released!"
+          embed-description: "**Changelog**```md\n${{ steps.changelog.outputs.content }}```\n**Downloads**\n<:modrinth:1110118061106798644> https://modrinth.com/mod/${{ steps.properties.outputs.archives_base_name }}\n<:curseforge:1110124796362109028> https://www.curseforge.com/minecraft/mc-mods/${{ steps.properties.outputs.archives_base_name }}"
+          embed-footer-text: "Have fun and be blessed!"
+          embed-color: 0xFF8000
