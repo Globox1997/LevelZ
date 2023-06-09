@@ -50,7 +50,7 @@ public class AbstractFurnaceBlockEntityMixin {
         if (ConfigInit.CONFIG.furnaceXPMultiplier > 0.0F) {
             for (Object2IntMap.Entry<Identifier> entry : this.recipesUsed.object2IntEntrySet()) {
                 world.getRecipeManager().get((Identifier) entry.getKey()).ifPresent(recipe -> {
-                    if (!recipe.getOutput().isIn(TagInit.RESTRICTED_FURNACE_EXPERIENCE_ITEMS)) {
+                    if (!recipe.getOutput(world.getRegistryManager()).isIn(TagInit.RESTRICTED_FURNACE_EXPERIENCE_ITEMS)) {
                         int i = MathHelper.floor((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
                         float f = MathHelper.fractionalPart((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
                         if (f != 0.0f && Math.random() < (double) f) {

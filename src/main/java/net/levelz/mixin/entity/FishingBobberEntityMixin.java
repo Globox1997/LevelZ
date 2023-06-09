@@ -21,8 +21,8 @@ public class FishingBobberEntityMixin {
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z", ordinal = 0))
     private void useMixin(ItemStack usedItem, CallbackInfoReturnable<Integer> info) {
         if (ConfigInit.CONFIG.fishingXPMultiplier > 0.0F)
-            LevelExperienceOrbEntity.spawn((ServerWorld) getPlayerOwner().world, getPlayerOwner().getPos().add(0.0D, 0.5D, 0.0D),
-                    (int) ((getPlayerOwner().world.random.nextInt(6) + 1) * ConfigInit.CONFIG.fishingXPMultiplier
+            LevelExperienceOrbEntity.spawn((ServerWorld) getPlayerOwner().getWorld(), getPlayerOwner().getPos().add(0.0D, 0.5D, 0.0D),
+                    (int) ((getPlayerOwner().getWorld().getRandom().nextInt(6) + 1) * ConfigInit.CONFIG.fishingXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && getPlayerOwner() != null
                                     ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) getPlayerOwner()).getPlayerStatsManager().getOverallLevel()
                                     : 1.0F)));

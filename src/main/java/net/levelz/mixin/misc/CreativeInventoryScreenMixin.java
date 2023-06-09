@@ -13,8 +13,8 @@ import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen.CreativeScreenHandler;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.Registry;
 
 @Environment(EnvType.CLIENT)
 @Mixin(CreativeInventoryScreen.class)
@@ -28,8 +28,8 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     private void keyReleasedMixin(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> info) {
 
         if (this.focusedSlot != null && this.focusedSlot.hasStack() && ConfigInit.CONFIG.devMode && KeyInit.devKey.matchesKey(keyCode, scanCode) && this.client.player != null) {
-            this.client.player.sendMessage(Text.of("Added ID: " + Registry.ITEM.getId(this.focusedSlot.getStack().getItem()).toString()));
-            KeyInit.writeId(Registry.ITEM.getId(this.focusedSlot.getStack().getItem()).toString());
+            this.client.player.sendMessage(Text.of("Added ID: " + Registries.ITEM.getId(this.focusedSlot.getStack().getItem()).toString()));
+            KeyInit.writeId(Registries.ITEM.getId(this.focusedSlot.getStack().getItem()).toString());
         }
     }
 

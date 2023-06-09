@@ -19,11 +19,11 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(CrossbowItem.class)
@@ -32,7 +32,7 @@ public class CrossbowItemMixin {
     @Inject(method = "use", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private void useMixin(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack) {
         ArrayList<Object> levelList = LevelLists.customItemList;
-        String string = Registry.ITEM.getId(itemStack.getItem()).toString();
+        String string = Registries.ITEM.getId(itemStack.getItem()).toString();
         if (!levelList.isEmpty() && levelList.contains(string)) {
             if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
                 user.sendMessage(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
@@ -53,8 +53,9 @@ public class CrossbowItemMixin {
             PersistentProjectileEntity persistentProjectileEntity) {
         if (entity instanceof PlayerEntity player) {
             int archeryLevel = ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.ARCHERY);
-            persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage()
-                    + (archeryLevel >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > entity.world.random.nextFloat() ? persistentProjectileEntity.getDamage() * 2D
+            persistentProjectileEntity.setDamage(
+                    persistentProjectileEntity.getDamage() + (archeryLevel >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.archeryDoubleDamageChance > entity.getWorld().getRandom().nextFloat()
+                            ? persistentProjectileEntity.getDamage() * 2D
                             : (double) archeryLevel * ConfigInit.CONFIG.archeryCrossbowExtraDamage));
         }
 

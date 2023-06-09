@@ -3,8 +3,6 @@ package net.levelz.screen.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,17 +13,17 @@ import net.levelz.init.ConfigInit;
 import net.levelz.screen.SkillInfoScreen;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ScrollableWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
 
 @Environment(EnvType.CLIENT)
 public class SkillScrollableWidget extends ScrollableWidget {
@@ -84,7 +82,11 @@ public class SkillScrollableWidget extends ScrollableWidget {
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder narrationMessageBuilder) {
+    protected void appendDefaultNarrations(NarrationMessageBuilder builder) {
+    }
+
+    @Override
+    protected void appendClickableNarrations(NarrationMessageBuilder var1) {
     }
 
     @Override
@@ -103,43 +105,43 @@ public class SkillScrollableWidget extends ScrollableWidget {
     }
 
     @Override
-    protected void renderContents(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.ySpace = this.y;
+    protected void renderContents(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.ySpace = this.getY();
 
         if (textList.size() > 0 && translatableTextIsNotBlank(textList.get(0))) {
-            this.textRenderer.draw(matrices, textList.get(0), this.x, this.ySpace, 0x3F3F3F);
+            context.drawText(this.textRenderer, textList.get(0), this.getX(), this.ySpace, 0x3F3F3F, false);
             this.ySpace += 14;
         }
         if (textList.size() > 1 && translatableTextIsNotBlank(textList.get(1))) {
-            this.textRenderer.draw(matrices, textList.get(1), this.x, this.ySpace, 0x3F3F3F);
+            context.drawText(this.textRenderer, textList.get(1), this.getX(), this.ySpace, 0x3F3F3F, false);
             this.ySpace += 14;
         }
         if (textList.size() > 2 && translatableTextIsNotBlank(textList.get(2))) {
-            this.textRenderer.draw(matrices, textList.get(2), this.x, this.ySpace, 0x3F3F3F);
+            context.drawText(this.textRenderer, textList.get(2), this.getX(), this.ySpace, 0x3F3F3F, false);
             if (textList.size() > 3 && translatableTextIsNotBlank(textList.get(3))) {
                 this.ySpace += 10;
-                this.textRenderer.draw(matrices, textList.get(3), this.x, this.ySpace, 0x3F3F3F);
+                context.drawText(this.textRenderer, textList.get(3), this.getX(), this.ySpace, 0x3F3F3F, false);
             }
             this.ySpace += 14;
         }
         if (textList.size() > 4 && translatableTextIsNotBlank(textList.get(4))) {
-            this.textRenderer.draw(matrices, textList.get(4), this.x, this.ySpace, 0x3F3F3F);
+            context.drawText(this.textRenderer, textList.get(4), this.getX(), this.ySpace, 0x3F3F3F, false);
             if (textList.size() > 5 && translatableTextIsNotBlank(textList.get(5))) {
                 this.ySpace += 10;
-                this.textRenderer.draw(matrices, textList.get(5), this.x, this.ySpace, 0x3F3F3F);
+                context.drawText(this.textRenderer, textList.get(5), this.getX(), this.ySpace, 0x3F3F3F, false);
             }
             this.ySpace += 14;
         }
 
         boolean hasLvlMaxUnlock = false;
         this.ySpace += 10;
-        this.textRenderer.draw(matrices, Text.translatable("text.levelz.general_info"), this.x, this.ySpace, 0x3F3F3F);
+        context.drawText(this.textRenderer, Text.translatable("text.levelz.general_info"), this.getX(), this.ySpace, 0x3F3F3F, false);
         this.ySpace += 16;
         // level, object, info, object, info,..., level,...
         for (int u = 0; u < sortedUnlockSkillList.size(); u++) {
             if (sortedUnlockSkillList.get(u) != null && sortedUnlockSkillList.get(u).getClass() == Integer.class) {
                 // Add level category info
-                this.textRenderer.draw(matrices, Text.translatable("text.levelz.level", sortedUnlockSkillList.get(u)), this.x, this.ySpace, 0x3F3F3F);
+                context.drawText(this.textRenderer, Text.translatable("text.levelz.level", sortedUnlockSkillList.get(u)), this.getX(), this.ySpace, 0x3F3F3F, false);
                 this.ySpace += 16;
                 for (int g = 1; g < sortedUnlockSkillList.size() - u; g += 2) {
                     if (sortedUnlockSkillList.get(u + g).getClass() == Integer.class) {
@@ -152,12 +154,12 @@ public class SkillScrollableWidget extends ScrollableWidget {
                     Identifier identifier = new Identifier(string);
                     boolean hit = true;
 
-                    if (!Registry.BLOCK.get(identifier).equals(Blocks.AIR)) {
-                        string = Registry.BLOCK.get(identifier).getTranslationKey();
-                    } else if (!Registry.ITEM.get(identifier).equals(Items.AIR)) {
-                        string = Registry.ITEM.get(identifier).getTranslationKey();
-                    } else if (!Registry.ENTITY_TYPE.get(identifier).equals(EntityType.PIG) && !EntityType.getId(EntityType.PIG).equals(identifier)) {
-                        string = Registry.ENTITY_TYPE.get(identifier).getTranslationKey();
+                    if (!Registries.BLOCK.get(identifier).equals(Blocks.AIR)) {
+                        string = Registries.BLOCK.get(identifier).getTranslationKey();
+                    } else if (!Registries.ITEM.get(identifier).equals(Items.AIR)) {
+                        string = Registries.ITEM.get(identifier).getTranslationKey();
+                    } else if (!Registries.ENTITY_TYPE.get(identifier).equals(EntityType.PIG) && !EntityType.getId(EntityType.PIG).equals(identifier)) {
+                        string = Registries.ENTITY_TYPE.get(identifier).getTranslationKey();
                     } else {
                         hit = false;
                     }
@@ -182,9 +184,10 @@ public class SkillScrollableWidget extends ScrollableWidget {
                         } else {
                             otherString = otherString.replace('_', ' ');
                         }
-                        this.textRenderer.draw(matrices, Text.translatable("text.levelz.object_info_2", StringUtils.capitalize(otherString), string), this.x + 10, this.ySpace, 0x3F3F3F);
+                        context.drawText(this.textRenderer, Text.translatable("text.levelz.object_info_2", StringUtils.capitalize(otherString), string), this.getX() + 10, this.ySpace, 0x3F3F3F,
+                                false);
                     } else {
-                        this.textRenderer.draw(matrices, Text.translatable("text.levelz.object_info_1", string), this.x + 10, this.ySpace, 0x3F3F3F);
+                        context.drawText(this.textRenderer, Text.translatable("text.levelz.object_info_1", string), this.getX() + 10, this.ySpace, 0x3F3F3F, false);
                     }
                     this.ySpace += 16;
                 }
@@ -198,41 +201,40 @@ public class SkillScrollableWidget extends ScrollableWidget {
         }
 
         if (!hasLvlMaxUnlock) {
-            this.textRenderer.draw(matrices, Text.translatable("text.levelz.level", ConfigInit.CONFIG.maxLevel), this.x, this.ySpace, 0x3F3F3F);
+            context.drawText(this.textRenderer, Text.translatable("text.levelz.level", ConfigInit.CONFIG.maxLevel), this.getX(), this.ySpace, 0x3F3F3F, false);
         } else {
             this.ySpace -= 16;
         }
         if (textList.size() > 6 && translatableTextIsNotBlank(textList.get(6))) {
             this.ySpace += 16;
-            this.textRenderer.draw(matrices, textList.get(6), this.x + 10, this.ySpace, 0x3F3F3F);
+            context.drawText(this.textRenderer, textList.get(6), this.getX() + 10, this.ySpace, 0x3F3F3F, false);
             if (textList.size() > 7 && translatableTextIsNotBlank(textList.get(7))) {
                 this.ySpace += 10;
-                this.textRenderer.draw(matrices, textList.get(7), this.x + 10, this.ySpace, 0x3F3F3F);
+                context.drawText(this.textRenderer, textList.get(7), this.getX() + 10, this.ySpace, 0x3F3F3F, false);
             }
         }
         if (this.totalYSpace == 0) {
-            this.totalYSpace = this.ySpace - this.y;
+            this.totalYSpace = this.ySpace - this.getY();
         }
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        ScrollableWidget.enableScissor(this.x, this.y, this.x + this.width, this.y + this.height);
-        matrices.push();
-        matrices.translate(0.0, -getScrollY(), 0.0);
-        this.renderContents(matrices, mouseX, mouseY, delta);
-        matrices.pop();
-        ScrollableWidget.disableScissor();
-        this.renderOverlay(matrices);
+    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+        context.enableScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height);
+        context.getMatrices().push();
+        context.getMatrices().translate(0.0, -getScrollY(), 0.0);
+        this.renderContents(context, mouseX, mouseY, delta);
+        context.getMatrices().pop();
+        context.disableScissor();
+        this.renderOverlay(context);
     }
 
     @Override
-    protected void renderOverlay(MatrixStack matrices) {
+    protected void renderOverlay(DrawContext context) {
         if (this.overflows()) {
-            int l = Math.max(this.y + 1, (int) this.getScrollY() * (this.height - 27) / this.getMaxScrollY() + this.y - 1);
-            RenderSystem.setShaderTexture(0, SkillInfoScreen.BACKGROUND_TEXTURE);
-            this.drawTexture(matrices, this.x + 177, this.y, 200, 0, 8, 185);
-            this.drawTexture(matrices, this.x + 178, l, 208, 0, 6, 27);
+            int l = Math.max(this.getY() + 1, (int) this.getScrollY() * (this.height - 27) / this.getMaxScrollY() + this.getY() - 1);
+            context.drawTexture(SkillInfoScreen.BACKGROUND_TEXTURE, this.getX() + 177, this.getY(), 200, 0, 8, 185);
+            context.drawTexture(SkillInfoScreen.BACKGROUND_TEXTURE, this.getX() + 178, l, 208, 0, 6, 27);
         }
     }
 
@@ -259,8 +261,8 @@ public class SkillScrollableWidget extends ScrollableWidget {
             return false;
         }
         boolean bl = this.isWithinBounds(mouseX, mouseY);
-        boolean bl2 = this.overflows() && mouseX >= (double) (this.x + this.width - 5) && mouseX <= (double) (this.x + this.width + 1) && mouseY >= (double) this.y
-                && mouseY < (double) (this.y + this.height);
+        boolean bl2 = this.overflows() && mouseX >= (double) (this.getX() + this.width - 5) && mouseX <= (double) (this.getX() + this.width + 1) && mouseY >= (double) this.getY()
+                && mouseY < (double) (this.getY() + this.height);
         this.setFocused(bl || bl2);
         if (bl2 && button == 0) {
             this.scrollbarDragged = true;
@@ -274,9 +276,9 @@ public class SkillScrollableWidget extends ScrollableWidget {
         if (!(this.visible && this.isFocused() && this.scrollbarDragged)) {
             return false;
         }
-        if (mouseY < (double) this.y) {
+        if (mouseY < (double) this.getY()) {
             this.setScrollY(0.0);
-        } else if (mouseY > (double) (this.y + this.height)) {
+        } else if (mouseY > (double) (this.getY() + this.height)) {
             this.setScrollY(this.getMaxScrollY());
         } else {
             int i = this.getScrollbarThumbHeight();
@@ -288,7 +290,7 @@ public class SkillScrollableWidget extends ScrollableWidget {
 
     @Override
     protected boolean isWithinBounds(double mouseX, double mouseY) {
-        return mouseX >= (double) this.x && mouseX < (double) (this.x + this.width + 1) && mouseY >= (double) this.y && mouseY < (double) (this.y + this.height);
+        return mouseX >= (double) this.getX() && mouseX < (double) (this.getX() + this.width + 1) && mouseY >= (double) this.getY() && mouseY < (double) (this.getY() + this.height);
     }
 
     private int getContentsHeightWithPadding() {

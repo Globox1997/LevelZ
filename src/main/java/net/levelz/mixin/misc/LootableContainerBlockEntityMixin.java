@@ -13,7 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 @Mixin(LootableContainerBlockEntity.class)
 public class LootableContainerBlockEntityMixin {
 
-    @Inject(method = "checkLootInteraction", at = @At(value = "INVOKE", target = "Lnet/minecraft/loot/context/LootContext$Builder;luck(F)Lnet/minecraft/loot/context/LootContext$Builder;"))
+    @Inject(method = "checkLootInteraction", at = @At(value = "INVOKE", target = "Lnet/minecraft/loot/context/LootContextParameterSet$Builder;luck(F)Lnet/minecraft/loot/context/LootContextParameterSet$Builder;"))
     private void checkLootInteractionMixin(@Nullable PlayerEntity player, CallbackInfo info) {
         ((PlayerDropAccess) player).resetKilledMobStat();
     }

@@ -1,10 +1,7 @@
 plugins {
-    id 'fabric-loom' version '1.1-SNAPSHOT'
+    id 'fabric-loom' version '1.2-SNAPSHOT'
     id 'maven-publish'
-}
-
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+}  
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -13,12 +10,13 @@ group = project.maven_group
 repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/" }
-    maven { url "https://bai.jfrog.io/artifactory/maven" }
-    maven { url "https://ladysnake.jfrog.io/artifactory/mods" }
     maven { url 'https://jitpack.io' }
+    maven { url "https://api.modrinth.com/maven" }
     maven { url "https://www.cursemaven.com" }
     maven { url "https://maven.nucleoid.xyz/" }
     maven { url "https://maven.jamieswhiteshirt.com/libs-release/" }
+    maven { url "https://maven.bai.lol" }
+    maven { url "https://ladysnake.jfrog.io/artifactory/mods" }
 }
 
 dependencies {
@@ -28,7 +26,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // LibZ
-    modApi ("com.github.Globox1997:LibZ:344927d33c") {
+    modApi ('maven.modrinth:libz:1.0.1+1.20'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Cloth
@@ -39,13 +37,10 @@ dependencies {
     modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    // Inventorio
-    modCompileOnly("net.fabricmc:fabric-language-kotlin:1.8.1+kotlin.1.7.0")
-    modCompileOnly("curse.maven:inventorio-491073:3842567")
     // Wthit
-    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-${wthit_version}")
+    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-8.0.2")
 	// Jade
-	modCompileOnly ('curse.maven:jade-324717:4328558') {
+    modCompileOnly ('maven.modrinth:jade:11.0.3'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// MCDA
@@ -53,15 +48,15 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // DragonLoot
-	modCompileOnly ('curse.maven:dragonloot-424480:3831053') {
+	modCompileOnly ('maven.modrinth:dragonloot:1.1.2'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Trinkets
-    modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.0.2")
-	modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.0.2")
-    modCompileOnly ('com.github.emilyploszaj:trinkets:3.4.0') {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.0")
+	modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.0")
+    modCompileOnly ('maven.modrinth:trinkets:3.7.0'){
+		exclude(group: "net.fabricmc.fabric-api")
+	}
     // REI
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
     // EMI
@@ -72,21 +67,21 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // PlaceHolder
-    modCompileOnly ("eu.pb4:placeholder-api:2.0.0-beta.7+1.19")
+    modCompileOnly ("eu.pb4:placeholder-api:2.1.1+1.20")
     // Inmis
 	modCompileOnly ("curse.maven:inmis-369254:3853651") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // CosmeticArmor
-	modCompileOnly ('curse.maven:cosmetic-armor-fabric-436659:3857698') {
+    modCompileOnly ('maven.modrinth:cosmetic-armor:1.5.0'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // TreeChop
-	modCompileOnly ('curse.maven:treechop-421377:4147540'),{
+    modCompileOnly ('maven.modrinth:treechop:0.14.7'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Alloygery
-	modCompileOnly ('curse.maven:alloygery-573592:4406842'),{
+    modCompileOnly ('maven.modrinth:alloygery:2.5.5+1.19.2'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Magna
@@ -94,7 +89,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Spell-Engine
-	modCompileOnly ('curse.maven:spell-engine-807653:4428928') {
+    modCompileOnly ('maven.modrinth:spell-engine:0.9.24+1.19-fabric'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 }
@@ -114,6 +109,9 @@ tasks.withType(JavaCompile).configureEach {
 
 java {
     withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {

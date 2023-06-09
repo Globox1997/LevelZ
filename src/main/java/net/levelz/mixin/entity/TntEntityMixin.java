@@ -16,7 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.World.ExplosionSourceType;
 
 @Mixin(TntEntity.class)
 public abstract class TntEntityMixin extends Entity {
@@ -33,7 +33,7 @@ public abstract class TntEntityMixin extends Entity {
     private void explodeMixin(CallbackInfo info) {
         if (causingEntity != null && causingEntity instanceof PlayerEntity player) {
             if (((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.MINING) >= ConfigInit.CONFIG.maxLevel) {
-                this.world.createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 4.0F * (1F + ConfigInit.CONFIG.miningTntBonus), Explosion.DestructionType.BREAK);
+                this.getWorld().createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 4.0F * (1F + ConfigInit.CONFIG.miningTntBonus), ExplosionSourceType.TNT);
                 info.cancel();
             }
         }

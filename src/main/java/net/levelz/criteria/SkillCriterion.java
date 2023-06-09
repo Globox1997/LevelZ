@@ -6,7 +6,7 @@ import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterionConditions;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
-import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.predicate.entity.LootContextPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -19,10 +19,10 @@ public class SkillCriterion extends AbstractCriterion<SkillCriterion.Conditions>
     }
 
     @Override
-    public Conditions conditionsFromJson(JsonObject jsonObject, EntityPredicate.Extended extended, AdvancementEntityPredicateDeserializer advancementEntityPredicateDeserializer) {
+    protected Conditions conditionsFromJson(JsonObject jsonObject, LootContextPredicate lootContextPredicate, AdvancementEntityPredicateDeserializer advancementEntityPredicateDeserializer) {
         SkillPredicate skillPredicate = SkillPredicate.fromJson(jsonObject.get("skill_name"));
         NumberPredicate skillLevelPredicate = NumberPredicate.fromJson(jsonObject.get("skill_level"));
-        return new Conditions(extended, skillPredicate, skillLevelPredicate);
+        return new Conditions(lootContextPredicate, skillPredicate, skillLevelPredicate);
     }
 
     public void trigger(ServerPlayerEntity player, String skillName, int skillLevel) {
@@ -33,8 +33,8 @@ public class SkillCriterion extends AbstractCriterion<SkillCriterion.Conditions>
         private final SkillPredicate skillPredicate;
         private final NumberPredicate skillLevelPredicate;
 
-        public Conditions(EntityPredicate.Extended player, SkillPredicate skillPredicate, NumberPredicate skillLevelPredicate) {
-            super(ID, player);
+        public Conditions(LootContextPredicate lootContextPredicate, SkillPredicate skillPredicate, NumberPredicate skillLevelPredicate) {
+            super(ID, lootContextPredicate);
             this.skillPredicate = skillPredicate;
             this.skillLevelPredicate = skillLevelPredicate;
         }

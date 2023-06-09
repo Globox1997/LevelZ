@@ -6,12 +6,12 @@ import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterionConditions;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
-import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.predicate.entity.LootContextPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 public class LevelZCriterion extends AbstractCriterion<LevelZCriterion.Conditions> {
-    static final Identifier ID = new Identifier("levelz:level");
+    private static final Identifier ID = new Identifier("levelz:level");
 
     @Override
     public Identifier getId() {
@@ -19,9 +19,9 @@ public class LevelZCriterion extends AbstractCriterion<LevelZCriterion.Condition
     }
 
     @Override
-    public Conditions conditionsFromJson(JsonObject jsonObject, EntityPredicate.Extended extended, AdvancementEntityPredicateDeserializer advancementEntityPredicateDeserializer) {
+    protected Conditions conditionsFromJson(JsonObject jsonObject, LootContextPredicate lootContextPredicate, AdvancementEntityPredicateDeserializer advancementEntityPredicateDeserializer) {
         NumberPredicate numberPredicate = NumberPredicate.fromJson(jsonObject.get("level"));
-        return new Conditions(extended, numberPredicate);
+        return new Conditions(lootContextPredicate, numberPredicate);
     }
 
     public void trigger(ServerPlayerEntity player, int level) {
@@ -29,10 +29,11 @@ public class LevelZCriterion extends AbstractCriterion<LevelZCriterion.Condition
     }
 
     class Conditions extends AbstractCriterionConditions {
+
         private final NumberPredicate numberPredicate;
 
-        public Conditions(EntityPredicate.Extended player, NumberPredicate numberPredicate) {
-            super(ID, player);
+        public Conditions(LootContextPredicate lootContextPredicate, NumberPredicate numberPredicate) {
+            super(ID, lootContextPredicate);
             this.numberPredicate = numberPredicate;
         }
 

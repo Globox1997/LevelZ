@@ -10,15 +10,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import ht.treechop.common.chop.ChopResult;
+import ht.treechop.common.util.ChopResult;
 import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(ChopResult.class)
@@ -33,16 +33,16 @@ public class ChopResultMixin {
     private void applyMixin(BlockPos targetPos, ServerPlayerEntity player, ItemStack tool, boolean breakLeaves, CallbackInfoReturnable<Boolean> info) {
         if (player != null && tool.getItem() instanceof MiningToolItem) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(tool.getItem()).toString())) {
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registry.ITEM.getId(tool.getItem()).toString(), true)) {
-                    player.world.breakBlock(targetPos, false);
+            if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(tool.getItem()).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registries.ITEM.getId(tool.getItem()).toString(), true)) {
+                    player.getWorld().breakBlock(targetPos, false);
                     info.setReturnValue(false);
                 }
             } else {
                 if (tool.getItem() instanceof AxeItem) {
                     levelList = LevelLists.axeList;
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, ((AxeItem) tool.getItem()).getMaterial().toString().toLowerCase(), true)) {
-                        player.world.breakBlock(targetPos, false);
+                        player.getWorld().breakBlock(targetPos, false);
                         info.setReturnValue(false);
                     }
                 }

@@ -14,11 +14,11 @@ import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.SmithingRecipe;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ForgingScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.SmithingScreenHandler;
-import net.minecraft.util.registry.Registry;
 
 @Mixin(SmithingScreenHandler.class)
 public abstract class SmithingScreenHandlerMixin extends ForgingScreenHandler {
@@ -33,7 +33,7 @@ public abstract class SmithingScreenHandlerMixin extends ForgingScreenHandler {
 
     @Inject(method = "updateResult", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;get(I)Ljava/lang/Object;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     private void updateResultMixin(CallbackInfo info, List<SmithingRecipe> list) {
-        if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(list.get(0).getOutput().getItem()), 3) && !player.isCreative()) {
+        if (PlayerStatsManager.listContainsItemOrBlock(player, Registries.ITEM.getRawId(list.get(0).getOutput(this.player.getWorld().getRegistryManager()).getItem()), 3) && !player.isCreative()) {
             this.currentRecipe = null;
             this.output.setStack(0, ItemStack.EMPTY);
             info.cancel();

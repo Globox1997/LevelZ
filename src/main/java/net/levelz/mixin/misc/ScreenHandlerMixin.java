@@ -20,13 +20,13 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerSyncHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.registry.Registry;
 
 @Mixin(ScreenHandler.class)
 public class ScreenHandlerMixin {
@@ -54,8 +54,8 @@ public class ScreenHandlerMixin {
             if (cursorStack.getItem() instanceof ArmorItem armorItem) {
                 ArrayList<Object> levelList = LevelLists.customItemList;
                 try {
-                    if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armorItem).toString())) {
-                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(armorItem).toString(), true))
+                    if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(armorItem).toString())) {
+                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(armorItem).toString(), true))
                             info.cancel();
                     } else {
                         levelList = LevelLists.armorList;
@@ -66,12 +66,12 @@ public class ScreenHandlerMixin {
                 }
             } else if (cursorStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
                 info.cancel();
-            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registry.ITEM.getId(cursorStack.getItem()).toString())
-                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(cursorStack.getItem()).toString(), true))
+            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registries.ITEM.getId(cursorStack.getItem()).toString())
+                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(cursorStack.getItem()).toString(), true))
                 info.cancel();
         } else if (type == ScreenHandlerType.BREWING_STAND && slotIndex == 3 && !cursorStack.isEmpty()) {
             // Slot 3: top; slot 0-2: bottom slots
-            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(cursorStack.getItem()), 2) && !player.isCreative()) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registries.ITEM.getRawId(cursorStack.getItem()), 2) && !player.isCreative()) {
                 info.cancel();
             }
         }
@@ -84,8 +84,8 @@ public class ScreenHandlerMixin {
             if (cursorStack.getItem() instanceof ArmorItem armorItem) {
                 ArrayList<Object> levelList = LevelLists.customItemList;
                 try {
-                    if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armorItem).toString())) {
-                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(armorItem).toString(), true))
+                    if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(armorItem).toString())) {
+                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(armorItem).toString(), true))
                             info.cancel();
                     } else {
                         levelList = LevelLists.armorList;
@@ -96,11 +96,11 @@ public class ScreenHandlerMixin {
                 }
             } else if (cursorStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
                 info.cancel();
-            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registry.ITEM.getId(cursorStack.getItem()).toString())
-                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(cursorStack.getItem()).toString(), true))
+            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registries.ITEM.getId(cursorStack.getItem()).toString())
+                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(cursorStack.getItem()).toString(), true))
                 info.cancel();
         } else if (type == ScreenHandlerType.BREWING_STAND && slotIndex == 3 && !cursorStack.isEmpty()) {
-            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(cursorStack.getItem()), 2) && !player.isCreative()) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registries.ITEM.getRawId(cursorStack.getItem()), 2) && !player.isCreative()) {
                 info.cancel();
             }
         }
@@ -115,8 +115,8 @@ public class ScreenHandlerMixin {
             if (itemStack.getItem() instanceof ArmorItem armorItem) {
                 ArrayList<Object> levelList = LevelLists.customItemList;
                 try {
-                    if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armorItem).toString())) {
-                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(armorItem).toString(), true))
+                    if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(armorItem).toString())) {
+                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(armorItem).toString(), true))
                             info.cancel();
                     } else {
                         levelList = LevelLists.armorList;
@@ -127,11 +127,11 @@ public class ScreenHandlerMixin {
                 }
             } else if (itemStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
                 info.cancel();
-            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registry.ITEM.getId(itemStack.getItem()).toString())
-                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(itemStack.getItem()).toString(), true))
+            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registries.ITEM.getId(itemStack.getItem()).toString())
+                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(itemStack.getItem()).toString(), true))
                 info.cancel();
         } else if (type == ScreenHandlerType.BREWING_STAND && slotIndex == 3 && !itemStack.isEmpty()) {
-            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(itemStack.getItem()), 2) && !player.isCreative()) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registries.ITEM.getRawId(itemStack.getItem()), 2) && !player.isCreative()) {
                 info.cancel();
             }
         }
@@ -146,8 +146,8 @@ public class ScreenHandlerMixin {
             if (itemStack.getItem() instanceof ArmorItem armorItem) {
                 ArrayList<Object> levelList = LevelLists.customItemList;
                 try {
-                    if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armorItem).toString())) {
-                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(armorItem).toString(), true))
+                    if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(armorItem).toString())) {
+                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(armorItem).toString(), true))
                             info.cancel();
                     } else {
                         levelList = LevelLists.armorList;
@@ -158,11 +158,11 @@ public class ScreenHandlerMixin {
                 }
             } else if (itemStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
                 info.cancel();
-            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registry.ITEM.getId(itemStack.getItem()).toString())
-                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(itemStack.getItem()).toString(), true))
+            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registries.ITEM.getId(itemStack.getItem()).toString())
+                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(itemStack.getItem()).toString(), true))
                 info.cancel();
         } else if (type == ScreenHandlerType.BREWING_STAND && slotIndex == 3 && !itemStack.isEmpty()) {
-            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.ITEM.getRawId(itemStack.getItem()), 2) && !player.isCreative()) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registries.ITEM.getRawId(itemStack.getItem()), 2) && !player.isCreative()) {
                 info.cancel();
             }
         }
@@ -174,8 +174,8 @@ public class ScreenHandlerMixin {
         if (itemStack.getItem() instanceof ArmorItem armorItem) {
             ArrayList<Object> levelList = LevelLists.customItemList;
             try {
-                if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(armorItem).toString())) {
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(armorItem).toString(), true))
+                if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(armorItem).toString())) {
+                    if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(armorItem).toString(), true))
                         info.cancel();
                 } else {
                     levelList = LevelLists.armorList;
@@ -186,8 +186,8 @@ public class ScreenHandlerMixin {
             }
         } else if (itemStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
             info.cancel();
-        } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registry.ITEM.getId(itemStack.getItem()).toString())
-                && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registry.ITEM.getId(itemStack.getItem()).toString(), true))
+        } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registries.ITEM.getId(itemStack.getItem()).toString())
+                && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(itemStack.getItem()).toString(), true))
             info.cancel();
     }
 }

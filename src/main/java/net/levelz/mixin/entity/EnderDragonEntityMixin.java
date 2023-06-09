@@ -33,7 +33,7 @@ public abstract class EnderDragonEntityMixin extends MobEntity {
     @Inject(method = "updatePostDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
     protected void updatePostDeathMixin(CallbackInfo info, boolean f, int g) {
         if (ConfigInit.CONFIG.dragonXPMultiplier > 0.0F)
-            LevelExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(),
+            LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(),
                     MathHelper.floor((float) g * 0.08f * ConfigInit.CONFIG.dragonXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
                                     ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getOverallLevel()
@@ -43,7 +43,7 @@ public abstract class EnderDragonEntityMixin extends MobEntity {
     @Inject(method = "updatePostDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
     protected void updatePostDeathXPMixin(CallbackInfo info, boolean f, int g) {
         if (ConfigInit.CONFIG.dragonXPMultiplier > 0.0F)
-            LevelExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(),
+            LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(),
                     MathHelper.floor((float) g * 0.2f * ConfigInit.CONFIG.dragonXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
                                     ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) serverPlayerEntity).getPlayerStatsManager().getOverallLevel()
@@ -52,7 +52,7 @@ public abstract class EnderDragonEntityMixin extends MobEntity {
 
     @Override
     public void onDeath(DamageSource source) {
-        if (!this.world.isClient) {
+        if (!this.getWorld().isClient()) {
             if (source.getSource() instanceof ProjectileEntity) {
                 ProjectileEntity projectileEntity = (ProjectileEntity) source.getSource();
                 if (projectileEntity.getOwner() instanceof ServerPlayerEntity)

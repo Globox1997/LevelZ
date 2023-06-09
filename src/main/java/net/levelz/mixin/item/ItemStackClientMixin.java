@@ -43,9 +43,9 @@ import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.TridentItem;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.Registry;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ItemStack.class)
@@ -60,7 +60,7 @@ public class ItemStackClientMixin {
     private void getTooltipMixin(@Nullable PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> info, List<Text> list) {
         if (player != null) {
             ItemStack stack = (ItemStack) (Object) this;
-            int itemId = Registry.ITEM.getRawId(stack.getItem());
+            int itemId = Registries.ITEM.getRawId(stack.getItem());
             if (this.itemId != itemId) {
                 this.itemId = itemId;
                 this.tooltipAddition = getAdditionalTooltip(player);
@@ -74,7 +74,7 @@ public class ItemStackClientMixin {
         List<Text> list = Lists.newArrayList();
         ItemStack stack = (ItemStack) (Object) this;
         ArrayList<Object> levelList = new ArrayList<Object>();
-        int itemId = Registry.ITEM.getRawId(stack.getItem());
+        int itemId = Registries.ITEM.getRawId(stack.getItem());
         // Block
         if (stack.getItem() instanceof BlockItem) {
             Block block = ((BlockItem) stack.getItem()).getBlock();
@@ -163,9 +163,9 @@ public class ItemStackClientMixin {
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, false)) {
                     list.add(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED));
                 }
-            } else if (!LevelLists.customBlockList.isEmpty() && LevelLists.customBlockList.contains(Registry.BLOCK.getId(block).toString())) {
+            } else if (!LevelLists.customBlockList.isEmpty() && LevelLists.customBlockList.contains(Registries.BLOCK.getId(block).toString())) {
                 levelList = LevelLists.customBlockList;
-                String string = Registry.BLOCK.getId(block).toString();
+                String string = Registries.BLOCK.getId(block).toString();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
                     list.add(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(string) + 2).toString())
                             .formatted(Formatting.RED));
@@ -175,15 +175,15 @@ public class ItemStackClientMixin {
             if (PlayerStatsManager.listContainsItemOrBlock(player, itemId, 2))
                 list.add(Text.translatable("item.levelz.alchemy_restriction.tooltip", PlayerStatsManager.getUnlockLevel(itemId, 2)).formatted(Formatting.RED));
             // Mining check
-            if (PlayerStatsManager.listContainsItemOrBlock(player, Registry.BLOCK.getRawId(block), 1))
-                list.add(Text.translatable("item.levelz.mining_restriction.tooltip", PlayerStatsManager.getUnlockLevel(Registry.BLOCK.getRawId(block), 1)).formatted(Formatting.RED));
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registries.BLOCK.getRawId(block), 1))
+                list.add(Text.translatable("item.levelz.mining_restriction.tooltip", PlayerStatsManager.getUnlockLevel(Registries.BLOCK.getRawId(block), 1)).formatted(Formatting.RED));
 
         } else {
             // Item
             Item item = stack.getItem();
-            if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registry.ITEM.getId(item).toString())) {
+            if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registries.ITEM.getId(item).toString())) {
                 levelList = LevelLists.customItemList;
-                String string = Registry.ITEM.getId(item).toString();
+                String string = Registries.ITEM.getId(item).toString();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, false)) {
                     list.add(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(string) + 2).toString())
                             .formatted(Formatting.RED));

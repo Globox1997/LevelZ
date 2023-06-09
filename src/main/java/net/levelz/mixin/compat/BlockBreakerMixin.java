@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.world.World;
 
 @Mixin(BlockBreaker.class)
@@ -32,8 +32,8 @@ public class BlockBreakerMixin {
             ItemStack stack = player.getMainHandStack();
 
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(stack.getItem()).toString())) {
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true)) {
+            if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(stack.getItem()).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registries.ITEM.getId(stack.getItem()).toString(), true)) {
                     info.cancel();
                 }
             } else {

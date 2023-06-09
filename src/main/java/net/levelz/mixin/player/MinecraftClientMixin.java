@@ -25,9 +25,9 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.Registry;
 
 @Environment(EnvType.CLIENT)
 @Mixin(value = MinecraftClient.class, priority = 999)
@@ -56,8 +56,8 @@ public class MinecraftClientMixin {
             Item item = player.getMainHandStack().getItem();
             if (item != null && !item.equals(Items.AIR)) {
                 ArrayList<Object> levelList = LevelLists.customItemList;
-                if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
-                    String string = Registry.ITEM.getId(item).toString();
+                if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(item).toString())) {
+                    String string = Registries.ITEM.getId(item).toString();
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, true)) {
                         player.sendMessage(
                                 Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),

@@ -12,10 +12,10 @@ import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.Registry;
 
 @Mixin(AxeItem.class)
 public class AxeItemMixin {
@@ -26,8 +26,8 @@ public class AxeItemMixin {
         ArrayList<Object> levelList;
 
         levelList = LevelLists.customItemList;
-        if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(context.getStack().getItem()).toString())) {
-            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(context.getStack().getItem()).toString(), true))
+        if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(context.getStack().getItem()).toString())) {
+            if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registries.ITEM.getId(context.getStack().getItem()).toString(), true))
                 info.setReturnValue(ActionResult.PASS);
         } else {
             String material = ((AxeItem) context.getStack().getItem()).getMaterial().toString().toLowerCase();

@@ -24,12 +24,10 @@ import net.levelz.stats.Skill;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -43,10 +41,10 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 @Environment(EnvType.CLIENT)
 public class SkillScreen extends Screen implements Tab {
@@ -139,47 +137,42 @@ public class SkillScreen extends Screen implements Tab {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackground(matrices);
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.renderBackground(context);
         int i = (this.width - this.backgroundWidth) / 2;
         int j = (this.height - this.backgroundHeight) / 2;
-        DrawableHelper.drawTexture(matrices, i, j, this.getZOffset(), 0.0f, 0.0f, this.backgroundWidth, this.backgroundHeight, 256, 256);
+        context.drawTexture(BACKGROUND_TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
         if (this.client.player != null) {
             int scaledWidth = this.client.getWindow().getScaledWidth();
             int scaledHeight = this.client.getWindow().getScaledHeight();
-            InventoryScreen.drawEntity(scaledWidth / 2 - 75, scaledHeight / 2 - 40, 30, -28, 0, this.client.player);
+            InventoryScreen.drawEntity(context, scaledWidth / 2 - 75, scaledHeight / 2 - 40, 30, -28, 0, this.client.player);
 
             // Top label
             Text playerName = Text.translatable("text.levelz.gui.title", playerEntity.getName().getString());
-            this.textRenderer.draw(matrices, playerName, this.x - this.textRenderer.getWidth(playerName) / 2 + 120, this.y + 7, 0x3F3F3F);
+            context.drawText(this.textRenderer, playerName, this.x - this.textRenderer.getWidth(playerName) / 2 + 120, this.y + 7, 0x3F3F3F, false);
 
             // Small icon labels
-            this.textRenderer.draw(matrices, String.valueOf(Math.round(playerEntity.getHealth())), this.x + 74, this.y + 22, 0x3F3F3F); // lifeLabel
-            this.textRenderer.draw(matrices, String.valueOf(BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_ARMOR)).setScale(2, RoundingMode.HALF_DOWN).floatValue()),
-                    this.x + 74, this.y + 36, 0x3F3F3F); // protectionLabel
-            this.textRenderer.draw(matrices,
+            context.drawText(this.textRenderer, String.valueOf(Math.round(playerEntity.getHealth())), this.x + 74, this.y + 22, 0x3F3F3F, false); // lifeLabel
+            context.drawText(this.textRenderer, String.valueOf(BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_ARMOR)).setScale(2, RoundingMode.HALF_DOWN).floatValue()),
+                    this.x + 74, this.y + 36, 0x3F3F3F, false); // protectionLabel
+            context.drawText(this.textRenderer,
                     String.valueOf(BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 10D).setScale(2, RoundingMode.HALF_DOWN).floatValue()), this.x + 124,
-                    this.y + 22, 0x3F3F3F); // speedLabel
-            this.textRenderer.draw(matrices, this.getDamageLabel(), this.x + 124, this.y + 36, 0x3F3F3F); // damageLabel
-            this.textRenderer.draw(matrices, String.valueOf(Math.round(playerEntity.getHungerManager().getFoodLevel())), this.x + 171, this.y + 22, 0x3F3F3F); // foodLabel
-            this.textRenderer.draw(matrices, String.valueOf(BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_LUCK)).setScale(2, RoundingMode.HALF_DOWN).floatValue()),
-                    this.x + 171, this.y + 36, 0x3F3F3F); // fortuneLabel
+                    this.y + 22, 0x3F3F3F, false); // speedLabel
+            context.drawText(this.textRenderer, this.getDamageLabel(), this.x + 124, this.y + 36, 0x3F3F3F, false); // damageLabel
+            context.drawText(this.textRenderer, String.valueOf(Math.round(playerEntity.getHungerManager().getFoodLevel())), this.x + 171, this.y + 22, 0x3F3F3F, false); // foodLabel
+            context.drawText(this.textRenderer, String.valueOf(BigDecimal.valueOf(playerEntity.getAttributeValue(EntityAttributes.GENERIC_LUCK)).setScale(2, RoundingMode.HALF_DOWN).floatValue()),
+                    this.x + 171, this.y + 36, 0x3F3F3F, false); // fortuneLabel
 
             // Level label
             Text skillLevelText = Text.translatable("text.levelz.gui.level", playerStatsManager.getOverallLevel());
-            this.textRenderer.draw(matrices, skillLevelText, this.x - this.textRenderer.getWidth(skillLevelText) / 2 + 91, this.y + 52, 0x3F3F3F);
+            context.drawText(this.textRenderer, skillLevelText, this.x - this.textRenderer.getWidth(skillLevelText) / 2 + 91, this.y + 52, 0x3F3F3F, false);
             // Point label
             Text skillPointText = Text.translatable("text.levelz.gui.points", playerStatsManager.getSkillPoints());
-            this.textRenderer.draw(matrices, skillPointText, this.x - this.textRenderer.getWidth(skillPointText) / 2 + 156, this.y + 52, 0x3F3F3F);
+            context.drawText(this.textRenderer, skillPointText, this.x - this.textRenderer.getWidth(skillPointText) / 2 + 156, this.y + 52, 0x3F3F3F, false);
 
             // Experience bar
-            RenderSystem.setShaderTexture(0, ICON_TEXTURES);
-            this.drawTexture(matrices, this.x + 58, this.y + 64, 0, 100, 131, 5);
+            context.drawTexture(ICON_TEXTURES, this.x + 58, this.y + 64, 0, 100, 131, 5);
 
             int nextLevelExperience = playerStatsManager.getNextLevelExperience();
             float levelProgress = 0.0f;
@@ -191,10 +184,10 @@ public class SkillScreen extends Screen implements Tab {
                 levelProgress = this.playerStatsManager.getLevelProgress();
                 experience = (int) (nextLevelExperience * levelProgress);
             }
-            this.drawTexture(matrices, this.x + 58, this.y + 64, 0, 105, (int) (130.0f * levelProgress), 5);
+            context.drawTexture(ICON_TEXTURES, this.x + 58, this.y + 64, 0, 105, (int) (130.0f * levelProgress), 5);
             // current xp label
             Text currentXpText = Text.translatable("text.levelz.gui.current_xp", experience, nextLevelExperience);
-            this.textRenderer.draw(matrices, currentXpText, this.x - this.textRenderer.getWidth(currentXpText) / 2 + 123, this.y + 74, 0x3F3F3F);
+            context.drawText(this.textRenderer, currentXpText, this.x - this.textRenderer.getWidth(currentXpText) / 2 + 123, this.y + 74, 0x3F3F3F, false);
 
             boolean skillsAllMaxed = true;
             for (int o = 0; o < this.levelButtons.length; o++) {
@@ -212,21 +205,21 @@ public class SkillScreen extends Screen implements Tab {
             // Small icons text
             for (int o = 0; o < 12; o++) {
                 Text currentLevelText = Text.translatable("text.levelz.gui.current_level", playerStatsManager.getSkillLevel(Skill.values()[o]), ConfigInit.CONFIG.maxLevel);
-                this.textRenderer.draw(matrices, currentLevelText, this.x - this.textRenderer.getWidth(currentLevelText) / 2 + 57 + (o > 5 ? 90 : 0), this.y + 95 + o * 20 - (o > 5 ? 120 : 0),
-                        0x3F3F3F);
+                context.drawText(this.textRenderer, currentLevelText, this.x - this.textRenderer.getWidth(currentLevelText) / 2 + 57 + (o > 5 ? 90 : 0), this.y + 95 + o * 20 - (o > 5 ? 120 : 0),
+                        0x3F3F3F, false);
             }
         }
         // Small icons
         RenderSystem.setShaderTexture(0, ICON_TEXTURES);
-        this.drawTexture(matrices, this.x + 58, this.y + 21, 0, 0, 9, 9); // lifeIcon
-        this.drawTexture(matrices, this.x + 58, this.y + 34, 9, 0, 9, 9); // protectionIcon
-        this.drawTexture(matrices, this.x + 108, this.y + 21, 18, 0, 9, 9); // speedIcon
-        this.drawTexture(matrices, this.x + 108, this.y + 34, 27, 0, 9, 9); // damageIcon
-        this.drawTexture(matrices, this.x + 155, this.y + 21, 36, 0, 9, 9); // foodIcon
-        this.drawTexture(matrices, this.x + 155, this.y + 34, 45, 0, 9, 9); // fortuneIcon
+        context.drawTexture(ICON_TEXTURES, this.x + 58, this.y + 21, 0, 0, 9, 9); // lifeIcon
+        context.drawTexture(ICON_TEXTURES, this.x + 58, this.y + 34, 9, 0, 9, 9); // protectionIcon
+        context.drawTexture(ICON_TEXTURES, this.x + 108, this.y + 21, 18, 0, 9, 9); // speedIcon
+        context.drawTexture(ICON_TEXTURES, this.x + 108, this.y + 34, 27, 0, 9, 9); // damageIcon
+        context.drawTexture(ICON_TEXTURES, this.x + 155, this.y + 21, 36, 0, 9, 9); // foodIcon
+        context.drawTexture(ICON_TEXTURES, this.x + 155, this.y + 34, 45, 0, 9, 9); // fortuneIcon
 
-        DrawTabHelper.drawTab(client, matrices, this, x, y, mouseX, mouseY);
-        super.render(matrices, mouseX, mouseY, delta);
+        DrawTabHelper.drawTab(client, context, this, x, y, mouseX, mouseY);
+        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override
@@ -257,7 +250,7 @@ public class SkillScreen extends Screen implements Tab {
         float damage = 0.0F;
         Item item = playerEntity.getMainHandStack().getItem();
         ArrayList<Object> levelList = LevelLists.customItemList;
-        if (!levelList.isEmpty() && PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), false)) {
+        if (!levelList.isEmpty() && PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registries.ITEM.getId(item).toString(), false)) {
             if (item instanceof SwordItem swordItem) {
                 damage = swordItem.getAttackDamage();
             } else if (item instanceof MiningToolItem miningToolItem) {
@@ -302,6 +295,7 @@ public class SkillScreen extends Screen implements Tab {
     }
 
     public static class WidgetButtonPage extends ButtonWidget {
+
         private final boolean hoverOutline;
         private final boolean clickable;
         private final int textureX;
@@ -310,7 +304,7 @@ public class SkillScreen extends Screen implements Tab {
         private int clickedKey = -1;
 
         public WidgetButtonPage(int x, int y, int sizeX, int sizeY, int textureX, int textureY, boolean hoverOutline, boolean clickable, @Nullable Text tooltip, ButtonWidget.PressAction onPress) {
-            super(x, y, sizeX, sizeY, ScreenTexts.EMPTY, onPress);
+            super(x, y, sizeX, sizeY, ScreenTexts.EMPTY, onPress, DEFAULT_NARRATION_SUPPLIER);
             this.hoverOutline = hoverOutline;
             this.clickable = clickable;
             this.textureX = textureX;
@@ -323,27 +317,16 @@ public class SkillScreen extends Screen implements Tab {
         }
 
         @Override
-        public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, ICON_TEXTURES);
-            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
-
-            int i = hoverOutline ? this.getYImage(this.isHovered()) : 0;
+        public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+            MinecraftClient minecraftClient = MinecraftClient.getInstance();
+            context.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
             RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
-            this.drawTexture(matrices, this.x, this.y, this.textureX + i * this.width, this.textureY, this.width, this.height);
-
+            int i = hoverOutline ? this.getTextureY() : 0;
+            context.drawTexture(ICON_TEXTURES, this.getX(), this.getY(), this.textureX + i * this.width, this.textureY, this.width, this.height);
+            context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             if (this.isHovered()) {
-                this.renderTooltip(matrices, mouseX, mouseY);
-            }
-        }
-
-        @Override
-        public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
-            if (!tooltip.isEmpty()) {
-                MinecraftClient client = MinecraftClient.getInstance();
-                client.currentScreen.renderTooltip(matrices, tooltip, mouseX, mouseY);
+                context.drawTooltip(minecraftClient.textRenderer, this.tooltip, mouseX, mouseY);
             }
         }
 
@@ -379,6 +362,16 @@ public class SkillScreen extends Screen implements Tab {
 
         public boolean wasRightButtonClicked() {
             return clickedKey == 1;
+        }
+
+        private int getTextureY() {
+            int i = 1;
+            if (!this.active) {
+                i = 0;
+            } else if (this.isSelected()) {
+                i = 2;
+            }
+            return i;
         }
     }
 

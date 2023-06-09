@@ -11,13 +11,13 @@ import net.levelz.data.LevelLists;
 import net.levelz.mixin.entity.EntityAccessor;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 
 public class EventInit {
 
@@ -28,7 +28,7 @@ public class EventInit {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             if (!player.isCreative() && !player.isSpectator()) {
                 ArrayList<Object> customList = LevelLists.customItemList;
-                String string = Registry.ITEM.getId(player.getStackInHand(hand).getItem()).toString();
+                String string = Registries.ITEM.getId(player.getStackInHand(hand).getItem()).toString();
                 if (!customList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
                     player.sendMessage(
                             Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
@@ -43,7 +43,7 @@ public class EventInit {
             if (!player.isCreative() && !player.isSpectator()) {
                 BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
                 if (world.canPlayerModifyAt(player, blockPos)) {
-                    String string = Registry.BLOCK.getId(world.getBlockState(blockPos).getBlock()).toString();
+                    String string = Registries.BLOCK.getId(world.getBlockState(blockPos).getBlock()).toString();
                     ArrayList<Object> customList = LevelLists.customBlockList;
                     if (!customList.isEmpty() && customList.contains(string)) {
                         if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
@@ -59,8 +59,8 @@ public class EventInit {
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (!player.isCreative() && !player.isSpectator()) {
-                if (!entity.hasPrimaryPassenger() || !((EntityAccessor) entity).callCanAddPassenger(player)) {
-                    String string = Registry.ENTITY_TYPE.getId(entity.getType()).toString();
+                if (!entity.hasControllingPassenger() || !((EntityAccessor) entity).callCanAddPassenger(player)) {
+                    String string = Registries.ENTITY_TYPE.getId(entity.getType()).toString();
                     ArrayList<Object> customList = LevelLists.customEntityList;
                     if (!customList.isEmpty() && customList.contains(string)) {
                         if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {

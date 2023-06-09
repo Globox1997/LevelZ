@@ -10,8 +10,8 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,15 +25,17 @@ public abstract class WorldRendererMixin {
     private ClientWorld world;
 
     @Shadow
-    private static void drawShapeOutline(MatrixStack matrices, VertexConsumer vertexConsumer, VoxelShape voxelShape, double d, double e, double f, float g, float h, float i, float j) {
+    private static void drawShapeOutline(MatrixStack matrices, VertexConsumer vertexConsumer, VoxelShape shape, double offsetX, double offsetY, double offsetZ, float red, float green, float blue,
+            float alpha, boolean bl) {
         throw new AbstractMethodError("shadow");
     }
 
-    @Inject(method = "drawBlockOutline(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/entity/Entity;DDDLnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V", at = @At(value = "HEAD"), cancellable = true)
-    private void drawBlockOutlineMixin(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos blockPos, BlockState blockState, CallbackInfo info) {
-        if (ConfigInit.CONFIG.highlightLocked && PlayerStatsManager.listContainsItemOrBlock(MinecraftClient.getInstance().player, Registry.BLOCK.getRawId(blockState.getBlock()), 1)) {
-            drawShapeOutline(matrices, vertexConsumer, blockState.getOutlineShape(this.world, blockPos, ShapeContext.of(entity)), (double) blockPos.getX() - d, (double) blockPos.getY() - e,
-                    (double) blockPos.getZ() - f, 1.0F, 0.0F, 0.0F, 0.4F);
+    @Inject(method = "drawBlockOutline", at = @At(value = "HEAD"), cancellable = true)
+    private void drawBlockOutlineMixin(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos blockPos, BlockState blockState,
+            CallbackInfo info) {
+        if (ConfigInit.CONFIG.highlightLocked && PlayerStatsManager.listContainsItemOrBlock(MinecraftClient.getInstance().player, Registries.BLOCK.getRawId(blockState.getBlock()), 1)) {
+            drawShapeOutline(matrices, vertexConsumer, blockState.getOutlineShape(this.world, blockPos, ShapeContext.of(entity)), (double) blockPos.getX() - cameraX,
+                    (double) blockPos.getY() - cameraY, (double) blockPos.getZ() - cameraZ, 1.0F, 0.0F, 0.0F, 0.4F, false);
             info.cancel();
         }
     }

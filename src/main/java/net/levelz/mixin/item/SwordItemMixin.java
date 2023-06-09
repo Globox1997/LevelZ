@@ -14,8 +14,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(SwordItem.class)
@@ -25,8 +25,8 @@ public class SwordItemMixin {
     private void postHitMixin(ItemStack stack, LivingEntity target, LivingEntity attacker, CallbackInfoReturnable<Boolean> info) {
         if (attacker instanceof PlayerEntity playerEntity) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(stack.getItem()).toString())) {
-                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true))
+            if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(stack.getItem()).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registries.ITEM.getId(stack.getItem()).toString(), true))
                     info.setReturnValue(false);
             } else {
                 levelList = LevelLists.swordList;
@@ -41,8 +41,8 @@ public class SwordItemMixin {
     private void postMineMixin(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfoReturnable<Boolean> info) {
         if (miner instanceof PlayerEntity playerEntity) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(stack.getItem()).toString())) {
-                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true))
+            if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(stack.getItem()).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registries.ITEM.getId(stack.getItem()).toString(), true))
                     info.setReturnValue(false);
             } else {
                 levelList = LevelLists.swordList;

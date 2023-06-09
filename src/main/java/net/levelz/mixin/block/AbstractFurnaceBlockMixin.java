@@ -15,13 +15,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.SmokerBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 @Mixin(AbstractFurnaceBlock.class)
@@ -34,12 +34,13 @@ public abstract class AbstractFurnaceBlockMixin extends BlockWithEntity {
     @Inject(method = "onUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/AbstractFurnaceBlock;openScreen(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;)V"), cancellable = true)
     private void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
         if (!((Object) this instanceof BlastFurnaceBlock) && !((Object) this instanceof SmokerBlock)) {
-            String string = Registry.BLOCK.getId(world.getBlockState(pos).getBlock()).toString();
+            String string = Registries.BLOCK.getId(world.getBlockState(pos).getBlock()).toString();
             ArrayList<Object> customList = LevelLists.customBlockList;
-            if (!customList.isEmpty()&&customList.contains(string)) {
+            if (!customList.isEmpty() && customList.contains(string)) {
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
-                    player.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2))
-                    .formatted(Formatting.RED), true);
+                    player.sendMessage(
+                            Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
+                            true);
                     info.setReturnValue(ActionResult.FAIL);
                 }
             } else {

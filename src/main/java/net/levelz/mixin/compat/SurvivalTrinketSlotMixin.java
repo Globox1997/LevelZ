@@ -20,7 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 @Mixin(SurvivalTrinketSlot.class)
 public class SurvivalTrinketSlotMixin {
@@ -40,8 +40,8 @@ public class SurvivalTrinketSlotMixin {
         if (trinketInventory.getComponent().getEntity() instanceof PlayerEntity player
                 && TrinketsApi.getTrinket(stack.getItem()).canEquip(stack, new SlotReference(trinketInventory, slotOffset), trinketInventory.getComponent().getEntity())) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(stack.getItem()).toString())) {
-                String string = Registry.ITEM.getId(stack.getItem()).toString();
+            if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(stack.getItem()).toString())) {
+                String string = Registries.ITEM.getId(stack.getItem()).toString();
                 if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, string, true)) {
                     info.setReturnValue(false);
                 }

@@ -245,54 +245,62 @@ public class CommandInit {
                     playerStatsManager.setTotalLevelExperience((int) (playerStatsManager.getTotalLevelExperience() - oldProgress * playerStatsManager.getNextLevelExperience()
                             + playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience()));
                 }
-                if (reference == 3)
-                    source.sendFeedback(Text.translatable("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
+                if (reference == 3) {
+                    source.sendFeedback(() -> Text.translatable("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
                             (int) (playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()), true);
+                }
             } else {
                 int playerSkillLevel;
-                if (skill.equals("points"))
+                if (skill.equals("points")) {
                     playerSkillLevel = playerStatsManager.getSkillPoints();
-                else if (skill.equals("level"))
+                } else if (skill.equals("level")) {
                     playerSkillLevel = playerStatsManager.getOverallLevel();
-                else
+                } else {
                     playerSkillLevel = playerStatsManager.getSkillLevel(Skill.valueOf(skill.toUpperCase()));
-
-                if (reference == 0)
+                }
+                if (reference == 0) {
                     playerSkillLevel += i;
-                if (reference == 1)
+                }
+                if (reference == 1) {
                     playerSkillLevel = playerSkillLevel - i > 0 ? playerSkillLevel - i : 0;
-                if (reference == 2)
+                }
+                if (reference == 2) {
                     playerSkillLevel = i;
+                }
                 if (reference == 3) {
-                    if (skill.equals("all"))
+                    if (skill.equals("all")) {
                         for (int u = 0; u < skillStrings().size(); u++) {
                             skill = skillStrings().get(u);
-                            if (skill.equals("experience"))
-                                source.sendFeedback(Text.translatable("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
+                            if (skill.equals("experience")) {
+                                source.sendFeedback(() -> Text.translatable("commands.playerstats.printProgress", serverPlayerEntity.getDisplayName(),
                                         (int) (playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience()), playerStatsManager.getNextLevelExperience()), true);
-                            else
-                                source.sendFeedback(Text.translatable("commands.playerstats.printLevel", serverPlayerEntity.getDisplayName(),
-                                        StringUtils.capitalize(skill) + (skill.equals("level") || skill.equals("points") ? ":" : " Level:"),
-                                        skill.equals("level") ? playerStatsManager.getOverallLevel()
-                                                : skill.equals("points") ? playerStatsManager.getSkillPoints() : playerStatsManager.getSkillLevel(Skill.valueOf(skill.toUpperCase()))),
+                            } else {
+                                final String finalSkill = skillStrings().get(u);
+                                source.sendFeedback(() -> Text.translatable("commands.playerstats.printLevel", serverPlayerEntity.getDisplayName(),
+                                        StringUtils.capitalize(finalSkill) + (finalSkill.equals("level") || finalSkill.equals("points") ? ":" : " Level:"),
+                                        finalSkill.equals("level") ? playerStatsManager.getOverallLevel()
+                                                : finalSkill.equals("points") ? playerStatsManager.getSkillPoints() : playerStatsManager.getSkillLevel(Skill.valueOf(finalSkill.toUpperCase()))),
                                         true);
+                            }
                         }
-                    else
-                        source.sendFeedback(Text.translatable("commands.playerstats.printLevel", serverPlayerEntity.getDisplayName(),
-                                StringUtils.capitalize(skill) + (skill.equals("level") || skill.equals("points") ? ":" : " Level:"), playerSkillLevel), true);
-
+                    } else {
+                        final String finalSkill = skill;
+                        final int finalPlayerSkillLevel = playerSkillLevel;
+                        source.sendFeedback(() -> Text.translatable("commands.playerstats.printLevel", serverPlayerEntity.getDisplayName(),
+                                StringUtils.capitalize(finalSkill) + (finalSkill.equals("level") || finalSkill.equals("points") ? ":" : " Level:"), finalPlayerSkillLevel), true);
+                    }
                     continue;
                 }
-                if (skill.equals("points"))
+                if (skill.equals("points")) {
                     playerStatsManager.setSkillPoints(playerSkillLevel);
-                else if (skill.equals("level")) {
+                } else if (skill.equals("level")) {
                     playerStatsManager.setOverallLevel(playerSkillLevel);
                     final int level = playerSkillLevel;
                     serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, serverPlayerEntity.getEntityName(), score -> score.setScore(level));
                     serverPlayerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
-                } else
+                } else {
                     playerStatsManager.setSkillLevel(Skill.valueOf(skill.toUpperCase()), playerSkillLevel);
-
+                }
                 if (skill.equals("health")) {
                     serverPlayerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
                             .setBaseValue(ConfigInit.CONFIG.healthBase + (double) playerSkillLevel * ConfigInit.CONFIG.healthBonus);
@@ -311,8 +319,9 @@ public class CommandInit {
             }
             PlayerStatsServerPacket.writeS2CSkillPacket(playerStatsManager, serverPlayerEntity);
 
-            if (reference != 3)
-                source.sendFeedback(Text.translatable("commands.playerstats.changed", serverPlayerEntity.getDisplayName()), true);
+            if (reference != 3) {
+                source.sendFeedback(() -> Text.translatable("commands.playerstats.changed", serverPlayerEntity.getDisplayName()), true);
+            }
         }
 
         return targets.size();
@@ -323,12 +332,12 @@ public class CommandInit {
             Item item = source.getPlayer().getMainHandStack().getItem();
             Text text = null;
 
-            if (item instanceof ArmorItem)
+            if (item instanceof ArmorItem) {
                 text = Text.of("Material id: \"" + ((ArmorItem) item).getMaterial().getName().toLowerCase() + "\"");
-
-            if (item instanceof ToolItem)
+            }
+            if (item instanceof ToolItem) {
                 text = Text.of("Material id: \"" + ((ToolItem) item).getMaterial().toString().toLowerCase() + "\"");
-
+            }
             source.getPlayer().sendMessage(text != null ? text : Text.of(item.getName().getString() + " does not have a material id"));
         }
 

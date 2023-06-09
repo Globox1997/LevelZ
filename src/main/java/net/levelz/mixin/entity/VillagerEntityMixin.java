@@ -57,7 +57,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
     @Inject(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
     protected void afterUsingMixin(TradeOffer offer, CallbackInfo info, int i) {
         if (ConfigInit.CONFIG.tradingXPMultiplier > 0.0F)
-            LevelExperienceOrbEntity.spawn((ServerWorld) world, this.getPos().add(0.0D, 0.5D, 0.0D),
+            LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos().add(0.0D, 0.5D, 0.0D),
                     (int) (i * ConfigInit.CONFIG.tradingXPMultiplier
                             * (lastCustomer != null ? 1.0F + ((PlayerStatsManagerAccess) lastCustomer).getPlayerStatsManager().getSkillLevel(Skill.TRADE) * ConfigInit.CONFIG.tradeXPBonus : 1.0F)
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && lastCustomer != null

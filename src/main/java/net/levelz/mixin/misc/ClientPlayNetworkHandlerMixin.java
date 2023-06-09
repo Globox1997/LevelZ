@@ -25,9 +25,11 @@ public class ClientPlayNetworkHandlerMixin {
         ((PlayerListAccess) playerListEntry).setLevel(((PlayerListAccess) packet).getLevelMap().get(playerListEntry.getProfile().getId()));
     }
 
-    @Inject(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/PlayerListEntry;setGameMode(Lnet/minecraft/world/GameMode;)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
+    @Inject(method = "onPlayerList", at = @At(value = "INVOKE", target = "Ljava/util/EnumSet;iterator()Ljava/util/Iterator;"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void onPlayerListGameModeMixin(PlayerListS2CPacket packet, CallbackInfo info, Iterator var2, PlayerListS2CPacket.Entry entry, PlayerListEntry playerListEntry) {
-        ((PlayerListAccess) playerListEntry).setLevel(((PlayerListAccess) packet).getLevelMap().get(playerListEntry.getProfile().getId()));
+        if (packet.getActions().contains(PlayerListS2CPacket.Action.UPDATE_GAME_MODE)) {
+            ((PlayerListAccess) playerListEntry).setLevel(((PlayerListAccess) packet).getLevelMap().get(playerListEntry.getProfile().getId()));
+        }
     }
 
 }

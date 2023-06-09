@@ -9,9 +9,9 @@ import mcp.mobius.waila.api.TooltipPosition;
 import net.levelz.init.RenderInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.Block;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.Registry;
 
 public class LevelWailaBlockInfo extends LevelFeature implements IBlockComponentProvider {
 
@@ -26,10 +26,10 @@ public class LevelWailaBlockInfo extends LevelFeature implements IBlockComponent
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         IBlockComponentProvider.super.appendBody(tooltip, accessor, config);
         if (config.getBoolean(RenderInit.MINEABLE_INFO)) {
-            if (PlayerStatsManager.listContainsItemOrBlock(accessor.getPlayer(), Registry.BLOCK.getRawId(accessor.getBlock()), 1)) {
+            if (PlayerStatsManager.listContainsItemOrBlock(accessor.getPlayer(), Registries.BLOCK.getRawId(accessor.getBlock()), 1)) {
                 if (config.getBoolean(RenderInit.MINEABLE_LEVEL_INFO))
-                    tooltip.addLine(
-                            Text.translatable("block.levelz.locked_with_level.tooltip", PlayerStatsManager.getUnlockLevel(Registry.BLOCK.getRawId(accessor.getBlock()), 1)).formatted(Formatting.RED));
+                    tooltip.addLine(Text.translatable("block.levelz.locked_with_level.tooltip", PlayerStatsManager.getUnlockLevel(Registries.BLOCK.getRawId(accessor.getBlock()), 1))
+                            .formatted(Formatting.RED));
                 else
                     tooltip.addLine(Text.translatable("block.levelz.locked.tooltip"));
             }

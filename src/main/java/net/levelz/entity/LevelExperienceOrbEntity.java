@@ -14,12 +14,12 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.TypeFilter;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -70,10 +70,10 @@ public class LevelExperienceOrbEntity extends Entity {
         } else if (!this.hasNoGravity()) {
             this.setVelocity(this.getVelocity().add(0.0, -0.03, 0.0));
         }
-        if (this.world.getFluidState(this.getBlockPos()).isIn(FluidTags.LAVA)) {
+        if (this.getWorld().getFluidState(this.getBlockPos()).isIn(FluidTags.LAVA)) {
             this.setVelocity((this.random.nextFloat() - this.random.nextFloat()) * 0.2f, 0.2f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f);
         }
-        if (!this.world.isSpaceEmpty(this.getBoundingBox())) {
+        if (!this.getWorld().isSpaceEmpty(this.getBoundingBox())) {
             this.pushOutOfBlocks(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0, this.getZ());
         }
         if (this.age % 20 == 1) {
@@ -90,11 +90,11 @@ public class LevelExperienceOrbEntity extends Entity {
         }
         this.move(MovementType.SELF, this.getVelocity());
         float vec3d2 = 0.98f;
-        if (this.onGround) {
-            vec3d2 = this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0, this.getZ())).getBlock().getSlipperiness() * 0.98f;
+        if (this.isOnGround()) {
+            vec3d2 = this.getWorld().getBlockState(this.getBlockPos().down()).getBlock().getSlipperiness() * 0.98f;
         }
         this.setVelocity(this.getVelocity().multiply(vec3d2, 0.98, vec3d2));
-        if (this.onGround) {
+        if (this.isOnGround()) {
             this.setVelocity(this.getVelocity().multiply(1.0, -0.9, 1.0));
         }
         ++this.orbAge;
@@ -105,10 +105,10 @@ public class LevelExperienceOrbEntity extends Entity {
 
     private void expensiveUpdate() {
         if (this.target == null || this.target.squaredDistanceTo(this) > 64.0) {
-            this.target = this.world.getClosestPlayer(this, 8.0);
+            this.target = this.getWorld().getClosestPlayer(this, 8.0);
         }
-        if (this.world instanceof ServerWorld) {
-            List<LevelExperienceOrbEntity> list = this.world.getEntitiesByType(TypeFilter.instanceOf(LevelExperienceOrbEntity.class), this.getBoundingBox().expand(0.5), this::isMergeable);
+        if (this.getWorld() instanceof ServerWorld) {
+            List<LevelExperienceOrbEntity> list = this.getWorld().getEntitiesByType(TypeFilter.instanceOf(LevelExperienceOrbEntity.class), this.getBoundingBox().expand(0.5), this::isMergeable);
             for (LevelExperienceOrbEntity experienceOrbEntity : list) {
                 this.merge(experienceOrbEntity);
             }
@@ -215,7 +215,7 @@ public class LevelExperienceOrbEntity extends Entity {
 
     @Override
     public void onPlayerCollision(PlayerEntity player) {
-        if (!this.world.isClient) {
+        if (!this.getWorld().isClient()) {
             if (player.experiencePickUpDelay != 0) {
                 return;
             }
@@ -308,7 +308,7 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     @Override
-    public Packet<?> createSpawnPacket() {
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
         return new PlayerStatsServerPacket().createS2CLevelExperienceOrbPacket(this);
     }
 

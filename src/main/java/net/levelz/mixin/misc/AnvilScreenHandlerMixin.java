@@ -55,7 +55,7 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 
     @Inject(method = "onTakeOutput", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/Property;get()I"), require = 0)
     private void onTakeOutputMixin(PlayerEntity playerEntity, ItemStack stack, CallbackInfo ci) {
-        if ((smithingLevel >= ConfigInit.CONFIG.maxLevel) && (ConfigInit.CONFIG.smithingAnvilChance > playerEntity.world.random.nextFloat()))
+        if ((smithingLevel >= ConfigInit.CONFIG.maxLevel) && (ConfigInit.CONFIG.smithingAnvilChance > playerEntity.getWorld().getRandom().nextFloat()))
             levelCost.set(0);
     }
 

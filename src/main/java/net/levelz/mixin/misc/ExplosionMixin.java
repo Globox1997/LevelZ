@@ -16,7 +16,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.world.explosion.Explosion;
 
 @Mixin(Explosion.class)
@@ -33,8 +33,8 @@ public class ExplosionMixin {
     @ModifyVariable(method = "affectWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;toImmutable()Lnet/minecraft/util/math/BlockPos;", shift = Shift.BEFORE), ordinal = 0)
     private BlockState affectWorldMixin(BlockState original) {
         if (this.entity != null) {
-            if (this.entity instanceof TntEntity && ((TntEntity) this.entity).getCausingEntity() != null && ((TntEntity) this.entity).getCausingEntity() instanceof PlayerEntity) {
-                if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) ((TntEntity) this.entity).getCausingEntity(), Registry.BLOCK.getRawId(original.getBlock()), 1)) {
+            if (this.entity instanceof TntEntity && ((TntEntity) this.entity).getOwner() != null && ((TntEntity) this.entity).getOwner() instanceof PlayerEntity) {
+                if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) ((TntEntity) this.entity).getOwner(), Registries.BLOCK.getRawId(original.getBlock()), 1)) {
                     return Blocks.AIR.getDefaultState();
                 }
             }

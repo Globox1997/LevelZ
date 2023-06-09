@@ -40,8 +40,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.registry.Registry;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements PlayerStatsManagerAccess, PlayerDropAccess {
@@ -77,7 +77,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockback(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 0, require = 0)
     private boolean attacGetKnockbackkMixin(boolean original) {
-        if (playerEntity.world.random.nextFloat() < (float) playerStatsManager.getSkillLevel(Skill.LUCK) * ConfigInit.CONFIG.luckCritBonus) {
+        if (playerEntity.getWorld().getRandom().nextFloat() < (float) playerStatsManager.getSkillLevel(Skill.LUCK) * ConfigInit.CONFIG.luckCritBonus) {
             isCrit = true;
             return true;
         } else
@@ -103,7 +103,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", shift = At.Shift.AFTER), ordinal = 0, require = 0)
     private float attackGetItemMixin(float original) {
-        if (playerStatsManager.getSkillLevel(Skill.STRENGTH) >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.world.random.nextFloat()) {
+        if (playerStatsManager.getSkillLevel(Skill.STRENGTH) >= ConfigInit.CONFIG.maxLevel && ConfigInit.CONFIG.attackDoubleDamageChance > playerEntity.getWorld().getRandom().nextFloat()) {
             return original * 2F;
         } else
             return isCrit ? original * ConfigInit.CONFIG.attackCritDmgBonus : original;
@@ -138,8 +138,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
         Item item = playerEntity.getMainHandStack().getItem();
         if (!item.equals(Items.AIR)) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
-                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
+            if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(item).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registries.ITEM.getId(item).toString(), true))
                     return zero ? 0 : 1.0F;
             } else if (item instanceof ToolItem) {
                 levelList = null;
@@ -165,10 +165,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;dropShoulderEntities()V", shift = Shift.AFTER), cancellable = true)
     private void damageMixin(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
         if (playerStatsManager.getSkillLevel(Skill.DEFENSE) >= ConfigInit.CONFIG.maxLevel && source.getAttacker() != null
-                && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.defenseReflectChance) {
+                && playerEntity.getWorld().getRandom().nextFloat() <= ConfigInit.CONFIG.defenseReflectChance) {
             source.getAttacker().damage(source, amount);
         }
-        if (playerStatsManager.getSkillLevel(Skill.AGILITY) >= ConfigInit.CONFIG.maxLevel && playerEntity.world.random.nextFloat() <= ConfigInit.CONFIG.movementMissChance) {
+        if (playerStatsManager.getSkillLevel(Skill.AGILITY) >= ConfigInit.CONFIG.maxLevel && playerEntity.getWorld().getRandom().nextFloat() <= ConfigInit.CONFIG.movementMissChance) {
             info.setReturnValue(false);
         }
     }
@@ -209,10 +209,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements PlayerSt
 
     @Override
     protected void dropXp() {
-        if (this.world instanceof ServerWorld && (this.shouldAlwaysDropXp() || this.playerHitTimer > 0 && this.shouldDropXp() && this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT))) {
+        if (this.getWorld() instanceof ServerWorld
+                && (this.shouldAlwaysDropXp() || this.playerHitTimer > 0 && this.shouldDropXp() && this.getWorld().getGameRules().getBoolean(GameRules.DO_MOB_LOOT))) {
             if (ConfigInit.CONFIG.dropPlayerXP && (ConfigInit.CONFIG.resetCurrentXP || ConfigInit.CONFIG.hardMode))
-                LevelExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(), (int) (playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience()));
-            ExperienceOrbEntity.spawn((ServerWorld) this.world, this.getPos(), this.getXpToDrop());
+                LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(), (int) (playerStatsManager.getLevelProgress() * playerStatsManager.getNextLevelExperience()));
+            ExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(), this.getXpToDrop());
         }
     }
 

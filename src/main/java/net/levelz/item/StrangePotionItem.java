@@ -26,7 +26,7 @@ public class StrangePotionItem extends Item {
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity) user : null;
-        if (playerEntity != null && !playerEntity.world.isClient) {
+        if (playerEntity != null && !playerEntity.getWorld().isClient()) {
             if (playerEntity instanceof ServerPlayerEntity) {
                 Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity) playerEntity, stack);
             }

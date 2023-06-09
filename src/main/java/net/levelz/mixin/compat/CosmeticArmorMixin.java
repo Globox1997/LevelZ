@@ -20,9 +20,9 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 @Mixin(CosmeticArmor.class)
 public class CosmeticArmorMixin {
@@ -43,8 +43,8 @@ public class CosmeticArmorMixin {
                 if (entity instanceof PlayerEntity && stack.getItem() instanceof ArmorItem) {
                     ArrayList<Object> levelList = LevelLists.customItemList;
                     try {
-                        if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(stack.getItem()).toString())) {
-                            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) entity, levelList, Registry.ITEM.getId(stack.getItem()).toString(), true))
+                        if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(stack.getItem()).toString())) {
+                            if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) entity, levelList, Registries.ITEM.getId(stack.getItem()).toString(), true))
                                 return TriState.FALSE;
                         } else {
                             levelList = LevelLists.armorList;

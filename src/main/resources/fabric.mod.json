@@ -44,7 +44,7 @@
     "fabric-api": ">=${fabric_version}",
     "fabricloader": ">=${loader_version}",
     "cloth-config2": ">=${cloth_config_version}",
-    "libz": ">=1.0.0"
+    "libz": "*"
   },
   "suggests": {
     "another-mod": "*"
@@ -56,6 +56,7 @@
     },
     "waila:plugins": {
       "id": "levelz:plugin",
+      "environment": "client",
       "initializer": "net.levelz.waila.LevelWailaPlugin"
     }
   }

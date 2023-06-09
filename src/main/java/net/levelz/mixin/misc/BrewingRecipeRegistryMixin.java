@@ -28,22 +28,24 @@ public class BrewingRecipeRegistryMixin {
 
     @Inject(method = "hasRecipe", at = @At("HEAD"), cancellable = true)
     private static void hasRecipeMixin(ItemStack input, ItemStack ingredient, CallbackInfoReturnable<Boolean> info) {
-        if (input.getItem() == Items.DRAGON_BREATH && ingredient.getItem() == Items.NETHER_STAR)
+        if (input.getItem() == Items.DRAGON_BREATH && ingredient.getItem() == Items.NETHER_STAR) {
             info.setReturnValue(true);
+        }
 
     }
 
     @Inject(method = "isValidIngredient", at = @At("HEAD"), cancellable = true)
     private static void isValidIngredientMixin(ItemStack stack, CallbackInfoReturnable<Boolean> info) {
-        if (stack.getItem() == Items.NETHER_STAR)
+        if (stack.getItem() == Items.NETHER_STAR) {
             info.setReturnValue(true);
+        }
     }
 
     @Inject(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/potion/PotionUtil;getPotion(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/potion/Potion;"), cancellable = true)
     private static void craftMixin(ItemStack input, ItemStack ingredient, CallbackInfoReturnable<ItemStack> info) {
-        if (input.getItem() == Items.NETHER_STAR && ingredient.getItem() == Items.DRAGON_BREATH)
+        if (input.getItem() == Items.NETHER_STAR && ingredient.getItem() == Items.DRAGON_BREATH) {
             info.setReturnValue(new ItemStack(ItemInit.STRANGE_POTION));
-
+        }
     }
 
 }

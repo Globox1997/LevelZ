@@ -25,15 +25,15 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
 
     @ModifyVariable(method = "getEquipmentLevel", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/lang/Iterable;iterator()Ljava/util/Iterator;"), ordinal = 0)
     private static int getEquipmentLevelMixin(int original, Enchantment enchantment, LivingEntity entity) {
-        if (original != 0 && entity instanceof PlayerEntity player
-                && (float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.ALCHEMY) * ConfigInit.CONFIG.alchemyEnchantmentChance > entity.world.random.nextFloat())
+        if (original != 0 && entity instanceof PlayerEntity player && (float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.ALCHEMY)
+                * ConfigInit.CONFIG.alchemyEnchantmentChance > entity.getWorld().getRandom().nextFloat())
             return original += 1;
         else
             return original;
@@ -46,8 +46,8 @@ public class EnchantmentHelperMixin {
             if (item instanceof ToolItem) {
                 PlayerEntity playerEntity = (PlayerEntity) user;
                 ArrayList<Object> levelList = LevelLists.customItemList;
-                if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
-                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
+                if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(item).toString())) {
+                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registries.ITEM.getId(item).toString(), true))
                         info.cancel();
                 } else {
                     levelList = null;
@@ -74,8 +74,8 @@ public class EnchantmentHelperMixin {
             if (item instanceof ToolItem) {
                 PlayerEntity playerEntity = (PlayerEntity) user;
                 ArrayList<Object> levelList = LevelLists.customItemList;
-                if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
-                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true))
+                if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(item).toString())) {
+                    if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registries.ITEM.getId(item).toString(), true))
                         info.cancel();
                 } else {
                     levelList = null;

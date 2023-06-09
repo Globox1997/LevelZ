@@ -11,7 +11,6 @@ import net.dualwielding.util.DualWieldingOffhandAttack;
 import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
@@ -21,7 +20,7 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 @Mixin(DualWieldingOffhandAttack.class)
 public class DualWieldingOffhandAttackMixin {
@@ -31,9 +30,9 @@ public class DualWieldingOffhandAttackMixin {
         Item item = playerEntity.getMainHandStack().getItem();
         if (!item.equals(Items.AIR)) {
             ArrayList<Object> levelList = LevelLists.customItemList;
-            if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(item).toString())) {
-                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registry.ITEM.getId(item).toString(), true)) {
-                    target.damage(DamageSource.player(playerEntity), 1.0F);
+            if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(item).toString())) {
+                if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, Registries.ITEM.getId(item).toString(), true)) {
+                    target.damage(playerEntity.getDamageSources().playerAttack(playerEntity), 1.0F);
                     info.cancel();
                 }
             } else if (item instanceof ToolItem) {
@@ -48,7 +47,7 @@ public class DualWieldingOffhandAttackMixin {
                     levelList = LevelLists.toolList;
                 if (levelList != null)
                     if (!PlayerStatsManager.playerLevelisHighEnough(playerEntity, levelList, ((ToolItem) item).getMaterial().toString().toLowerCase(), true)) {
-                        target.damage(DamageSource.player(playerEntity), 1.0F);
+                        target.damage(playerEntity.getDamageSources().playerAttack(playerEntity), 1.0F);
                         info.cancel();
                     }
             }

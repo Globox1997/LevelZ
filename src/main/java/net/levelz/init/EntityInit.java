@@ -6,8 +6,9 @@ import net.levelz.entity.LevelExperienceOrbEntity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class EntityInit {
     public static final boolean isRedstoneBitsLoaded = FabricLoader.getInstance().isModLoaded("redstonebits");
@@ -16,7 +17,7 @@ public class EntityInit {
             .dimensions(EntityDimensions.fixed(0.5F, 0.5F)).build();
 
     public static void init() {
-        Registry.register(Registry.ENTITY_TYPE, new Identifier("levelz", "level_experience_orb"), LEVEL_EXPERIENCE_ORB);
+        Registry.register(Registries.ENTITY_TYPE, new Identifier("levelz", "level_experience_orb"), LEVEL_EXPERIENCE_ORB);
     }
 
 }

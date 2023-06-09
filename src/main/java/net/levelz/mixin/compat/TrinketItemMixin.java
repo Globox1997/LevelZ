@@ -14,9 +14,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.Registry;
 
 @Mixin(TrinketItem.class)
 public class TrinketItemMixin {
@@ -24,8 +24,8 @@ public class TrinketItemMixin {
     @Inject(method = "equipItem", at = @At("HEAD"), cancellable = true)
     private static void equipItemMixin(PlayerEntity user, ItemStack stack, CallbackInfoReturnable<Boolean> info) {
         ArrayList<Object> levelList = LevelLists.customItemList;
-        if (!levelList.isEmpty() && levelList.contains(Registry.ITEM.getId(stack.getItem()).toString())) {
-            String string = Registry.ITEM.getId(stack.getItem()).toString();
+        if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(stack.getItem()).toString())) {
+            String string = Registries.ITEM.getId(stack.getItem()).toString();
             if (!PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.customItemList, string, true)) {
                 user.sendMessage(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
                         true);

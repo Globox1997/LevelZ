@@ -17,11 +17,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.registry.Registry;
 
 @Mixin(SmithingAnvilScreenHandler.class)
 public abstract class SmithingAnvilScreenHandlerMixin extends ScreenHandler {
@@ -58,7 +58,8 @@ public abstract class SmithingAnvilScreenHandlerMixin extends ScreenHandler {
 
     @Inject(method = "updateResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/CraftingResultInventory;setLastRecipe(Lnet/minecraft/recipe/Recipe;)V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     void updateResultMixin(CallbackInfo info, SmithingAnvilRecipe recipe) {
-        if (this.playerEntity != null && !this.playerEntity.isCreative() && PlayerStatsManager.listContainsItemOrBlock(this.playerEntity, Registry.ITEM.getRawId(recipe.getOutput().getItem()), 3)) {
+        if (this.playerEntity != null && !this.playerEntity.isCreative()
+                && PlayerStatsManager.listContainsItemOrBlock(this.playerEntity, Registries.ITEM.getRawId(recipe.getOutput(playerEntity.getWorld().getRegistryManager()).getItem()), 3)) {
             this.outputSlot.setStack(ItemStack.EMPTY);
             this.sendContentUpdates();
             info.cancel();

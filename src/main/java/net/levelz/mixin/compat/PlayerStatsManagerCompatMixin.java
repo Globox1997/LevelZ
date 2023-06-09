@@ -16,7 +16,8 @@ public class PlayerStatsManagerCompatMixin {
     @Inject(method = "playerLevelisHighEnough", at = @At("HEAD"), cancellable = true)
     private static void playerLevelisHighEnoughMixin(PlayerEntity playerEntity, List<Object> list, String string, boolean creativeRequired, CallbackInfoReturnable<Boolean> info) {
 
-        if (playerEntity.getClass().getName().contains("deployer.DeployerFakePlayer") || playerEntity.getClass().getName().contains("core.TurtlePlayer"))
+        if (playerEntity.getClass().getName().contains("deployer.DeployerFakePlayer") || playerEntity.getClass().getName().contains("core.TurtlePlayer")) {
             info.setReturnValue(true);
+        }
     }
 }
