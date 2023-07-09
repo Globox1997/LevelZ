@@ -40,14 +40,13 @@
   ],
   "depends": {
     "java": ">=17",
-    "minecraft": "${minecraft_version}",
+    "minecraft": ">=1.20",
     "fabric-api": ">=${fabric_version}",
     "fabricloader": ">=${loader_version}",
     "cloth-config2": ">=${cloth_config_version}",
     "libz": "*"
   },
   "suggests": {
-    "another-mod": "*"
   },
   "custom": {
     "mc-publish": {
