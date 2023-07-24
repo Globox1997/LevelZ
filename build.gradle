@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.2-SNAPSHOT'
+    id 'fabric-loom' version '1.3-SNAPSHOT'
     id 'maven-publish'
 }  
 
@@ -10,13 +10,13 @@ group = project.maven_group
 repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/" }
-    maven { url 'https://jitpack.io' }
+    maven { url "https://jitpack.io" }
     maven { url "https://api.modrinth.com/maven" }
     maven { url "https://www.cursemaven.com" }
     maven { url "https://maven.nucleoid.xyz/" }
     maven { url "https://maven.jamieswhiteshirt.com/libs-release/" }
     maven { url "https://maven.bai.lol" }
-    maven { url "https://ladysnake.jfrog.io/artifactory/mods" }
+    maven { url "https://maven.ladysnake.org/releases" }
 }
 
 dependencies {
@@ -26,7 +26,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // LibZ
-    modApi ('maven.modrinth:libz:1.0.1+1.20'){
+    modApi ('maven.modrinth:libz:1.0.1+1.20') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Cloth
@@ -38,7 +38,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // Wthit
-    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-8.0.2")
+    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-8.2.0")
 	// Jade
     modCompileOnly ('maven.modrinth:jade:11.0.3'){
 		exclude(group: "net.fabricmc.fabric-api")
@@ -48,13 +48,13 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // DragonLoot
-	modCompileOnly ('maven.modrinth:dragonloot:1.1.2'){
+	modCompileOnly ('maven.modrinth:dragonloot:1.1.2') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Trinkets
-    modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.0")
-	modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.0")
-    modCompileOnly ('maven.modrinth:trinkets:3.7.0'){
+    modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.2")
+	modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.2")
+    modCompileOnly ('maven.modrinth:trinkets:3.7.1') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // REI
@@ -73,15 +73,15 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // CosmeticArmor
-    modCompileOnly ('maven.modrinth:cosmetic-armor:1.5.0'){
+    modCompileOnly ('maven.modrinth:cosmetic-armor:1.5.0') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // TreeChop
-    modCompileOnly ('maven.modrinth:treechop:0.14.7'){
+    modCompileOnly ('maven.modrinth:treechop:0.18.0') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Alloygery
-    modCompileOnly ('maven.modrinth:alloygery:2.5.5+1.19.2'){
+    modCompileOnly ('maven.modrinth:alloygery:2.5.5+1.19.2') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Magna
@@ -89,7 +89,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Spell-Engine
-    modCompileOnly ('maven.modrinth:spell-engine:0.9.24+1.19-fabric'){
+    modCompileOnly ('maven.modrinth:spell-engine:0.9.24+1.19-fabric') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 }
