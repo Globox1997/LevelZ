@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import ht.treechop.common.util.ChopResult;
+import ht.treechop.common.chop.ChopResult;
 import net.levelz.data.LevelLists;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.item.AxeItem;

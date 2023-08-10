@@ -40,7 +40,7 @@
   ],
   "depends": {
     "java": ">=17",
-    "minecraft": ">=1.20",
+    "minecraft": ">=${minecraft_version}",
     "fabric-api": ">=${fabric_version}",
     "fabricloader": ">=${loader_version}",
     "cloth-config2": ">=${cloth_config_version}",
