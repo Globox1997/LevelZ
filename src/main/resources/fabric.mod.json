@@ -47,7 +47,6 @@
     "libz": "*"
   },
   "suggests": {
-    "another-mod": "*"
   },
   "custom": {
     "mc-publish": {
