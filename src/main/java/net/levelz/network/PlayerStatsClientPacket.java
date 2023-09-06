@@ -61,18 +61,9 @@ public class PlayerStatsClientPacket {
             newBuffer.writeInt(buf.readInt());
             newBuffer.writeInt(buf.readInt());
             newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
-            newBuffer.writeInt(buf.readInt());
+            for(int i = 0; i < Skill.getSkillCount(); i++){
+                newBuffer.writeInt(buf.readInt());
+            }
             client.execute(() -> {
                 executeLevelPacket(client.player, newBuffer);
             });
