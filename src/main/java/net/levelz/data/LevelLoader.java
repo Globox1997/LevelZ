@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -418,40 +419,60 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         }
     }
 
+
+    private static final HashMap<Integer, String> skillReferenceMap = new HashMap<Integer, String>() {{
+        put(1, "mining");
+        put(2, "alchemy");
+        put(3, "smithing");
+        put(4, "crafting");
+    }};
+
+    public static void addSkillReference(int id, String skill) {
+        if(skillReferenceMap.get(id) != null){
+            throw new IllegalArgumentException("Skill reference already exists");
+        }
+        skillReferenceMap.put(id, skill);
+    }
+
+    public static String getReferencedSkillName(int reference){
+        return skillReferenceMap.get(reference);
+    }
+
     // type: 1 = mining; 2 = brewing; 3 = smithing; 4 = crafting
     private void sortAndFillLists(List<Integer> levelList, List<List<Integer>> objectList, int type) {
         // clear replace list for next usage
         replaceList.clear();
 
-        if (type != 0) {
-            if (type == 1) {
-                LevelLists.miningLevelList.addAll(levelList);
-                LevelLists.miningLevelList.sort(Comparator.naturalOrder());
-                for (int i = 0; i < levelList.size(); i++)
-                    LevelLists.miningBlockList.add(i, objectList.get(levelList.indexOf(LevelLists.miningLevelList.get(i))));
-
-            } else if (type == 2) {
-                LevelLists.brewingLevelList.addAll(levelList);
-                LevelLists.brewingLevelList.sort(Comparator.naturalOrder());
-                for (int i = 0; i < levelList.size(); i++)
-                    LevelLists.brewingItemList.add(i, objectList.get(levelList.indexOf(LevelLists.brewingLevelList.get(i))));
-
-            } else if (type == 3) {
-                LevelLists.smithingLevelList.addAll(levelList);
-                LevelLists.smithingLevelList.sort(Comparator.naturalOrder());
-                for (int i = 0; i < levelList.size(); i++)
-                    LevelLists.smithingItemList.add(i, objectList.get(levelList.indexOf(LevelLists.smithingLevelList.get(i))));
-
-            } else if (type == 4) {
-                LevelLists.craftingLevelList.addAll(levelList);
-                LevelLists.craftingSkillList.addAll(skillList);
-                LevelLists.craftingItemList.addAll(objectList);
-                SortList.concurrentSort(LevelLists.craftingLevelList, LevelLists.craftingLevelList, LevelLists.craftingSkillList, LevelLists.craftingItemList);
-                this.skillList.clear();
-            }
-            this.objectList.clear();
-            this.levelList.clear();
+        String skill = getReferencedSkillName(type);
+        if(skill == null) {
+            return;
         }
+
+        var levelListCopy = LevelLists.levelLists.getOrDefault(skill, new ArrayList<>());
+        var objListCopy = LevelLists.levelObjectsLists.getOrDefault(skill, new ArrayList<>());
+        levelListCopy.addAll(levelList);
+
+        if(skillList.isEmpty()){
+            levelListCopy.sort(Comparator.naturalOrder());
+            for (int i = 0; i < levelList.size(); i++) {
+                objListCopy.add(i, objectList.get(levelList.indexOf(levelListCopy.get(i))));
+            }
+        }else{
+            var extraList = LevelLists.levelExtraDataLists.getOrDefault(skill, new ArrayList<>());
+            extraList.addAll(skillList);
+            objListCopy.addAll(objectList);
+
+            SortList.concurrentSort(levelListCopy, levelListCopy, extraList, objListCopy);
+
+            LevelLists.levelExtraDataLists.put(skill, extraList);
+            this.skillList.clear();
+        }
+
+        LevelLists.levelLists.put(skill, levelListCopy);
+        LevelLists.levelObjectsLists.put(skill, objListCopy);
+
+        this.objectList.clear();
+        this.levelList.clear();
 
     }
 
@@ -568,15 +589,9 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         LevelLists.customItemList.clear();
         LevelLists.customEntityList.clear();
 
-        LevelLists.miningBlockList.clear();
-        LevelLists.miningLevelList.clear();
-        LevelLists.brewingItemList.clear();
-        LevelLists.brewingLevelList.clear();
-        LevelLists.smithingItemList.clear();
-        LevelLists.smithingLevelList.clear();
-        LevelLists.craftingItemList.clear();
-        LevelLists.craftingLevelList.clear();
-        LevelLists.craftingSkillList.clear();
+        LevelLists.levelLists.clear();
+        LevelLists.levelObjectsLists.clear();
+        LevelLists.levelExtraDataLists.clear();
         // Potion list isn't filled via levelz datapacks
         // LevelLists.potionList.clear();
     }

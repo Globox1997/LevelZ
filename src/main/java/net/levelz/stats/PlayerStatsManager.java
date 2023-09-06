@@ -2,6 +2,7 @@ package net.levelz.stats;
 
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
+import net.levelz.data.LevelLoader;
 import net.levelz.init.ConfigInit;
 import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,11 +34,7 @@ public class PlayerStatsManager {
         return playerEntity;
     }
 
-    // Other
-    public List<Integer> lockedBlockIds = new ArrayList<Integer>();
-    public List<Integer> lockedbrewingItemIds = new ArrayList<Integer>();
-    public List<Integer> lockedSmithingItemIds = new ArrayList<Integer>();
-    public List<Integer> lockedCraftingItemIds = new ArrayList<Integer>();
+    public HashMap<String, List<Integer>> lockedIds = new HashMap<>();
 
     // Wood, Stone, Iron, Gold, Diamond, Netherite
 
@@ -218,52 +215,27 @@ public class PlayerStatsManager {
     // 1 = mining, 2 = alchemy, 3 = smithing, 4 = crafting
     public static boolean listContainsItemOrBlock(PlayerEntity playerEntity, int id, int reference) {
         PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) playerEntity).getPlayerStatsManager();
-        if (reference == 1) {
-            if (playerStatsManager.getSkillLevel(Skill.MINING) < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedBlockIds.contains(id))
-                return true;
-        } else if (reference == 2) {
-            if (playerStatsManager.getSkillLevel(Skill.ALCHEMY) < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedbrewingItemIds.contains(id))
-                return true;
-        } else if (reference == 3) {
-            if (playerStatsManager.getSkillLevel(Skill.SMITHING) < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedSmithingItemIds.contains(id))
-                return true;
-        } else if (reference == 4) {
-            if (playerStatsManager.lockedCraftingItemIds.contains(id))
-                return true;
+        String skill = LevelLoader.getReferencedSkillName(reference);
+        if (skill == null){
+            return false;
         }
+
+        if(playerStatsManager.getSkillLevel(Skill.valueOf(skill)) < ConfigInit.CONFIG.maxLevel && playerStatsManager.lockedIds.containsKey(skill)){
+            return playerStatsManager.lockedIds.get(skill).contains(id);
+        }
+        
         return false;
     }
 
     // 1:mining; 2:brewing; 3:smithing; 4:crafting
     public static int getUnlockLevel(int id, int reference) {
-        if (reference == 1) {
-            for (int i = 0; i < LevelLists.miningBlockList.size(); i++) {
-                if (LevelLists.miningBlockList.get(i).contains(id)) {
-                    return LevelLists.miningLevelList.get(i);
+        String skill = LevelLoader.getReferencedSkillName(reference);
+        if (skill != null) {
+            for (int i = 0; i < LevelLists.levelObjectsLists.get(skill).size(); i++) {
+                if (LevelLists.levelObjectsLists.get(skill).get(i).contains(id)) {
+                    return LevelLists.levelLists.get(skill).get(i);
                 }
             }
-            return 0;
-        } else if (reference == 2) {
-            for (int i = 0; i < LevelLists.brewingItemList.size(); i++) {
-                if (LevelLists.brewingItemList.get(i).contains(id)) {
-                    return LevelLists.brewingLevelList.get(i);
-                }
-            }
-            return 0;
-        } else if (reference == 3) {
-            for (int i = 0; i < LevelLists.smithingItemList.size(); i++) {
-                if (LevelLists.smithingItemList.get(i).contains(id)) {
-                    return LevelLists.smithingLevelList.get(i);
-                }
-            }
-            return 0;
-        } else if (reference == 4) {
-            for (int i = 0; i < LevelLists.craftingItemList.size(); i++) {
-                if (LevelLists.craftingItemList.get(i).contains(id)) {
-                    return LevelLists.craftingLevelList.get(i);
-                }
-            }
-            return 0;
         }
         return 0;
     }

@@ -30,6 +30,9 @@ public class PlayerStatsClientPacket {
             client.execute(() -> {
                 PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager();
                 Skill skill = Skill.valueOf(skillString);
+                if(skill == null){
+                    return;
+                }
 
                 playerStatsManager.setSkillLevel(skill, level);
                 playerStatsManager.setSkillPoints(points);
@@ -38,14 +41,7 @@ public class PlayerStatsClientPacket {
                     playerStatsManager.getPlayerEntity().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
                             .setBaseValue(ConfigInit.CONFIG.attackBase + (double) playerStatsManager.getSkillLevel(Skill.STRENGTH) * ConfigInit.CONFIG.attackBonus);
                 }
-                PlayerStatsServerPacket.syncLockedCraftingItemList(playerStatsManager);
-                switch (skill) {
-                case SMITHING -> PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
-                case MINING -> PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
-                case ALCHEMY -> PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
-                default -> {
-                }
-                }
+                PlayerStatsServerPacket.syncLockedLists(playerStatsManager);
             });
         });
 
@@ -106,22 +102,26 @@ public class PlayerStatsClientPacket {
                 // Sync attributes on client
                 client.execute(() -> {
                     Skill skill = Skill.valueOf(skillString.toUpperCase());
+                    if(skill == null){
+                        return;
+                    }
+
                     PlayerStatsManager playerStatsManager = ((PlayerStatsManagerAccess) client.player).getPlayerStatsManager();
                     int skillLevel = playerStatsManager.getSkillLevel(skill);
                     playerStatsManager.setSkillPoints(playerStatsManager.getSkillPoints() + skillLevel);
                     playerStatsManager.setSkillLevel(skill, 0);
 
-                    switch (skill) {
-                    case HEALTH -> {
+                    if (skill.equals(Skill.HEALTH)) {
                         client.player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(ConfigInit.CONFIG.healthBase);
                         client.player.setHealth(client.player.getMaxHealth());
-                    }
-                    case STRENGTH -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase);
-                    case AGILITY -> client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase);
-                    case DEFENSE -> client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase);
-                    case LUCK -> client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase);
-                    default -> {
-                    }
+                    } else if (skill.equals(Skill.STRENGTH)) {
+                        client.player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ConfigInit.CONFIG.attackBase);
+                    } else if (skill.equals(Skill.AGILITY)) {
+                        client.player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(ConfigInit.CONFIG.movementBase);
+                    } else if (skill.equals(Skill.DEFENSE)) {
+                        client.player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ConfigInit.CONFIG.defenseBase);
+                    } else if (skill.equals(Skill.LUCK)) {
+                        client.player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase);
                     }
                 });
 
@@ -282,7 +282,7 @@ public class PlayerStatsClientPacket {
         }
 
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeString(skill.name());
+        buf.writeString(skill.getName());
         buf.writeInt(level);
 
         CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(PlayerStatsServerPacket.STATS_INCREASE_PACKET, buf);
@@ -318,10 +318,7 @@ public class PlayerStatsClientPacket {
             playerStatsManager.setSkillLevel(skill, buf.readInt());
         }
         // Set unlocked list
-        PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
-        PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
-        PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
-        PlayerStatsServerPacket.syncLockedCraftingItemList(playerStatsManager);
+        PlayerStatsServerPacket.syncLockedLists(playerStatsManager);
     }
 
     private static void executeListPacket(PacketByteBuf buf, ClientPlayerEntity player) {
@@ -344,43 +341,32 @@ public class PlayerStatsClientPacket {
                 for (int u = negativeCount; u < count; u++) {
                     addToList(listName, list.get(i + u));
                 }
-            } else if (listName.equals("mining:level")) {
-                List<Integer> blockList = new ArrayList<>();
-                LevelLists.miningLevelList.add(Integer.parseInt(list.get(i + 1)));
-                for (int u = i + 2; u < list.size(); u++) {
-                    if (list.get(u).equals("mining:level") || list.get(u).equals("brewing:level"))
+            } else if (listName.endsWith(":level")) {
+                String skillName = listName.substring(0, listName.length() - 6);
+                boolean hasExtraData = LevelLists.levelHasExtraData.getOrDefault(skillName, false);
+
+                var levelList = LevelLists.levelLists.getOrDefault(skillName, new ArrayList<>());
+                levelList.add(Integer.parseInt(list.get(i + 1)));
+                LevelLists.levelLists.put(skillName, levelList);
+
+                if(hasExtraData){
+                    var extraDataList = LevelLists.levelExtraDataLists.getOrDefault(skillName, new ArrayList<>());
+                    extraDataList.add(list.get(i + 2));
+                    LevelLists.levelExtraDataLists.put(skillName, extraDataList);
+                }
+
+                var blockListList = LevelLists.levelObjectsLists.getOrDefault(skillName, new ArrayList<>());
+                var blockList = new ArrayList<Integer>();
+
+                for (int u = i + (hasExtraData ? 3 : 2); u < list.size(); u++) {
+                    if (list.get(u).contains(":level")){
                         break;
+                    }
                     blockList.add(Integer.parseInt(list.get(u)));
                 }
-                LevelLists.miningBlockList.add(blockList);
-            } else if (listName.equals("brewing:level")) {
-                List<Integer> brewingItemList = new ArrayList<>();
-                LevelLists.brewingLevelList.add(Integer.parseInt(list.get(i + 1)));
-                for (int u = i + 2; u < list.size(); u++) {
-                    if (list.get(u).equals("brewing:level") || list.get(u).equals("smithing:level"))
-                        break;
-                    brewingItemList.add(Integer.parseInt(list.get(u)));
-                }
-                LevelLists.brewingItemList.add(brewingItemList);
-            } else if (listName.equals("smithing:level")) {
-                List<Integer> smithingItemList = new ArrayList<>();
-                LevelLists.smithingLevelList.add(Integer.parseInt(list.get(i + 1)));
-                for (int u = i + 2; u < list.size(); u++) {
-                    if (list.get(u).equals("smithing:level") || list.get(u).equals("crafting:level"))
-                        break;
-                    smithingItemList.add(Integer.parseInt(list.get(u)));
-                }
-                LevelLists.smithingItemList.add(smithingItemList);
-            } else if (listName.equals("crafting:level")) {
-                List<Integer> craftingItemList = new ArrayList<>();
-                LevelLists.craftingLevelList.add(Integer.parseInt(list.get(i + 1)));
-                LevelLists.craftingSkillList.add(String.valueOf(list.get(i + 2)));
-                for (int u = i + 3; u < list.size(); u++) {
-                    if (list.get(u).equals("crafting:level"))
-                        break;
-                    craftingItemList.add(Integer.parseInt(list.get(u)));
-                }
-                LevelLists.craftingItemList.add(craftingItemList);
+
+                blockListList.add(blockList);
+                LevelLists.levelObjectsLists.put(skillName, blockListList);
             }
         }
         LevelLists.listOfAllLists.clear();
@@ -395,10 +381,7 @@ public class PlayerStatsClientPacket {
         player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
                 .setBaseValue(ConfigInit.CONFIG.defenseBase + (double) playerStatsManager.getSkillLevel(Skill.DEFENSE) * ConfigInit.CONFIG.defenseBonus);
         player.getAttributeInstance(EntityAttributes.GENERIC_LUCK).setBaseValue(ConfigInit.CONFIG.luckBase + (double) playerStatsManager.getSkillLevel(Skill.LUCK) * ConfigInit.CONFIG.luckBonus);
-        PlayerStatsServerPacket.syncLockedBlockList(playerStatsManager);
-        PlayerStatsServerPacket.syncLockedBrewingItemList(playerStatsManager);
-        PlayerStatsServerPacket.syncLockedSmithingItemList(playerStatsManager);
-        PlayerStatsServerPacket.syncLockedCraftingItemList(playerStatsManager);
+        PlayerStatsServerPacket.syncLockedLists(playerStatsManager);
     }
 
     private static void addToList(String listName, String object) {

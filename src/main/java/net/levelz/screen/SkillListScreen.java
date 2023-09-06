@@ -2,7 +2,7 @@ package net.levelz.screen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -53,19 +53,12 @@ public class SkillListScreen extends Screen implements Tab {
         List<Integer> levelList = new ArrayList<>();
         List<List<Integer>> objectList = new ArrayList<>();
         List<String> skillList = new ArrayList<>();
-        if (Objects.equals(this.title, "mining")) {
-            levelList = LevelLists.miningLevelList;
-            objectList = LevelLists.miningBlockList;
-        } else if (Objects.equals(this.title, "alchemy")) {
-            levelList = LevelLists.brewingLevelList;
-            objectList = LevelLists.brewingItemList;
-        } else if (Objects.equals(this.title, "smithing")) {
-            levelList = LevelLists.smithingLevelList;
-            objectList = LevelLists.smithingItemList;
-        } else if (this.crafing) {
-            levelList = LevelLists.craftingLevelList;
-            objectList = LevelLists.craftingItemList;
-            skillList = LevelLists.craftingSkillList;
+
+        levelList = LevelLists.levelLists.getOrDefault(this.title, new ArrayList<>());
+        objectList = LevelLists.levelObjectsLists.getOrDefault(this.title, new ArrayList<>());
+
+        if(this.crafing){
+            skillList = LevelLists.levelExtraDataLists.get("crafting").stream().map(data -> (String) data).collect(Collectors.toList());
             if (ConfigInit.CONFIG.sortCraftingRecipesBySkill) {
                 SortList.concurrentSort(skillList, skillList, levelList, objectList);
             }

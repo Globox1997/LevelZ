@@ -309,9 +309,9 @@ public class ItemStackClientMixin {
                 list.add(Text.translatable("item.levelz.smithing_restriction.tooltip", PlayerStatsManager.getUnlockLevel(itemId, 3)).formatted(Formatting.RED));
         }
         if (PlayerStatsManager.listContainsItemOrBlock(player, itemId, 4))
-            for (int i = 0; i < LevelLists.craftingItemList.size(); i++) {
-                if (LevelLists.craftingItemList.get(i).contains(itemId)) {
-                    list.add(Text.translatable("item.levelz.crafting_restriction.tooltip", StringUtils.capitalize(LevelLists.craftingSkillList.get(i)), PlayerStatsManager.getUnlockLevel(itemId, 4))
+            for (int i = 0; i < LevelLists.levelObjectsLists.getOrDefault("crafting", new ArrayList<>()).size(); i++) {
+                if (LevelLists.levelObjectsLists.get("crafting").get(i).contains(itemId)) {
+                    list.add(Text.translatable("item.levelz.crafting_restriction.tooltip", StringUtils.capitalize((String)LevelLists.levelExtraDataLists.get("crafting").get(i)), PlayerStatsManager.getUnlockLevel(itemId, 4))
                             .formatted(Formatting.RED));
                     break;
                 }

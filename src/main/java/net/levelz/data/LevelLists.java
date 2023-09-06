@@ -1,6 +1,7 @@
 package net.levelz.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class LevelLists {
@@ -60,25 +61,16 @@ public class LevelLists {
     public static final ArrayList<Object> compassList = new ArrayList<Object>();
     // Misc
     public static final List<ArrayList<Object>> listOfAllLists = new ArrayList<>();
-    // Player
-    public static final List<List<Integer>> miningBlockList = new ArrayList<List<Integer>>();
-    public static final List<Integer> miningLevelList = new ArrayList<Integer>();
-
-    public static final List<List<Integer>> brewingItemList = new ArrayList<List<Integer>>();
-    public static final List<Integer> brewingLevelList = new ArrayList<Integer>();
-    public static final List<Object> potionList = new ArrayList<Object>();
-
-    public static final List<List<Integer>> smithingItemList = new ArrayList<List<Integer>>();
-    public static final List<Integer> smithingLevelList = new ArrayList<Integer>();
-
-    public static final List<List<Integer>> craftingItemList = new ArrayList<List<Integer>>();
-    public static final List<Integer> craftingLevelList = new ArrayList<Integer>();
-    public static final List<String> craftingSkillList = new ArrayList<String>();
 
     // Custom
     public static final ArrayList<Object> customBlockList = new ArrayList<Object>();
     public static final ArrayList<Object> customItemList = new ArrayList<Object>();
     public static final ArrayList<Object> customEntityList = new ArrayList<Object>();
+
+    public static final HashMap<String, List<Integer>> levelLists = new HashMap<>();
+    public static final HashMap<String, List<List<Integer>>> levelObjectsLists = new HashMap<>();
+    public static final HashMap<String, List<Object>> levelExtraDataLists = new HashMap<>();
+    public static final HashMap<String, Boolean> levelHasExtraData = new HashMap<>();
 
     public static ArrayList<Object> getList(String string) {
         switch (string) {
