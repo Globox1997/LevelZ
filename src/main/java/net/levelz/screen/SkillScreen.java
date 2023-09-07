@@ -78,7 +78,10 @@ public class SkillScreen extends Screen implements Tab {
 
         for (int i = 0; i < this.skillButtons.length; i++) {
             final int skillInt = i;
-            this.skillButtons[i] = this.addDrawableChild(new WidgetButtonPage(this.x + 15 + (i > 5 ? 90 : 0), this.y + 90 + i * 20 - (i > 5 ? 120 : 0), 16, 16, i * 16, 16, false, true,
+            final int indexX = i % 2;
+            final int indexY = i / 2;
+
+            this.skillButtons[i] = this.addDrawableChild(new WidgetButtonPage(this.x + 15 + indexX * 90, this.y + 90 + indexY * 20, 16, 16, i * 16, 16, false, true,
                     Text.translatable("spritetip.levelz." + Skill.values()[i].getName().toLowerCase() + "_skill"), button -> {
                         this.client.setScreen(new SkillInfoScreen(Skill.values()[skillInt].getName().toLowerCase()));
                     }));
@@ -89,7 +92,7 @@ public class SkillScreen extends Screen implements Tab {
                     this.skillButtons[i].addTooltip(tooltip);
                 }
             }
-            this.levelButtons[i] = this.addDrawableChild(new WidgetButtonPage(this.x + 83 + (i > 5 ? 90 : 0), this.y + 92 + i * 20 - (i > 5 ? 120 : 0), 13, 13, 33, 42, true, true, null, button -> {
+            this.levelButtons[i] = this.addDrawableChild(new WidgetButtonPage(this.x + 83 + indexX * 90, this.y + 92 + indexY * 20, 13, 13, 33, 42, true, true, null, button -> {
                 int level = 1;
                 if (((WidgetButtonPage) button).wasRightButtonClicked()) {
                     level = 5;
@@ -205,7 +208,7 @@ public class SkillScreen extends Screen implements Tab {
             // Small icons text
             for (int o = 0; o < Skill.getSkillCount(); o++) {
                 Text currentLevelText = Text.translatable("text.levelz.gui.current_level", playerStatsManager.getSkillLevel(Skill.values()[o]), ConfigInit.CONFIG.maxLevel);
-                context.drawText(this.textRenderer, currentLevelText, this.x - this.textRenderer.getWidth(currentLevelText) / 2 + 57 + (o > 5 ? 90 : 0), this.y + 95 + o * 20 - (o > 5 ? 120 : 0),
+                context.drawText(this.textRenderer, currentLevelText, this.x - this.textRenderer.getWidth(currentLevelText) / 2 + 57 + (o % 2) * 90, this.y + 95 + (o / 2) * 20,
                         0x3F3F3F, false);
             }
         }
@@ -323,7 +326,7 @@ public class SkillScreen extends Screen implements Tab {
             RenderSystem.enableBlend();
             RenderSystem.enableDepthTest();
             int i = hoverOutline ? this.getTextureY() : 0;
-            context.drawTexture(ICON_TEXTURES, this.getX(), this.getY(), this.textureX + i * this.width, this.textureY, this.width, this.height);
+            IconsStitcher.drawTexture(context, this.getX(), this.getY(), this.textureX + i * this.width, this.textureY, this.width, this.height);
             context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             if (this.isHovered()) {
                 context.drawTooltip(minecraftClient.textRenderer, this.tooltip, mouseX, mouseY);
