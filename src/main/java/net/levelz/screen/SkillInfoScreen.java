@@ -1,14 +1,12 @@
 package net.levelz.screen;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
-import net.levelz.screen.widget.SkillScrollableWidget;
+import net.levelz.screen.SkillInfoScreens.*;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
 import net.minecraft.client.gui.DrawContext;
@@ -21,21 +19,32 @@ public class SkillInfoScreen extends Screen implements Tab {
 
     public static final Identifier BACKGROUND_TEXTURE = new Identifier("levelz:textures/gui/skill_info_background.png");
 
-    private int backgroundWidth = 200;
-    private int backgroundHeight = 215;
+    private final int backgroundWidth = 200;
+    private final int backgroundHeight = 215;
     private int x;
     private int y;
 
     private final String title;
 
-    private Text translatableText1A = null;
-    private Text translatableText1B = null;
-    private Text translatableText2A = null;
-    private Text translatableText2B = null;
-    private Text translatableText3A = null;
-    private Text translatableText3B = null;
-    private Text translatableText6A = null;
-    private Text translatableText6B = null;
+    private static final ArrayList<ISkillInfoScreen> infoScreens = new ArrayList<>();
+    static {
+        infoScreens.add(new HealthInfoScreen());
+        infoScreens.add(new StrengthInfoScreen());
+        infoScreens.add(new AgilityInfoScreen());
+        infoScreens.add(new DefenseInfoScreen());
+        infoScreens.add(new StaminaInfoScreen());
+        infoScreens.add(new LuckInfoScreen());
+        infoScreens.add(new ArcheryInfoScreen());
+        infoScreens.add(new TradeInfoScreen());
+        infoScreens.add(new SmithingInfoScreen());
+        infoScreens.add(new MiningInfoScreen());
+        infoScreens.add(new FarmingInfoScreen());
+        infoScreens.add(new AlchemyInfoScreen());
+    }
+
+    public static void addScreen(ISkillInfoScreen screen){
+        infoScreens.add(screen);
+    }
 
     public SkillInfoScreen(String title) {
         super(Text.of(title));
@@ -49,130 +58,19 @@ public class SkillInfoScreen extends Screen implements Tab {
         this.x = (this.width - this.backgroundWidth) / 2;
         this.y = (this.height - this.backgroundHeight) / 2;
 
-        switch (this.title) {
-        case "health":
-            this.translatableText1A = Text.translatable("text.levelz.health_info_1", ConfigInit.CONFIG.healthBase);
-            this.translatableText2A = Text.translatable("text.levelz.health_info_2_1", ConfigInit.CONFIG.healthBonus);
-            this.translatableText2B = Text.translatable("text.levelz.health_info_2_2", ConfigInit.CONFIG.healthBonus);
-            this.translatableText6A = Text.translatable("text.levelz.health_max_lvl_1", ConfigInit.CONFIG.healthAbsorptionBonus);
-            this.translatableText6B = Text.translatable("text.levelz.health_max_lvl_2", ConfigInit.CONFIG.healthAbsorptionBonus);
-            break;
-        case "strength":
-            this.translatableText1A = Text.translatable("text.levelz.strength_info_1", ConfigInit.CONFIG.attackBase);
-            this.translatableText2A = Text.translatable("text.levelz.strength_info_2_1", ConfigInit.CONFIG.attackBonus);
-            this.translatableText2B = Text.translatable("text.levelz.strength_info_2_2", ConfigInit.CONFIG.attackBonus);
-            this.translatableText6A = Text.translatable("text.levelz.strength_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.attackDoubleDamageChance * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.strength_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.attackDoubleDamageChance * 100F));
-            break;
-        case "agility":
-            this.translatableText1A = Text.translatable("text.levelz.agility_info_1", ConfigInit.CONFIG.movementBase);
-            this.translatableText2A = Text.translatable("text.levelz.agility_info_2_1", ConfigInit.CONFIG.movementBonus);
-            this.translatableText2B = Text.translatable("text.levelz.agility_info_2_2", ConfigInit.CONFIG.movementBonus);
-            this.translatableText3A = Text.translatable("text.levelz.agility_info_3_1", ConfigInit.CONFIG.movementFallBonus);
-            this.translatableText3B = Text.translatable("text.levelz.agility_info_3_2", ConfigInit.CONFIG.movementFallBonus);
-            this.translatableText6A = Text.translatable("text.levelz.agility_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.movementMissChance * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.agility_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.movementMissChance * 100F));
-            break;
-        case "defense":
-            this.translatableText1A = Text.translatable("text.levelz.defense_info_1", ConfigInit.CONFIG.defenseBase);
-            this.translatableText2A = Text.translatable("text.levelz.defense_info_2_1", ConfigInit.CONFIG.defenseBonus);
-            this.translatableText2B = Text.translatable("text.levelz.defense_info_2_2", ConfigInit.CONFIG.defenseBonus);
-            this.translatableText6A = Text.translatable("text.levelz.defense_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.defenseReflectChance * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.defense_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.defenseReflectChance * 100F));
-            break;
-        case "stamina":
-            this.translatableText1A = Text.translatable("text.levelz.stamina_info_1", ConfigInit.CONFIG.staminaBase);
-            this.translatableText2A = Text.translatable("text.levelz.stamina_info_2_1", ConfigInit.CONFIG.staminaBonus);
-            this.translatableText2B = Text.translatable("text.levelz.stamina_info_2_2", ConfigInit.CONFIG.staminaBonus);
-            this.translatableText3A = Text.translatable("text.levelz.stamina_info_3_1", ConfigInit.CONFIG.staminaHealthBonus);
-            this.translatableText3B = Text.translatable("text.levelz.stamina_info_3_2", ConfigInit.CONFIG.staminaHealthBonus);
-            this.translatableText6A = Text.translatable("text.levelz.stamina_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.staminaFoodBonus * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.stamina_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.staminaFoodBonus * 100F));
-            break;
-        case "luck":
-            this.translatableText1A = Text.translatable("text.levelz.luck_info_1", ConfigInit.CONFIG.luckBase);
-            this.translatableText1B = Text.translatable("text.levelz.luck_info_1_2");
-            this.translatableText2A = Text.translatable("text.levelz.luck_info_2_1", ConfigInit.CONFIG.luckBonus);
-            this.translatableText2B = Text.translatable("text.levelz.luck_info_2_2", ConfigInit.CONFIG.luckBonus);
-            this.translatableText3A = Text.translatable("text.levelz.luck_info_3_1", ConfigInit.CONFIG.luckCritBonus);
-            this.translatableText3B = Text.translatable("text.levelz.luck_info_3_2", ConfigInit.CONFIG.luckCritBonus);
-            this.translatableText6A = Text.translatable("text.levelz.luck_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.luckSurviveChance * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.luck_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.luckSurviveChance * 100F));
-            break;
-        case "archery":
-            this.translatableText2A = Text.translatable("text.levelz.archery_info_2_1", ConfigInit.CONFIG.archeryBowExtraDamage);
-            this.translatableText2B = Text.translatable("text.levelz.archery_info_2_2", ConfigInit.CONFIG.archeryBowExtraDamage);
-            this.translatableText3A = Text.translatable("text.levelz.archery_info_3_1", ConfigInit.CONFIG.archeryCrossbowExtraDamage);
-            this.translatableText3B = Text.translatable("text.levelz.archery_info_3_2", ConfigInit.CONFIG.archeryCrossbowExtraDamage);
-            this.translatableText6A = Text.translatable("text.levelz.archery_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.archeryDoubleDamageChance * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.archery_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.archeryDoubleDamageChance * 100F));
-            break;
-        case "trade":
-            this.translatableText2A = Text.translatable("text.levelz.trade_info_2_1", ConfigInit.CONFIG.tradeXPBonus);
-            this.translatableText2B = Text.translatable("text.levelz.trade_info_2_2", ConfigInit.CONFIG.tradeXPBonus);
-            this.translatableText3A = Text.translatable("text.levelz.trade_info_3_1", ConfigInit.CONFIG.tradeBonus);
-            this.translatableText3B = Text.translatable("text.levelz.trade_info_3_2", ConfigInit.CONFIG.tradeBonus);
-            this.translatableText6A = Text.translatable("text.levelz.trade_max_lvl_1", ConfigInit.CONFIG.tradeReputation);
-            this.translatableText6B = Text.translatable("text.levelz.trade_max_lvl_2", ConfigInit.CONFIG.tradeReputation);
-            break;
-        case "smithing":
-            this.translatableText2A = Text.translatable("text.levelz.smithing_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingToolChance * 100F));
-            this.translatableText2B = Text.translatable("text.levelz.smithing_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingToolChance * 100F));
-            this.translatableText3A = Text.translatable("text.levelz.smithing_info_3_1", ConfigInit.CONFIG.smithingCostBonus);
-            this.translatableText3B = Text.translatable("text.levelz.smithing_info_3_2", ConfigInit.CONFIG.smithingCostBonus);
-            this.translatableText6A = Text.translatable("text.levelz.smithing_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.smithing_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.smithingAnvilChance * 100F));
-
-            this.addDrawableChild(new SkillScreen.WidgetButtonPage(this.x + 180, this.y + 7, 12, 9, 45, 80, false, true, null, button -> {
-                this.client.setScreen(new SkillListScreen(this.title));
-            }));
-            break;
-        case "mining":
-            this.translatableText1A = Text.translatable("text.levelz.mining_info_1");
-            this.translatableText2A = Text.translatable("text.levelz.mining_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningOreChance * 100F));
-            this.translatableText2B = Text.translatable("text.levelz.mining_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningOreChance * 100F));
-            this.translatableText6A = Text.translatable("text.levelz.mining_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.mining_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.miningTntBonus * 100F));
-
-            this.addDrawableChild(new SkillScreen.WidgetButtonPage(this.x + 180, this.y + 7, 12, 9, 45, 80, false, true, null, button -> {
-                this.client.setScreen(new SkillListScreen(this.title));
-            }));
-            break;
-        case "farming":
-            this.translatableText2A = Text.translatable("text.levelz.farming_info_2_1", ConfigInit.CONFIG.farmingBase);
-            this.translatableText2B = Text.translatable("text.levelz.farming_info_2_2", ConfigInit.CONFIG.farmingBase);
-            this.translatableText3A = Text.translatable("text.levelz.farming_info_3_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingChanceBonus * 100F));
-            this.translatableText3B = Text.translatable("text.levelz.farming_info_3_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingChanceBonus * 100F));
-            this.translatableText6A = Text.translatable("text.levelz.farming_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingTwinChance * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.farming_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.farmingTwinChance * 100F));
-            break;
-        case "alchemy":
-            this.translatableText1A = Text.translatable("text.levelz.alchemy_info_1");
-            this.translatableText1B = Text.translatable("text.levelz.alchemy_info_1_2");
-            this.translatableText2A = Text.translatable("text.levelz.alchemy_info_2_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyEnchantmentChance * 100F));
-            this.translatableText2B = Text.translatable("text.levelz.alchemy_info_2_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyEnchantmentChance * 100F));
-            this.translatableText6A = Text.translatable("text.levelz.alchemy_max_lvl_1", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
-            this.translatableText6B = Text.translatable("text.levelz.alchemy_max_lvl_2", new DecimalFormat("0.0").format(ConfigInit.CONFIG.alchemyPotionChance * 100F));
-
-            this.addDrawableChild(new SkillScreen.WidgetButtonPage(this.x + 180, this.y + 7, 12, 9, 45, 80, false, true, null, button -> {
-                this.client.setScreen(new SkillListScreen(this.title));
-            }));
-            break;
-        default:
-            break;
+        for(ISkillInfoScreen screen : infoScreens){
+            if(screen.getStat().equals(title)){
+                var widgets = screen.getWidgets(x, y, textRenderer);
+                var listButton = screen.getSkillList(x, y, textRenderer, client);
+                if(listButton != null){
+                    this.addDrawableChild(listButton);
+                }
+                for(var widget : widgets){
+                    this.addDrawableChild(widget);
+                }
+                return;
+            }
         }
-
-        List<Text> list = new ArrayList<Text>();
-        list.add(translatableText1A);
-        list.add(translatableText1B);
-        list.add(translatableText2A);
-        list.add(translatableText2B);
-        list.add(translatableText3A);
-        list.add(translatableText3B);
-        list.add(translatableText6A);
-        list.add(translatableText6B);
-
-        this.addDrawableChild(new SkillScrollableWidget(this.x + 10, this.y + 22, 183, 185, list, this.title, this.textRenderer));
     }
 
     @Override

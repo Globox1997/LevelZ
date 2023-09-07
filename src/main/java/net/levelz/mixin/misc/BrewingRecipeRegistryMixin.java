@@ -15,14 +15,18 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.Potions;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 
+import java.util.ArrayList;
+
 @Mixin(BrewingRecipeRegistry.class)
 public class BrewingRecipeRegistryMixin {
 
     @Inject(method = "registerPotionRecipe", at = @At(value = "HEAD"))
     private static void registerPotionRecipe(Potion input, Item item, Potion output, CallbackInfo info) {
         if (output != Potions.MUNDANE && output != Potions.THICK) {
-            LevelLists.potionList.add(item);
-            LevelLists.potionList.add(output);
+            var potionList = LevelLists.levelExtraDataLists.getOrDefault("alchemy", new ArrayList<>());
+            potionList.add(item);
+            potionList.add(output);
+            LevelLists.levelExtraDataLists.put("alchemy", potionList);
         }
     }
 

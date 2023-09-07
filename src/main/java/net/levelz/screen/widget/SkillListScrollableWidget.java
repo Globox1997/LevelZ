@@ -104,9 +104,9 @@ public class SkillListScrollableWidget extends ScrollableWidget {
                     tooltip.add(item.getName());
                     stack = item.getDefaultStack();
 
-                    if (BrewingRecipeRegistry.isValidIngredient(item.getDefaultStack()) && LevelLists.potionList.contains(item)) {
-                        int index = LevelLists.potionList.indexOf(item);
-                        Potion potion = (Potion) LevelLists.potionList.get(index + 1);
+                    if (BrewingRecipeRegistry.isValidIngredient(item.getDefaultStack()) && LevelLists.levelExtraDataLists.getOrDefault("alchemy", new ArrayList<>()).contains(item)) {
+                        int index = LevelLists.levelExtraDataLists.get("alchemy").indexOf(item);
+                        Potion potion = (Potion) LevelLists.levelExtraDataLists.get("alchemy").get(index + 1);
                         ItemStack potionStack = PotionUtil.setPotion(new ItemStack(Items.POTION), potion);
                         tooltip.add(Text.of("Ingredient for " + Text.translatable(((PotionItem) PotionUtil.setPotion(potionStack, potion).getItem()).getTranslationKey(potionStack)).getString()));
                     }
