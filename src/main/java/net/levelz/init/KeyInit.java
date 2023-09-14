@@ -15,25 +15,17 @@ import net.minecraft.client.util.InputUtil;
 
 @Environment(EnvType.CLIENT)
 public class KeyInit {
-    public static KeyBinding screenKey;
-    public static KeyBinding devKey;
-    private static boolean keyBoolean;
+    public static KeyBinding screenKey = new KeyBinding("key.levelz.openskillscreen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "category.levelz.keybind");
+    public static KeyBinding devKey = new KeyBinding("key.levelz.dev", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F8, "category.levelz.keybind");
 
     public static void init() {
-        // Keybinds
-        screenKey = new KeyBinding("key.levelz.openskillscreen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "category.levelz.keybind");
-        devKey = new KeyBinding("key.levelz.dev", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F8, "category.levelz.keybind");
         // Registering
         KeyBindingHelper.registerKeyBinding(screenKey);
         // Callback
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (screenKey.wasPressed()) {
-                if (!keyBoolean) {
-                    client.setScreen(new SkillScreen());
-                }
-                keyBoolean = true;
-            } else if (keyBoolean) {
-                keyBoolean = false;
+                client.setScreen(new SkillScreen());
+                return;
             }
         });
     }
