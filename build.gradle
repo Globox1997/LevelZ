@@ -77,7 +77,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // TreeChop
-    modCompileOnly ('maven.modrinth:treechop:0.18.4') {
+    modCompileOnly ('maven.modrinth:treechop:0.18.3') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Alloygery

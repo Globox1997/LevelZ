@@ -37,7 +37,6 @@
     "compat.EasyMagicEnchantingTableMixin",
     "compat.EasyAnvilsAnvilMixin",
     "compat.CosmeticArmorMixin",
-    "compat.ChopResultMixin",
     "compat.SmithingAnvilScreenHandlerMixin",
     "compat.BlockBreakerMixin",
     "entity.EntityAccessor",
