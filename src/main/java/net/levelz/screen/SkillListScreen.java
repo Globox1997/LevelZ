@@ -88,9 +88,10 @@ public class SkillListScreen extends Screen implements Tab {
         context.drawTexture(SkillInfoScreen.BACKGROUND_TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
         context.drawText(this.textRenderer, Text.translatable("text.levelz.locked_list", Text.translatable(String.format("spritetip.levelz.%s_skill", this.title))), this.x + 6, this.y + 7, 0x3F3F3F,
                 false);
-        DrawTabHelper.drawTab(client, context, this, x, y, mouseX, mouseY);
 
         super.render(context, mouseX, mouseY, delta);
+        DrawTabHelper.drawTab(client, context, this, x, y, mouseX, mouseY);
+
     }
 
     @Override

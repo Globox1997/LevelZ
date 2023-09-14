@@ -218,8 +218,8 @@ public class SkillScreen extends Screen implements Tab {
         context.drawTexture(ICON_TEXTURES, this.x + 155, this.y + 21, 36, 0, 9, 9); // foodIcon
         context.drawTexture(ICON_TEXTURES, this.x + 155, this.y + 34, 45, 0, 9, 9); // fortuneIcon
 
-        DrawTabHelper.drawTab(client, context, this, x, y, mouseX, mouseY);
         super.render(context, mouseX, mouseY, delta);
+        DrawTabHelper.drawTab(client, context, this, x, y, mouseX, mouseY);
     }
 
     @Override
