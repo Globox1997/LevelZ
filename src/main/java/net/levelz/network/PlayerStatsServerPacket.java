@@ -1,8 +1,8 @@
 package net.levelz.network;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.PlayerStatsManagerAccess;
@@ -32,7 +32,6 @@ public class PlayerStatsServerPacket {
     public static final Identifier RESET_PACKET = new Identifier("levelz", "reset_skill");
     public static final Identifier LEVEL_EXPERIENCE_ORB_PACKET = new Identifier("levelz", "level_experience_orb");
     public static final Identifier SEND_CONFIG_SYNC_PACKET = new Identifier("levelz", "send_config_sync_packet");
-    public static final Identifier CONFIG_SYNC_PACKET = new Identifier("levelz", "config_sync_packet");
     public static final Identifier TAG_PACKET = new Identifier("levelz", "tag_packet");
     public static final Identifier SEND_TAG_PACKET = new Identifier("levelz", "send_tag_packet");
     public static final Identifier LEVEL_UP_BUTTON_PACKET = new Identifier("levelz", "level_up_button");
@@ -80,10 +79,6 @@ public class PlayerStatsServerPacket {
                 }
 
             });
-        });
-
-        ServerPlayNetworking.registerGlobalReceiver(SEND_CONFIG_SYNC_PACKET, (server, player, handler, buffer, sender) -> {
-            writeS2CConfigSyncPacket(player, ConfigInit.CONFIG.getConfigList());
         });
         ServerPlayNetworking.registerGlobalReceiver(SEND_TAG_PACKET, (server, player, handler, buffer, sender) -> {
             writeS2CTagPacket(player, buffer.readIdentifier());
@@ -189,22 +184,6 @@ public class PlayerStatsServerPacket {
         }
     }
 
-    public static void writeS2CConfigSyncPacket(ServerPlayerEntity serverPlayerEntity, List<Object> list) {
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof Integer)
-                buf.writeInt((int) list.get(i));
-            else if (list.get(i) instanceof Float)
-                buf.writeFloat((float) list.get(i));
-            else if (list.get(i) instanceof Double)
-                buf.writeDouble((double) list.get(i));
-            else if (list.get(i) instanceof Boolean)
-                buf.writeBoolean((boolean) list.get(i));
-        }
-        CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(CONFIG_SYNC_PACKET, buf);
-        serverPlayerEntity.networkHandler.sendPacket(packet);
-    }
-
     public static void writeS2CTagPacket(ServerPlayerEntity serverPlayerEntity, Identifier identifier) {
         // PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         // System.out.println(Blocks.ACACIA_LOG.getRegistryEntry().isIn(BlockTags.ACACIA_LOGS));
@@ -250,9 +229,54 @@ public class PlayerStatsServerPacket {
                 buf.writeString(LevelLists.craftingItemList.get(k).get(u).toString());
             }
         }
+
         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LIST_PACKET, buf);
         serverPlayerEntity.networkHandler.sendPacket(packet);
+
+        // TEST
+        // System.out.println("????!!!");
+        // System.out.println(buf.arrayOffset() + " : " + buf.capacity());
+        // System.out.println("????!!!" + buf.array());
+        // buf.
+
+        // PacketByteBuf[] smallerPackets = splitPacket(buf, 1144);
+
+        // // Use the smaller packets as needed
+        // for (PacketByteBuf packet : smallerPackets) {
+        // System.out.println("OK");
+        // // Process each smaller packet
+        // CustomPayloadS2CPacket s2cPacket = new CustomPayloadS2CPacket(LIST_PACKET, packet);
+        // // System.out.println("????!!! " + packet.getData());
+        // serverPlayerEntity.networkHandler.sendPacket(s2cPacket);
+        // }
+        // System.out.println("Finished");
+        // CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(LIST_PACKET, buf);
+        // // System.out.println("????!!! " + packet.getData());
+        // serverPlayerEntity.networkHandler.sendPacket(packet, PacketCallbacks.of(() -> {
+        // System.out.println("TEST");
+        // return null;
+        // }));
     }
+
+    private static PacketByteBuf[] splitPacket(PacketByteBuf originalPacket, int maxSize) {
+        int totalBytes = originalPacket.readableBytes();
+        int numPackets = (int) Math.ceil((double) totalBytes / maxSize);
+
+        PacketByteBuf[] packets = new PacketByteBuf[numPackets];
+        PooledByteBufAllocator allocator = PooledByteBufAllocator.DEFAULT;
+
+        for (int i = 0; i < numPackets; i++) {
+            int bytesToRead = Math.min(maxSize, totalBytes);
+            PacketByteBuf packet = new PacketByteBuf(allocator.buffer(bytesToRead));
+            packet.writeBytes(originalPacket, bytesToRead);
+            packets[i] = packet;
+
+            totalBytes -= bytesToRead;
+        }
+
+        return packets;
+    }
+    // TEST END
 
     public static void writeS2CResetSkillPacket(ServerPlayerEntity serverPlayerEntity, Skill skill) {
         // Sync attributes on server

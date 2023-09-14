@@ -1,17 +1,15 @@
 package net.levelz.config;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.levelz.init.ConfigInit;
+import net.libz.api.ConfigSync;
 
 @Config(name = "levelz")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
-public class LevelzConfig implements ConfigData {
+public class LevelzConfig implements ConfigData, ConfigSync {
 
     // Level settings
     @ConfigEntry.Category("level_settings")
@@ -45,9 +43,10 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("level_settings")
     @Comment("Strange potion resets all stats instead of one")
     public boolean opStrangePotion = false;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("level_settings")
     @Comment("restrict hand usage when item not unlocked")
-    public boolean lockedHandUsage = false; // Client only
+    public boolean lockedHandUsage = false;
     @ConfigEntry.Category("level_settings")
     @Comment("Only for Devs")
     public boolean devMode = false;
@@ -168,34 +167,42 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Category("experience_settings")
     public float mobXPMultiplier = 1.0F;
 
-    @ConfigEntry.Category("gui_settings")
-    @Comment("Show the skill gui button in the inventory")
-    public boolean inventoryButton = true; // Client only
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
     @Comment("Highlight locked blocks in red.")
-    public boolean highlightLocked = false; // Client only
+    public boolean highlightLocked = false;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public boolean sortCraftingRecipesBySkill = false; // Client only
+    public boolean sortCraftingRecipesBySkill = false;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public boolean inventorySkillLevel = true; // Client only
+    public boolean inventorySkillLevel = true;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public int inventorySkillLevelPosX = 0; // Client only
+    public int inventorySkillLevelPosX = 0;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public int inventorySkillLevelPosY = 0; // Client only
+    public int inventorySkillLevelPosY = 0;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
     @ConfigEntry.Gui.RequiresRestart
-    public boolean showLevelList = true; // Client only
+    public boolean showLevelList = true;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public boolean showLevel = true; // Client only
+    public boolean showLevel = true;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
     @Comment("Switch levelz screen instead of closing with inventory key")
-    public boolean switch_screen = false; // Client only
+    public boolean switch_screen = false;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public boolean showLockedBlockInfo = false; // Client only
+    public boolean showLockedBlockInfo = false;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public int lockedBlockInfoPosX = 0; // Client only
+    public int lockedBlockInfoPosX = 0;
+    @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public int lockedBlockInfoPosY = 0; // Client only
+    public int lockedBlockInfoPosY = 0;
 
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart
@@ -216,16 +223,9 @@ public class LevelzConfig implements ConfigData {
     @ConfigEntry.Gui.RequiresRestart
     public boolean smithingProgression = true;
 
-    // List.of is immutable
-    // Arrays.asList returns an ArrayList of the Arrays class which is different to the ArrayList class
-    // Returns a list which should be synced to the client
-    public ArrayList<Object> getConfigList() {
-        return new ArrayList<Object>(Arrays.asList(maxLevel, overallMaxLevel, allowHigherSkillLevel, healthBase, healthBonus, healthAbsorptionBonus, movementBase, movementBonus, movementMissChance,
-                movementFallBonus, attackBase, attackBonus, attackDoubleDamageChance, attackCritDmgBonus, defenseBase, defenseBonus, defenseReflectChance, luckBase, luckBonus, luckCritBonus,
-                luckSurviveChance, staminaBase, staminaBonus, staminaHealthBonus, staminaFoodBonus, tradeBonus, tradeXPBonus, tradeReputation, smithingCostBonus, smithingToolChance,
-                smithingAnvilChance, farmingBase, farmingChanceBonus, farmingTwinChance, alchemyEnchantmentChance, alchemyPotionChance, archeryInaccuracyBonus, archeryBowExtraDamage,
-                archeryCrossbowExtraDamage, archeryDoubleDamageChance, miningOreChance, miningTntBonus, bindAxeDamageToSwordRestriction, useIndependentExp, xpCostMultiplicator, xpExponent,
-                xpBaseCost, xpMaxCost, miningProgression, itemProgression, blockProgression, entityProgression, brewingProgression, smithingProgression));
+    @Override
+    public void updateConfig(ConfigData data) {
+        ConfigInit.CONFIG = (LevelzConfig) data;
     }
 
 }
