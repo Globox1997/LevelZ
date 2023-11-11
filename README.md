@@ -16,7 +16,7 @@ LevelZ is licensed under GPLv3.
 
 Most of the mods default settings can get changed via datapacks, Player attribute affecting settings can get changed via
 the config file.\
-If you don't know how to create a datapack check out [Data Pack Wiki](https://minecraft.fandom.com/wiki/Data_Pack)
+If you don't know how to create a datapack check out [Data Pack Wiki](https://minecraft.wiki/w/Data_Pack)
 website and try to create your first one for the vanilla game.\
 If you know how to create one, the folder path has to be ```data\levelz\FOLDER\YOURFILE.json```\
 Caution! Make sure you name the files differently than the existing ones.\
@@ -197,7 +197,7 @@ should look like is here:
 ```
 
 It looks the slots of the brewing table, so players can't insert items to brew the resulting potion before they reached
-the level. A list of the brewing items can be found here [Brewing Wiki](https://minecraft.fandom.com/wiki/Brewing). It
+the level. A list of the brewing items can be found here [Brewing Wiki](https://minecraft.wiki/w/Brewing). It
 is hardcoded to the alchemy skill.
 
 #### 5. Mining
