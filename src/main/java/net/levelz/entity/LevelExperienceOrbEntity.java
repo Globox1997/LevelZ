@@ -37,7 +37,7 @@ public class LevelExperienceOrbEntity extends Entity {
     private Map<Integer, Integer> clumpedMap;
 
     public LevelExperienceOrbEntity(World world, double x, double y, double z, int amount) {
-        this((EntityType<? extends LevelExperienceOrbEntity>) EntityInit.LEVEL_EXPERIENCE_ORB, world);
+        this(EntityInit.LEVEL_EXPERIENCE_ORB, world);
         this.setPosition(x, y, z);
         this.setYaw((float) (this.random.nextDouble() * 360.0));
         this.setVelocity((this.random.nextDouble() * (double) 0.2f - (double) 0.1f) * 2.0, this.random.nextDouble() * 0.2 * 2.0, (this.random.nextDouble() * (double) 0.2f - (double) 0.1f) * 2.0);
@@ -116,14 +116,15 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     public static void spawn(ServerWorld world, Vec3d pos, int amount) {
-        if (!ConfigInit.CONFIG.useIndependentExp)
+        if (!ConfigInit.CONFIG.useIndependentExp) {
             return;
-
+        }
         while (amount > 0) {
             int i = LevelExperienceOrbEntity.roundToOrbSize(amount);
             amount -= i;
-            if (LevelExperienceOrbEntity.wasMergedIntoExistingOrb(world, pos, i))
+            if (LevelExperienceOrbEntity.wasMergedIntoExistingOrb(world, pos, i)) {
                 continue;
+            }
             world.spawnEntity(new LevelExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), i));
         }
     }
@@ -174,6 +175,9 @@ public class LevelExperienceOrbEntity extends Entity {
         if (this.isInvulnerableTo(source)) {
             return false;
         }
+        if (this.getWorld().isClient()) {
+            return true;
+        }
         this.scheduleVelocityUpdate();
         this.health = (int) ((float) this.health - amount);
         if (this.health <= 0) {
@@ -215,19 +219,15 @@ public class LevelExperienceOrbEntity extends Entity {
 
     @Override
     public void onPlayerCollision(PlayerEntity player) {
-        if (!this.getWorld().isClient()) {
-            if (player.experiencePickUpDelay != 0) {
-                return;
-            }
-            // player.experiencePickUpDelay = 0;
+        if (!this.getWorld().isClient() && player.experiencePickUpDelay == 0 && this.orbAge > 20) {
             player.experiencePickUpDelay = 2;
             player.sendPickup(this, 1);
             getClumpedMap().forEach((value, amount) -> {
                 ((PlayerSyncAccess) player).addLevelExperience(value * amount);
             });
-
             this.discard();
         }
+
     }
 
     public int getExperienceAmount() {
