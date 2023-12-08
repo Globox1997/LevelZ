@@ -1,7 +1,7 @@
 ### Added:
 - 
 ### Fixed:
-- Fixed treechop incompat
-- Fixed tab tooltip
+- Fixed xp bug
+- Fixed shield restriction
 ### Changed:
 - 
