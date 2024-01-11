@@ -13,10 +13,11 @@ public class SkillPredicate {
     }
 
     public boolean test(String jobName) {
-        if (this.jobName.equals(jobName))
+        if (this.jobName.equals(jobName)) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     public static SkillPredicate fromJson(JsonElement json) {

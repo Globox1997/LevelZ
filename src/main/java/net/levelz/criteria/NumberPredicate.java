@@ -12,10 +12,11 @@ public class NumberPredicate {
     }
 
     public boolean test(int level) {
-        if (this.levelZ == level)
+        if (this.levelZ == 0 || this.levelZ == level) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     public static NumberPredicate fromJson(JsonElement json) {

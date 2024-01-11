@@ -4,4 +4,4 @@
 - Fixed armor switching
 - Fixed rei tooltip issue
 ### Changed:
-- 
+- Tweaked advancement criteria
