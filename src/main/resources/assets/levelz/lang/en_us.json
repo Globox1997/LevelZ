@@ -87,6 +87,7 @@
   "text.autoconfig.levelz.option.oreXPMultiplier": "Ore XP Multiplier",
   "text.autoconfig.levelz.option.tradingXPMultiplier": "Trading XP Multiplier",
   "text.autoconfig.levelz.option.mobXPMultiplier": "Mob XP Multiplier",
+  "text.autoconfig.levelz.option.spawnerMobXP": "Spawner Mob XP",
 
   "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
   "text.autoconfig.levelz.option.inventoryButton": "Inventory Button",

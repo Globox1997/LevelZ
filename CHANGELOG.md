@@ -1,7 +1,6 @@
 ### Added:
-- 
+- Added spawner mob xp config option
 ### Fixed:
-- Fixed xp bug
-- Fixed shield restriction
+- 
 ### Changed:
 - 

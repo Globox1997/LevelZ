@@ -166,6 +166,8 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public float tradingXPMultiplier = 0.3F;
     @ConfigEntry.Category("experience_settings")
     public float mobXPMultiplier = 1.0F;
+    @ConfigEntry.Category("experience_settings")
+    public boolean spawnerMobXP = false;
 
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")

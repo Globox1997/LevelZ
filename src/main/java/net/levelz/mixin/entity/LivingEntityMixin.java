@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.levelz.access.MobEntityAccess;
 import net.levelz.access.PlayerDropAccess;
 import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.data.LevelLists;
@@ -24,6 +25,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
@@ -95,11 +97,14 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "dropXp", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
     protected void dropXpMixin(CallbackInfo info) {
         if (ConfigInit.CONFIG.mobXPMultiplier > 0.0F) {
-            LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(),
-                    (int) (this.getXpToDrop() * ConfigInit.CONFIG.mobXPMultiplier
-                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.attackingPlayer != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.attackingPlayer).getPlayerStatsManager().getOverallLevel()
-                                    : 1.0F)));
+            if (!ConfigInit.CONFIG.spawnerMobXP && (Object) this instanceof MobEntity mobEntity && ((MobEntityAccess) mobEntity).isSpawnerMob()) {
+            } else {
+                LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(),
+                        (int) (this.getXpToDrop() * ConfigInit.CONFIG.mobXPMultiplier
+                                * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.attackingPlayer != null
+                                        ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) this.attackingPlayer).getPlayerStatsManager().getOverallLevel()
+                                        : 1.0F)));
+            }
         }
     }
 
