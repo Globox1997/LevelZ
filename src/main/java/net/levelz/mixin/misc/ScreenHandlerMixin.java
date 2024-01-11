@@ -46,6 +46,35 @@ public class ScreenHandlerMixin {
     @Mutable
     public DefaultedList<Slot> slots = DefaultedList.of();
 
+    @Inject(method = "internalOnSlotClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;canCombine(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z", ordinal = 0), cancellable = true)
+    private void internalOnSlotClickNewMixin(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo info) {
+        if (8 - MobEntity.getPreferredEquipmentSlot(cursorStack).getEntitySlotId() == slotIndex
+                && (this.slots.get(slotIndex).toString().contains("PlayerScreenHandler") || this.slots.get(slotIndex).toString().contains("class_1723"))) {
+            if (cursorStack.getItem() instanceof ArmorItem armorItem) {
+                ArrayList<Object> levelList = LevelLists.customItemList;
+                try {
+                    if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(armorItem).toString())) {
+                        if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(armorItem).toString(), true))
+                            info.cancel();
+                    } else {
+                        levelList = LevelLists.armorList;
+                        if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, armorItem.getMaterial().getName().toLowerCase(), true))
+                            info.cancel();
+                    }
+                } catch (AbstractMethodError ignore) {
+                }
+            } else if (cursorStack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.elytraList, null, true)) {
+                info.cancel();
+            } else if (!LevelLists.customItemList.isEmpty() && LevelLists.customItemList.contains(Registries.ITEM.getId(cursorStack.getItem()).toString())
+                    && !PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, Registries.ITEM.getId(cursorStack.getItem()).toString(), true))
+                info.cancel();
+        } else if (type == ScreenHandlerType.BREWING_STAND && slotIndex == 3 && !cursorStack.isEmpty()) {
+            if (PlayerStatsManager.listContainsItemOrBlock(player, Registries.ITEM.getRawId(cursorStack.getItem()), 2) && !player.isCreative()) {
+                info.cancel();
+            }
+        }
+    }
+
     @Inject(method = "internalOnSlotClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ScreenHandler;setCursorStack(Lnet/minecraft/item/ItemStack;)V", ordinal = 2, shift = Shift.BEFORE), cancellable = true)
     private void internalOnSlotClickMixin(int slotIndex, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo info) {
         if (8 - MobEntity.getPreferredEquipmentSlot(cursorStack).getEntitySlotId() == slotIndex
