@@ -69,14 +69,16 @@ public class MinecraftClientMixin {
                     if (item instanceof SwordItem) {
                         levelList = LevelLists.swordList;
                     } else if (item instanceof AxeItem) {
-                        if (ConfigInit.CONFIG.bindAxeDamageToSwordRestriction && !blockBreaking)
+                        if (ConfigInit.CONFIG.bindAxeDamageToSwordRestriction && !blockBreaking) {
                             levelList = LevelLists.swordList;
-                        else
+                        } else {
                             levelList = LevelLists.axeList;
-                    } else if (item instanceof HoeItem)
+                        }
+                    } else if (item instanceof HoeItem) {
                         levelList = LevelLists.hoeList;
-                    else if (item instanceof PickaxeItem || item instanceof ShovelItem)
+                    } else if (item instanceof PickaxeItem || item instanceof ShovelItem) {
                         levelList = LevelLists.toolList;
+                    }
                     if (levelList != null && ((ToolItem) item).getMaterial() != null) {
                         String material = ((ToolItem) item).getMaterial().toString().toLowerCase();
                         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, true)) {

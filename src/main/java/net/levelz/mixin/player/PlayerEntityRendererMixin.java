@@ -33,10 +33,11 @@ public class PlayerEntityRendererMixin {
 
     @ModifyArg(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", ordinal = 1))
     protected Text renderLabelIfPresentMixin(Text original) {
-        if (ConfigInit.CONFIG.showLevel)
+        if (ConfigInit.CONFIG.showLevel) {
             return Team.decorateName(abstractClientPlayerEntity.getScoreboardTeam(),
                     Text.translatable("text.levelz.scoreboard", ((PlayerListAccess) abstractClientPlayerEntity).getLevel(), abstractClientPlayerEntity.getName()));
-        else
+        } else {
             return original;
+        }
     }
 }
