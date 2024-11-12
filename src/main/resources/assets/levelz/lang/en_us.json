@@ -1,7 +1,8 @@
 {
-  "commands.playerstats.changed": "%s stats got changed",
-  "commands.playerstats.printProgress": "%s XP: %s / %s",
-  "commands.playerstats.printLevel": "%s %s %s",
+  "commands.level.changed": "%s stats got changed",
+  "commands.level.failed": "Failed to set stats",
+  "commands.level.printProgress": "%s XP: %s / %s",
+  "commands.level.printLevel": "%s %s %s",
 
   "category.levelz.keybind": "LevelZ Keybinds",
   "key.levelz.openskillscreen": "Skill Screen",
@@ -112,6 +113,36 @@
   "item.levelz.strange_potion": "Strange Potion",
   "item.levelz.rare_candy": "Rare Candy",
 
+  "skill.levelz.info": "Skill Info",
+  "skill.levelz.farming": "Farming",
+  "skill.levelz.mining": "Mining",
+  "skill.levelz.strength": "Strength",
+  "skill.levelz.archery": "Archery",
+  "skill.levelz.defense": "Defense",
+  "skill.levelz.agility": "Agility",
+  "skill.levelz.smithing": "Smithing",
+  "skill.levelz.alchemy": "Alchemy",
+  "skill.levelz.health": "Health",
+  "skill.levelz.stamina": "Stamina",
+  "skill.levelz.luck": "Luck",
+  "skill.levelz.trade": "Trade",
+
+  "skill.levelz.health.extra.0": "Test Line 0",
+  "skill.levelz.health.extra.1": "Test Line 1",
+  "skill.levelz.health.extra.2": "Test Line 2",
+
+  "restriction.levelz.item_usage": "Item Usage",
+  "restriction.levelz.block_usage": "Block Usage",
+  "restriction.levelz.entity_usage": "Entity Usage",
+  "restriction.levelz.mining": "Mining",
+  "restriction.levelz.crafting": "Crafting",
+
+  "bonus.levelz.info": "Bonus Info",
+  "bonus.levelz.bowDamage": "Bow Damage",
+
+  "item.levelz.mineable.tooltip": "Mineable",
+  "item.levelz.usable.tooltip": "Usable",
+  "item.levelz.craftable.tooltip": "Craftable",
   "item.levelz.locked.tooltip": "Locked",
   "item.levelz.farming.tooltip": "Farming %d",
   "item.levelz.mining.tooltip": "Mining %d",
@@ -150,6 +181,7 @@
   "block.levelz.locked_with_level.tooltip": "Locked Level %d",
 
   "text.levelz.gui.title": "%s Skills",
+  "text.levelz.gui.attributes": "Attributes",
   "text.levelz.gui.level": "Level %d",
   "text.levelz.gui.points": "Points %d",
   "text.levelz.gui.short_level": "Lv. %d",

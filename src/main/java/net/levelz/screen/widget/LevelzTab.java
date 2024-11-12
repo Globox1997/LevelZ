@@ -2,9 +2,9 @@ package net.levelz.screen.widget;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.levelz.screen.SkillInfoScreen;
-import net.levelz.screen.SkillListScreen;
-import net.levelz.screen.SkillScreen;
+import net.levelz.screen.LevelInfoScreen;
+import net.levelz.screen.LevelRestrictionScreen;
+import net.levelz.screen.LevelScreen;
 import net.libz.api.InventoryTab;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -19,7 +19,7 @@ public class LevelzTab extends InventoryTab {
 
     @Override
     public boolean canClick(Class<?> screenClass, MinecraftClient client) {
-        if (screenClass.equals(SkillInfoScreen.class) || screenClass.equals(SkillListScreen.class)) {
+        if (screenClass.equals(LevelInfoScreen.class) || screenClass.equals(LevelRestrictionScreen.class)) {
             return true;
         }
         return super.canClick(screenClass, client);
@@ -27,7 +27,7 @@ public class LevelzTab extends InventoryTab {
 
     @Override
     public void onClick(MinecraftClient client) {
-        client.setScreen(new SkillScreen());
+        client.setScreen(new LevelScreen());
     }
 
 }

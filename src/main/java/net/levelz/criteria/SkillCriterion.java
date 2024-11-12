@@ -1,54 +1,41 @@
 package net.levelz.criteria;
 
-import com.google.gson.JsonObject;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.levelz.access.LevelManagerAccess;
+import net.levelz.level.LevelManager;
+import net.levelz.level.Skill;
 import net.minecraft.advancement.criterion.AbstractCriterion;
-import net.minecraft.advancement.criterion.AbstractCriterionConditions;
-import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
-import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
+import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+
+import java.util.Optional;
 
 public class SkillCriterion extends AbstractCriterion<SkillCriterion.Conditions> {
-    static final Identifier ID = new Identifier("levelz:skill");
 
     @Override
-    public Identifier getId() {
-        return ID;
-    }
-
-    @Override
-    protected Conditions conditionsFromJson(JsonObject jsonObject, LootContextPredicate lootContextPredicate, AdvancementEntityPredicateDeserializer advancementEntityPredicateDeserializer) {
-        SkillPredicate skillPredicate = SkillPredicate.fromJson(jsonObject.get("skill_name"));
-        NumberPredicate skillLevelPredicate = NumberPredicate.fromJson(jsonObject.get("skill_level"));
-        return new Conditions(lootContextPredicate, skillPredicate, skillLevelPredicate);
+    public Codec<SkillCriterion.Conditions> getConditionsCodec() {
+        return SkillCriterion.Conditions.CODEC;
     }
 
     public void trigger(ServerPlayerEntity player, String skillName, int skillLevel) {
         this.trigger(player, conditions -> conditions.matches(player, skillName, skillLevel));
     }
 
-    class Conditions extends AbstractCriterionConditions {
-        private final SkillPredicate skillPredicate;
-        private final NumberPredicate skillLevelPredicate;
+    public record Conditions(Optional<LootContextPredicate> player, String skillName, int skillLevel) implements AbstractCriterion.Conditions {
 
-        public Conditions(LootContextPredicate lootContextPredicate, SkillPredicate skillPredicate, NumberPredicate skillLevelPredicate) {
-            super(ID, lootContextPredicate);
-            this.skillPredicate = skillPredicate;
-            this.skillLevelPredicate = skillLevelPredicate;
-        }
+        public static final Codec<SkillCriterion.Conditions> CODEC = RecordCodecBuilder
+                .create(instance -> instance
+                        .group(EntityPredicate.LOOT_CONTEXT_PREDICATE_CODEC.optionalFieldOf("player").forGetter(SkillCriterion.Conditions::player),
+                                Codec.STRING.fieldOf("skill_name").forGetter(SkillCriterion.Conditions::skillName), Codec.INT.fieldOf("skill_level").forGetter(SkillCriterion.Conditions::skillLevel))
+                        .apply(instance, SkillCriterion.Conditions::new));
 
         public boolean matches(ServerPlayerEntity player, String skillName, int skillLevel) {
-            return this.skillPredicate.test(skillName) && skillLevelPredicate.test(skillLevel);
-        }
-
-        @Override
-        public JsonObject toJson(AdvancementEntityPredicateSerializer predicateSerializer) {
-            JsonObject jsonObject = super.toJson(predicateSerializer);
-            jsonObject.add("skill_name", this.skillPredicate.toJson());
-            jsonObject.add("skill_level", this.skillLevelPredicate.toJson());
-            return jsonObject;
+            if (!skillName.equals(this.skillName)) {
+                return false;
+            }
+            return skillLevel == this.skillLevel;
         }
     }
 

@@ -7,12 +7,12 @@ import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.TooltipPosition;
 import net.levelz.init.RenderInit;
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.Block;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+// TODO: HERE
 public class LevelWailaBlockInfo extends LevelFeature implements IBlockComponentProvider {
 
     @Override
@@ -26,13 +26,13 @@ public class LevelWailaBlockInfo extends LevelFeature implements IBlockComponent
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         IBlockComponentProvider.super.appendBody(tooltip, accessor, config);
         if (config.getBoolean(RenderInit.MINEABLE_INFO)) {
-            if (PlayerStatsManager.listContainsItemOrBlock(accessor.getPlayer(), Registries.BLOCK.getRawId(accessor.getBlock()), 1)) {
-                if (config.getBoolean(RenderInit.MINEABLE_LEVEL_INFO))
-                    tooltip.addLine(Text.translatable("block.levelz.locked_with_level.tooltip", PlayerStatsManager.getUnlockLevel(Registries.BLOCK.getRawId(accessor.getBlock()), 1))
-                            .formatted(Formatting.RED));
-                else
-                    tooltip.addLine(Text.translatable("block.levelz.locked.tooltip"));
-            }
+//            if (PlayerStatsManager.listContainsItemOrBlock(accessor.getPlayer(), Registries.BLOCK.getRawId(accessor.getBlock()), 1)) {
+//                if (config.getBoolean(RenderInit.MINEABLE_LEVEL_INFO))
+//                    tooltip.addLine(Text.translatable("block.levelz.locked_with_level.tooltip", PlayerStatsManager.getUnlockLevel(Registries.BLOCK.getRawId(accessor.getBlock()), 1))
+//                            .formatted(Formatting.RED));
+//                else
+//                    tooltip.addLine(Text.translatable("block.levelz.locked.tooltip"));
+//            }
         }
     }
 }

@@ -1,19 +1,13 @@
 package net.levelz.mixin.player;
 
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.At;
-
 import net.levelz.access.PlayerBreakBlockAccess;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerInventory.class)
 public abstract class PlayerInventoryMixin implements PlayerBreakBlockAccess {
@@ -23,22 +17,16 @@ public abstract class PlayerInventoryMixin implements PlayerBreakBlockAccess {
     @Final
     public PlayerEntity player;
 
-    @Shadow
-    @Mutable
-    @Final
-    public DefaultedList<ItemStack> main;
-
-    @Shadow
-    public int selectedSlot;
-
-    public boolean canBreakBlock = true;
-
-    public float blockBreakExtraDelta = 1.0F;
+    @Unique
+    private boolean canBreakBlock = true;
+    @Unique
+    private float blockBreakExtraDelta = 1.0F;
 
     @Inject(method = "getBlockBreakingSpeed", at = @At(value = "HEAD"), cancellable = true)
     private void getBlockBreakingSpeedMixin(BlockState block, CallbackInfoReturnable<Float> info) {
-        if (!this.canBreakBlock)
+        if (!this.canBreakBlock) {
             info.setReturnValue(1.0F);
+        }
     }
 
     @Override

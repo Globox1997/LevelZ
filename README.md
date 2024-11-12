@@ -15,260 +15,182 @@ LevelZ is licensed under GPLv3.
 ### Datapacks
 
 Most of the mods default settings can get changed via datapacks, Player attribute affecting settings can get changed via
-the config file.\
+the config file.  
 If you don't know how to create a datapack check out [Data Pack Wiki](https://minecraft.wiki/w/Data_Pack)
-website and try to create your first one for the vanilla game.\
+website and try to create your first one for the vanilla game.  
 If you know how to create one, the folder path has to be ```data\levelz\FOLDER\YOURFILE.json```\
-Caution! Make sure you name the files differently than the existing ones.\
-Each locking file can choose its depending skill except for the mining and brewing list. A list of the skills can be
-found here and are self-explanatory:
+Caution! Make sure you name the files differently than the existing ones.  
 
-* health
-* strength
-* agility
-* defense
-* stamina
-* luck
-* archery
-* trade
-* smithing
-* mining
-* farming
-* alchemy
+Since version 2.0.0, skills can be created and overwritten via datapack.
 
-The mod has 6 different folder for different locking things.
+#### Skill
+A skill requires:
+- id (integer): determines the location in the skill gui - starting at 0 -> 1,2,3,4
+- key (string): determines the name of the skill - translated like "skill.levelz.key" - skill texture must be 16x16px at "assets/levelz/textures/gui/sprites/key.png"
+- level (integer): determines the max level in this specific skill
+- attributes: 
+  - id (integer): optional id - determines the location in the skill gui - attribute texture must be 9x9px at "assets/levelz/textures/gui/sprites/type.png" (no mod id infront of the type)
+  - type (string): attribute type (vanilla existing ones can be found below)
+  - base (float): optional starting value - can be set to -1.0 if vanilla default starting value should be used
+  - operation (string): determines the mathematical operation how to add "value"
+  - value (float): value to add/multiply onto the start value
+- bonus:
+  - level (integer): determines the level at which it will be unlocked
+  - key (string): determines the bonus (all bonuses can be found below)
 
-1. block
-2. entity
-3. item
-4. brewing
-5. mining
-6. smithing
-7. crafting
-
-#### 1. Block
-
-The block category stands for the use of a few vanilla blocks. An example how the json file should look like is here:
-
-```
+```json
 {
+  "health": {
     "replace": false,
-    "skill": "smithing",
-    "level": 10,
-    "block": "minecraft:anvil"
-}
-```
-
-"replace": has to be "true" if you want to overwrite the default setting.\
-"skill": has to be one of the mentioned skills.\
-"level": is the level when the player unlocks the interaction of the block.\
-"block": has to be one of the following strings:\
-``
-"minecraft:anvil","minecraft:barrel","minecraft:beacon","minecraft:beehive","minecraft:blast_furnace","minecraft:brewing_stand",
-"minecraft:cartography_table","minecraft:cauldron","minecraft:composter","minecraft:enchanting_table","minecraft:grindstone","minecraft:lectern",
-"minecraft:loom","minecraft:pumpkin","minecraft:smithing_table","minecraft:smoker","minecraft:stonecutter","minecraft:fletching_table","minecraft:crafting_table"
-``
-
-It will only cancel the interaction with the block.\
-Since version 1.1.0: Custom block restrictions got added:
-
-```
-{
-    "replace": false,
-    "skill": "smithing",
-    "level": 10,
-    "block": "minecraft:custom_block",
-    "object": "modid:blockid"
-}
-```
-
-One last thing to mention: the enchanting table list takes a unlocking level list inside its json file which looks like
-this:
-
-```
-    "enchanting": [
-        5,
-        10,
-        18
-    ]
-```
-
-#### 2. Entity
-
-The entity category is pretty similar to the block category and will lock the interaction with the set entity. An
-example how the json file should look like is here:
-
-```
-{
-    "replace": false,
-    "skill": "farming",
-    "level": 7,
-    "entity": "minecraft:cow"
-}
-```
-
-"entity": has to be one of the following strings:\
-``
-"minecraft:cow","minecraft:mooshroom","minecraft:sheep","minecraft:snow_golem","minecraft:villager","minecraft:wandering_trader",
-"minecraft:axolotl","minecraft:piglin","minecraft:wolf","minecraft:tadpole","minecraft:allay","minecraft:goat"
-``
-
-It will only cancel the interaction with the entity.
-
-Since version 1.1.0: Custom entity restrictions got added:
-
-```
-{
-    "replace": false,
-    "skill": "smithing",
-    "level": 10,
-    "entity": "minecraft:custom_entity",
-    "object": "modid:entityid"
-}
-```
-
-#### 3. Item
-
-The item category stands for the use of items. An example how the json file should look like is here:
-
-```
-{
-    "replace": false,
-    "skill": "archery",
-    "level": 10,
-    "item": "minecraft:crossbow"
-}
-```
-
-"item": has to be one of the following strings:\
-``
-"minecraft:bow","minecraft:bucket,"minecraft:crossbow","minecraft:dragon_breath","minecraft:elytra","minecraft:fishing_rod",
-"minecraft:flint_and_steel","minecraft:shield","minecraft:totem_of_undying","minecraft:shears","minecraft:compass","minecraft:trident"
-``
-
-The item category also has 4 special categories:
-
-* armor
-* axe
-* sword
-* tool
-
-An example of one of those categories is here:
-
-```
-{
-    "replace": false,
-    "skill": "defense",
-    "level": 8,
-    "item": "minecraft:armor",
-    "material": "iron"
-}
-```
-
-It takes a fifth argument called "material" to determine which material of items will be locked.\
-Each of these items has to be in the corresponding fabric item tag.
-
-Since version 1.1.0: Custom item restrictions got added:\
-Use it only if those two previous options don't work!
-
-```
-{
-    "replace": false,
-    "skill": "smithing",
-    "level": 10,
-    "item": "minecraft:custom_item",
-    "object": "modid:itemid"
-}
-```
-
-#### 4. Brewing
-
-The brewing category stands for the use of brewing ingredient items at the brewing table. An example how the json file
-should look like is here:
-
-```
-{
-    "replace": false,
-    "level": 4,
-    "item": [
-        "minecraft:golden_carrot"
-    ]
-}
-```
-
-It looks the slots of the brewing table, so players can't insert items to brew the resulting potion before they reached
-the level. A list of the brewing items can be found here [Brewing Wiki](https://minecraft.wiki/w/Brewing). It
-is hardcoded to the alchemy skill.
-
-#### 5. Mining
-
-The mining category stands for the locked block drop. An example how the json file should look like is here:
-
-```
-{
-    "replace": false,
-    "level": 5,
-    "block": [
-        "minecraft:coal_ore",
-        "minecraft:coal_block",
-        "minecraft:deepslate_coal_ore"
-    ]
-}
-```
-
-The "block" list has to have the id of the locked blocks.\
-The player can still break those blocks but it won't drop anything and the blockbreaking process is 50% slower (by
-default).
-
-#### 6. Smithing (Since version 1.1.5)
-
-The smithing category stands for the crafting restriction of items at the smithing table. An example how the json file
-should look like is here:
-
-```
-{
-    "replace": false,
+    "id": 0,
+    "key": "health",
     "level": 20,
-    "item": [
-        "minecraft:netherite_sword",
-        "minecraft:netherite_pickaxe"
+    "attributes": [
+      {
+        "type": "generic.max_health",
+        "base": 10,
+        "operation": "ADD_VALUE",
+        "value": 1
+      }
+    ],
+    "bonus": [
+      {
+        "level": 5,
+        "key": "deathGraceChance"
+      }
     ]
+  },
+  "...": {
+  }
 }
 ```
 
-It locks the crafting recipe of the smithing table, so players can't pull out crafting result items of the table before they reached
-the level. It is hardcoded to the smithing skill.
+##### Attribute Types
+- `generic.armor`
+- `generic.armor_toughness`
+- `generic.attack_damage`
+- `generic.attack_knockback`
+- `generic.attack_speed`
+- `player.block_break_speed`
+- `player.block_interaction_range`
+- `generic.burning_time`
+- `generic.explosion_knockback_resistance`
+- `player.entity_interaction_range`
+- `generic.fall_damage_multiplier`
+- `generic.flying_speed`
+- `generic.follow_range`
+- `generic.gravity`
+- `generic.jump_strength`
+- `generic.knockback_resistance`
+- `generic.luck`
+- `generic.max_absorption`
+- `generic.max_health`
+- `player.mining_efficiency`
+- `generic.movement_efficiency`
+- `generic.movement_speed`
+- `generic.oxygen_bonus`
+- `generic.safe_fall_distance`
+- `generic.scale`
+- `player.sneaking_speed`
+- `zombie.spawn_reinforcements`
+- `generic.step_height`
+- `player.submerged_mining_speed`
+- `player.sweeping_damage_ratio`
+- `generic.water_movement_efficiency`
 
-#### 7. Crafting (Since version 1.3.0)
+##### Bonuses
+- `bowDamage`: Each level grants +bowDamage on arrow damage
+- `bowDoubleDamageChance`: Chance to double arrow damage with bow
+- `crossbowDamage`: Each level grants +crossbowDamage on arrow damage
+- `crossbowDoubleDamageChance`: Chance to double arrow damage with crossbow
+- `itemDamageChance`: Each level grants +chance to not consume item damage on item usage
+- `potionEffectChance`: Chance to increase effect amplifier by one
+- `breedTwinChance`: Chance to have twins on breeding
+- `fallDamageReduction`: Each level grants +fallDamageReduction
+- `deathGraceChance`: Chance to not die on critical damage intake
+- `tntStrength`: Grants +tntStrength tnt strength
+- `priceDiscount`: Each level grants %priceDiscount on trading
+- `tradeXp`: Each level grants more %tradeXp
+- `merchantImmune`: Grants immunity to reputation decrease and attack call on damaging merchant
+- `miningEfficiency`: Each level grants %mining efficiency
+- `miningDropChance`: Each level grants %chance to double ore drop
+- `plantDropChance`: Each level grants %chance to double plant drop
+- `anvilXpCap`: Grants xp cap on anvil usage
+- `anvilXpDiscount`: Each level grants %discount on anvil usage
+- `anvilXpChance`: Chance to not use xp on anvil usage
+- `healthRegen`: Each level grants %health on regeneration
+- `healthAbsorption`: Grants absorption on regeneration
+- `exhaustionReduction`: Each level grants %exhaust reduction
+- `meleeKockbackAttackChance`: Each level grants %chance to knockback
+- `meleeCriticalAttackChance`: Each level grants %chance to critical hit
+- `meleeCriticalAttackDamage`: Each level grants +critical melee damage on critical hit
+- `meleeDoubleAttackDamageChance`: Chance to double melee damage
+- `foodIncreasion`: Each level grants %food value when eating food
+- `damageReflection`: Each level grants %damage reflection
+- `damageReflectionChance`: Each level grants %chance to reflect damage
+- `evadingDamageChance`: Chance to evade incoming damage
 
-The crafting category stands for the crafting restriction of items at the crafting table and player gui. An example how the json file
-should look like is here:
+#### Restriction
+A restriction requires:
+- skills: one or multiple skills with the respective required level
 
-```
+A restriction can include:
+- blocks: restricts usage of the blocks
+- crafting: restricts recipes by item output id
+- entities: restricts usage of entities
+- items: restricts usage of items
+- mining: restricts mining of blocks"
+
+```json
 {
+  "name_it_as_you_want": {
     "replace": false,
-    "level": 4,
-    "skill": "luck",
-    "item": [
-        "minecraft:stick",
-        "minecraft:wooden_axe"
+    "skills": {
+      "archery": 1,
+      "health": 5
+    },
+    "blocks": [
+      "minecraft:anvil"
+    ],
+    "crafting": [
+      "minecraft:oak_planks",
+      "minecraft:iron_sword",
+      "minecraft:iron_chestplate"
+    ],
+    "entities": [
+      "minecraft:villager"
+    ],
+    "items": [
+      "minecraft:iron_sword"
+    ],
+    "mining": [
+      "minecraft:pumpkin",
+      "minecraft:stone",
+      "minecraft:chiseled_polished_blackstone"
     ]
+  },
+  "...": {
+    "skills": {
+      "health": 1
+    },
+    "mining": [
+      "minecraft:dirt"
+    ]
+  }
 }
 ```
 
-#### Disable access to entities
-To permanently disable access to an entity, simply set the skill requirement higher than the `maxLevel` property configured in `levelz.json5`.
+#### Information Display
+To display information about a skill in the level gui, just add some lines in the lang json with the following key.  
+`"skill.levelz.yourskillkey.extra.0": "This is the whatever skill"`,  
+`"skill.levelz.yourskillkey.extra.1": "It does somethin"`,  
+`...`  
+Just increase the integer at the end of the json entry (after "extra.").
 
-#### Full list of available entities
-See https://github.com/Globox1997/LevelZ/tree/1.19/src/main/resources/data/levelz
-
-### Example Datapack
-
-Check out the exampleDatapack folder for an example how it can look like.\
-Every level is set to 0 in this pack.
+#### Disable access to something
+To permanently disable access to something, simply set the skill requirement higher than the `maxLevel` property configured in `levelz.json5`.
 
 ### Advancement
-
 LevelZ provides two advancement criterions trigger called `levelz:level` and `levelz:skill`.\
 The first one triggers when the player reached the set level.
 
@@ -303,20 +225,17 @@ setting max levels, experience rates from different mobs, etc..
 These configuration settings are found in `${MINECRAFTDIR}/config/levelz.json5`
 
 ### Commands
-`/playerstats playername add skill integer`
+`/level playername add skill integer`
 - Increase the specific skill by the integer value
   
-`/playerstats playername remove skill integer`
+`/level playername remove skill integer`
 - Decrease the specific skill by the integer value
 
-`/playerstats playername set skill integer`
+`/level playername set skill integer`
 - Set the specific skill to the integer value
 
-`/playerstats playername get skill`
+`/level playername get skill`
 - Print the specific skill level
-
-`/info material`
-- Print the material string of the item in hand
 
 ### Info
 Inside the config there is a developer mode setting, when set to true, inside the creative menu, hover over an item/block with your mouse and press f8 (default key) to create or append the item/block id to the file called idlist.json inside your minecraft folder for easier datapack creation.

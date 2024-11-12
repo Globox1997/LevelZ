@@ -1,8 +1,10 @@
 package net.levelz.item;
 
+import net.levelz.access.LevelManagerAccess;
 import net.levelz.init.ConfigInit;
-import net.levelz.stats.PlayerStatsManager;
-import net.levelz.stats.Skill;
+import net.levelz.level.LevelManager;
+import net.levelz.util.LevelHelper;
+import net.levelz.util.PacketHelper;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +19,10 @@ import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class StrangePotionItem extends Item {
 
     public StrangePotionItem(Settings settings) {
@@ -25,22 +31,23 @@ public class StrangePotionItem extends Item {
 
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity) user : null;
-        if (playerEntity != null && !playerEntity.getWorld().isClient()) {
-            if (playerEntity instanceof ServerPlayerEntity) {
-                Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity) playerEntity, stack);
-            }
+        if (!world.isClient() && user instanceof ServerPlayerEntity playerEntity) {
+            Criteria.CONSUME_ITEM.trigger(playerEntity, stack);
 
-            for (Skill skill : Skill.listInRandomOrder(world.random)) {
-                if (PlayerStatsManager.resetSkill(playerEntity, skill) && !ConfigInit.CONFIG.opStrangePotion)
+            LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
+            List<Integer> list = new ArrayList<>(levelManager.getPlayerSkills().keySet());
+            Collections.shuffle(list);
+
+            for (int skillId : list) {
+                if (levelManager.resetSkill(skillId) && !ConfigInit.CONFIG.opStrangePotion) {
+                    LevelHelper.updateSkill(playerEntity, LevelManager.SKILLS.get(skillId));
                     break;
+                }
             }
+            PacketHelper.updatePlayerSkills(playerEntity, null);
 
-            if (!playerEntity.getAbilities().creativeMode) {
+            if (!playerEntity.isCreative()) {
                 stack.decrement(1);
-            }
-
-            if (!playerEntity.getAbilities().creativeMode) {
                 if (stack.isEmpty()) {
                     return new ItemStack(Items.GLASS_BOTTLE);
                 }
@@ -50,11 +57,6 @@ public class StrangePotionItem extends Item {
             user.emitGameEvent(GameEvent.DRINK);
         }
         return stack;
-    }
-
-    @Override
-    public int getMaxUseTime(ItemStack stack) {
-        return 32;
     }
 
     @Override

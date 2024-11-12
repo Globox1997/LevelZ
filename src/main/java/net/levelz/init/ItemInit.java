@@ -1,6 +1,7 @@
 package net.levelz.init;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.levelz.LevelzMain;
 import net.levelz.item.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -17,7 +18,7 @@ public class ItemInit {
 
     private static Item register(String id, Item item, RegistryKey<ItemGroup> itemGroup) {
         ItemGroupEvents.modifyEntriesEvent(itemGroup).register(entries -> entries.add(item));
-        return register(new Identifier("levelz", id), item);
+        return register(LevelzMain.identifierOf(id), item);
     }
 
     private static Item register(Identifier id, Item item) {

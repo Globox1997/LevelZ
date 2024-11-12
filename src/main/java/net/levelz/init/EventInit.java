@@ -1,38 +1,75 @@
 package net.levelz.init;
 
-import java.util.ArrayList;
-
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.levelz.access.PlayerSyncAccess;
-import net.levelz.data.LevelLists;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.levelz.access.LevelManagerAccess;
+import net.levelz.level.LevelManager;
+import net.levelz.level.Skill;
 import net.levelz.mixin.entity.EntityAccessor;
-import net.levelz.stats.PlayerStatsManager;
+import net.levelz.util.LevelHelper;
+import net.levelz.util.PacketHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import net.minecraft.scoreboard.ScoreAccess;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 
 public class EventInit {
 
     public static void init() {
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
-            ((PlayerSyncAccess) player).syncStats(false);
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            for (Skill skill : LevelManager.SKILLS.values()) {
+                LevelHelper.updateSkill(handler.getPlayer(), skill);
+            }
+            PacketHelper.updateSkills(handler.getPlayer());
+            PacketHelper.updatePlayerSkills(handler.getPlayer(), null);
+            PacketHelper.updateRestrictions(handler.getPlayer());
         });
+
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
+            PacketHelper.updatePlayerSkills(player, null);
+            PacketHelper.updateLevels(player);
+        });
+
+        ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
+            PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
+            PacketHelper.updateLevels(newPlayer);
+        });
+
+        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+            if (ConfigInit.CONFIG.hardMode) {
+                newPlayer.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, newPlayer));
+                newPlayer.getScoreboard().forEachScore(CriteriaInit.LEVELZ, newPlayer, ScoreAccess::resetScore);
+            } else {
+                PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
+
+                if (ConfigInit.CONFIG.resetCurrentXp) {
+                    LevelManager levelManager = ((LevelManagerAccess) newPlayer).getLevelManager();
+                    levelManager.setLevelProgress(0);
+                    levelManager.setTotalLevelExperience(0);
+                }
+
+                PacketHelper.updateLevels(newPlayer);
+                for (Skill skill : LevelManager.SKILLS.values()) {
+                    LevelHelper.updateSkill(newPlayer, skill);
+                }
+            }
+        });
+
         UseItemCallback.EVENT.register((player, world, hand) -> {
             if (!player.isCreative() && !player.isSpectator()) {
-                ArrayList<Object> customList = LevelLists.customItemList;
-                String string = Registries.ITEM.getId(player.getStackInHand(hand).getItem()).toString();
-                if (!customList.isEmpty() && !PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
-                    player.sendMessage(
-                            Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED),
-                            true);
+                LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                if (!levelManager.hasRequiredItemLevel(player.getStackInHand(hand).getItem())) {
+                    // player.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) +
+                    // ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED), true);
+                    player.sendMessage(Text.translatable("item.levelz.locked.tooltip").formatted(Formatting.RED), true);
                     return TypedActionResult.fail(player.getStackInHand(hand));
                 }
             }
@@ -41,16 +78,12 @@ public class EventInit {
 
         UseBlockCallback.EVENT.register((player, world, hand, result) -> {
             if (!player.isCreative() && !player.isSpectator()) {
-                BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
+                BlockPos blockPos = result.getBlockPos();
                 if (world.canPlayerModifyAt(player, blockPos)) {
-                    String string = Registries.BLOCK.getId(world.getBlockState(blockPos).getBlock()).toString();
-                    ArrayList<Object> customList = LevelLists.customBlockList;
-                    if (!customList.isEmpty() && customList.contains(string)) {
-                        if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
-                            player.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2))
-                                    .formatted(Formatting.RED), true);
-                            return ActionResult.success(false);
-                        }
+                    LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                    if (!levelManager.hasRequiredBlockLevel(world.getBlockState(blockPos).getBlock())) {
+                        player.sendMessage(Text.translatable("item.levelz.locked.tooltip").formatted(Formatting.RED), true);
+                        return ActionResult.success(false);
                     }
                 }
             }
@@ -60,14 +93,10 @@ public class EventInit {
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (!player.isCreative() && !player.isSpectator()) {
                 if (!entity.hasControllingPassenger() || !((EntityAccessor) entity).callCanAddPassenger(player)) {
-                    String string = Registries.ENTITY_TYPE.getId(entity.getType()).toString();
-                    ArrayList<Object> customList = LevelLists.customEntityList;
-                    if (!customList.isEmpty() && customList.contains(string)) {
-                        if (!PlayerStatsManager.playerLevelisHighEnough(player, customList, string, true)) {
-                            player.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) + ".tooltip", customList.get(customList.indexOf(string) + 2))
-                                    .formatted(Formatting.RED), true);
-                            return ActionResult.success(false);
-                        }
+                    LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                    if (!levelManager.hasRequiredEntityLevel(entity.getType())) {
+                        player.sendMessage(Text.translatable("item.levelz.locked.tooltip").formatted(Formatting.RED), true);
+                        return ActionResult.success(false);
                     }
                 }
             }

@@ -1,28 +1,26 @@
 package net.levelz.mixin.item;
 
+import net.levelz.util.BonusHelper;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.init.ConfigInit;
-import net.levelz.stats.Skill;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.random.Random;
+import java.util.function.Consumer;
 
 @Mixin(ItemStack.class)
 public class ItemStackServerMixin {
 
-    @ModifyVariable(method = "Lnet/minecraft/item/ItemStack;damage(ILnet/minecraft/util/math/random/Random;Lnet/minecraft/server/network/ServerPlayerEntity;)Z", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getLevel(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)I"), ordinal = 1)
-    private int damageMixin(int original, int amount, Random random, @Nullable ServerPlayerEntity player) {
-        if (player != null) {
-            if ((float) ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.SMITHING) * ConfigInit.CONFIG.smithingToolChance > random.nextFloat()) {
-                return original + 1;
-            }
+    @Inject(method = "damage(ILnet/minecraft/server/world/ServerWorld;Lnet/minecraft/server/network/ServerPlayerEntity;Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getItemDamage(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/item/ItemStack;I)I"), cancellable = true)
+    private void damageMixin(int amount, ServerWorld world, @Nullable ServerPlayerEntity player, Consumer<Item> breakCallback, CallbackInfo info) {
+        if (BonusHelper.itemDamageChanceBonus(player)) {
+            info.cancel();
         }
-        return original;
     }
 
 }

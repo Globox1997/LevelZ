@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.3-SNAPSHOT'
+    id 'fabric-loom' version '1.8-SNAPSHOT'
     id 'maven-publish'
 }  
 
@@ -26,7 +26,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // LibZ
-    modApi ('maven.modrinth:libz:1.0.2+1.20.1') {
+    modApi ('maven.modrinth:libz:1.0.3+1.21.1') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Cloth
@@ -38,58 +38,56 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // Wthit
-    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-8.2.0")
+    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-12.4.2")
 	// Jade
-    modCompileOnly ('maven.modrinth:jade:11.0.3'){
+    modCompileOnly ('maven.modrinth:jade:15.8.2+fabric'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// MCDA
-	modCompileOnly ('curse.maven:mcda-426206:3821450') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+//	modCompileOnly ('curse.maven:mcda-426206:3821450') {
+//		exclude(group: "net.fabricmc.fabric-api")
+//	}
     // DragonLoot
-	modCompileOnly ('maven.modrinth:dragonloot:1.1.2') {
+	modCompileOnly ('maven.modrinth:dragonloot:1.1.7+1.21.1') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-    // Trinkets
-    modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.2")
-	modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.2")
-    modCompileOnly ('maven.modrinth:trinkets:3.7.1') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+//    // Trinkets
+//    modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.2")
+//	modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.2")
+//    modCompileOnly ('maven.modrinth:trinkets:3.7.1') {
+//		exclude(group: "net.fabricmc.fabric-api")
+//	}
     // REI
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:9.0.472"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:16.0.788"
     // EMI
-    modCompileOnly "dev.emi:emi:0.4.0+1.19"
+    modCompileOnly ('maven.modrinth:emi:1.1.17+1.21.1+fabric') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
-    // Dualwielding
-	modCompileOnly ('com.github.Globox1997:DualWielding:1.19-SNAPSHOT') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
     // PlaceHolder
-    modCompileOnly ("eu.pb4:placeholder-api:2.1.1+1.20")
+    modCompileOnly ("eu.pb4:placeholder-api:2.4.1+1.21")
     // Inmis
-	modCompileOnly ("curse.maven:inmis-369254:3853651") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+    modCompileOnly ('maven.modrinth:inmis:2.8.1-1.21.1') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    // Accessories
+    modCompileOnly ('maven.modrinth:accessories:j6K4uRb7') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
     // CosmeticArmor
-    modCompileOnly ('maven.modrinth:cosmetic-armor:1.5.0') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+//    modCompileOnly ('maven.modrinth:cosmetic-armor:1.5.0') {
+//		exclude(group: "net.fabricmc.fabric-api")
+//	}
     // TreeChop
-    modCompileOnly ('maven.modrinth:treechop:0.18.3') {
+    modCompileOnly ('maven.modrinth:treechop:0.19.2') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Alloygery
-    modCompileOnly ('maven.modrinth:alloygery:2.5.5+1.19.2') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-    // Magna
-    modCompileOnly ('com.github.Draylar:magna:1.8.0-1.19.2') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+//    modCompileOnly ('maven.modrinth:alloygery:2.5.5+1.19.2') {
+//		exclude(group: "net.fabricmc.fabric-api")
+//	}
     // Spell-Engine
-    modCompileOnly ('maven.modrinth:spell-engine:0.9.24+1.19-fabric') {
+    modCompileOnly ('maven.modrinth:spell-engine:1.1.2+1.21.1') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 }
@@ -104,14 +102,14 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 17
+    it.options.release = 21
 }
 
 java {
     withSourcesJar()
 
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {

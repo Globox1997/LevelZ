@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.levelz.access.PlayerListAccess;
+import net.levelz.access.ClientPlayerListAccess;
 import net.levelz.init.ConfigInit;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
@@ -24,7 +24,7 @@ public class PlayerListHudMixin {
     private void getPlayerNameMixin(PlayerListEntry entry, CallbackInfoReturnable<Text> info) {
         if (ConfigInit.CONFIG.showLevelList)
             info.setReturnValue(this.applyGameModeFormatting(entry,
-                    Team.decorateName(entry.getScoreboardTeam(), Text.translatable("text.levelz.scoreboard", ((PlayerListAccess) entry).getLevel(), entry.getProfile().getName()))));
+                    Team.decorateName(entry.getScoreboardTeam(), Text.translatable("text.levelz.scoreboard", ((ClientPlayerListAccess) entry).getLevel(), entry.getProfile().getName()))));
     }
 
     @Shadow

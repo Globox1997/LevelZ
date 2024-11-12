@@ -6,13 +6,13 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.levelz.access.PlayerListAccess;
+import net.levelz.access.ClientPlayerListAccess;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 
 @Environment(EnvType.CLIENT)
 @Mixin(AbstractClientPlayerEntity.class)
-public abstract class AbstractClientPlayerEntityMixin implements PlayerListAccess {
+public abstract class AbstractClientPlayerEntityMixin implements ClientPlayerListAccess {
 
     @Shadow
     @Nullable
@@ -23,7 +23,7 @@ public abstract class AbstractClientPlayerEntityMixin implements PlayerListAcces
     @Override
     public int getLevel() {
         if (getPlayerListEntry() != null) {
-            return ((PlayerListAccess) getPlayerListEntry()).getLevel();
+            return ((ClientPlayerListAccess) getPlayerListEntry()).getLevel();
         }
         return 0;
     }

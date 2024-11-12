@@ -1,17 +1,16 @@
 package net.levelz.init;
 
-import java.io.FileWriter;
-import java.io.IOException;
-
-import org.lwjgl.glfw.GLFW;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.levelz.screen.SkillScreen;
+import net.levelz.screen.LevelScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import org.lwjgl.glfw.GLFW;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 @Environment(EnvType.CLIENT)
 public class KeyInit {
@@ -24,7 +23,7 @@ public class KeyInit {
         // Callback
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (screenKey.wasPressed()) {
-                client.setScreen(new SkillScreen());
+                client.setScreen(new LevelScreen());
                 return;
             }
         });
@@ -34,7 +33,7 @@ public class KeyInit {
         try (FileWriter idFile = new FileWriter("idlist.json", true)) {
             idFile.append("\"" + string + "\",");
             idFile.append(System.lineSeparator());
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 

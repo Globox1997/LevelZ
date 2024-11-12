@@ -1,22 +1,21 @@
 package net.levelz.mixin.entity;
 
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.init.ConfigInit;
-import net.levelz.stats.Skill;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.levelz.util.BonusHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.World.ExplosionSourceType;
+import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.explosion.ExplosionBehavior;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(TntEntity.class)
 public abstract class TntEntityMixin extends Entity {
@@ -29,13 +28,12 @@ public abstract class TntEntityMixin extends Entity {
         super(type, world);
     }
 
-    @Inject(method = "explode", at = @At(value = "HEAD"), cancellable = true)
-    private void explodeMixin(CallbackInfo info) {
-        if (causingEntity != null && causingEntity instanceof PlayerEntity player) {
-            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.MINING) >= ConfigInit.CONFIG.maxLevel) {
-                this.getWorld().createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 4.0F * (1F + ConfigInit.CONFIG.miningTntBonus), ExplosionSourceType.TNT);
-                info.cancel();
-            }
+    @WrapOperation(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;Lnet/minecraft/world/explosion/ExplosionBehavior;DDDFZLnet/minecraft/world/World$ExplosionSourceType;)Lnet/minecraft/world/explosion/Explosion;"))
+    private Explosion explosionMixin(World instance, Entity entity, DamageSource damageSource, ExplosionBehavior behavior, double x, double y, double z, float power, boolean createFire, World.ExplosionSourceType explosionSourceType, Operation<Explosion> original) {
+        if (causingEntity != null && causingEntity instanceof PlayerEntity playerEntity) {
+            power += BonusHelper.tntStrengthBonus(playerEntity);
         }
+        return original.call(instance, entity, damageSource, behavior, x, y, z, power, createFire, explosionSourceType);
     }
+
 }

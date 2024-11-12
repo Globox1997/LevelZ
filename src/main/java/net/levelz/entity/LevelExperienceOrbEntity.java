@@ -1,28 +1,33 @@
 package net.levelz.entity;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import net.levelz.access.PlayerSyncAccess;
+import net.levelz.access.ServerPlayerSyncAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.EntityInit;
-import net.levelz.network.PlayerStatsServerPacket;
+import net.levelz.network.packet.OrbPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.tag.FluidTags;
+import net.minecraft.server.network.EntityTrackerEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // Improvements inspiried by Clumps made by jaredlll08 which is licensed under MIT and can be found here:
 // https://github.com/jaredlll08/Clumps/blob/1.19/Common/src/main/java/com/blamejared/clumps/mixin/MixinExperienceOrb.java
@@ -54,7 +59,7 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     @Override
-    protected void initDataTracker() {
+    protected void initDataTracker(DataTracker.Builder builder) {
     }
 
     @Override
@@ -84,7 +89,7 @@ public class LevelExperienceOrbEntity extends Entity {
         }
         if (this.target != null
                 && (d = (vec3d = new Vec3d(this.target.getX() - this.getX(), this.target.getY() + (double) this.target.getStandingEyeHeight() / 2.0 - this.getY(), this.target.getZ() - this.getZ()))
-                        .lengthSquared()) < 64.0) {
+                .lengthSquared()) < 64.0) {
             double e = 1.0 - Math.sqrt(d) / 8.0;
             this.setVelocity(this.getVelocity().add(vec3d.normalize().multiply(e * e * 0.1)));
         }
@@ -223,7 +228,7 @@ public class LevelExperienceOrbEntity extends Entity {
             player.experiencePickUpDelay = 2;
             player.sendPickup(this, 1);
             getClumpedMap().forEach((value, amount) -> {
-                ((PlayerSyncAccess) player).addLevelExperience(value * amount);
+                ((ServerPlayerSyncAccess) player).addLevelExperience(value * amount);
             });
             this.discard();
         }
@@ -308,8 +313,8 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     @Override
-    public Packet<ClientPlayPacketListener> createSpawnPacket() {
-        return new PlayerStatsServerPacket().createS2CLevelExperienceOrbPacket(this);
+    public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
+        return new OrbPacket(this, entityTrackerEntry);
     }
 
     @Override
@@ -329,4 +334,5 @@ public class LevelExperienceOrbEntity extends Entity {
         this.clumpedMap = map;
         this.amount = getClumpedMap().entrySet().stream().map(entry -> entry.getKey() * entry.getValue()).reduce(Integer::sum).orElse(1);
     }
+
 }

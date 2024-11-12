@@ -13,9 +13,10 @@ import net.minecraft.entity.vehicle.VehicleInventory;
 @Mixin(VehicleInventory.class)
 public interface VehicleInventoryMixin {
 
-    @Inject(method = "generateInventoryLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/VehicleInventory;setLootTableId(Lnet/minecraft/util/Identifier;)V"))
+    @Inject(method = "generateInventoryLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/VehicleInventory;setLootTable(Lnet/minecraft/registry/RegistryKey;)V"))
     default void generateInventoryLootMixin(@Nullable PlayerEntity player, CallbackInfo info) {
-        if (player != null)
+        if (player != null) {
             ((PlayerDropAccess) player).resetKilledMobStat();
+        }
     }
 }

@@ -28,9 +28,6 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @Comment("Applies if bonus chest world setting is enabled")
     public int startPoints = 5;
     @ConfigEntry.Category("level_settings")
-    @Comment("Enables starter points for SERVER only")
-    public boolean enableStartPoints = false;
-    @ConfigEntry.Category("level_settings")
     public int pointsPerLevel = 1;
     @ConfigEntry.Category("level_settings")
     @Comment("If true will reset stats on death")
@@ -51,80 +48,91 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @Comment("Only for Devs")
     public boolean devMode = false;
 
-    // Skill settings
-    @ConfigEntry.Gui.RequiresRestart
-    @Comment("Attribute values - Bonus for each lvl")
-    public double healthBase = ConfigInit.isOriginsLoaded ? 20D : 6D;
-    @ConfigEntry.Gui.RequiresRestart
-    public double healthBonus = 1D;
-    @Comment("Absorption Bonus at max lvl")
-    public float healthAbsorptionBonus = 6F;
-    @ConfigEntry.Gui.RequiresRestart
-    @Comment("Levelz Screen Multiplies it by 10")
-    public double movementBase = 0.09D;
-    @ConfigEntry.Gui.RequiresRestart
-    public double movementBonus = 0.001D;
-    @Comment("Chance of damage misses player at max lvl")
-    public float movementMissChance = 0.05F;
-    @Comment("Reduces fall damage")
-    public float movementFallBonus = 0.25F;
-    @ConfigEntry.Gui.RequiresRestart
-    public double attackBase = 1D;
-    @ConfigEntry.Gui.RequiresRestart
-    public double attackBonus = 0.2D;
-    @Comment("Chance of double meele damage at max lvl")
-    public float attackDoubleDamageChance = 0.03F;
-    public float attackCritDmgBonus = 0.2F;
-    @ConfigEntry.Gui.RequiresRestart
-    public double defenseBase = 0D;
-    @ConfigEntry.Gui.RequiresRestart
-    public double defenseBonus = 0.2D;
-    @Comment("Chance of damage reflection at max lvl")
-    public float defenseReflectChance = 0.05F;
-    @ConfigEntry.Gui.RequiresRestart
-    public double luckBase = 0D;
-    @ConfigEntry.Gui.RequiresRestart
-    public double luckBonus = 0.05D;
-    public float luckCritBonus = 0.01F;
-    @Comment("Chance of not dying at max lvl")
-    public float luckSurviveChance = 0.5F;
-    public float staminaBase = 1.1F;
-    public float staminaBonus = 0.02F;
-    public float staminaHealthBonus = 0.05F;
-    @Comment("Food is more nutritious at max lvl")
-    public float staminaFoodBonus = 0.3F;
-    @Comment("Price reduction in %")
-    public double tradeBonus = 1.0D;
-    public float tradeXPBonus = 0.5F;
-    @Comment("Disables bad reputation possibility at max lvl")
-    public boolean tradeReputation = true;
-    public float smithingCostBonus = 0.015F;
-    @Comment("Chance of no tool damage")
-    public float smithingToolChance = 0.01F;
-    @Comment("Chance of no xp usage on anvil at max lvl")
-    public float smithingAnvilChance = 0.1F;
-    @Comment("Min level to get chance of more crops drop")
-    public int farmingBase = 10;
-    @Comment("Chance of more crops drop")
-    public float farmingChanceBonus = 0.01F;
-    @Comment("Breeding twin chance at max lvl")
-    public float farmingTwinChance = 0.2F;
-    @Comment("Chance of increased enchantment strength")
-    public float alchemyEnchantmentChance = 0.005F;
-    @Comment("Chance of drinking potion with double value at max lvl")
-    public float alchemyPotionChance = 0.05F;
-    public float archeryInaccuracyBonus = 0.015F;
-    public float archeryBowExtraDamage = 0.2F;
-    public float archeryCrossbowExtraDamage = 0.2F;
-    @Comment("Chance of double range damage at max lvl")
-    public float archeryDoubleDamageChance = 0.05F;
-    @Comment("Chance of more ore drop")
-    public float miningOreChance = 0.01F;
-    @Comment("Tnt power increase at max lvl")
-    public float miningTntBonus = 0.5F;
-    @Comment("Locked blocks break slower factor")
-    public float miningLockedMultiplicator = 2.0F;
-    public boolean bindAxeDamageToSwordRestriction = true;
+    // Skill bonuses
+    @Comment("Bonus id: bowDamage")
+    public float bowDamageBonus = 0.2F;
+    @Comment("Bonus id: bowDoubleDamageChance")
+    public float bowDoubleDamageChanceBonus = 0.2F;
+    @Comment("Bonus id: crossbowDamage")
+    public float crossbowDamageBonus = 0.2F;
+    @Comment("Bonus id: crossbowDoubleDamageChance")
+    public float crossbowDoubleDamageChanceBonus = 0.2F;
+
+    @Comment("Bonus id: itemDamageChance")
+    public float itemDamageChanceBonus = 0.01F;
+
+    @Comment("Bonus id: potionEffectChance")
+    public float potionEffectChanceBonus = 0.2F;
+
+    @Comment("Bonus id: twinBreedChance")
+    public float twinBreedChanceBonus = 0.2F;
+
+    @Comment("Bonus id: fallDamageReduction")
+    public float fallDamageReductionBonus = 0.2F;
+
+    @Comment("Bonus id: deathGraceChance")
+    public float deathGraceChanceBonus = 0.2F;
+
+    @Comment("Bonus id: tntStrength")
+    public float tntStrengthBonus = 1F;
+
+    @Comment("Bonus id: priceDiscount")
+    public float priceDiscountBonus = 0.01F;
+
+    @Comment("Bonus id: tradeXp")
+    public float tradeXpBonus = 1F;
+
+    @Comment("Bonus id: miningEfficiency")
+    public float miningEfficiencyBonus = 0.01F;
+
+    @Comment("Base mining speed")
+    public float miningEfficiencyBase = 1.2F;
+
+    @Comment("Bonus id: miningDropChance")
+    public float miningDropChanceBonus = 0.01F;
+
+    @Comment("Bonus id: plantDropChance")
+    public float plantDropChanceBonus = 0.01F;
+
+    @Comment("Max anvil xp cost")
+    public int anvilXpCap = 30;
+    @Comment("Bonus id: anvilXpDiscount")
+    public float anvilXpDiscountBonus = 0.01F;
+
+    @Comment("Bonus id: anvilXpChance")
+    public float anvilXpChanceBonus = 0.2F;
+
+    @Comment("Bonus id: healthRegen")
+    public float healthRegenBonus = 0.1F;
+
+    @Comment("Bonus id: healthAbsorption")
+    public float healthAbsorptionBonus = 4F;
+
+    @Comment("Bonus id: exhaustionReduction")
+    public float exhaustionReductionBonus = 0.02F;
+
+    @Comment("Bonus id: knockbackAttackChance")
+    public float meleeKnockbackAttackChanceBonus = 0.01F;
+
+    @Comment("Bonus id: criticalAttackChance")
+    public float meleeCriticalAttackChanceBonus = 0.01F;
+
+    @Comment("Bonus id: meleeCriticalAttackDamage")
+    public float meleeCriticalAttackDamageBonus = 0.2F;
+
+    @Comment("Bonus id: meleeDoubleAttackDamageChance")
+    public float meleeDoubleAttackDamageChanceBonus = 0.2F;
+
+    @Comment("Bonus id: foodIncreasion")
+    public float foodIncreasionBonus = 0.05F;
+
+    @Comment("Bonus id: damageReflection")
+    public float damageReflectionBonus = 0.02F;
+    @Comment("Bonus id: damageReflectionChance")
+    public float damageReflectionChanceBonus = 0.005F;
+
+    @Comment("Bonus id: evadingDamageChance")
+    public float evadingDamageChanceBonus = 0.1F;
 
     // Experience settings
     @ConfigEntry.Category("experience_settings")
@@ -142,9 +150,7 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @Comment("0 = no experience cap")
     public int xpMaxCost = 0;
     @ConfigEntry.Category("experience_settings")
-    public boolean resetCurrentXP = true;
-    @ConfigEntry.Category("experience_settings")
-    public boolean dropPlayerXP = true;
+    public boolean resetCurrentXp = true;
     @ConfigEntry.Category("experience_settings")
     public boolean dropXPbasedOnLvl = false;
     @ConfigEntry.Category("experience_settings")
@@ -195,7 +201,7 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
     @Comment("Switch levelz screen instead of closing with inventory key")
-    public boolean switch_screen = false;
+    public boolean switchScreen = false;
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
     public boolean showLockedBlockInfo = false;

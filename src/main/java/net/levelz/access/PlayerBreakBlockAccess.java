@@ -2,9 +2,9 @@ package net.levelz.access;
 
 public interface PlayerBreakBlockAccess {
 
-    public void setInventoryBlockBreakable(boolean breakable);
+    void setInventoryBlockBreakable(boolean breakable);
 
-    public void setAbstractBlockBreakDelta(float breakingDelta);
+    void setAbstractBlockBreakDelta(float breakingDelta);
 
-    public float getBreakingAbstractBlockDelta();
+    float getBreakingAbstractBlockDelta();
 }
