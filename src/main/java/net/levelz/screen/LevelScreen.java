@@ -113,7 +113,6 @@ public class LevelScreen extends Screen implements Tab {
             Text title = Text.translatable("text.levelz.gui.title", this.client.player.getName().getString());
             context.drawText(this.textRenderer, title, this.x + 118 - this.textRenderer.getWidth(title) / 2, this.y + 7, 0x3F3F3F, false);
 
-
             if (!this.attributes.isEmpty()) {
                 if (this.showAttributes) {
                     context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 5, 30, 114, 15, 13);
@@ -142,6 +141,9 @@ public class LevelScreen extends Screen implements Tab {
                 } else {
                     context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 5, 15, 114, 15, 13);
                 }
+                if (isPointWithinBounds(this.x + 178, this.y + 5, 15, 13, mouseX, mouseY)) {
+                    context.drawTooltip(this.textRenderer, Text.translatable("text.levelz.gui.attributes"), mouseX, mouseY);
+                }
             } else {
                 context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 5, 0, 114, 15, 13);
             }
@@ -168,6 +170,7 @@ public class LevelScreen extends Screen implements Tab {
             if (!LevelManager.CRAFTING_RESTRICTIONS.isEmpty()) {
                 if (isPointWithinBounds(this.x + 178, this.y + 29, 14, 13, mouseX, mouseY)) {
                     context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 29, 30, 80, 15, 13);
+                    context.drawTooltip(this.textRenderer, Text.translatable("restriction.levelz.crafting"), mouseX, mouseY);
                 } else {
                     context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 29, 15, 80, 15, 13);
                 }
@@ -178,6 +181,7 @@ public class LevelScreen extends Screen implements Tab {
             if (!LevelManager.MINING_RESTRICTIONS.isEmpty()) {
                 if (isPointWithinBounds(this.x + 178, this.y + 45, 14, 13, mouseX, mouseY)) {
                     context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 45, 75, 80, 15, 13);
+                    context.drawTooltip(this.textRenderer, Text.translatable("restriction.levelz.mining"), mouseX, mouseY);
                 } else {
                     context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 45, 60, 80, 15, 13);
                 }
