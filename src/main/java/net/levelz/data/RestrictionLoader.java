@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.levelz.LevelzMain;
+import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.PlayerRestriction;
 import net.levelz.level.Skill;
@@ -45,8 +46,15 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
         LevelManager.ITEM_RESTRICTIONS.clear();
         LevelManager.MINING_RESTRICTIONS.clear();
 
+        if (!ConfigInit.CONFIG.restrictions) {
+            return;
+        }
+
         manager.findResources("restriction", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
             try {
+                if (!ConfigInit.CONFIG.defaultRestrictions && id.getPath().endsWith("/default.json")) {
+                    return;
+                }
                 InputStream stream = resourceRef.getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 

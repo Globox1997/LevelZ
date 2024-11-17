@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.levelz.LevelzMain;
+import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.Skill;
 import net.levelz.level.SkillAttribute;
@@ -47,10 +48,12 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
         manager.findResources("skill", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
             try {
+                if (!ConfigInit.CONFIG.defaultSkills && id.getPath().endsWith("/default.json")) {
+                    return;
+                }
                 InputStream stream = resourceRef.getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 
-//                Map<Integer, Skill> skills = new HashMap<>();
                 for (String mapKey : data.keySet()) {
                     JsonObject skillJsonObject = data.getAsJsonObject(mapKey);
 
@@ -138,19 +141,5 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
         Map<Integer, Skill> sortedMap = new TreeMap<>(LevelManager.SKILLS);
         LevelManager.SKILLS.clear();
         LevelManager.SKILLS.putAll(sortedMap);
-
-
-        // organize skills
-//        for (int i = 0; i < 40; i++) {
-//            if (LevelManager.SKILLS.size() > i) {
-//                if (skills.containsKey(i)) {
-//                    LevelManager.SKILLS.put(i, skills.get(i));
-//                } else {
-//                    LOGGER.error("Missing skill with id {}! This leads to missing skills! Please add a skill with id {}.", i, i);
-//                }
-//            } else {
-//                break;
-//            }
-//        }
     }
 }

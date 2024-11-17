@@ -181,9 +181,6 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public boolean highlightLocked = false;
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public boolean sortCraftingRecipesBySkill = false;
-    @ConfigSync.ClientOnly
-    @ConfigEntry.Category("gui_settings")
     public boolean inventorySkillLevel = true;
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
@@ -214,22 +211,13 @@ public class LevelzConfig implements ConfigData, ConfigSync {
 
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart
-    public boolean miningProgression = true;
+    public boolean restrictions = true;
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart
-    public boolean itemProgression = true;
+    public boolean defaultRestrictions = true;
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart
-    public boolean blockProgression = true;
-    @ConfigEntry.Category("progression_settings")
-    @ConfigEntry.Gui.RequiresRestart
-    public boolean entityProgression = true;
-    @ConfigEntry.Category("progression_settings")
-    @ConfigEntry.Gui.RequiresRestart
-    public boolean brewingProgression = true;
-    @ConfigEntry.Category("progression_settings")
-    @ConfigEntry.Gui.RequiresRestart
-    public boolean smithingProgression = true;
+    public boolean defaultSkills = true;
 
     @Override
     public void updateConfig(ConfigData data) {
