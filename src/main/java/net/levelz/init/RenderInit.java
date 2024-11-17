@@ -27,8 +27,6 @@ public class RenderInit {
     public static final Identifier MINEABLE_INFO = LevelzMain.identifierOf("mineable_info");
     public static final Identifier MINEABLE_LEVEL_INFO = LevelzMain.identifierOf("mineable_level_info");
 
-    public static final boolean isInventorioLoaded = FabricLoader.getInstance().isModLoaded("inventorio");
-
     public static void init() {
         EntityRendererRegistry.register(EntityInit.LEVEL_EXPERIENCE_ORB, LevelExperienceOrbEntityRenderer::new);
 
