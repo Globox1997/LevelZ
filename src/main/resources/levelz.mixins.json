@@ -21,7 +21,6 @@
     "entity.VillagerEntityMixin",
     "entity.WanderingTraderEntityMixin",
     "entity.ExperienceBottleEntityMixin",
-    "entity.ProjectileEntityMixin",
     "entity.MobEntityMixin",
     "item.ArmorItemMixin",
     "item.BowItemMixin",
@@ -57,7 +56,6 @@
     "player.PlayerManagerMixin"
   ],
   "client": [
-    "misc.EnchantmentScreenMixin",
     "misc.WorldRendererMixin",
     "misc.ClientPlayNetworkHandlerMixin",
     "misc.CreativeInventoryScreenMixin",
