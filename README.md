@@ -18,7 +18,8 @@ Most of the mods default settings can get changed via datapacks, Player attribut
 the config file.  
 If you don't know how to create a datapack check out [Data Pack Wiki](https://minecraft.wiki/w/Data_Pack)
 website and try to create your first one for the vanilla game.  
-If you know how to create one, the folder path has to be ```data\levelz\FOLDER\YOURFILE.json```\
+If you know how to create one, the folder path has to be ```data\levelz\FOLDER\YOURFILE.json```  
+For the skills put the file in folder `skill`, for restrictions use `restriction`.  
 Caution! Make sure you name the files differently than the existing ones.  
 
 Since version 2.0.0, skills can be created and overwritten via datapack.
