@@ -5,7 +5,6 @@ import net.levelz.init.*;
 import net.levelz.network.LevelServerPacket;
 import net.minecraft.util.Identifier;
 
-// Todo: EXPERIENCE ORB ISSUE WITH NORMAL EXPERIENCE ORB
 public class LevelzMain implements ModInitializer {
 
     @Override

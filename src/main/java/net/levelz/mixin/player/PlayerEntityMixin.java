@@ -22,6 +22,7 @@ import net.minecraft.world.chunk.Chunk;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -30,10 +31,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PlayerEntityMixin extends LivingEntity implements LevelManagerAccess, PlayerDropAccess {
 
     private final PlayerEntity playerEntity = (PlayerEntity) (Object) this;
+    @Unique
     private final LevelManager levelManager = new LevelManager(playerEntity);
 
-    private boolean isCrit;
+    @Unique
     private int killedMobsInChunk;
+    @Unique
     @Nullable
     private Chunk killedMobChunk;
 
@@ -55,7 +58,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
     }
 
     @ModifyVariable(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"), ordinal = 0, argsOnly = true)
-    private float testMixin(float original) {
+    private float addExhaustionMixin(float original) {
         original *= BonusHelper.exhaustionReductionBonus(this.playerEntity);
         return original;
     }
