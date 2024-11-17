@@ -2,9 +2,11 @@ package net.levelz.init;
 
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
+import ht.treechop.api.TreeChopEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.levelz.LevelzMain;
 import net.levelz.access.LevelManagerAccess;
+import net.levelz.level.LevelManager;
 
 public class CompatInit {
 
@@ -18,29 +20,18 @@ public class CompatInit {
                 }
             });
         }
-        // Todo: Here
         if (FabricLoader.getInstance().isModLoaded("treechop")) {
-//            // DETECT EVENT has player = null
-//            TreeChopEvents.BEFORE_CHOP.register((world, player, pos, state, chopData) -> {
-//                if (player != null && player.getMainHandStack().getItem() instanceof MiningToolItem) {
-//                    ArrayList<Object> levelList = LevelLists.customItemList;
-//                    if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(player.getMainHandStack().getItem()).toString())) {
-//                        if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, Registries.ITEM.getId(player.getMainHandStack().getItem()).toString(), true)) {
-//                            player.getWorld().breakBlock(pos, false);
-//                            return false;
-//                        }
-//                    } else {
-//                        if (player.getMainHandStack().getItem() instanceof AxeItem) {
-//                            levelList = LevelLists.axeList;
-//                            if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, ((AxeItem) player.getMainHandStack().getItem()).getMaterial().toString().toLowerCase(), true)) {
-//                                player.getWorld().breakBlock(pos, false);
-//                                return false;
-//                            }
-//                        }
-//                    }
-//                }
-//                return true;
-//            });
+            TreeChopEvents.BEFORE_CHOP.register((world, player, pos, state, chopData) -> {
+                LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                if (!levelManager.hasRequiredItemLevel(player.getMainHandStack().getItem())) {
+                    player.getWorld().breakBlock(pos, false);
+                    return false;
+                } else if (!levelManager.hasRequiredMiningLevel(world.getBlockState(pos).getBlock())) {
+                    player.getWorld().breakBlock(pos, false);
+                    return false;
+                }
+                return true;
+            });
         }
     }
 }
