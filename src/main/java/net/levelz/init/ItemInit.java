@@ -2,7 +2,8 @@ package net.levelz.init;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.levelz.LevelzMain;
-import net.levelz.item.*;
+import net.levelz.item.RareCandyItem;
+import net.levelz.item.StrangePotionItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
@@ -26,5 +27,8 @@ public class ItemInit {
     }
 
     public static void init() {
+//        FabricBrewingRecipeRegistryBuilder.BUILD.register((builder) -> {
+//            builder.registerItemRecipe(Items.DRAGON_BREATH, Items.NETHER_STAR, STRANGE_POTION);
+//        });
     }
 }
