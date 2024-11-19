@@ -6,9 +6,9 @@ public class SkillBonus {
 
     public static final List<String> BONUS_KEYS =
             List.of("bowDamage", "bowDoubleDamageChance", "crossbowDamage", "crossbowDoubleDamageChance", "itemDamageChance", "potionEffectChance", "breedTwinChance",
-                    "fallDamageReduction", "deathGraceChance", "tntStrength", "priceDiscount", "tradeXp", "merchantImmune", "miningEfficiency", "miningDropChance", "plantDropChance",
+                    "fallDamageReduction", "deathGraceChance", "tntStrength", "priceDiscount", "tradeXp", "merchantImmune", "miningDropChance", "plantDropChance",
                     "anvilXpCap", "anvilXpDiscount", "anvilXpChance", "healthRegen", "healthAbsorption", "exhaustionReduction", "meleeKockbackAttackChance", "meleeCriticalAttackChance",
-                    "meleeCriticalAttackDamage", "meleeDoubleAttackDamageChance", "foodIncreasion", "damageReflection", "damageReflectionChance","evadingDamageChance");
+                    "meleeCriticalAttackDamage", "meleeDoubleAttackDamageChance", "foodIncreasion", "damageReflection", "damageReflectionChance", "evadingDamageChance");
 
     // bowDamage: Each level grants +bowDamage on arrow damage
     // bowDoubleDamageChance: Chance to double arrow damage with bow
@@ -23,7 +23,6 @@ public class SkillBonus {
     // priceDiscount: Each level grants %priceDiscount on trading
     // tradeXp: Each level grants more %tradeXp
     // merchantImmune: Grants immunity to reputation decrease and attack call on damaging merchant
-    // miningEfficiency: Each level grants %mining efficiency
     // miningDropChance: Each level grants %chance to double ore drop
     // plantDropChance: Each level grants %chance to double plant drop
     // anvilXpCap: Grants xp cap on anvil usage

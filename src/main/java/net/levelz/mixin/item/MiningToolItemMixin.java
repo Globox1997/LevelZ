@@ -18,6 +18,9 @@ public class MiningToolItemMixin {
     @Inject(method = "postHit", at = @At("HEAD"), cancellable = true)
     private void postHitMixin(ItemStack stack, LivingEntity target, LivingEntity attacker, CallbackInfoReturnable<Boolean> info) {
         if (attacker instanceof PlayerEntity playerEntity) {
+            if (playerEntity.isCreative()) {
+                return;
+            }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             if (!levelManager.hasRequiredItemLevel(stack.getItem())) {
                 info.setReturnValue(false);
@@ -28,6 +31,9 @@ public class MiningToolItemMixin {
     @Inject(method = "postDamageEntity", at = @At("HEAD"), cancellable = true)
     private void postMineMixin(ItemStack stack, LivingEntity target, LivingEntity attacker, CallbackInfo info) {
         if (attacker instanceof PlayerEntity playerEntity) {
+            if (playerEntity.isCreative()) {
+                return;
+            }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             if (!levelManager.hasRequiredItemLevel(stack.getItem())) {
                 info.cancel();

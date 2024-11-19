@@ -23,6 +23,9 @@ public class PiglinBrainMixin {
 
     @Inject(method = "dropBarteredItem(Lnet/minecraft/entity/mob/PiglinEntity;Lnet/minecraft/entity/player/PlayerEntity;Ljava/util/List;)V", at = @At("HEAD"), cancellable = true)
     private static void dropBarteredItemMixin(PiglinEntity piglin, PlayerEntity player, List<ItemStack> items, CallbackInfo info) {
+        if (player.isCreative()) {
+            return;
+        }
         LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
         if (!levelManager.hasRequiredEntityLevel(piglin.getType())) {
             player.sendMessage(Text.translatable("item.levelz.locked.tooltip").formatted(Formatting.RED), true);

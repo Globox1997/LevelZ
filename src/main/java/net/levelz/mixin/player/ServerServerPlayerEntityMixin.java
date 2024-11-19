@@ -28,9 +28,6 @@ public abstract class ServerServerPlayerEntityMixin extends PlayerEntity impleme
     @Unique
     private int syncedLevelExperience = -99999999;
 
-//    private boolean syncTeleportStats = false;
-//    private int tinySyncTicker = 0;
-
     public ServerServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
@@ -59,48 +56,13 @@ public abstract class ServerServerPlayerEntityMixin extends PlayerEntity impleme
         this.syncedLevelExperience = -1;
     }
 
-
-
     @Inject(method = "playerTick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;totalExperience:I", ordinal = 0, shift = At.Shift.BEFORE))
     private void playerTickMixin(CallbackInfo info) {
         if (levelManager.getTotalLevelExperience() != this.syncedLevelExperience) {
             this.syncedLevelExperience = levelManager.getTotalLevelExperience();
-
-//            PlayerStatsServerPacket.writeS2CXPPacket(levelManager, ((ServerPlayerEntity) (Object) this));
             PacketHelper.updateLevels((ServerPlayerEntity) (Object) this);
-//            PacketHelper.
-//            if (this.syncTeleportStats) {
-//                PlayerStatsServerPacket.writeS2CSkillPacket(levelManager, (ServerPlayerEntity) (Object) this);
-//                this.syncTeleportStats = false;
-//            }
         }
-//        if (this.tinySyncTicker > 0) {
-//            this.tinySyncTicker--;
-//            if (this.tinySyncTicker % 20 == 0) {
-//                syncStats(false);
-//            }
-//        }
 
-    }
-
-//    @Inject(method = "onSpawn", at = @At(value = "TAIL"))
-//    private void onSpawnMixin(CallbackInfo info) {
-//        PlayerStatsServerPacket.writeS2CSkillPacket(levelManager, (ServerPlayerEntity) (Object) this);
-//    }
-//
-//    @Inject(method = "copyFrom", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;syncedExperience:I", ordinal = 0))
-//    private void copyFromMixin(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo info) {
-//        syncStats(false);
-//    }
-
-    // tinySyncer is necessary due to client player issues
-    // client player isn't readily loaded when S2C Packets roll out for any reason
-    @Override
-    public void syncStats(boolean syncDelay) {
-//        this.syncTeleportStats = true;
-//        this.syncedLevelExperience = -1;
-//        if (syncDelay)
-//            this.tinySyncTicker = 40;
     }
 
 }

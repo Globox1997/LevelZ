@@ -27,7 +27,7 @@ public class PlayerManagerMixin {
 
     @Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;sendStatusEffects(Lnet/minecraft/server/network/ServerPlayerEntity;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo info, GameProfile gameProfile, UserCache userCache, String string, Optional<NbtCompound> optional, RegistryKey<World> registryKey, ServerWorld serverWorld, ServerWorld serverWorld2) {
-        if (!optional.isPresent()) {
+        if (optional.isEmpty()) {
             if (ConfigInit.CONFIG.startPoints > 0) {
                 LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                 levelManager.setSkillPoints(ConfigInit.CONFIG.startPoints);

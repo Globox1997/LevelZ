@@ -26,15 +26,15 @@ public class CraftingScreenHandlerMixin {
 
     @Inject(method = "updateResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/CraftingResultInventory;setStack(ILnet/minecraft/item/ItemStack;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private static void updateResultMixin(ScreenHandler handler, World world, PlayerEntity player, RecipeInputInventory craftingInventory, CraftingResultInventory resultInventory, @Nullable RecipeEntry<CraftingRecipe> recipe, CallbackInfo info, CraftingRecipeInput craftingRecipeInput, ServerPlayerEntity serverPlayerEntity, ItemStack itemStack) {
-        if (!player.isCreative()) {
-            LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
-            if (!levelManager.hasRequiredCraftingLevel(itemStack.getItem())) {
-                resultInventory.setStack(0, ItemStack.EMPTY);
-                handler.setPreviousTrackedSlot(0, ItemStack.EMPTY);
-                serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(handler.syncId, handler.nextRevision(), 0, ItemStack.EMPTY));
-                info.cancel();
-            }
-
+        if (player.isCreative()) {
+            return;
+        }
+        LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+        if (!levelManager.hasRequiredCraftingLevel(itemStack.getItem())) {
+            resultInventory.setStack(0, ItemStack.EMPTY);
+            handler.setPreviousTrackedSlot(0, ItemStack.EMPTY);
+            serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(handler.syncId, handler.nextRevision(), 0, ItemStack.EMPTY));
+            info.cancel();
         }
     }
 

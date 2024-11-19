@@ -2,20 +2,22 @@ package net.levelz.network.packet;
 
 import net.levelz.LevelzMain;
 import net.levelz.level.PlayerRestriction;
+import net.levelz.level.restriction.EnchantmentRestriction;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-//public record RestrictionPacket(RestrictionRecord blockRestrictions, List<RestrictionRecord> craftingRestrictions, List<RestrictionRecord> entityRestrictions,
-//                                List<RestrictionRecord> itemRestrictions, List<RestrictionRecord> miningRestrictions) implements CustomPayload {
 public record RestrictionPacket(RestrictionRecord blockRestrictions, RestrictionRecord craftingRestrictions, RestrictionRecord entityRestrictions,
-                                RestrictionRecord itemRestrictions, RestrictionRecord miningRestrictions) implements CustomPayload {
+                                RestrictionRecord itemRestrictions, RestrictionRecord miningRestrictions, EnchantmentRestrictionRecord enchantmentRestrictions) implements CustomPayload {
 
     public static final CustomPayload.Id<RestrictionPacket> PACKET_ID = new CustomPayload.Id<>(LevelzMain.identifierOf("restriction_packet"));
 
@@ -25,12 +27,8 @@ public record RestrictionPacket(RestrictionRecord blockRestrictions, Restriction
         value.entityRestrictions.write(buf);
         value.itemRestrictions.write(buf);
         value.miningRestrictions.write(buf);
-//        buf.writeCollection(value.craftingRestrictions, (bufx, list) -> new RestrictionRecord(list.restrictions()).write(bufx));
-//        buf.writeCollection(value.entityRestrictions, (bufx, list) -> new RestrictionRecord(list.restrictions()).write(bufx));
-//        buf.writeCollection(value.itemRestrictions, (bufx, list) -> new RestrictionRecord(list.restrictions()).write(bufx));
-//        buf.writeCollection(value.miningRestrictions, (bufx, list) -> new RestrictionRecord(list.restrictions()).write(bufx));
-//    }, buf -> new RestrictionPacket(buf.readList(RestrictionRecord::read), buf.readList(RestrictionRecord::read), buf.readList(RestrictionRecord::read), buf.readList(RestrictionRecord::read), buf.readList(RestrictionRecord::read)));
-    }, buf -> new RestrictionPacket(RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf)));
+        value.enchantmentRestrictions.write(buf);
+    }, buf -> new RestrictionPacket(RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf), EnchantmentRestrictionRecord.read(buf)));
 
     public record RestrictionRecord(List<Integer> ids, List<PlayerRestriction> restrictions) {
 
@@ -71,6 +69,64 @@ public record RestrictionPacket(RestrictionRecord blockRestrictions, Restriction
                 playerRestrictions.add(new PlayerRestriction(id, skillLevelRestrictions));
             }
             return new RestrictionRecord(ids, playerRestrictions);
+        }
+
+    }
+
+    public record EnchantmentRestrictionRecord(List<String> ids, List<EnchantmentRestriction> restrictions) {
+
+        public void write(PacketByteBuf buf) {
+            buf.writeInt(ids().size());
+            for (String id : ids) {
+                buf.writeString(id);
+            }
+            buf.writeInt(restrictions().size());
+            for (int i = 0; i < restrictions().size(); i++) {
+                EnchantmentRestriction enchantmentRestriction = restrictions().get(i);
+                buf.writeString(enchantmentRestriction.getEnchantment().getIdAsString());
+                buf.writeInt(enchantmentRestriction.getSkillLevelRestrictions().size());
+                for (Map.Entry<Integer, Map<Integer, Integer>> entry : enchantmentRestriction.getSkillLevelRestrictions().entrySet()) {
+                    buf.writeInt(entry.getKey());
+                    buf.writeInt(entry.getValue().size());
+                    for (Map.Entry<Integer, Integer> enchantmentEntry : entry.getValue().entrySet()) {
+                        buf.writeInt(enchantmentEntry.getKey());
+                        buf.writeInt(enchantmentEntry.getValue());
+                    }
+                }
+            }
+        }
+
+        public static EnchantmentRestrictionRecord read(PacketByteBuf buf) {
+            Optional<RegistryWrapper.Impl<Enchantment>> wrapper = BuiltinRegistries.createWrapperLookup().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
+            List<String> ids = new ArrayList<>();
+            List<EnchantmentRestriction> enchantmentRestrictions = new ArrayList<>();
+            if (wrapper.isPresent()) {
+                int idSize = buf.readInt();
+                for (int i = 0; i < idSize; i++) {
+                    ids.add(buf.readString());
+                }
+                int size = buf.readInt();
+                for (int i = 0; i < size; i++) {
+                    String id = buf.readString();
+
+                    int enchantmentSize = buf.readInt();
+                    Map<Integer, Map<Integer, Integer>> skillLevelRestrictions = new HashMap<>();
+
+                    for (int u = 0; u < enchantmentSize; u++) {
+                        int enchantmentLevel = buf.readInt();
+                        int restrictions = buf.readInt();
+                        Map<Integer, Integer> enchantmentRestriction = new HashMap<>();
+                        for (int o = 0; o < restrictions; o++) {
+                            int skillId = buf.readInt();
+                            int skillLevel = buf.readInt();
+                            enchantmentRestriction.put(skillId, skillLevel);
+                        }
+                        skillLevelRestrictions.put(enchantmentLevel,enchantmentRestriction);
+                    }
+                    enchantmentRestrictions.add(new EnchantmentRestriction(wrapper.get().getOptional(RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(id))).get(), skillLevelRestrictions));
+                }
+            }
+            return new EnchantmentRestrictionRecord(ids, enchantmentRestrictions);
         }
 
     }

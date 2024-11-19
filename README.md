@@ -113,7 +113,6 @@ A skill requires:
 - `priceDiscount`: Each level grants %priceDiscount on trading
 - `tradeXp`: Each level grants more %tradeXp
 - `merchantImmune`: Grants immunity to reputation decrease and attack call on damaging merchant
-- `miningEfficiency`: Each level grants %mining efficiency
 - `miningDropChance`: Each level grants %chance to double ore drop
 - `plantDropChance`: Each level grants %chance to double plant drop
 - `anvilXpCap`: Grants xp cap on anvil usage
@@ -140,7 +139,8 @@ A restriction can include:
 - crafting: restricts recipes by item output id
 - entities: restricts usage of entities
 - items: restricts usage of items
-- mining: restricts mining of blocks"
+- mining: restricts mining of blocks
+- enchantments: restricts enchantments
 
 ```json
 {
@@ -168,7 +168,10 @@ A restriction can include:
       "minecraft:pumpkin",
       "minecraft:stone",
       "minecraft:chiseled_polished_blackstone"
-    ]
+    ],
+    "enchantments": {
+      "minecraft:unbreaking": 1
+    }
   },
   "...": {
     "skills": {

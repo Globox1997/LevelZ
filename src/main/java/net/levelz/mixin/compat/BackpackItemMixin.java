@@ -16,6 +16,9 @@ public class BackpackItemMixin {
     @Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)
     private static void openScreenMixin(PlayerEntity player, ItemStack backpackItemStack, CallbackInfo info) {
         if (player.getWorld() != null && !player.getWorld().isClient()) {
+            if (player.isCreative()) {
+                return;
+            }
             LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
             if (!levelManager.hasRequiredItemLevel(backpackItemStack.getItem())) {
                 info.cancel();

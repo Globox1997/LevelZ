@@ -23,6 +23,9 @@ public interface EquipmentMixin {
 
     @Inject(method = "equipAndSwap", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/player/PlayerEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     default void equipAndSwapMixin(Item item, World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack, EquipmentSlot equipmentSlot) {
+        if (user.isCreative()) {
+            return;
+        }
         LevelManager levelManager = ((LevelManagerAccess) user).getLevelManager();
         if (!levelManager.hasRequiredItemLevel(itemStack.getItem())) {
             user.sendMessage(Text.translatable("item.levelz.locked.tooltip").formatted(Formatting.RED), true);

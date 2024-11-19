@@ -38,6 +38,7 @@
   "mixins": [
     "levelz.mixins.json"
   ],
+  "accessWidener": "levelz.accesswidener",
   "depends": {
     "java": ">=21",
     "minecraft": ">=${minecraft_version}",

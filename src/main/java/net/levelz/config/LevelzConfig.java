@@ -14,10 +14,6 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     // Level settings
     @ConfigEntry.Category("level_settings")
     @ConfigEntry.Gui.RequiresRestart
-    @Comment("Maximum level per skills")
-    public int maxLevel = 20;
-    @ConfigEntry.Category("level_settings")
-    @ConfigEntry.Gui.RequiresRestart
     @Comment("Maximum level: 0 = disabled")
     public int overallMaxLevel = 0;
     @ConfigEntry.Category("level_settings")
@@ -25,10 +21,9 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public boolean allowHigherSkillLevel = false;
     @ConfigEntry.Category("level_settings")
     @ConfigEntry.Gui.RequiresRestart
-    @Comment("Applies if bonus chest world setting is enabled")
     public int startPoints = 5;
     @ConfigEntry.Category("level_settings")
-    public int pointsPerLevel = 1;
+    public int pointsPerLevel = 3;
     @ConfigEntry.Category("level_settings")
     @Comment("If true will reset stats on death")
     public boolean hardMode = false;
@@ -36,7 +31,7 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public boolean disableMobFarms = true;
     @ConfigEntry.Category("level_settings")
     @Comment("Amount of allowed mob kills in a chunk")
-    public int mobKillCount = 5;
+    public int mobKillCount = 6;
     @ConfigEntry.Category("level_settings")
     @Comment("Strange potion resets all stats instead of one")
     public boolean opStrangePotion = false;
@@ -51,10 +46,13 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     // Skill bonuses
     @Comment("Bonus id: bowDamage")
     public float bowDamageBonus = 0.2F;
+
     @Comment("Bonus id: bowDoubleDamageChance")
     public float bowDoubleDamageChanceBonus = 0.2F;
+
     @Comment("Bonus id: crossbowDamage")
     public float crossbowDamageBonus = 0.2F;
+
     @Comment("Bonus id: crossbowDoubleDamageChance")
     public float crossbowDoubleDamageChanceBonus = 0.2F;
 
@@ -81,12 +79,6 @@ public class LevelzConfig implements ConfigData, ConfigSync {
 
     @Comment("Bonus id: tradeXp")
     public float tradeXpBonus = 1F;
-
-    @Comment("Bonus id: miningEfficiency")
-    public float miningEfficiencyBonus = 0.01F;
-
-    @Comment("Base mining speed")
-    public float miningEfficiencyBase = 1.2F;
 
     @Comment("Bonus id: miningDropChance")
     public float miningDropChanceBonus = 0.01F;
@@ -135,10 +127,6 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public float evadingDamageChanceBonus = 0.1F;
 
     // Experience settings
-    @ConfigEntry.Category("experience_settings")
-    @ConfigEntry.Gui.RequiresRestart
-    @Comment("Caution! Level up use independent levelz xp system")
-    public boolean useIndependentExp = true;
     @ConfigEntry.Category("experience_settings")
     @Comment("XP equation: lvl^exponent * multiplicator + base")
     public float xpCostMultiplicator = 0.1F;
@@ -201,7 +189,7 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public boolean switchScreen = false;
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public boolean showLockedBlockInfo = false;
+    public boolean showLockedBlockInfo = true;
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
     public int lockedBlockInfoPosX = 0;

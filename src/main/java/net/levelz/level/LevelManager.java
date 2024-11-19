@@ -1,9 +1,11 @@
 package net.levelz.level;
 
 import net.levelz.init.ConfigInit;
+import net.levelz.level.restriction.EnchantmentRestriction;
 import net.levelz.util.LevelHelper;
 import net.levelz.util.PacketHelper;
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -11,6 +13,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.HashMap;
@@ -24,6 +27,7 @@ public class LevelManager {
     public static final Map<Integer, PlayerRestriction> ENTITY_RESTRICTIONS = new HashMap<>();
     public static final Map<Integer, PlayerRestriction> ITEM_RESTRICTIONS = new HashMap<>();
     public static final Map<Integer, PlayerRestriction> MINING_RESTRICTIONS = new HashMap<>();
+    public static final Map<String, EnchantmentRestriction> ENCHANTMENT_RESTRICTIONS = new HashMap<>();
     public static final Map<String, SkillBonus> BONUSES = new HashMap<>();
 
     private final PlayerEntity playerEntity;
@@ -64,8 +68,6 @@ public class LevelManager {
         nbt.put("Skills", skills);
     }
 
-    // Todo: Use join event to update skills
-    // Use reload of datapack to update skills
     public void writeNbt(NbtCompound nbt) {
         nbt.putInt("Level", this.overallLevel);
         nbt.putFloat("LevelProgress", this.levelProgress);
@@ -86,14 +88,6 @@ public class LevelManager {
     public void setPlayerSkills(Map<Integer, PlayerSkill> playerSkills) {
         this.playerSkills = playerSkills;
     }
-
-    //    public void updateSkills() {
-//        for (Skill skill : SKILLS.values()) {
-//            if (this.playerSkills.containsKey(skill.getId())) {
-//
-//            }
-//        }
-//    }
 
     public void setOverallLevel(int overallLevel) {
         this.overallLevel = overallLevel;
@@ -120,7 +114,7 @@ public class LevelManager {
     }
 
     public void setLevelProgress(float levelProgress) {
-        this.levelProgress = ConfigInit.CONFIG.useIndependentExp ? levelProgress : 0;
+        this.levelProgress = levelProgress;
     }
 
     public float getLevelProgress() {
@@ -136,20 +130,6 @@ public class LevelManager {
         return this.playerSkills.get(skillId).getLevel();
     }
 
-    // Maybeo only id instead of Skill instance
-//    @Deprecated
-//    public void setSkillLevel(Skill skill, int level) {
-////        SKILLS.put(skill.getId())
-////        skillLevel.put(skillOld, level);
-//    }
-//    @Deprecated
-//    public int getSkillLevel(Skill skill) {
-//        if (skillLevel.containsKey(skillOld)) {
-//            return skillLevel.get(skillOld);
-//        }
-//        return 0;
-//    }
-
     public void addExperienceLevels(int levels) {
         this.overallLevel += levels;
         this.skillPoints += ConfigInit.CONFIG.pointsPerLevel;
@@ -161,20 +141,15 @@ public class LevelManager {
     }
 
     public boolean isMaxLevel() {
-        if (ConfigInit.CONFIG.overallMaxLevel != 0) {
+        if (ConfigInit.CONFIG.overallMaxLevel > 0) {
             return this.overallLevel >= ConfigInit.CONFIG.overallMaxLevel;
         } else {
-//            int totalLevel = 0;
-//            for (PlayerSkill skill : this.playerSkills.values()) {
-//                totalLevel += skill.getLevel();
-//            }
             int maxLevel = 0;
             for (Skill skill : SKILLS.values()) {
                 maxLevel += skill.getMaxLevel();
             }
             return this.overallLevel >= maxLevel;
         }
-//        return this.overallLevel >= ConfigInit.CONFIG.maxLevel * 12;
     }
 
     public boolean hasAvailableLevel() {
@@ -183,7 +158,7 @@ public class LevelManager {
 
     // Recommend to use https://www.geogebra.org/graphing
     public int getNextLevelExperience() {
-        if (isMaxLevel()) { // Maybe change this to store maxLevel somewhere
+        if (isMaxLevel()) {
             return 0;
         }
         int experienceCost = (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * Math.pow(this.overallLevel, ConfigInit.CONFIG.xpExponent));
@@ -305,6 +280,31 @@ public class LevelManager {
         if (MINING_RESTRICTIONS.containsKey(itemId)) {
             PlayerRestriction playerRestriction = MINING_RESTRICTIONS.get(itemId);
             return playerRestriction.getSkillLevelRestrictions();
+        }
+        return Map.of(0, 0);
+    }
+
+    // enchantment
+    public boolean hasRequiredEnchantmentLevel(String enchantment, int level) {
+        if (ENCHANTMENT_RESTRICTIONS.containsKey(enchantment)) {
+            EnchantmentRestriction enchantmentRestriction = ENCHANTMENT_RESTRICTIONS.get(enchantment);
+            if (enchantmentRestriction.getSkillLevelRestrictions().containsKey(level)) {
+                for (Map.Entry<Integer, Integer> entry : enchantmentRestriction.getSkillLevelRestrictions().get(level).entrySet()) {
+                    if (this.getSkillLevel(entry.getKey()) < entry.getValue()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public Map<Integer, Integer> getRequiredEnchantmentLevel(String enchantment, int level) {
+        if (ENCHANTMENT_RESTRICTIONS.containsKey(enchantment)) {
+            EnchantmentRestriction enchantmentRestriction = ENCHANTMENT_RESTRICTIONS.get(enchantment);
+            if (enchantmentRestriction.getSkillLevelRestrictions().containsKey(level)) {
+                return enchantmentRestriction.getSkillLevelRestrictions().get(level);
+            }
         }
         return Map.of(0, 0);
     }

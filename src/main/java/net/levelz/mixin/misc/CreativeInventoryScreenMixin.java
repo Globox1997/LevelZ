@@ -26,7 +26,6 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Inject(method = "keyReleased", at = @At("HEAD"))
     private void keyReleasedMixin(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> info) {
-
         if (this.focusedSlot != null && this.focusedSlot.hasStack() && ConfigInit.CONFIG.devMode && KeyInit.devKey.matchesKey(keyCode, scanCode) && this.client.player != null) {
             this.client.player.sendMessage(Text.of("Added ID: " + Registries.ITEM.getId(this.focusedSlot.getStack().getItem()).toString()));
             KeyInit.writeId(Registries.ITEM.getId(this.focusedSlot.getStack().getItem()).toString());

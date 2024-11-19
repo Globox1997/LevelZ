@@ -3,7 +3,6 @@ package net.levelz.util;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.levelz.access.LevelManagerAccess;
-import net.levelz.access.PlayerBreakBlockAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
@@ -28,7 +27,6 @@ import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -201,20 +199,6 @@ public class BonusHelper {
             }
         }
         return false;
-    }
-
-    public static void miningEfficiencyBonus(PlayerEntity playerEntity, World world, BlockPos pos) {
-        LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-        ((PlayerBreakBlockAccess) playerEntity.getInventory()).setInventoryBlockBreakable(levelManager.hasRequiredItemLevel(playerEntity.getStackInHand(playerEntity.getActiveHand()).getItem()) && levelManager.hasRequiredMiningLevel(world.getBlockState(pos).getBlock()));
-        float delta = ConfigInit.CONFIG.miningEfficiencyBase;
-        if (LevelManager.BONUSES.containsKey("miningEfficiency")) {
-            SkillBonus skillBonus = LevelManager.BONUSES.get("miningEfficiency");
-            int level = levelManager.getPlayerSkills().get(skillBonus.getId()).getLevel();
-            if (level >= skillBonus.getLevel()) {
-                delta -= level * ConfigInit.CONFIG.miningEfficiencyBonus;
-            }
-        }
-        ((PlayerBreakBlockAccess) playerEntity.getInventory()).setAbstractBlockBreakDelta(delta);
     }
 
     public static void miningDropChanceBonus(PlayerEntity playerEntity, BlockState state, BlockPos pos, LootContextParameterSet.Builder builder) {

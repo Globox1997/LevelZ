@@ -15,7 +15,6 @@ import net.minecraft.network.NetworkSide;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.PacketType;
-import net.minecraft.network.packet.s2c.play.ExperienceOrbSpawnS2CPacket;
 import net.minecraft.util.Identifier;
 
 public class LevelServerPacket {
@@ -42,10 +41,9 @@ public class LevelServerPacket {
                     Skill skill = LevelManager.SKILLS.get(id);
                     PlayerSkill playerSkill = levelManager.getPlayerSkills().get(id);
 
-                    if (ConfigInit.CONFIG.maxLevel <= levelManager.getOverallLevel()) {
+                    if (ConfigInit.CONFIG.overallMaxLevel > 0 && ConfigInit.CONFIG.overallMaxLevel <= levelManager.getOverallLevel()) {
                         return;
                     }
-
                     if (!ConfigInit.CONFIG.allowHigherSkillLevel && playerSkill.getLevel() >= skill.getMaxLevel()) {
                         return;
                     }
@@ -60,29 +58,6 @@ public class LevelServerPacket {
                     PacketHelper.updateLevels(context.player());
 
                     ServerPlayNetworking.send(context.player(), new StatPacket(id, levelManager.getSkillLevel(id)));
-//                    switch (skillOld) {
-//                        case HEALTH -> {
-//                            player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
-//                                    .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MAX_HEALTH) + ConfigInit.CONFIG.healthBonus * level);
-//                            player.setHealth(player.getHealth() + (float) ConfigInit.CONFIG.healthBonus * level);
-//                        }
-//                        case STRENGTH -> player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-//                                .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) + ConfigInit.CONFIG.attackBonus * level);
-//                        case AGILITY -> player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-//                                .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) + ConfigInit.CONFIG.movementBonus * level);
-//                        case DEFENSE -> player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR)
-//                                .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_ARMOR) + ConfigInit.CONFIG.defenseBonus * level);
-//                        case LUCK -> player.getAttributeInstance(EntityAttributes.GENERIC_LUCK)
-//                                .setBaseValue(player.getAttributeBaseValue(EntityAttributes.GENERIC_LUCK) + ConfigInit.CONFIG.luckBonus * level);
-//                        case MINING -> syncLockedBlockList(levelManager);
-//                        case ALCHEMY -> syncLockedBrewingItemList(levelManager);
-//                        case SMITHING -> syncLockedSmithingItemList(levelManager);
-//                        default -> {
-//                        }
-//                    }
-//                    syncLockedCraftingItemList(levelManager);
-
-//                    writeS2CSyncLevelPacket(levelManager, player, skillOld);
                 }
             });
         });

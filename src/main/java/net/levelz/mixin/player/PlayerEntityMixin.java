@@ -47,9 +47,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
     @Inject(method = "readCustomDataFromNbt", at = @At(value = "TAIL"))
     public void readCustomDataFromNbtMixin(NbtCompound nbt, CallbackInfo info) {
         this.levelManager.readNbt(nbt);
-// Todo: Check if movement speed works fine
-//        playerEntity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-//                .setBaseValue(ConfigInit.CONFIG.movementBase + (double) playerStatsManager.getSkillLevel(SkillOld.AGILITY) * ConfigInit.CONFIG.movementBonus);
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At(value = "TAIL"))
@@ -81,6 +78,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
 
     @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getWeaponStack()Lnet/minecraft/item/ItemStack;"), ordinal = 0)
     private float attackMixin(float original) {
+        if (this.playerEntity.isCreative()) {
+            return original;
+        }
         if (!levelManager.hasRequiredItemLevel(getWeaponStack().getItem())) {
             return 0.0f;
         }

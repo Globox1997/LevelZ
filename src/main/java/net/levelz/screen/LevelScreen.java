@@ -18,6 +18,7 @@ import net.libz.util.DrawTabHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -208,7 +209,7 @@ public class LevelScreen extends Screen implements Tab {
 
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderBackground(context, mouseX, mouseY, delta);
+        renderInGameBackground(context);
         context.drawTexture(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
         for (int i = 0; i < 12; i++) {
@@ -406,7 +407,7 @@ public class LevelScreen extends Screen implements Tab {
             } else {
                 this.levelButtons[i].visible = true;
             }
-            if (this.levelManager.getOverallLevel() >= ConfigInit.CONFIG.maxLevel) {
+            if (ConfigInit.CONFIG.overallMaxLevel > 0 && this.levelManager.getOverallLevel() >= ConfigInit.CONFIG.overallMaxLevel) {
                 this.levelButtons[i].active = false;
             } else if (LevelManager.SKILLS.get(skillId).getMaxLevel() <= this.levelManager.getPlayerSkills().get(skillId).getLevel()) {
                 this.levelButtons[i].active = false;
@@ -415,7 +416,6 @@ public class LevelScreen extends Screen implements Tab {
             } else {
                 this.levelButtons[i].active = true;
             }
-
         }
     }
 

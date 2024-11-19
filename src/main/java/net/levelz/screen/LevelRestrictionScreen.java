@@ -79,11 +79,11 @@ public class LevelRestrictionScreen extends Screen implements Tab {
             newMap.put(entry.getKey(), entry.getValue());
             count++;
             if (count == this.restrictions.size() - 1) {
-                this.lines.add(new LineWidget(this.client, null, newMap, code));
+                this.lines.add(new LineWidget(this.client, null, newMap, null, code));
                 break;
             }
             if (count != 0 && count % 9 == 0) {
-                this.lines.add(new LineWidget(this.client, null, new LinkedHashMap<>(newMap), code));
+                this.lines.add(new LineWidget(this.client, null, new LinkedHashMap<>(newMap), null, code));
                 newMap.clear();
             }
 
@@ -114,7 +114,7 @@ public class LevelRestrictionScreen extends Screen implements Tab {
 
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderBackground(context, mouseX, mouseY, delta);
+        renderInGameBackground(context);
         context.drawTexture(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
 
         if (this.lines.size() > 10) {

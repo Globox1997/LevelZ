@@ -22,6 +22,9 @@ public class ArmorItemMixin {
     @Inject(method = "dispenseArmor", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getPreferredEquipmentSlot(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/entity/EquipmentSlot;"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private static void dispenseArmorMixin(BlockPointer pointer, ItemStack armor, CallbackInfoReturnable<Boolean> info, BlockPos blockPos, List<LivingEntity> list, LivingEntity livingEntity) {
         if (livingEntity instanceof PlayerEntity playerEntity) {
+            if (playerEntity.isCreative()) {
+                return;
+            }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             if (!levelManager.hasRequiredItemLevel(armor.getItem())) {
                 info.setReturnValue(false);

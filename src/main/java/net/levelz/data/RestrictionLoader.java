@@ -9,7 +9,10 @@ import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.PlayerRestriction;
 import net.levelz.level.Skill;
-import net.minecraft.registry.Registries;
+import net.levelz.level.restriction.EnchantmentRestriction;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -17,10 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RestrictionLoader implements SimpleSynchronousResourceReloadListener {
 
@@ -31,6 +31,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
     private List<Integer> entityList = new ArrayList<>();
     private List<Integer> itemList = new ArrayList<>();
     private List<Integer> miningList = new ArrayList<>();
+    private Map<String, List<Integer>> enchantmentList = new HashMap<>();
 
     @Override
     public Identifier getFabricId() {
@@ -45,6 +46,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
         LevelManager.ENTITY_RESTRICTIONS.clear();
         LevelManager.ITEM_RESTRICTIONS.clear();
         LevelManager.MINING_RESTRICTIONS.clear();
+        LevelManager.ENCHANTMENT_RESTRICTIONS.clear();
 
         if (!ConfigInit.CONFIG.restrictions) {
             return;
@@ -173,7 +175,41 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                                 }
                             }
                         }
+                        // enchantments
+                        if (restrictionJsonObject.has("enchantments")) {
+                            Optional<RegistryWrapper.Impl<Enchantment>> wrapper = BuiltinRegistries.createWrapperLookup().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
+                            if (wrapper.isPresent()) {
+                                JsonObject enchantmentObject = restrictionJsonObject.getAsJsonObject("enchantments");
+                                for (String enchantment : enchantmentObject.keySet()) {
+                                    Identifier enchantmentIdentifier = Identifier.of(enchantment);
+                                    Optional<RegistryEntry.Reference<Enchantment>> enchantmentReference = wrapper.get().getOptional(RegistryKey.of(RegistryKeys.ENCHANTMENT, enchantmentIdentifier));
+                                    if (enchantmentReference.isPresent()) {
+                                        int level = enchantmentObject.get(enchantment).getAsInt();
+                                        if (this.enchantmentList.containsKey(enchantment) && this.enchantmentList.get(enchantment).contains(level)) {
+                                            continue;
+                                        }
+                                        if (replace) {
+                                            if (this.enchantmentList.containsKey(enchantment)) {
+                                                this.enchantmentList.get(enchantment).add(level);
+                                            } else {
+                                                this.enchantmentList.put(enchantment, new ArrayList<>(level));
+                                            }
+                                        }
 
+                                        if (LevelManager.ENCHANTMENT_RESTRICTIONS.containsKey(enchantmentReference.get().getIdAsString())) {
+                                            LevelManager.ENCHANTMENT_RESTRICTIONS.get(enchantmentReference.get().getIdAsString()).getSkillLevelRestrictions().put(level, skillLevelRestrictions);
+                                        } else {
+                                             Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
+                                            map.put(enchantmentObject.get(enchantment).getAsInt(), skillLevelRestrictions);
+                                            LevelManager.ENCHANTMENT_RESTRICTIONS.put(enchantmentReference.get().getIdAsString(),
+                                                    new EnchantmentRestriction(enchantmentReference.get(), map));
+                                        }
+                                    } else {
+                                        LOGGER.warn("Restriction {} contains an unrecognized enchantment id called {}.", mapKey, enchantmentIdentifier);
+                                    }
+                                }
+                            }
+                        }
                     } else {
                         LOGGER.warn("Restriction {} does not contain any valid skills.", mapKey);
                     }

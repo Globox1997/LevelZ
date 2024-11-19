@@ -54,6 +54,9 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyVariable(method = "tryUseTotem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;", ordinal = 0))
     private ItemStack tryUseTotemMixin(ItemStack original) {
         if ((Object) this instanceof PlayerEntity playerEntity && original.isOf(Items.TOTEM_OF_UNDYING)) {
+            if (playerEntity.isCreative()) {
+                return original;
+            }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             if (!levelManager.hasRequiredItemLevel(original.getItem())) {
                 return ItemStack.EMPTY;

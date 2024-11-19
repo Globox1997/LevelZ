@@ -18,8 +18,11 @@ public class BrewingStandScreenHandlerMixin {
 
     @Inject(method = "quickMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;canInsert(Lnet/minecraft/item/ItemStack;)Z", ordinal = 1, shift = Shift.AFTER), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     private void transferSlotMixin(PlayerEntity player, int index, CallbackInfoReturnable<ItemStack> info, ItemStack itemStack, Slot slot, ItemStack itemStack2) {
+        if (player.isCreative()) {
+            return;
+        }
         LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
-        if (!player.isCreative() && !levelManager.hasRequiredCraftingLevel(itemStack2.getItem())) {
+        if (!levelManager.hasRequiredCraftingLevel(itemStack2.getItem())) {
             info.setReturnValue(ItemStack.EMPTY);
         }
     }

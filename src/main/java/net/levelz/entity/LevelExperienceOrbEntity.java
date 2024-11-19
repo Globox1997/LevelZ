@@ -121,9 +121,6 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     public static void spawn(ServerWorld world, Vec3d pos, int amount) {
-        if (!ConfigInit.CONFIG.useIndependentExp) {
-            return;
-        }
         while (amount > 0) {
             int i = LevelExperienceOrbEntity.roundToOrbSize(amount);
             amount -= i;
