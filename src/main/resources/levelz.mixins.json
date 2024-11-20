@@ -10,6 +10,7 @@
     "block.BlockMixin",
     "block.PlantBlockMixin",
     "compat.BackpackItemMixin",
+    "compat.LevelManagerCompatMixin",
     "entity.EntityAccessor",
     "entity.VehicleEntityAccessor",
     "entity.AnimalEntityMixin",

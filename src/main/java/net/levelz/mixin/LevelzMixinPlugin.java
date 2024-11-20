@@ -26,7 +26,7 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
                 && (mixinClassName.equals("net.levelz.mixin.compat.TrinketItemMixin") || mixinClassName.equals("net.levelz.mixin.compat.SurvivalTrinketSlotMixin")))
             return false;
 
-        if (!FabricLoader.getInstance().isModLoaded("create") && !FabricLoader.getInstance().isModLoaded("computercraft") && mixinClassName.contains("PlayerStatsManagerCompatMixin"))
+        if (mixinClassName.contains("LevelManagerCompatMixin") && !FabricLoader.getInstance().isModLoaded("create") && !FabricLoader.getInstance().isModLoaded("computercraft"))
             return false;
 
         if (mixinClassName.contains("FishingRodItemMixin") && FabricLoader.getInstance().isModLoaded("go-fish"))
@@ -36,9 +36,6 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
             return false;
 
         if (mixinClassName.contains("AnvilScreenHandlerMixin") && FabricLoader.getInstance().isModLoaded("limitless"))
-            return false;
-
-        if (mixinClassName.contains("DualWieldingOffhandAttackMixin") && !FabricLoader.getInstance().isModLoaded("dualwielding"))
             return false;
 
         if (mixinClassName.contains("BackpackItemMixin") && !FabricLoader.getInstance().isModLoaded("inmis"))
@@ -57,9 +54,6 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
             return false;
 
         if (mixinClassName.contains("SmithingAnvilScreenHandlerMixin") && !FabricLoader.getInstance().isModLoaded("alloygery"))
-            return false;
-
-        if (mixinClassName.contains("BlockBreakerMixin") && !FabricLoader.getInstance().isModLoaded("magna"))
             return false;
 
         return true;
