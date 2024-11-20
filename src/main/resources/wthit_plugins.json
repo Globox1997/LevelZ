@@ -1,0 +1,6 @@
+{
+  "levelz:plugin": {
+    "initializer": "net.levelz.waila.LevelWTHITPlugin",
+    "side": "client"
+  }
+}

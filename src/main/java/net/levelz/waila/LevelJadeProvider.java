@@ -28,7 +28,7 @@ public enum LevelJadeProvider implements IBlockComponentProvider {
             for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredMiningLevel(accessor.getBlock()).entrySet()) {
                 Formatting formatting =
                         levelManager.getSkillLevel(entry.getKey())< entry.getValue() ? Formatting.RED: Formatting.GREEN;
-                tooltip.add(Text.translatable("item.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(formatting));
+                tooltip.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(formatting));
             }
         }
     }

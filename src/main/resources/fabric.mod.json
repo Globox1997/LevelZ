@@ -52,11 +52,6 @@
     "mc-publish": {
       "modrinth": "EFtixeiF",
       "curseforge": 517130
-    },
-    "waila:plugins": {
-      "id": "levelz:plugin",
-      "environment": "client",
-      "initializer": "net.levelz.waila.LevelWailaPlugin"
     }
   }
 }

@@ -189,7 +189,7 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public boolean switchScreen = false;
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
-    public boolean showLockedBlockInfo = true;
+    public boolean showLockedBlockInfo = false;
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
     public int lockedBlockInfoPosX = 0;
