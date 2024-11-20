@@ -18,7 +18,6 @@ import net.libz.util.DrawTabHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -135,7 +134,8 @@ public class LevelScreen extends Screen implements Tab {
                             attributeKey = attributeKey.split(":")[1];
                         }
                         context.drawTexture(LevelzMain.identifierOf("textures/gui/sprites/" + attributeKey + ".png"), this.x + 214, this.y + k, 0, 0, 9, 9, 9, 9);
-                        context.drawText(this.textRenderer, Text.of(String.valueOf(this.client.player.getAttributeValue(this.attributes.get(i).getAttibute()))), this.x + 214 + 15, this.y + k, 0xE0E0E0, false);
+                        float attributeValue = (float) Math.round(this.client.player.getAttributeValue(this.attributes.get(i).getAttibute()) * 100.0D) / 100.0F;
+                        context.drawText(this.textRenderer, Text.of(String.valueOf(attributeValue)), this.x + 214 + 15, this.y + k, 0xE0E0E0, false);
 
                         k += 12;
                     }
