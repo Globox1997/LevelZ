@@ -6,7 +6,7 @@ import net.levelz.LevelzMain;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.level.LevelManager;
-import net.levelz.level.PlayerRestriction;
+import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.level.Skill;
 import net.levelz.level.SkillBonus;
 import net.levelz.level.restriction.EnchantmentRestriction;

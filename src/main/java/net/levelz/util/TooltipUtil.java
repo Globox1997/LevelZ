@@ -1,7 +1,6 @@
 package net.levelz.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
-import net.levelz.level.PlayerRestriction;
+import net.levelz.level.restriction.PlayerRestriction;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;

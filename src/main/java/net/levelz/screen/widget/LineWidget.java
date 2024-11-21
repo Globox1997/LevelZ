@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.LevelzMain;
 import net.levelz.level.LevelManager;
-import net.levelz.level.PlayerRestriction;
+import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.mixin.entity.VehicleEntityAccessor;
 import net.levelz.screen.LevelScreen;
 import net.minecraft.block.Block;

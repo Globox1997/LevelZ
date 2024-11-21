@@ -1,7 +1,7 @@
 package net.levelz.network.packet;
 
 import net.levelz.LevelzMain;
-import net.levelz.level.PlayerRestriction;
+import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.level.restriction.EnchantmentRestriction;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.network.PacketByteBuf;

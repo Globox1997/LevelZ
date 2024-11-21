@@ -1,4 +1,4 @@
-package net.levelz.level;
+package net.levelz.level.restriction;
 
 import java.util.Map;
 

@@ -2,6 +2,7 @@ package net.levelz.level;
 
 import net.levelz.init.ConfigInit;
 import net.levelz.level.restriction.EnchantmentRestriction;
+import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.util.LevelHelper;
 import net.levelz.util.PacketHelper;
 import net.minecraft.block.Block;

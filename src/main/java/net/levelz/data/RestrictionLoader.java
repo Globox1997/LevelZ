@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.levelz.LevelzMain;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
-import net.levelz.level.PlayerRestriction;
+import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.level.Skill;
 import net.levelz.level.restriction.EnchantmentRestriction;
 import net.minecraft.enchantment.Enchantment;
