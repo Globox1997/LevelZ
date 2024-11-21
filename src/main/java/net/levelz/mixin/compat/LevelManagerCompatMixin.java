@@ -56,7 +56,7 @@ public class LevelManagerCompatMixin {
         }
     }
 
-    @Inject(method = "hasRequiredEnchantmentLevel", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "hasRequiredEnchantmentLevel", at = @At("HEAD"), cancellable = true, remap = false)
     private void hasRequiredEnchantmentLevelMixin(String enchantment, int level, CallbackInfoReturnable<Boolean> info) {
         if (this.playerEntity.getClass().getName().contains("deployer.DeployerFakePlayer") || this.playerEntity.getClass().getName().contains("core.TurtlePlayer")) {
             info.setReturnValue(true);
