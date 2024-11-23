@@ -318,7 +318,7 @@ public class LevelScreen extends Screen implements Tab {
             }
             if (isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
                 this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                this.client.setScreen(new LevelInfoScreen(this.levelManager, skillId));
+                this.client.setScreen(new SkillInfoScreen(this.levelManager, skillId));
                 return true;
             }
         }

@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.levelz.LevelzMain;
 import net.levelz.entity.render.LevelExperienceOrbEntityRenderer;
-import net.levelz.screen.LevelInfoScreen;
+import net.levelz.screen.SkillInfoScreen;
 import net.levelz.screen.LevelRestrictionScreen;
 import net.levelz.screen.LevelScreen;
 import net.levelz.screen.widget.LevelzTab;
@@ -32,7 +32,7 @@ public class RenderInit {
         EntityRendererRegistry.register(EntityInit.LEVEL_EXPERIENCE_ORB, LevelExperienceOrbEntityRenderer::new);
 
         TabRegistry.registerInventoryTab(new VanillaInventoryTab(Text.translatable("container.crafting"), BAG_TAB_ICON, 0, InventoryScreen.class));
-        TabRegistry.registerInventoryTab(new LevelzTab(Text.translatable("screen.levelz.skill_screen"), SKILL_TAB_ICON, 1, LevelScreen.class, LevelInfoScreen.class, LevelRestrictionScreen.class));
+        TabRegistry.registerInventoryTab(new LevelzTab(Text.translatable("screen.levelz.skill_screen"), SKILL_TAB_ICON, 1, LevelScreen.class, SkillInfoScreen.class, LevelRestrictionScreen.class));
 
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TooltipUtil.renderTooltip(MinecraftClient.getInstance(), drawContext);

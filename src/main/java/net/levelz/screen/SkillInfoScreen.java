@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 import java.util.*;
 
 @Environment(EnvType.CLIENT)
-public class LevelInfoScreen extends Screen implements Tab {
+public class SkillInfoScreen extends Screen implements Tab {
 
     public static final Identifier BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_info_background.png");
 
@@ -38,7 +38,7 @@ public class LevelInfoScreen extends Screen implements Tab {
 
     private int lineIndex = 0;
 
-    public LevelInfoScreen(LevelManager levelManager, int skillId) {
+    public SkillInfoScreen(LevelManager levelManager, int skillId) {
         super(LevelManager.SKILLS.get(skillId).getText());
         this.skill = LevelManager.SKILLS.get(skillId);
         this.levelManager = levelManager;
