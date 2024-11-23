@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
-public class LevelRestrictionScreen extends Screen implements Tab {
+public class SkillRestrictionScreen extends Screen implements Tab {
 
     public static final Identifier BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_info_background.png");
 
@@ -38,7 +38,7 @@ public class LevelRestrictionScreen extends Screen implements Tab {
 
     private int lineIndex = 0;
 
-    public LevelRestrictionScreen(LevelManager levelManager, Map<Integer, PlayerRestriction> restrictions, Text title, int code) {
+    public SkillRestrictionScreen(LevelManager levelManager, Map<Integer, PlayerRestriction> restrictions, Text title, int code) {
         super(title);
         this.levelManager = levelManager;
         this.restrictions = restrictions;

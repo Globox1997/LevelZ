@@ -289,12 +289,12 @@ public class LevelScreen extends Screen implements Tab {
         }
         if (!LevelManager.CRAFTING_RESTRICTIONS.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 29, 14, 13, mouseX, mouseY)) {
             this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            this.client.setScreen(new LevelRestrictionScreen(this.levelManager, LevelManager.CRAFTING_RESTRICTIONS, Text.translatable("restriction.levelz.crafting"), 0));
+            this.client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.CRAFTING_RESTRICTIONS, Text.translatable("restriction.levelz.crafting"), 0));
             return true;
         }
         if (!LevelManager.MINING_RESTRICTIONS.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 45, 14, 13, mouseX, mouseY)) {
             this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            this.client.setScreen(new LevelRestrictionScreen(this.levelManager, LevelManager.MINING_RESTRICTIONS, Text.translatable("restriction.levelz.mining"), 1));
+            this.client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.MINING_RESTRICTIONS, Text.translatable("restriction.levelz.mining"), 1));
             return true;
         }
         if (this.clientPlayerEntity != null) {
