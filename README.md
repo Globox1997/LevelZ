@@ -186,10 +186,10 @@ A restriction can include:
 
 #### Information Display
 To display information about a skill in the level gui, just add some lines in the lang json with the following key.  
-`"skill.levelz.yourskillkey.extra.0": "This is the whatever skill"`,  
-`"skill.levelz.yourskillkey.extra.1": "It does somethin"`,  
+`"skill.levelz.yourskillkey.0": "This is the whatever skill"`,  
+`"skill.levelz.yourskillkey.1": "It does somethin"`,  
 `...`  
-Just increase the integer at the end of the json entry (after "extra.").
+Just increase the integer at the end of the json entry.
 
 #### Disable access to something
 To permanently disable access to something, simply set the skill requirement higher than the `maxLevel` property configured in `levelz.json5`.

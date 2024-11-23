@@ -52,7 +52,7 @@ public class SkillInfoScreen extends Screen implements Tab {
         this.y = (this.height - this.backgroundHeight) / 2;
 
         for (int i = 0; i < 50; i++) {
-            String skillExtra = "skill.levelz." + this.skill.getKey() + ".extra." + i;
+            String skillExtra = "skill.levelz." + this.skill.getKey() + "." + i;
             Text skillExtraText = Text.translatable(skillExtra);
 
             if (skillExtraText.getString().equals(skillExtra)) {
@@ -68,12 +68,14 @@ public class SkillInfoScreen extends Screen implements Tab {
             if (LevelManager.BONUSES.containsKey(bonusKey)) {
                 SkillBonus bonus = LevelManager.BONUSES.get(bonusKey);
                 if (bonus.getId() == this.skill.getId()) {
-                    this.lines.add(new LineWidget(this.client, Text.of(Text.translatable("bonus.levelz." + bonus.getKey()).getString() + (bonus.getLevel() > 0 ? " " + Text.translatable("text.levelz.gui.short_level", bonus.getLevel()).getString() : "")), null, null, 0));
                     for (int i = 0; i < 50; i++) {
                         String bonusInfo = "bonus.levelz." + bonus.getKey() + "." + i;
-                        Text bonusInfoText = Text.translatable(bonusInfo);
+                        Text bonusInfoText = Text.translatable(bonusInfo, Text.translatable("text.levelz.gui.short_lower_level", bonus.getLevel()));
 
                         if (bonusInfoText.getString().equals(bonusInfo)) {
+                            break;
+                        }
+                        if (bonusInfoText.getString().startsWith("---")) {
                             break;
                         }
                         this.lines.add(new LineWidget(this.client, bonusInfoText, null, null, 0));
