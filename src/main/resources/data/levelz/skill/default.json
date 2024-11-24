@@ -1,0 +1,355 @@
+{
+  "constitution": {
+    "replace": false,
+    "id": 0,
+    "key": "constitution",
+    "level": 20,
+    "attributes": [
+      {
+        "id": 0,
+        "type": "generic.max_health",
+        "base": 8,
+        "operation": "ADD_VALUE",
+        "value": 1
+      }
+    ],
+    "bonus": [
+      {
+        "level": 10,
+        "key": "healthRegen"
+      }
+    ]
+  },
+  "melee": {
+    "replace": false,
+    "id": 1,
+    "key": "melee",
+    "level": 20,
+    "attributes": [
+      {
+        "id": 1,
+        "type": "generic.attack_damage",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.5
+      },
+      {
+        "type": "generic.attack_knockback",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.1
+      },
+      {
+        "type": "player.sweeping_damage_ratio",
+        "base": 0,
+        "operation": "ADD_VALUE",
+        "value": 0.05
+      }
+    ],
+    "bonus": [
+      {
+        "level": 1,
+        "key": "meleeCriticalAttackDamage"
+      },
+      {
+        "level": 15,
+        "key": "meleeDoubleAttackDamageChance"
+      }
+    ]
+  },
+  "defense": {
+    "replace": false,
+    "id": 2,
+    "key": "defense",
+    "level": 20,
+    "attributes": [
+      {
+        "id": 2,
+        "type": "generic.armor",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.25
+      },
+      {
+        "type": "generic.knockback_resistance",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.05
+      }
+    ],
+    "bonus": [
+      {
+        "level": 20,
+        "key": "deathGraceChance"
+      }
+    ]
+  },
+  "archery": {
+    "replace": false,
+    "id": 3,
+    "key": "archery",
+    "level": 20,
+    "attributes": [
+      {
+        "type": "player.block_interaction_range",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.5
+      },
+      {
+        "type": "player.entity_interaction_range",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.5
+      },
+      {
+        "type": "generic.follow_range",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 1
+      }
+    ],
+    "bonus": [
+      {
+        "level": 1,
+        "key": "bowDamage"
+      },
+      {
+        "level": 15,
+        "key": "bowDoubleDamageChance"
+      },
+      {
+        "level": 5,
+        "key": "crossbowDamage"
+      },
+      {
+        "level": 20,
+        "key": "crossbowDoubleDamageChance"
+      }
+    ]
+  },
+  "agility": {
+    "replace": false,
+    "id": 4,
+    "key": "agility",
+    "level": 20,
+    "attributes": [
+      {
+        "id": 3,
+        "type": "generic.movement_speed",
+        "base": 0.09,
+        "operation": "ADD_VALUE",
+        "value": 0.001
+      },
+      {
+        "type": "player.sneaking_speed",
+        "base": 0.2,
+        "operation": "ADD_VALUE",
+        "value": 0.01
+      },
+      {
+        "id": 4,
+        "type": "generic.oxygen_bonus",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.2
+      },
+      {
+        "type": "player.submerged_mining_speed",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.04
+      },
+      {
+        "type": "generic.water_movement_efficiency",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.02
+      }
+    ],
+    "bonus": [
+      {
+        "level": 1,
+        "key": "exhaustionReduction"
+      },
+      {
+        "level": 10,
+        "key": "evadingDamageChance"
+      },
+      {
+        "level": 1,
+        "key": "fallDamageReduction"
+      }
+    ]
+  },
+  "magic": {
+    "replace": false,
+    "id": 5,
+    "key": "magic",
+    "level": 20,
+    "attributes": [],
+    "bonus": [
+      {
+        "level": 20,
+        "key": "potionEffectChance"
+      },
+      {
+        "level": 10,
+        "key": "healthAbsorption"
+      },
+      {
+        "level": 1,
+        "key": "damageReflection"
+      }
+    ]
+  },
+  "mining": {
+    "replace": false,
+    "id": 6,
+    "key": "mining",
+    "level": 20,
+    "attributes": [
+      {
+        "type": "player.block_break_speed",
+        "base": 0.5,
+        "operation": "ADD_VALUE",
+        "value": 0.05
+      },
+      {
+        "id": 5,
+        "type": "player.mining_efficiency",
+        "base": 0,
+        "operation": "ADD_VALUE",
+        "value": 0.05
+      }
+    ],
+    "bonus": [
+      {
+        "level": 10,
+        "key": "miningDropChance"
+      }
+    ]
+  },
+  "smithing": {
+    "replace": false,
+    "id": 7,
+    "key": "smithing",
+    "level": 20,
+    "attributes": [
+      {
+        "type": "generic.burning_time",
+        "base": 1,
+        "operation": "ADD_VALUE",
+        "value": -0.05
+      },
+      {
+        "type": "generic.explosion_knockback_resistance",
+        "base": -1,
+        "operation": "ADD_VALUE",
+        "value": 0.05
+      }
+    ],
+    "bonus": [
+      {
+        "level": 1,
+        "key": "itemDamageChance"
+      },
+      {
+        "level": 15,
+        "key": "tntStrength"
+      },
+      {
+        "level": 20,
+        "key": "anvilXpCap"
+      },
+      {
+        "level": 10,
+        "key": "anvilXpDiscount"
+      }
+    ]
+  },
+  "farming": {
+    "replace": false,
+    "id": 8,
+    "key": "farming",
+    "level": 20,
+    "attributes": [],
+    "bonus": [
+      {
+        "level": 20,
+        "key": "breedTwinChance"
+      },
+      {
+        "level": 10,
+        "key": "plantDropChance"
+      }
+    ]
+  },
+  "cooking": {
+    "replace": false,
+    "id": 9,
+    "key": "cooking",
+    "level": 20,
+    "attributes": [],
+    "bonus": [
+      {
+        "level": 1,
+        "key": "foodIncreasion"
+      }
+    ]
+  },
+  "bartering": {
+    "replace": false,
+    "id": 10,
+    "key": "bartering",
+    "level": 20,
+    "attributes": [],
+    "bonus": [
+      {
+        "level": 1,
+        "key": "priceDiscount"
+      },
+      {
+        "level": 8,
+        "key": "tradeXp"
+      },
+      {
+        "level": 20,
+        "key": "merchantImmune"
+      }
+    ]
+  },
+  "luck": {
+    "replace": false,
+    "id": 11,
+    "key": "luck",
+    "level": 20,
+    "attributes": [
+      {
+        "id": 6,
+        "type": "generic.luck",
+        "base": 1,
+        "operation": "ADD_VALUE",
+        "value": -1
+      }
+    ],
+    "bonus": [
+      {
+        "level": 20,
+        "key": "anvilXpChance"
+      },
+      {
+        "level": 1,
+        "key": "meleeKockbackAttackChance"
+      },
+      {
+        "level": 1,
+        "key": "meleeCriticalAttackChance"
+      },
+      {
+        "level": 1,
+        "key": "damageReflectionChance"
+      }
+    ]
+  }
+}

@@ -45,16 +45,16 @@ public class LevelzConfig implements ConfigData, ConfigSync {
 
     // Skill bonuses
     @Comment("Bonus id: bowDamage")
-    public float bowDamageBonus = 0.2F;
+    public float bowDamageBonus = 0.5F;
 
     @Comment("Bonus id: bowDoubleDamageChance")
-    public float bowDoubleDamageChanceBonus = 0.2F;
+    public float bowDoubleDamageChanceBonus = 0.1F;
 
     @Comment("Bonus id: crossbowDamage")
-    public float crossbowDamageBonus = 0.2F;
+    public float crossbowDamageBonus = 0.5F;
 
     @Comment("Bonus id: crossbowDoubleDamageChance")
-    public float crossbowDoubleDamageChanceBonus = 0.2F;
+    public float crossbowDoubleDamageChanceBonus = 0.1F;
 
     @Comment("Bonus id: itemDamageChance")
     public float itemDamageChanceBonus = 0.01F;
@@ -78,7 +78,7 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public float priceDiscountBonus = 0.01F;
 
     @Comment("Bonus id: tradeXp")
-    public float tradeXpBonus = 1F;
+    public float tradeXpBonus = 0.02F;
 
     @Comment("Bonus id: miningDropChance")
     public float miningDropChanceBonus = 0.01F;
@@ -86,16 +86,16 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @Comment("Bonus id: plantDropChance")
     public float plantDropChanceBonus = 0.01F;
 
-    @Comment("Max anvil xp cost")
+    @Comment("Bonus id: anvilXpCap")
     public int anvilXpCap = 30;
     @Comment("Bonus id: anvilXpDiscount")
     public float anvilXpDiscountBonus = 0.01F;
 
     @Comment("Bonus id: anvilXpChance")
-    public float anvilXpChanceBonus = 0.2F;
+    public float anvilXpChanceBonus = 0.01F;
 
     @Comment("Bonus id: healthRegen")
-    public float healthRegenBonus = 0.1F;
+    public float healthRegenBonus = 0.025F;
 
     @Comment("Bonus id: healthAbsorption")
     public float healthAbsorptionBonus = 4F;
@@ -110,13 +110,13 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public float meleeCriticalAttackChanceBonus = 0.01F;
 
     @Comment("Bonus id: meleeCriticalAttackDamage")
-    public float meleeCriticalAttackDamageBonus = 0.2F;
+    public float meleeCriticalAttackDamageBonus = 0.3F;
 
     @Comment("Bonus id: meleeDoubleAttackDamageChance")
     public float meleeDoubleAttackDamageChanceBonus = 0.2F;
 
     @Comment("Bonus id: foodIncreasion")
-    public float foodIncreasionBonus = 0.05F;
+    public float foodIncreasionBonus = 0.02F;
 
     @Comment("Bonus id: damageReflection")
     public float damageReflectionBonus = 0.02F;
@@ -205,6 +205,7 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public boolean defaultRestrictions = true;
     @ConfigEntry.Category("progression_settings")
     @ConfigEntry.Gui.RequiresRestart
+    @Comment("Remember to name your datapack json differently than default")
     public boolean defaultSkills = true;
 
     @Override
