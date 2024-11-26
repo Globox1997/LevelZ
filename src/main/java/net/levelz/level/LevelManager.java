@@ -60,11 +60,12 @@ public class LevelManager {
         this.totalLevelExperience = nbt.getInt("TotalLevelExperience");
         this.skillPoints = nbt.getInt("SkillPoints");
 
-        NbtList skills = new NbtList();
-        for (PlayerSkill skill : this.playerSkills.values()) {
-            skills.add(skill.writeDataToNbt());
+        NbtList skills = nbt.getList("Skills", NbtElement.COMPOUND_TYPE);
+        for (int i = 0; i < skills.size(); i++) {
+            PlayerSkill skill = new PlayerSkill(skills.getCompound(i));
+            playerSkills.put(skill.getId(), skill);
         }
-        nbt.put("Skills", skills);
+
     }
 
     public void writeNbt(NbtCompound nbt) {
@@ -73,11 +74,11 @@ public class LevelManager {
         nbt.putInt("TotalLevelExperience", this.totalLevelExperience);
         nbt.putInt("SkillPoints", this.skillPoints);
 
-        NbtList skills = nbt.getList("Skills", NbtElement.COMPOUND_TYPE);
-        for (int i = 0; i < skills.size(); i++) {
-            PlayerSkill skill = new PlayerSkill(skills.getCompound(i));
-            playerSkills.put(skill.getId(), skill);
+        NbtList skills = new NbtList();
+        for (PlayerSkill skill : this.playerSkills.values()) {
+            skills.add(skill.writeDataToNbt());
         }
+        nbt.put("Skills", skills);
     }
 
     public Map<Integer, PlayerSkill> getPlayerSkills() {
