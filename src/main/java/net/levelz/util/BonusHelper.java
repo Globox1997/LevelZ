@@ -75,7 +75,7 @@ public class BonusHelper {
     }
 
     public static boolean itemDamageChanceBonus(@Nullable PlayerEntity playerEntity) {
-        if (LevelManager.BONUSES.containsKey("itemDamageChance")) {
+        if (playerEntity != null && LevelManager.BONUSES.containsKey("itemDamageChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("itemDamageChance");
             int level = levelManager.getPlayerSkills().get(skillBonus.getId()).getLevel();
@@ -86,8 +86,8 @@ public class BonusHelper {
         return false;
     }
 
-    public static StatusEffectInstance potionEffectChanceBonus(PlayerEntity playerEntity, StatusEffectInstance statusEffectInstance) {
-        if (LevelManager.BONUSES.containsKey("potionEffectChance")) {
+    public static StatusEffectInstance potionEffectChanceBonus(@Nullable PlayerEntity playerEntity, StatusEffectInstance statusEffectInstance) {
+        if (playerEntity != null && LevelManager.BONUSES.containsKey("potionEffectChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("potionEffectChance");
             int level = levelManager.getPlayerSkills().get(skillBonus.getId()).getLevel();

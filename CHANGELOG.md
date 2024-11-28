@@ -1,6 +1,7 @@
 ### Added:
 - 
 ### Fixed:
-- Fixed level saving
+- Fixed npe
+- 
 ### Changed:
 - 
