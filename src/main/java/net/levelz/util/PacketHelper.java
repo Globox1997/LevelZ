@@ -48,7 +48,12 @@ public class PacketHelper {
     public static void updatePlayerSkills(ServerPlayerEntity serverPlayerEntity, @Nullable ServerPlayerEntity oldPlayerEntity) {
         LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).getLevelManager();
         if (oldPlayerEntity != null) {
-            levelManager = ((LevelManagerAccess) oldPlayerEntity).getLevelManager();
+            LevelManager oldLevelManager = ((LevelManagerAccess) oldPlayerEntity).getLevelManager();
+            levelManager.setPlayerSkills(oldLevelManager.getPlayerSkills());
+            levelManager.setOverallLevel(oldLevelManager.getOverallLevel());
+            levelManager.setTotalLevelExperience(oldLevelManager.getTotalLevelExperience());
+            levelManager.setSkillPoints(oldLevelManager.getSkillPoints());
+            levelManager.setLevelProgress(oldLevelManager.getLevelProgress());
         }
         List<Integer> playerSkillIds = new ArrayList<>();
         List<Integer> playerSkillLevels = new ArrayList<>();
