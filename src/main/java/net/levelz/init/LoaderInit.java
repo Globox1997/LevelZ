@@ -16,7 +16,7 @@ public class LoaderInit {
 
     public static void init() {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SkillLoader());
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new RestrictionLoader());
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(RestrictionLoader.ID, RestrictionLoader::new);
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
             if (success) {
                 for (int i = 0; i < server.getPlayerManager().getPlayerList().size(); i++) {

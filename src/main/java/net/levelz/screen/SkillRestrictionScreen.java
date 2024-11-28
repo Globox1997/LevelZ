@@ -76,11 +76,11 @@ public class SkillRestrictionScreen extends Screen implements Tab {
             newMap.put(entry.getKey(), entry.getValue());
             count++;
             if (count == this.restrictions.size() - 1) {
-                this.lines.add(new LineWidget(this.client, null, newMap, null, code));
+                this.lines.add(new LineWidget(this.client, null, newMap, code));
                 break;
             }
             if (count != 0 && count % 9 == 0) {
-                this.lines.add(new LineWidget(this.client, null, new LinkedHashMap<>(newMap), null, code));
+                this.lines.add(new LineWidget(this.client, null, new LinkedHashMap<>(newMap), code));
                 newMap.clear();
             }
 

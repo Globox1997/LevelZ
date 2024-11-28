@@ -6,11 +6,16 @@ import net.levelz.LevelzMain;
 import net.levelz.level.LevelManager;
 import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.mixin.entity.VehicleEntityAccessor;
+import net.levelz.registry.EnchantmentRegistry;
+import net.levelz.registry.EnchantmentZ;
 import net.levelz.screen.LevelScreen;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.VehicleEntity;
@@ -19,6 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -34,26 +40,23 @@ public class LineWidget {
     private final Text text;
     @Nullable
     private final Map<Integer, PlayerRestriction> restrictions;
-    @Nullable
-    private final Map<Integer, EnchantmentLevelEntry> enchantments;
     private final int code;
 
-    private Map<Integer, ItemStack> entityStack;
-    private Map<Integer, Identifier> entityImages;
+    private Map<Integer, ItemStack> customStacks;
+    private Map<Integer, Identifier> customImages;
 
     /**
-     * @param code 0 = item, 1 = block, 2 = entity
+     * @param code 0 = item, 1 = block, 2 = entity, 3 = enchantment
      */
-    public LineWidget(MinecraftClient client, @Nullable Text text, @Nullable Map<Integer, PlayerRestriction> restrictions, @Nullable Map<Integer, EnchantmentLevelEntry> enchantments, int code) {
+    public LineWidget(MinecraftClient client, @Nullable Text text, @Nullable Map<Integer, PlayerRestriction> restrictions, int code) {
         this.client = client;
         this.text = text;
         this.restrictions = restrictions;
-        this.enchantments = enchantments;
         this.code = code;
 
         if (this.code == 2) {
-            this.entityStack = new HashMap<>();
-            this.entityImages = new HashMap<>();
+            this.customStacks = new HashMap<>();
+            this.customImages = new HashMap<>();
             for (Integer id : this.restrictions.keySet()) {
                 EntityType<?> entityType = Registries.ENTITY_TYPE.get(id);
                 boolean imageExists = false;
@@ -63,14 +66,20 @@ public class LineWidget {
                 } catch (FileNotFoundException ignored) {
                 }
                 if (imageExists) {
-                    this.entityImages.put(id, LevelzMain.identifierOf("textures/gui/sprites/entity/" + Registries.ENTITY_TYPE.getId(entityType).getPath() + ".png"));
+                    this.customImages.put(id, LevelzMain.identifierOf("textures/gui/sprites/entity/" + Registries.ENTITY_TYPE.getId(entityType).getPath() + ".png"));
                 } else if (SpawnEggItem.forEntity(entityType) != null) {
-                    this.entityStack.put(id, new ItemStack(Objects.requireNonNull(SpawnEggItem.forEntity(entityType))));
+                    this.customStacks.put(id, new ItemStack(Objects.requireNonNull(SpawnEggItem.forEntity(entityType))));
                 } else if (entityType.create(this.client.world) instanceof VehicleEntity vehicleEntity) {
-                    this.entityStack.put(id, new ItemStack(((VehicleEntityAccessor) vehicleEntity).callAsItem()));
+                    this.customStacks.put(id, new ItemStack(((VehicleEntityAccessor) vehicleEntity).callAsItem()));
                 } else {
-                    this.entityImages.put(id, LevelzMain.identifierOf("textures/gui/sprites/entity/default.png"));
+                    this.customImages.put(id, LevelzMain.identifierOf("textures/gui/sprites/entity/default.png"));
                 }
+            }
+        } else if (this.code == 3) {
+            this.customStacks = new HashMap<>();
+            for (Integer id : this.restrictions.keySet()) {
+                EnchantmentZ enchantmentZ = EnchantmentRegistry.getEnchantmentZ(id);
+                this.customStacks.put(id, EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantmentZ.getEntry(), enchantmentZ.getLevel())));
             }
         }
     }
@@ -85,26 +94,27 @@ public class LineWidget {
                 Text tooltipTitle;
                 drawContext.drawTexture(LevelScreen.ICON_TEXTURE, x + separator - 1, y - 1, 0, 148, 18, 18);
                 if (this.code == 0) {
-                    if (entry.getKey() < 0 && this.enchantments != null && this.enchantments.containsKey(entry.getKey())) {
-                        tooltipTitle = Enchantment.getName(this.enchantments.get(entry.getKey()).enchantment, this.enchantments.get(entry.getKey()).level);
-                        drawContext.drawItem(EnchantedBookItem.forEnchantment(this.enchantments.get(entry.getKey())), x + separator, y);
-                    } else {
-                        Item item = Registries.ITEM.get(entry.getKey());
-                        tooltipTitle = item.getName();
-                        drawContext.drawItem(Registries.ITEM.get(entry.getKey()).getDefaultStack(), x + separator, y);
-                    }
+                    Item item = Registries.ITEM.get(entry.getKey());
+                    tooltipTitle = item.getName();
+                    drawContext.drawItem(Registries.ITEM.get(entry.getKey()).getDefaultStack(), x + separator, y);
                 } else if (this.code == 1) {
                     Block block = Registries.BLOCK.get(entry.getKey());
                     tooltipTitle = block.getName();
                     drawContext.drawItem(block.asItem().getDefaultStack(), x + separator, y);
-                } else {// if (this.code == 2)
+                } else if (this.code == 2) {
                     EntityType<?> entityType = Registries.ENTITY_TYPE.get(entry.getKey());
                     tooltipTitle = entityType.getName();
-                    if (this.entityStack.containsKey(entry.getKey())) {
-                        drawContext.drawItem(this.entityStack.get(entry.getKey()), x + separator, y);
+                    if (this.customStacks.containsKey(entry.getKey())) {
+                        drawContext.drawItem(this.customStacks.get(entry.getKey()), x + separator, y);
                     } else {
-                        drawContext.drawTexture(this.entityImages.get(entry.getKey()), x + separator, y, 0, 0, 16, 16);
+                        drawContext.drawTexture(this.customImages.get(entry.getKey()), x + separator, y, 0, 0, 16, 16);
                     }
+                } else {// if (this.code == 3) {
+                    ItemStack stack = this.customStacks.get(entry.getKey());
+                    RegistryEntry<Enchantment> enchantment = EnchantmentHelper.getEnchantments(stack).getEnchantments().stream().findFirst().get();
+                    int level = stack.getOrDefault(DataComponentTypes.STORED_ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT).getLevel(enchantment);
+                    tooltipTitle = Enchantment.getName(enchantment, level);
+                    drawContext.drawItem(stack, x + separator, y);
                 }
                 if (!showTooltip && LevelScreen.isPointWithinBounds(x + separator, y, 16, 16, mouseX, mouseY)) {
                     List<Text> tooltip = new ArrayList<>();

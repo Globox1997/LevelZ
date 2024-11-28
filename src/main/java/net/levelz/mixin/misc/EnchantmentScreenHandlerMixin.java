@@ -59,7 +59,7 @@ public abstract class EnchantmentScreenHandlerMixin {
 
         List<EnchantmentLevelEntry> list = new ArrayList<>();
         for (EnchantmentLevelEntry enchantmentLevelEntry : original) {
-            if (levelManager.hasRequiredEnchantmentLevel(enchantmentLevelEntry.enchantment.getIdAsString(), enchantmentLevelEntry.level)) {
+            if (levelManager.hasRequiredEnchantmentLevel(enchantmentLevelEntry.enchantment, enchantmentLevelEntry.level)) {
                 list.add(enchantmentLevelEntry);
             }
         }
@@ -70,7 +70,7 @@ public abstract class EnchantmentScreenHandlerMixin {
             for (int i = 0; i < 50; i++) {
                 List<EnchantmentLevelEntry> enchantmentRng = EnchantmentHelper.generateEnchantments(this.playerEntity.getRandom(), stack, level, ((RegistryEntryList.Named) optional.get()).stream());
                 for (EnchantmentLevelEntry enchantmentLevelEntry : enchantmentRng) {
-                    if (levelManager.hasRequiredEnchantmentLevel(enchantmentLevelEntry.enchantment.getIdAsString(), enchantmentLevelEntry.level)) {
+                    if (levelManager.hasRequiredEnchantmentLevel(enchantmentLevelEntry.enchantment, enchantmentLevelEntry.level)) {
                         list.add(enchantmentLevelEntry);
                         break;
                     }

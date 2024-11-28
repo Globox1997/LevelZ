@@ -40,7 +40,7 @@ public class ProcessItemFactoryMixin {
                 boolean hasAllRequiredLevels = true;
                 Map<RegistryEntry<Enchantment>, Integer> enchantments = new HashMap<>();
                 for (Object2IntMap.Entry<RegistryEntry<Enchantment>> entry : itemEnchantmentsComponent.getEnchantmentEntries()) {
-                    if (levelManager.hasRequiredEnchantmentLevel(entry.getKey().getIdAsString(), entry.getIntValue())) {
+                    if (levelManager.hasRequiredEnchantmentLevel(entry.getKey(), entry.getIntValue())) {
                         enchantments.put(entry.getKey(), entry.getIntValue());
                     } else {
                         hasAllRequiredLevels = false;

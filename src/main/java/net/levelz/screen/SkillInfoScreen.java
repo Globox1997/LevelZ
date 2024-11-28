@@ -6,20 +6,21 @@ import net.levelz.LevelzMain;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.level.LevelManager;
-import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.level.Skill;
 import net.levelz.level.SkillBonus;
-import net.levelz.level.restriction.EnchantmentRestriction;
+import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.screen.widget.LineWidget;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Environment(EnvType.CLIENT)
 public class SkillInfoScreen extends Screen implements Tab {
@@ -58,10 +59,10 @@ public class SkillInfoScreen extends Screen implements Tab {
             if (skillExtraText.getString().equals(skillExtra)) {
                 break;
             }
-            this.lines.add(new LineWidget(this.client, skillExtraText, null, null, 0));
+            this.lines.add(new LineWidget(this.client, skillExtraText, null, 0));
         }
         if (!this.lines.isEmpty()) {
-            this.lines.addFirst(new LineWidget(this.client, Text.translatable("skill.levelz.info"), null, null, 0));
+            this.lines.addFirst(new LineWidget(this.client, Text.translatable("skill.levelz.info"), null, 0));
         }
         int skillInfoLines = this.lines.size();
         for (String bonusKey : SkillBonus.BONUS_KEYS) {
@@ -78,18 +79,19 @@ public class SkillInfoScreen extends Screen implements Tab {
                         if (bonusInfoText.getString().startsWith("---")) {
                             break;
                         }
-                        this.lines.add(new LineWidget(this.client, bonusInfoText, null, null, 0));
+                        this.lines.add(new LineWidget(this.client, bonusInfoText, null, 0));
                     }
                 }
             }
         }
         if (this.lines.size() > skillInfoLines) {
-            this.lines.add(skillInfoLines, new LineWidget(this.client, Text.translatable("bonus.levelz.info"), null, null, 0));
+            this.lines.add(skillInfoLines, new LineWidget(this.client, Text.translatable("bonus.levelz.info"), null, 0));
         }
 
         addRestrictionLines(LevelManager.ITEM_RESTRICTIONS, Text.translatable("restriction.levelz.item_usage"), 0);
         addRestrictionLines(LevelManager.BLOCK_RESTRICTIONS, Text.translatable("restriction.levelz.block_usage"), 1);
         addRestrictionLines(LevelManager.ENTITY_RESTRICTIONS, Text.translatable("restriction.levelz.entity_usage"), 2);
+        addRestrictionLines(LevelManager.ENCHANTMENT_RESTRICTIONS, Text.translatable("restriction.levelz.enchantments"), 3);
     }
 
     private void addRestrictionLines(Map<Integer, PlayerRestriction> levelRestrictions, Text restrictionText, int code) {
@@ -113,40 +115,12 @@ public class SkillInfoScreen extends Screen implements Tab {
 
             }
         }
-        Map<Integer, EnchantmentLevelEntry> enchantments = null;
-        if (code == 0) {
-
-            int enchantmentCode = -1;
-            for (EnchantmentRestriction enchantmentRestrictions : LevelManager.ENCHANTMENT_RESTRICTIONS.values()) {
-                if (enchantments == null) {
-                    enchantments = new HashMap<>();
-                }
-                // Enchantment lvl, Skill Id, Lvl
-                for (Map.Entry<Integer, Map<Integer, Integer>> enchantmentLevelRestriction : enchantmentRestrictions.getSkillLevelRestrictions().entrySet()) {
-                    // Skill Id, Lvl
-                    for (Map.Entry<Integer, Integer> enchantmentRestriction : enchantmentLevelRestriction.getValue().entrySet()) {
-                        if (enchantmentRestriction.getKey() == this.skill.getId()) {
-                            if (map.containsKey(enchantmentRestriction.getValue())) {
-                                map.get(enchantmentRestriction.getValue()).put(enchantmentCode, new PlayerRestriction(enchantmentCode, enchantmentLevelRestriction.getValue()));
-                            } else {
-                                Map<Integer, PlayerRestriction> newMap = new TreeMap<>();
-                                newMap.put(enchantmentCode, new PlayerRestriction(enchantmentCode, enchantmentLevelRestriction.getValue()));
-                                map.put(enchantmentRestriction.getValue(), newMap);
-                            }
-                            enchantments.put(enchantmentCode, new EnchantmentLevelEntry(enchantmentRestrictions.getEnchantment(), enchantmentLevelRestriction.getKey()));
-                            enchantmentCode--;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
 
         if (!map.isEmpty()) {
-            this.lines.add(new LineWidget(this.client, restrictionText, null, null, 0));
+            this.lines.add(new LineWidget(this.client, restrictionText, null, 0));
         }
         for (Map.Entry<Integer, Map<Integer, PlayerRestriction>> restrictions : map.entrySet()) {
-            this.lines.add(new LineWidget(this.client, Text.translatable("text.levelz.gui.short_level", restrictions.getKey()), null, null, 0));
+            this.lines.add(new LineWidget(this.client, Text.translatable("text.levelz.gui.short_level", restrictions.getKey()), null, 0));
 
             if (restrictions.getValue().size() > 10) {
                 Map<Integer, PlayerRestriction> newMap = new TreeMap<>();
@@ -156,16 +130,16 @@ public class SkillInfoScreen extends Screen implements Tab {
                     newMap.put(specificRestriction.getKey(), specificRestriction.getValue());
                     count++;
                     if (count == restrictions.getValue().size() - 1) {
-                        this.lines.add(new LineWidget(this.client, null, newMap, enchantments, code));
+                        this.lines.add(new LineWidget(this.client, null, newMap, code));
                         break;
                     }
                     if (count % 9 == 0) {
-                        this.lines.add(new LineWidget(this.client, null, new TreeMap<>(newMap), enchantments, code));
+                        this.lines.add(new LineWidget(this.client, null, new TreeMap<>(newMap), code));
                         newMap.clear();
                     }
                 }
             } else {
-                this.lines.add(new LineWidget(this.client, null, restrictions.getValue(), enchantments, code));
+                this.lines.add(new LineWidget(this.client, null, restrictions.getValue(), code));
             }
         }
     }

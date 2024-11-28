@@ -2,9 +2,11 @@ package net.levelz.mixin.compat;
 
 import net.levelz.level.LevelManager;
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -56,8 +58,8 @@ public class LevelManagerCompatMixin {
         }
     }
 
-    @Inject(method = "hasRequiredEnchantmentLevel", at = @At("HEAD"), cancellable = true, remap = false)
-    private void hasRequiredEnchantmentLevelMixin(String enchantment, int level, CallbackInfoReturnable<Boolean> info) {
+    @Inject(method = "hasRequiredEnchantmentLevel", at = @At("HEAD"), cancellable = true)
+    private void hasRequiredEnchantmentLevelMixin(RegistryEntry<Enchantment> enchantment, int level, CallbackInfoReturnable<Boolean> info) {
         if (this.playerEntity.getClass().getName().contains("deployer.DeployerFakePlayer") || this.playerEntity.getClass().getName().contains("core.TurtlePlayer")) {
             info.setReturnValue(true);
         }

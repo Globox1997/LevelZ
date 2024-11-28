@@ -7,12 +7,11 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.levelz.LevelzMain;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
-import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.level.Skill;
-import net.levelz.level.restriction.EnchantmentRestriction;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.*;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.levelz.level.restriction.PlayerRestriction;
+import net.levelz.registry.EnchantmentRegistry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -20,22 +19,29 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class RestrictionLoader implements SimpleSynchronousResourceReloadListener {
+public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) implements SimpleSynchronousResourceReloadListener {
+
+    public static final Identifier ID = LevelzMain.identifierOf("restriction");
 
     private static final Logger LOGGER = LogManager.getLogger("LevelZ");
 
-    private List<Integer> blockList = new ArrayList<>();
-    private List<Integer> craftingList = new ArrayList<>();
-    private List<Integer> entityList = new ArrayList<>();
-    private List<Integer> itemList = new ArrayList<>();
-    private List<Integer> miningList = new ArrayList<>();
-    private Map<String, List<Integer>> enchantmentList = new HashMap<>();
+    private static final List<Integer> blockList = new ArrayList<>();
+    private static final List<Integer> craftingList = new ArrayList<>();
+    private static final List<Integer> entityList = new ArrayList<>();
+    private static final List<Integer> itemList = new ArrayList<>();
+    private static final List<Integer> miningList = new ArrayList<>();
+    private static final List<Integer> enchantmentList = new ArrayList<>();
+
+//    private ItemStringReader itemStringReader = new ItemStringReader(BuiltinRegistries.createWrapperLookup());
 
     @Override
     public Identifier getFabricId() {
-        return LevelzMain.identifierOf("restriction");
+        return ID;
     }
 
     @Override
@@ -51,6 +57,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
         if (!ConfigInit.CONFIG.restrictions) {
             return;
         }
+        EnchantmentRegistry.updateEnchantments(this.wrapperLookup());
 
         manager.findResources("restriction", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
             try {
@@ -87,11 +94,11 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                                 if (Registries.BLOCK.containsId(blockIdentifier)) {
                                     int blockRawId = Registries.BLOCK.getRawId(Registries.BLOCK.get(blockIdentifier));
 
-                                    if (this.blockList.contains(blockRawId)) {
+                                    if (blockList.contains(blockRawId)) {
                                         continue;
                                     }
                                     if (replace) {
-                                        this.blockList.add(blockRawId);
+                                        blockList.add(blockRawId);
                                     }
                                     LevelManager.BLOCK_RESTRICTIONS.put(blockRawId, new PlayerRestriction(blockRawId, skillLevelRestrictions));
                                 } else {
@@ -106,11 +113,11 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                                 if (Registries.ITEM.containsId(craftingIdentifier)) {
                                     int craftingRawId = Registries.ITEM.getRawId(Registries.ITEM.get(craftingIdentifier));
 
-                                    if (this.craftingList.contains(craftingRawId)) {
+                                    if (craftingList.contains(craftingRawId)) {
                                         continue;
                                     }
                                     if (replace) {
-                                        this.craftingList.add(craftingRawId);
+                                        craftingList.add(craftingRawId);
                                     }
                                     LevelManager.CRAFTING_RESTRICTIONS.put(craftingRawId, new PlayerRestriction(craftingRawId, skillLevelRestrictions));
                                 } else {
@@ -125,11 +132,11 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                                 if (Registries.ENTITY_TYPE.containsId(entityIdentifier)) {
                                     int entityRawId = Registries.ENTITY_TYPE.getRawId(Registries.ENTITY_TYPE.get(entityIdentifier));
 
-                                    if (this.entityList.contains(entityRawId)) {
+                                    if (entityList.contains(entityRawId)) {
                                         continue;
                                     }
                                     if (replace) {
-                                        this.entityList.add(entityRawId);
+                                        entityList.add(entityRawId);
                                     }
                                     LevelManager.ENTITY_RESTRICTIONS.put(entityRawId, new PlayerRestriction(entityRawId, skillLevelRestrictions));
                                 } else {
@@ -144,11 +151,11 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                                 if (Registries.ITEM.containsId(itemIdentifier)) {
                                     int itemRawId = Registries.ITEM.getRawId(Registries.ITEM.get(itemIdentifier));
 
-                                    if (this.itemList.contains(itemRawId)) {
+                                    if (itemList.contains(itemRawId)) {
                                         continue;
                                     }
                                     if (replace) {
-                                        this.itemList.add(itemRawId);
+                                        itemList.add(itemRawId);
                                     }
                                     LevelManager.ITEM_RESTRICTIONS.put(itemRawId, new PlayerRestriction(itemRawId, skillLevelRestrictions));
                                 } else {
@@ -163,11 +170,11 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                                 if (Registries.BLOCK.containsId(miningIdentifier)) {
                                     int miningRawId = Registries.BLOCK.getRawId(Registries.BLOCK.get(miningIdentifier));
 
-                                    if (this.miningList.contains(miningRawId)) {
+                                    if (miningList.contains(miningRawId)) {
                                         continue;
                                     }
                                     if (replace) {
-                                        this.miningList.add(miningRawId);
+                                        miningList.add(miningRawId);
                                     }
                                     LevelManager.MINING_RESTRICTIONS.put(miningRawId, new PlayerRestriction(miningRawId, skillLevelRestrictions));
                                 } else {
@@ -177,36 +184,42 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                         }
                         // enchantments
                         if (restrictionJsonObject.has("enchantments")) {
-                            Optional<RegistryWrapper.Impl<Enchantment>> wrapper = BuiltinRegistries.createWrapperLookup().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
-                            if (wrapper.isPresent()) {
-                                JsonObject enchantmentObject = restrictionJsonObject.getAsJsonObject("enchantments");
-                                for (String enchantment : enchantmentObject.keySet()) {
-                                    Identifier enchantmentIdentifier = Identifier.of(enchantment);
-                                    Optional<RegistryEntry.Reference<Enchantment>> enchantmentReference = wrapper.get().getOptional(RegistryKey.of(RegistryKeys.ENCHANTMENT, enchantmentIdentifier));
-                                    if (enchantmentReference.isPresent()) {
-                                        int level = enchantmentObject.get(enchantment).getAsInt();
-                                        if (this.enchantmentList.containsKey(enchantment) && this.enchantmentList.get(enchantment).contains(level)) {
-                                            continue;
-                                        }
-                                        if (replace) {
-                                            if (this.enchantmentList.containsKey(enchantment)) {
-                                                this.enchantmentList.get(enchantment).add(level);
-                                            } else {
-                                                this.enchantmentList.put(enchantment, new ArrayList<>(level));
-                                            }
-                                        }
-
-                                        if (LevelManager.ENCHANTMENT_RESTRICTIONS.containsKey(enchantmentReference.get().getIdAsString())) {
-                                            LevelManager.ENCHANTMENT_RESTRICTIONS.get(enchantmentReference.get().getIdAsString()).getSkillLevelRestrictions().put(level, skillLevelRestrictions);
-                                        } else {
-                                             Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
-                                            map.put(enchantmentObject.get(enchantment).getAsInt(), skillLevelRestrictions);
-                                            LevelManager.ENCHANTMENT_RESTRICTIONS.put(enchantmentReference.get().getIdAsString(),
-                                                    new EnchantmentRestriction(enchantmentReference.get(), map));
-                                        }
-                                    } else {
-                                        LOGGER.warn("Restriction {} contains an unrecognized enchantment id called {}.", mapKey, enchantmentIdentifier);
+                            JsonObject enchantmentObject = restrictionJsonObject.getAsJsonObject("enchantments");
+                            for (String enchantment : enchantmentObject.keySet()) {
+                                Identifier enchantmentIdentifier = Identifier.of(enchantment);
+                                int level = enchantmentObject.get(enchantment).getAsInt();
+                                if (EnchantmentRegistry.containsId(enchantmentIdentifier, level)) {
+                                    int enchantmentRawId = EnchantmentRegistry.getId(enchantmentIdentifier, level);
+                                    if (enchantmentList.contains(enchantmentRawId)) {
+                                        continue;
                                     }
+                                    if (replace) {
+                                        enchantmentList.add(enchantmentRawId);
+                                    }
+                                    LevelManager.ENCHANTMENT_RESTRICTIONS.put(enchantmentRawId, new PlayerRestriction(enchantmentRawId, skillLevelRestrictions));
+                                } else {
+                                    LOGGER.warn("Restriction {} contains an unrecognized enchantment id called {}.", mapKey, enchantmentIdentifier);
+                                }
+                            }
+                        }
+                        // Todo: Test
+                        if (restrictionJsonObject.has("components")) {
+//                            System.out.println(this.itemStringReader.consume(new StringReader("potion[potion_contents={potion:\"fire_resistance\"}]")));
+//                            System.out.println(this.itemStringReader.consume(new StringReader("potion[potion_contents={potion:\"fire_resistance\"}]")).components());
+//                            System.out.println(this.itemStringReader.consume(new StringReader("potion[potion_contents={potion:\"fire_resistance\"}]")).item().value());
+//                            Registries.ENCHANTMENT.
+
+                            JsonObject componentObject = restrictionJsonObject.getAsJsonObject("components");
+                            for (String component : componentObject.keySet()) {
+                                Identifier itemIdentifier = Identifier.of(component);
+                                if (Registries.ITEM.containsId(itemIdentifier)) {
+                                    if (Registries.DATA_COMPONENT_TYPE.containsId(Identifier.of(componentObject.get(component).getAsString()))) {
+                                        int itemRawId = Registries.ITEM.getRawId(Registries.ITEM.get(itemIdentifier));
+                                    } else {
+                                        LOGGER.warn("Restriction {} contains an unrecognized component called {}.", mapKey, componentObject.get(component).getAsString());
+                                    }
+                                } else {
+                                    LOGGER.warn("Restriction {} contains an unrecognized item id at component called {}.", mapKey, itemIdentifier);
                                 }
                             }
                         }

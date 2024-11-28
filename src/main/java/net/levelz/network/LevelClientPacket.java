@@ -4,7 +4,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.levelz.access.LevelManagerAccess;
-import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.level.LevelManager;
 import net.levelz.level.PlayerSkill;
 import net.levelz.level.Skill;
@@ -76,7 +75,7 @@ public class LevelClientPacket {
             RestrictionPacket.RestrictionRecord entityRestrictions = payload.entityRestrictions();
             RestrictionPacket.RestrictionRecord itemRestrictions = payload.itemRestrictions();
             RestrictionPacket.RestrictionRecord miningRestrictions = payload.miningRestrictions();
-            RestrictionPacket.EnchantmentRestrictionRecord enchantmentRestrictions = payload.enchantmentRestrictions();
+            RestrictionPacket.RestrictionRecord enchantmentRestrictions = payload.enchantmentRestrictions();
 
             context.client().execute(() -> {
                 LevelManager.BLOCK_RESTRICTIONS.clear();
