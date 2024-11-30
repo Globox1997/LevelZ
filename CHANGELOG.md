@@ -1,8 +1,6 @@
 ### Added:
 - 
 ### Fixed:
-- Fixed npe
-- Fixed registry issue
-- Fixed respawn issue
+- Fixed damage reflection crash
 ### Changed:
 - 

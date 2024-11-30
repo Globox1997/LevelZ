@@ -371,7 +371,7 @@ public class BonusHelper {
     }
 
     public static void damageReflectionBonus(PlayerEntity playerEntity, DamageSource source, float amount) {
-        if (LevelManager.BONUSES.containsKey("damageReflection") && LevelManager.BONUSES.containsKey("damageReflectionChance")) {
+        if (source.getAttacker() != null && LevelManager.BONUSES.containsKey("damageReflection") && LevelManager.BONUSES.containsKey("damageReflectionChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("damageReflectionChance");
             int level = levelManager.getPlayerSkills().get(skillBonus.getId()).getLevel();
