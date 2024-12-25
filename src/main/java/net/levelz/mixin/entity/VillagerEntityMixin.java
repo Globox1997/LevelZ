@@ -42,7 +42,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity {
     private void prepareOffersForMixin(PlayerEntity player, CallbackInfo info) {
         if (!player.hasStatusEffect(StatusEffects.HERO_OF_THE_VILLAGE)) {
             for (TradeOffer tradeOffer : this.getOffers()) {
-                tradeOffer.increaseSpecialPrice(-(int) (tradeOffer.getOriginalFirstBuyItem().getCount() * BonusHelper.priceDiscountBonus(player)));
+                int originalPrice = tradeOffer.getOriginalFirstBuyItem().getCount();
+                tradeOffer.increaseSpecialPrice(-(int) (originalPrice - originalPrice * BonusHelper.priceDiscountBonus(player)));
             }
         }
     }
