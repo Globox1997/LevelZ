@@ -2,9 +2,9 @@ package net.levelz.screen.widget;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.levelz.screen.LevelScreen;
 import net.levelz.screen.SkillInfoScreen;
 import net.levelz.screen.SkillRestrictionScreen;
-import net.levelz.screen.LevelScreen;
 import net.libz.api.InventoryTab;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;

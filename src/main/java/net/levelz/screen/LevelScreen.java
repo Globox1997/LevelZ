@@ -12,6 +12,7 @@ import net.levelz.init.KeyInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.Skill;
 import net.levelz.level.SkillAttribute;
+import net.levelz.network.packet.AttributeSyncPacket;
 import net.levelz.network.packet.StatPacket;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
@@ -64,6 +65,8 @@ public class LevelScreen extends Screen implements Tab {
     @Override
     protected void init() {
         super.init();
+        ClientPlayNetworking.send(new AttributeSyncPacket());
+
         this.x = (this.width - this.backgroundWidth) / 2;
         this.y = (this.height - this.backgroundHeight) / 2;
 
@@ -134,7 +137,7 @@ public class LevelScreen extends Screen implements Tab {
                             attributeKey = attributeKey.split(":")[1];
                         }
                         context.drawTexture(LevelzMain.identifierOf("textures/gui/sprites/" + attributeKey + ".png"), this.x + 214, this.y + k, 0, 0, 9, 9, 9, 9);
-                        float attributeValue = (float) Math.round(this.client.player.getAttributeValue(this.attributes.get(i).getAttibute()) * 100.0D) / 100.0F;
+                        float attributeValue = (float) Math.round(this.client.player.getAttributeInstance(this.attributes.get(i).getAttibute()).getValue() * 100.0D) / 100.0F;
                         context.drawText(this.textRenderer, Text.of(String.valueOf(attributeValue)), this.x + 214 + 15, this.y + k, 0xE0E0E0, false);
 
                         k += 12;
@@ -358,37 +361,6 @@ public class LevelScreen extends Screen implements Tab {
         }
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
-
-
-//    @Override
-//    public boolean isMouseOver(double mouseX, double mouseY) {
-//        System.out.println("TEST");
-//        return super.isMouseOver(mouseX, mouseY);
-//    }
-
-
-    //    @Override
-//    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-//        if (!this.visible) {
-//            return false;
-//        }
-//        if (isPointWithinBounds(118, -this.maxRows * 18 + 4, 9, 9, mouseX, mouseY)) {
-//            this.setScrollY(this.getScrollY() + this.getDeltaYPerScroll());
-//            return true;
-//        } else if (isPointWithinBounds(118, -this.maxRows * 18 - 5, 9, 9, mouseX, mouseY)) {
-//            this.setScrollY(this.getScrollY() - this.getDeltaYPerScroll());
-//            return true;
-//        }
-//        return false;
-//    }
-
-    //    mous
-
-//    @Override
-//    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-////        System.out.println("X");
-//        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-//    }
 
     @Override
     public boolean shouldPause() {

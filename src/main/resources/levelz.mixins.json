@@ -11,6 +11,7 @@
     "block.PlantBlockMixin",
     "compat.BackpackItemMixin",
     "compat.LevelManagerCompatMixin",
+    "compat.TieredCompatMixin",
     "entity.EntityAccessor",
     "entity.VehicleEntityAccessor",
     "entity.AnimalEntityMixin",

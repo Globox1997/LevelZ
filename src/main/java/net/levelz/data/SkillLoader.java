@@ -88,7 +88,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                                 attributeId = attributeJsonObject.get("id").getAsInt();
                             }
                             RegistryEntry<EntityAttribute> attibute = entityAttribute.get();
-                            float baseValue = -1.0f;
+                            float baseValue = -10000.0f;
                             if (attributeJsonObject.has("base")) {
                                 baseValue = attributeJsonObject.get("base").getAsFloat();
                             }

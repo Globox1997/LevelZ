@@ -11,11 +11,15 @@ import net.levelz.level.Skill;
 import net.levelz.network.packet.*;
 import net.levelz.util.LevelHelper;
 import net.levelz.util.PacketHelper;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.PacketType;
+import net.minecraft.network.packet.s2c.play.EntityAttributesS2CPacket;
 import net.minecraft.util.Identifier;
+
+import java.util.List;
 
 public class LevelServerPacket {
 
@@ -29,6 +33,7 @@ public class LevelServerPacket {
 
         PayloadTypeRegistry.playS2C().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playC2S().register(AttributeSyncPacket.PACKET_ID, AttributeSyncPacket.PACKET_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(StatPacket.PACKET_ID, (payload, context) -> {
             int id = payload.id();
@@ -59,6 +64,16 @@ public class LevelServerPacket {
 
                     ServerPlayNetworking.send(context.player(), new StatPacket(id, levelManager.getSkillLevel(id)));
                 }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(AttributeSyncPacket.PACKET_ID, (payload, context) -> {
+            context.server().execute(() -> {
+                // Following are already synced
+                // Collection<EntityAttributeInstance> collection = context.player().getAttributes().getAttributesToSend();
+                // context.player().networkHandler.sendPacket(new EntityAttributesS2CPacket(context.player().getId(), collection));
+                // Is required lul
+                context.player().networkHandler.sendPacket(new EntityAttributesS2CPacket(context.player().getId(), List.of(context.player().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE))));
             });
         });
     }

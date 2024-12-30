@@ -4,4 +4,4 @@
 - Fixed damage reflection crash
 - Fixed villager trading price
 ### Changed:
-- 
+- Changed attribute calculation
