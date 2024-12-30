@@ -29,21 +29,19 @@
       {
         "id": 1,
         "type": "generic.attack_damage",
-        "base": -1,
         "operation": "ADD_VALUE",
-        "value": 0.5
+        "value": 0.2
       },
       {
         "type": "generic.attack_knockback",
-        "base": -1,
         "operation": "ADD_VALUE",
-        "value": 0.1
+        "value": 0.05
       },
       {
         "type": "player.sweeping_damage_ratio",
         "base": 0,
         "operation": "ADD_VALUE",
-        "value": 0.05
+        "value": 0.03
       }
     ],
     "bonus": [
@@ -66,13 +64,11 @@
       {
         "id": 2,
         "type": "generic.armor",
-        "base": -1,
         "operation": "ADD_VALUE",
         "value": 0.25
       },
       {
         "type": "generic.knockback_resistance",
-        "base": -1,
         "operation": "ADD_VALUE",
         "value": 0.05
       }
@@ -92,19 +88,11 @@
     "attributes": [
       {
         "type": "player.block_interaction_range",
-        "base": -1,
         "operation": "ADD_VALUE",
-        "value": 0.5
-      },
-      {
-        "type": "player.entity_interaction_range",
-        "base": -1,
-        "operation": "ADD_VALUE",
-        "value": 0.5
+        "value": 0.1
       },
       {
         "type": "generic.follow_range",
-        "base": -1,
         "operation": "ADD_VALUE",
         "value": 1
       }
@@ -150,19 +138,16 @@
       {
         "id": 4,
         "type": "generic.oxygen_bonus",
-        "base": -1,
         "operation": "ADD_VALUE",
         "value": 0.2
       },
       {
         "type": "player.submerged_mining_speed",
-        "base": -1,
         "operation": "ADD_VALUE",
         "value": 0.04
       },
       {
         "type": "generic.water_movement_efficiency",
-        "base": -1,
         "operation": "ADD_VALUE",
         "value": 0.02
       }
@@ -238,13 +223,11 @@
     "attributes": [
       {
         "type": "generic.burning_time",
-        "base": 1,
         "operation": "ADD_VALUE",
         "value": -0.05
       },
       {
         "type": "generic.explosion_knockback_resistance",
-        "base": -1,
         "operation": "ADD_VALUE",
         "value": 0.05
       }
@@ -328,9 +311,9 @@
       {
         "id": 6,
         "type": "generic.luck",
-        "base": 1,
+        "base": -1,
         "operation": "ADD_VALUE",
-        "value": -1
+        "value": 0.15
       }
     ],
     "bonus": [
