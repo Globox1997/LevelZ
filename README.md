@@ -32,7 +32,7 @@ A skill requires:
 - attributes: 
   - id (integer): optional id - determines the location in the skill gui - attribute texture must be 9x9px at "assets/levelz/textures/gui/sprites/type.png" (no mod id infront of the type)
   - type (string): attribute type (vanilla existing ones can be found below)
-  - base (float): optional starting value - can be set to -1.0 if vanilla default starting value should be used
+  - base (float): optional starting value - can be set to -10000.0 if vanilla default starting value should be used
   - operation (string): determines the mathematical operation how to add "value"
   - value (float): value to add/multiply onto the start value
 - bonus:
