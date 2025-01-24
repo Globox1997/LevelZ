@@ -379,14 +379,26 @@ public class LevelScreen extends Screen implements Tab {
             } else {
                 this.levelButtons[i].visible = true;
             }
+
+
             if (ConfigInit.CONFIG.overallMaxLevel > 0 && this.levelManager.getOverallLevel() >= ConfigInit.CONFIG.overallMaxLevel) {
                 this.levelButtons[i].active = false;
             } else if (LevelManager.SKILLS.get(skillId).getMaxLevel() <= this.levelManager.getPlayerSkills().get(skillId).getLevel()) {
                 this.levelButtons[i].active = false;
-            } else if (this.levelManager.getSkillPoints() <= 0) {
-                this.levelButtons[i].active = false;
             } else {
-                this.levelButtons[i].active = true;
+                this.levelButtons[i].active = this.levelManager.getSkillPoints() > 0;
+            }
+            if (ConfigInit.CONFIG.allowHigherSkillLevel && this.levelManager.getSkillPoints() > 0) {
+                boolean maxedAllSkills = true;
+                for (Skill skillCheck : LevelManager.SKILLS.values()) {
+                    if (skillCheck.getMaxLevel() > this.levelManager.getSkillLevel(skillCheck.getId())) {
+                        maxedAllSkills = false;
+                        break;
+                    }
+                }
+                if (maxedAllSkills) {
+                    this.levelButtons[i].active = true;
+                }
             }
         }
     }

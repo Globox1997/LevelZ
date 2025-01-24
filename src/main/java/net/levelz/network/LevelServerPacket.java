@@ -52,6 +52,15 @@ public class LevelServerPacket {
                     if (!ConfigInit.CONFIG.allowHigherSkillLevel && playerSkill.getLevel() >= skill.getMaxLevel()) {
                         return;
                     }
+                    if (ConfigInit.CONFIG.allowHigherSkillLevel) {
+                        if (playerSkill.getLevel() >= skill.getMaxLevel()) {
+                            for (Skill skillCheck : LevelManager.SKILLS.values()) {
+                                if (skillCheck.getMaxLevel() > levelManager.getSkillLevel(skillCheck.getId())) {
+                                    return;
+                                }
+                            }
+                        }
+                    }
 
                     for (int i = 1; i <= level; i++) {
                         CriteriaInit.SKILL_UP.trigger(context.player(), skill.getKey(), playerSkill.getLevel() + level);
