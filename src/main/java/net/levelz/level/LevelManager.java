@@ -65,6 +65,9 @@ public class LevelManager {
         NbtList skills = nbt.getList("Skills", NbtElement.COMPOUND_TYPE);
         for (int i = 0; i < skills.size(); i++) {
             PlayerSkill skill = new PlayerSkill(skills.getCompound(i));
+            if (!SKILLS.containsKey(skill.getId())) {
+                continue;
+            }
             playerSkills.put(skill.getId(), skill);
         }
 
