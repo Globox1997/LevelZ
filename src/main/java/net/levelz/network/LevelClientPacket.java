@@ -8,9 +8,17 @@ import net.levelz.level.LevelManager;
 import net.levelz.level.PlayerSkill;
 import net.levelz.level.Skill;
 import net.levelz.network.packet.*;
+import net.levelz.registry.EnchantmentRegistry;
+import net.levelz.registry.EnchantmentZ;
 import net.levelz.screen.LevelScreen;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public class LevelClientPacket {
@@ -115,6 +123,26 @@ public class LevelClientPacket {
                 if (context.client().currentScreen instanceof LevelScreen levelScreen) {
                     levelScreen.updateLevelButtons();
                 }
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(EnchantmentZPacket.PACKET_ID, (payload, context) -> {
+            Map<String, Integer> indexed = payload.indexed();
+            List<Integer> keys = payload.keys();
+            List<String> ids = payload.ids();
+            List<Integer> levels = payload.levels();
+            context.client().execute(() -> {
+                EnchantmentRegistry.ENCHANTMENTS.clear();
+                EnchantmentRegistry.INDEX_ENCHANTMENTS.clear();
+
+                Registry<Enchantment> registry = context.player().getWorld().getRegistryManager().get(RegistryKeys.ENCHANTMENT);
+                for (int i = 0; i < keys.size(); i++) {
+                    int key = keys.get(i);
+                    RegistryEntry<Enchantment> entry = registry.getEntry(Identifier.of(ids.get(i))).get();
+                    int level = levels.get(i);
+                    EnchantmentRegistry.ENCHANTMENTS.put(key, new EnchantmentZ(entry, level));
+                }
+                EnchantmentRegistry.INDEX_ENCHANTMENTS.putAll(indexed);
             });
         });
     }

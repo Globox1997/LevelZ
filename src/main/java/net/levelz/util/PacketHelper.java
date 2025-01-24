@@ -3,15 +3,15 @@ package net.levelz.util;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.level.*;
-import net.levelz.network.packet.LevelPacket;
-import net.levelz.network.packet.PlayerSkillSyncPacket;
-import net.levelz.network.packet.RestrictionPacket;
-import net.levelz.network.packet.SkillSyncPacket;
+import net.levelz.network.packet.*;
+import net.levelz.registry.EnchantmentRegistry;
+import net.levelz.registry.EnchantmentZ;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PacketHelper {
 
@@ -70,5 +70,17 @@ public class PacketHelper {
                 new RestrictionPacket.RestrictionRecord(LevelManager.CRAFTING_RESTRICTIONS.keySet().stream().toList(), LevelManager.CRAFTING_RESTRICTIONS.values().stream().toList()), new RestrictionPacket.RestrictionRecord(LevelManager.ENTITY_RESTRICTIONS.keySet().stream().toList(), LevelManager.ENTITY_RESTRICTIONS.values().stream().toList()),
                 new RestrictionPacket.RestrictionRecord(LevelManager.ITEM_RESTRICTIONS.keySet().stream().toList(), LevelManager.ITEM_RESTRICTIONS.values().stream().toList()), new RestrictionPacket.RestrictionRecord(LevelManager.MINING_RESTRICTIONS.keySet().stream().toList(), LevelManager.MINING_RESTRICTIONS.values().stream().toList()),
                 new RestrictionPacket.RestrictionRecord(LevelManager.ENCHANTMENT_RESTRICTIONS.keySet().stream().toList(), LevelManager.ENCHANTMENT_RESTRICTIONS.values().stream().toList())));
+    }
+
+    public static void syncEnchantments(ServerPlayerEntity serverPlayerEntity) {
+        List<Integer> keys = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
+        List<Integer> levels = new ArrayList<>();
+        for (Map.Entry<Integer, EnchantmentZ> entry : EnchantmentRegistry.ENCHANTMENTS.entrySet()) {
+            keys.add(entry.getKey());
+            ids.add(entry.getValue().getEntry().getIdAsString());
+            levels.add(entry.getValue().getLevel());
+        }
+        ServerPlayNetworking.send(serverPlayerEntity, new EnchantmentZPacket(EnchantmentRegistry.INDEX_ENCHANTMENTS, keys, ids, levels));
     }
 }

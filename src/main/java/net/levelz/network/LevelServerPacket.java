@@ -30,6 +30,7 @@ public class LevelServerPacket {
         PayloadTypeRegistry.playS2C().register(PlayerSkillSyncPacket.PACKET_ID, PlayerSkillSyncPacket.PACKET_CODEC);
         PayloadTypeRegistry.playS2C().register(LevelPacket.PACKET_ID, LevelPacket.PACKET_CODEC);
         PayloadTypeRegistry.playS2C().register(RestrictionPacket.PACKET_ID, RestrictionPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(EnchantmentZPacket.PACKET_ID, EnchantmentZPacket.PACKET_CODEC);
 
         PayloadTypeRegistry.playS2C().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);

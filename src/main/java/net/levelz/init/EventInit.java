@@ -28,6 +28,7 @@ public class EventInit {
             for (Skill skill : LevelManager.SKILLS.values()) {
                 LevelHelper.updateSkill(handler.getPlayer(), skill);
             }
+            PacketHelper.syncEnchantments(handler.getPlayer());
             PacketHelper.updateSkills(handler.getPlayer());
             PacketHelper.updatePlayerSkills(handler.getPlayer(), null);
             PacketHelper.updateRestrictions(handler.getPlayer());
