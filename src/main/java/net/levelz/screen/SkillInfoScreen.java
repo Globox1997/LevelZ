@@ -129,7 +129,7 @@ public class SkillInfoScreen extends Screen implements Tab {
                 for (Map.Entry<Integer, PlayerRestriction> specificRestriction : restrictions.getValue().entrySet()) {
                     newMap.put(specificRestriction.getKey(), specificRestriction.getValue());
                     count++;
-                    if (count == restrictions.getValue().size() - 1) {
+                    if (count == restrictions.getValue().size()) {
                         this.lines.add(new LineWidget(this.client, null, newMap, code));
                         break;
                     }
