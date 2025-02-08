@@ -28,7 +28,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
     private static final Logger LOGGER = LogManager.getLogger("LevelZ");
 
-    private static List<String> skillList = new ArrayList<>();
+    private static final List<Integer> skillList = new ArrayList<>();
 
     @Override
     public Identifier getFabricId() {
@@ -41,6 +41,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
         LevelManager.SKILLS.clear();
         // clear bonuses
         LevelManager.BONUSES.clear();
+        skillList.clear();
 
         // safety check
         AtomicInteger skillCount = new AtomicInteger();
@@ -57,19 +58,15 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                 for (String mapKey : data.keySet()) {
                     JsonObject skillJsonObject = data.getAsJsonObject(mapKey);
 
-                    // replace check
-                    if (skillList.contains(skillJsonObject.get("id").getAsString())) {
-                        LOGGER.warn("Skill {} was already loaded.", skillJsonObject.get("id").getAsString());
-                        continue;
-                    }
-                    if (skillJsonObject.has("replace") && skillJsonObject.get("replace").getAsBoolean()) {
-                        skillList.add(skillJsonObject.get("id").getAsString());
-                    }
-
                     int identification = skillJsonObject.get("id").getAsInt();
-                    // loading check
-                    if (LevelManager.SKILLS.containsKey(identification)) {
-                        LOGGER.warn("Id {} in skill {} was already used by another skill.", identification, skillJsonObject.get("id").getAsString());
+                    // replace check
+                    if (skillJsonObject.has("replace") && skillJsonObject.get("replace").getAsBoolean()) {
+                        skillList.add(identification);
+                        if (LevelManager.SKILLS.containsKey(identification)) {
+                            LevelManager.SKILLS.remove(identification);
+                            skillCount.getAndDecrement();
+                        }
+                    } else if (skillList.contains(identification)) {
                         continue;
                     }
 
