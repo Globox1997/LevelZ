@@ -63,6 +63,11 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                     if (skillJsonObject.has("replace") && skillJsonObject.get("replace").getAsBoolean()) {
                         skillList.add(identification);
                         if (LevelManager.SKILLS.containsKey(identification)) {
+                            LevelManager.SKILLS.get(identification).getAttributes().forEach(attribute -> {
+                                if (attribute.getId() != -1 && attributeIds.contains(attribute.getId())) {
+                                    attributeIds.remove(attribute.getId());
+                                }
+                            });
                             LevelManager.SKILLS.remove(identification);
                             skillCount.getAndDecrement();
                         }
