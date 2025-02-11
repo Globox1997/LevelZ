@@ -1,6 +1,6 @@
 ### Added:
 - 
 ### Fixed:
-- Fixed datapack replacing
+- Fixed levelz xp bug
 ### Changed:
 - 

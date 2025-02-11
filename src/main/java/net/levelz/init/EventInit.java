@@ -40,8 +40,10 @@ public class EventInit {
         });
 
         ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
-            PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
-            PacketHelper.updateLevels(newPlayer);
+            if (alive) {
+                PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
+                PacketHelper.updateLevels(newPlayer);
+            }
         });
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
