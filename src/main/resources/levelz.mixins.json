@@ -52,7 +52,7 @@
     "player.CraftingScreenHandlerMixin",
     "player.HungerManagerMixin",
     "player.PlayerEntityMixin",
-    "player.ServerServerPlayerEntityMixin",
+    "player.ServerPlayerEntityMixin",
     "player.ClientPlayerListS2CPacketMixin",
     "player.PlayerManagerMixin"
   ],
