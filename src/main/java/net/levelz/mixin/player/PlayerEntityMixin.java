@@ -140,7 +140,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
 
     @Override
     public boolean allowMobDrop() {
-        return killedMobsInChunk >= ConfigInit.CONFIG.mobKillCount ? false : true;
+        return killedMobsInChunk < ConfigInit.CONFIG.mobKillCount;
     }
 
     @Override
