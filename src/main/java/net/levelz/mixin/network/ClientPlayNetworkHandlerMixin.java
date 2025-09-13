@@ -1,5 +1,7 @@
 package net.levelz.mixin.network;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.levelz.access.OrbAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.network.packet.OrbPacket;
@@ -15,6 +17,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 
+@Environment(EnvType.CLIENT)
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler implements OrbAccess {
 

@@ -47,7 +47,7 @@
     "misc.MobSpawnerLogicMixin",
     "misc.ProcessItemFactoryMixin",
     "network.ClientPlayPacketListenerMixin",
-    "network.ClientPlayNetworkHandlerMixin",
+
     "network.PlayStateFactoriesMixin",
     "player.CraftingScreenHandlerMixin",
     "player.HungerManagerMixin",
@@ -60,6 +60,7 @@
     "misc.WorldRendererMixin",
     "misc.ClientPlayNetworkHandlerMixin",
     "misc.CreativeInventoryScreenMixin",
+    "network.ClientPlayNetworkHandlerMixin",
     "player.InGameHudMixin",
     "player.InventoryScreenMixin",
     "player.PlayerListHudMixin",
