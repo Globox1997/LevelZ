@@ -7,11 +7,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: set up JDK 21
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
-          distribution: 'adopt-hotspot'
+          distribution: 'temurin'
           java-version: 21
           cache: 'gradle'
 
@@ -65,6 +65,6 @@ jobs:
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
           embed-title: "${{ steps.properties.outputs.archives_base_name }} ${{ steps.properties.outputs.mod_version }} for Minecraft ${{ steps.properties.outputs.minecraft_version }} has been released!"
-          embed-description: "**Changelog**```md\n${{ steps.changelog.outputs.content }}```\n**Downloads**\n<:modrinth:1110118061106798644> https://modrinth.com/mod/${{ steps.properties.outputs.archives_base_name }}\n<:curseforge:1110124796362109028> https://www.curseforge.com/minecraft/mc-mods/${{ steps.properties.outputs.archives_base_name }}"
+          embed-description: "**Changelog**```md\n${{ steps.changelog.outputs.content }}```\n**Downloads**\n<:modrinth:1401269188215046265> https://modrinth.com/mod/${{ steps.properties.outputs.archives_base_name }}\n<:curseforge:1401269128412794901> https://www.curseforge.com/minecraft/mc-mods/${{ steps.properties.outputs.archives_base_name }}"
           embed-footer-text: "Have fun and be blessed!"
           embed-color: 0xFF8000
