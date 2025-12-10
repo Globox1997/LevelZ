@@ -21,6 +21,9 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EventInit {
 
     public static void init() {
@@ -47,16 +50,49 @@ public class EventInit {
         });
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            if (ConfigInit.CONFIG.hardMode) {
+            LevelManager newLevelManager = ((LevelManagerAccess) newPlayer).getLevelManager();
+            if (ConfigInit.CONFIG.levelRetainPercentage < 100) {
+                LevelManager oldLevelManager = ((LevelManagerAccess) oldPlayer).getLevelManager();
+                float levelRetainPercentageFloat = ConfigInit.CONFIG.levelRetainPercentage / 100;
+                int retainedLevel = (int) (oldLevelManager.getOverallLevel() * levelRetainPercentageFloat);
+
+                int usedSkillPoints = oldLevelManager.getOverallLevel() * ConfigInit.CONFIG.pointsPerLevel + ConfigInit.CONFIG.startPoints - oldLevelManager.getSkillPoints();
+                if(!ConfigInit.CONFIG.levelRefundSkillPoints && usedSkillPoints > oldLevelManager.getSkillPoints()) {
+                    int lossUnusedSkillPointsAmount = oldLevelManager.getSkillPoints() - ConfigInit.CONFIG.startPoints;
+                    newLevelManager.setSkillPoints(ConfigInit.CONFIG.startPoints);
+
+                    List<Integer> skillsList = new ArrayList<>(oldLevelManager.getPlayerSkills().keySet());
+                    int lossSkillsAmount = (oldLevelManager.getOverallLevel() - retainedLevel) * ConfigInit.CONFIG.pointsPerLevel - lossUnusedSkillPointsAmount;
+                    while (lossSkillsAmount > 0 && !skillsList.isEmpty()) {
+                        int skillIdPos = (int) (Math.random() * skillsList.size());
+                        int skillId = skillsList.get(skillIdPos);
+                        if (oldLevelManager.getSkillLevel(skillId) == 0) {
+                            skillsList.remove(skillIdPos);
+                            continue;
+                        }
+                        oldLevelManager.setSkillLevel(skillId, oldLevelManager.getSkillLevel(skillId) - 1);
+                        lossSkillsAmount--;
+                    }
+
+                    List<Integer> skillsList2 = new ArrayList<>(oldLevelManager.getPlayerSkills().keySet());
+                    for (int skillId : skillsList2) {
+                        newLevelManager.setSkillLevel(skillId, oldLevelManager.getSkillLevel(skillId));
+                    }
+                    PacketHelper.updatePlayerSkills(newPlayer, null);
+                } else {
+                    newPlayer.getScoreboard().forEachScore(CriteriaInit.LEVELZ, newPlayer, ScoreAccess::resetScore);
+
+                    newLevelManager.setSkillPoints(ConfigInit.CONFIG.startPoints + retainedLevel * ConfigInit.CONFIG.pointsPerLevel);
+                }
+                newLevelManager.setOverallLevel(retainedLevel);
+                PacketHelper.updateLevels(newPlayer);
                 newPlayer.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, newPlayer));
-                newPlayer.getScoreboard().forEachScore(CriteriaInit.LEVELZ, newPlayer, ScoreAccess::resetScore);
             } else {
                 PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
 
                 if (ConfigInit.CONFIG.resetCurrentXp) {
-                    LevelManager levelManager = ((LevelManagerAccess) newPlayer).getLevelManager();
-                    levelManager.setLevelProgress(0);
-                    levelManager.setTotalLevelExperience(0);
+                    newLevelManager.setLevelProgress(0);
+                    newLevelManager.setTotalLevelExperience(0);
                 }
 
                 PacketHelper.updateLevels(newPlayer);

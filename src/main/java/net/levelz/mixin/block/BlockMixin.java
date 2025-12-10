@@ -1,23 +1,19 @@
 package net.levelz.mixin.block;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.EntityInit;
+import net.levelz.init.TagInit;
 import net.levelz.level.LevelManager;
 import net.levelz.util.BonusHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContextParameterSet;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -25,6 +21,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -35,7 +32,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.List;
 
 @Mixin(Block.class)
-public class BlockMixin {
+public abstract class BlockMixin {
+    @Shadow private BlockState defaultState;
 
     @Unique
     @Nullable
@@ -68,7 +66,16 @@ public class BlockMixin {
 
     @Inject(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
     protected void dropExperienceMixin(ServerWorld world, BlockPos pos, int size, CallbackInfo info) {
-        if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F) {
+        boolean boolTagList = this.defaultState.isIn(TagInit.RESTRICTED_ORE_EXPERIENCE_BLOCKS);
+        if (ConfigInit.CONFIG.restrictOreExperienceDrops) {
+            if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F && !boolTagList) {
+                LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
+                        (int) (size * ConfigInit.CONFIG.oreXPMultiplier
+                                * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.serverPlayerEntity != null
+                                ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) this.serverPlayerEntity).getLevelManager().getOverallLevel()
+                                : 1.0F)));
+            }
+        } else if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F) {
             LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
                     (int) (size * ConfigInit.CONFIG.oreXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.serverPlayerEntity != null
