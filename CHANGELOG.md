@@ -1,8 +1,6 @@
 ### Added:
-- restrictOreExperienceDrops tags used to restrict what blocks drop Levelz's experience orbs
-- Config option for restrictOreExperienceDrops
-- Adjustable respawn options. Refunding levels, skill points and skill levels. 
-- Config option for levelRetainPercentage (how much of levels in %, rounded down,  to keep after respawn) and levelRefundSkillPoints (if player should keep skill points in assigned skills or be fully refunded) 
+- restricted_ore_experience_blocks tag to restrict specific ore experience drop
+- levelRetainPercentage option to specify the reduction of level on death by TheGoldenKnight
 ### Fixed:
 - 
 ### Changed:
