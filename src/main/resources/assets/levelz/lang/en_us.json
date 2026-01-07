@@ -19,7 +19,6 @@
   "text.autoconfig.levelz.option.devMode": "Dev Mode",
   "text.autoconfig.levelz.option.hardMode": "Hard Mode",
   "text.autoconfig.levelz.option.levelRetainPercentage": "Retained level after death",
-  "text.autoconfig.levelz.option.levelRefundSkillPoints":  "Refund Attribute Points",
   "text.autoconfig.levelz.option.disableMobFarms": "Disable Mob Farms",
   "text.autoconfig.levelz.option.overallMaxLevel": "Overall Max Level",
   "text.autoconfig.levelz.option.allowHigherSkillLevel": "Allow Higher Skill Level",
@@ -76,7 +75,6 @@
   "text.autoconfig.levelz.option.tradingXPMultiplier": "Trading XP Multiplier",
   "text.autoconfig.levelz.option.mobXPMultiplier": "Mob XP Multiplier",
   "text.autoconfig.levelz.option.spawnerMobXP": "Spawner Mob XP",
-  "text.autoconfig.levelz.option.restrictOreExperienceDrops":  "Restrict ore drop XP",
 
   "text.autoconfig.levelz.option.sortCraftingRecipesBySkill": "Sort Crafting Recipes By Skill",
   "text.autoconfig.levelz.option.inventoryButton": "Inventory Button",

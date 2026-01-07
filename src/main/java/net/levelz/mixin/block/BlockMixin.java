@@ -33,7 +33,8 @@ import java.util.List;
 
 @Mixin(Block.class)
 public abstract class BlockMixin {
-    @Shadow private BlockState defaultState;
+    @Shadow
+    private BlockState defaultState;
 
     @Unique
     @Nullable
@@ -66,16 +67,7 @@ public abstract class BlockMixin {
 
     @Inject(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
     protected void dropExperienceMixin(ServerWorld world, BlockPos pos, int size, CallbackInfo info) {
-        boolean boolTagList = this.defaultState.isIn(TagInit.RESTRICTED_ORE_EXPERIENCE_BLOCKS);
-        if (ConfigInit.CONFIG.restrictOreExperienceDrops) {
-            if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F && !boolTagList) {
-                LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
-                        (int) (size * ConfigInit.CONFIG.oreXPMultiplier
-                                * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.serverPlayerEntity != null
-                                ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) this.serverPlayerEntity).getLevelManager().getOverallLevel()
-                                : 1.0F)));
-            }
-        } else if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F) {
+        if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F && !this.defaultState.isIn(TagInit.RESTRICTED_ORE_EXPERIENCE_BLOCKS)) {
             LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
                     (int) (size * ConfigInit.CONFIG.oreXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.serverPlayerEntity != null
