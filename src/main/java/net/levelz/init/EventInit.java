@@ -50,6 +50,12 @@ public class EventInit {
             if (ConfigInit.CONFIG.hardMode) {
                 newPlayer.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, newPlayer));
                 newPlayer.getScoreboard().forEachScore(CriteriaInit.LEVELZ, newPlayer, ScoreAccess::resetScore);
+
+                if (ConfigInit.CONFIG.startPoints > 0) {
+                    LevelManager levelManager = ((LevelManagerAccess) newPlayer).getLevelManager();
+                    levelManager.setSkillPoints(ConfigInit.CONFIG.startPoints);
+                    PacketHelper.updateLevels(newPlayer);
+                }
             } else {
                 PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
 
