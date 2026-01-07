@@ -25,8 +25,15 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @ConfigEntry.Category("level_settings")
     public int pointsPerLevel = 3;
     @ConfigEntry.Category("level_settings")
-    @Comment("If true will reset stats on death")
+    @Comment("If true will reset stats on death \n!!!deprecated, not in use!!!")
     public boolean hardMode = false;
+    @ConfigEntry.Category("level_settings")
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
+    @Comment("Retain x% of levels and skill points, round down")
+    public float levelRetainPercentage = 100;
+    @ConfigEntry.Category("level_settings")
+    @Comment("Fully regain all skill points after death")
+    public boolean levelRefundSkillPoints = false;
     @ConfigEntry.Category("level_settings")
     public boolean disableMobFarms = true;
     @ConfigEntry.Category("level_settings")
@@ -162,6 +169,9 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public float mobXPMultiplier = 1.0F;
     @ConfigEntry.Category("experience_settings")
     public boolean spawnerMobXP = false;
+    @ConfigEntry.Category("experience_settings")
+    @Comment("Datapack modifyable. Default entry 'minecraft:sculk'")
+    public boolean restrictOreExperienceDrops = true;
 
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
