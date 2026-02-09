@@ -12,6 +12,7 @@ import net.levelz.init.KeyInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.Skill;
 import net.levelz.level.SkillAttribute;
+import net.levelz.mixin.player.PlayerEntityAccessor;
 import net.levelz.network.packet.AttributeSyncPacket;
 import net.levelz.network.packet.StatPacket;
 import net.libz.api.Tab;
@@ -73,6 +74,8 @@ public class LevelScreen extends Screen implements Tab {
         this.levelManager = ((LevelManagerAccess) this.client.player).getLevelManager();
         this.clientPlayerEntity = this.client.interactionManager.createPlayer(this.client.world, this.client.player.getStatHandler(), this.client.player.getRecipeBook(), false, false);
         ((ClientPlayerAccess) this.clientPlayerEntity).setShouldRenderClientName(false);
+        byte playerModelParts = this.client.player.getDataTracker().get(PlayerEntityAccessor.getPLAYER_MODEL_PARTS());
+        this.clientPlayerEntity.getDataTracker().set(PlayerEntityAccessor.getPLAYER_MODEL_PARTS(), playerModelParts);
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             if (!this.client.player.getEquippedStack(equipmentSlot).isEmpty()) {
