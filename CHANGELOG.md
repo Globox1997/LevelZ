@@ -1,6 +1,6 @@
 ### Added:
 - 
 ### Fixed:
-- Fixed second render layer
+- Fixed strange potion
 ### Changed:
 - 

@@ -319,6 +319,7 @@ public class LevelManager {
             this.setSkillLevel(skillId, 0);
             PacketHelper.updatePlayerSkills((ServerPlayerEntity) this.playerEntity, null);
             LevelHelper.updateSkill((ServerPlayerEntity) this.playerEntity, SKILLS.get(skillId));
+            PacketHelper.updateLevels((ServerPlayerEntity) this.playerEntity);
             return true;
         } else {
             return false;

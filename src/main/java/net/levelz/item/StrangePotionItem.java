@@ -8,10 +8,7 @@ import net.levelz.util.PacketHelper;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsage;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -40,7 +37,6 @@ public class StrangePotionItem extends Item {
 
             for (int skillId : list) {
                 if (levelManager.resetSkill(skillId) && !ConfigInit.CONFIG.opStrangePotion) {
-                    LevelHelper.updateSkill(playerEntity, LevelManager.SKILLS.get(skillId));
                     break;
                 }
             }
@@ -57,6 +53,11 @@ public class StrangePotionItem extends Item {
             user.emitGameEvent(GameEvent.DRINK);
         }
         return stack;
+    }
+
+    @Override
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
+        return 32;
     }
 
     @Override
