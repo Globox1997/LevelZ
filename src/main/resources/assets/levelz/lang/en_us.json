@@ -143,6 +143,8 @@
   "restriction.levelz.craftable.tooltip": "§7Craftable",
   "restriction.levelz.locked.tooltip": "Locked",
 
+  "item.levelz.locked.tooltip": "Locked",
+
   "restriction.levelz.constitution.tooltip": "Constitution %d",
   "restriction.levelz.melee.tooltip": "Melee %d",
   "restriction.levelz.defense.tooltip": "Defense %d",
