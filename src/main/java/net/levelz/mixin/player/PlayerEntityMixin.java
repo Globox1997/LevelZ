@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements LevelManagerAccess, PlayerDropAccess {
 
+    @Unique
     private final PlayerEntity playerEntity = (PlayerEntity) (Object) this;
     @Unique
     private final LevelManager levelManager = new LevelManager(playerEntity);
