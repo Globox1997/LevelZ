@@ -1,6 +1,6 @@
 ### Added:
 - 
 ### Fixed:
-- Fixed strange potion
-### Changed:
 - 
+### Changed:
+- Tweaked AdditionZ fishing experience compat
