@@ -12,7 +12,7 @@ public class LevelzEmiPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
-        registry.addRecipe(new EmiBrewingRecipe(EmiStack.of(Items.DRAGON_BREATH), EmiStack.of(Items.NETHER_STAR), EmiStack.of(ItemInit.STRANGE_POTION), LevelzMain.identifierOf("strange_potion")));
+        registry.addRecipe(new EmiBrewingRecipe(EmiStack.of(Items.DRAGON_BREATH), EmiStack.of(Items.NETHER_STAR), EmiStack.of(ItemInit.STRANGE_POTION), LevelzMain.identifierOf("/strange_potion")));
     }
 
 }
