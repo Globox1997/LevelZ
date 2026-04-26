@@ -5,6 +5,7 @@ import net.levelz.access.MobEntityAccess;
 import net.levelz.access.PlayerDropAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
+import net.levelz.init.TagInit;
 import net.levelz.level.LevelManager;
 import net.levelz.util.BonusHelper;
 import net.minecraft.entity.Entity;
@@ -89,7 +90,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "dropXp", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
     protected void dropXpMixin(CallbackInfo info) {
         if (ConfigInit.CONFIG.mobXPMultiplier > 0.0F) {
-            if (!ConfigInit.CONFIG.spawnerMobXP && (Object) this instanceof MobEntity mobEntity && ((MobEntityAccess) mobEntity).isSpawnerMob()) {
+            if ((!ConfigInit.CONFIG.spawnerMobXP && (Object) this instanceof MobEntity mobEntity && ((MobEntityAccess) mobEntity).isSpawnerMob()) || ((Object) this instanceof LivingEntity livingEntity && livingEntity.getType().isIn(TagInit.RESTRICTED_ENTITY_EXPERIENCE_ENTITIES))) {
             } else {
                 LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(),
                         (int) (this.getXpToDrop() * ConfigInit.CONFIG.mobXPMultiplier
