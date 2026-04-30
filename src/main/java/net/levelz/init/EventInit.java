@@ -51,11 +51,6 @@ public class EventInit {
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             LevelManager newLevelManager = ((LevelManagerAccess) newPlayer).getLevelManager();
 
-            if (ConfigInit.CONFIG.resetCurrentXp) {
-                newLevelManager.setLevelProgress(0);
-                newLevelManager.setTotalLevelExperience(0);
-            }
-
             if (ConfigInit.CONFIG.levelRetainPercentage < 100) {
                 LevelManager oldLevelManager = ((LevelManagerAccess) oldPlayer).getLevelManager();
                 float levelRetainPercentageFloat = ConfigInit.CONFIG.levelRetainPercentage / 100;
@@ -102,6 +97,11 @@ public class EventInit {
                 newPlayer.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, newPlayer));
             } else {
                 PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
+
+                if (ConfigInit.CONFIG.resetCurrentXp) {
+                    newLevelManager.setLevelProgress(0);
+                    newLevelManager.setTotalLevelExperience(0);
+                }
 
                 PacketHelper.updateLevels(newPlayer);
                 for (Skill skill : LevelManager.SKILLS.values()) {
