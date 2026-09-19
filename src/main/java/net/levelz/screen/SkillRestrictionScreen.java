@@ -44,6 +44,8 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     private int lineIndex = 0;
     private boolean sortAlphabetical = false;
 
+    private boolean draggingScrollbar = false;
+
     public SkillRestrictionScreen(LevelManager levelManager, Map<Integer, PlayerRestriction> restrictions, Text title, int code) {
         super(title);
         this.levelManager = levelManager;
@@ -122,6 +124,11 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, false);
+        if (this.lines.size() > 10 && LevelScreen.isPointWithinBounds(this.x + 186, this.y + 20, 6, 187, mouseX, mouseY)) {
+            this.draggingScrollbar = true;
+            updateScrollFromMouse(mouseY);
+            return true;
+        }
         if (LevelScreen.isPointWithinBounds(this.x + 179, this.y + 4, 14, 14, mouseX, mouseY)) {
             this.sortAlphabetical = !this.sortAlphabetical;
             sortRestrictions();
@@ -145,6 +152,21 @@ public class SkillRestrictionScreen extends Screen implements Tab {
         }
 
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (this.draggingScrollbar) {
+            updateScrollFromMouse(mouseY);
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        this.draggingScrollbar = false;
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     private void sortRestrictions() {
@@ -198,6 +220,11 @@ public class SkillRestrictionScreen extends Screen implements Tab {
             }
 
         }
+    }
+
+    private void updateScrollFromMouse(double mouseY) {
+        int maxRow = this.lines.size() - 10;
+        this.lineIndex = LevelScreen.computeRowFromMouse(mouseY, this.y + 20, 187, 31, maxRow);
     }
 
 }

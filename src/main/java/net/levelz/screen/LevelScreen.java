@@ -49,15 +49,18 @@ public class LevelScreen extends Screen implements Tab {
 
     private LevelManager levelManager;
     private ClientPlayerEntity clientPlayerEntity;
-    private Quaternionf quaternionf = new Quaternionf().rotateZ((float) Math.PI).rotateLocalY(2.7f);
+    private final Quaternionf quaternionf = new Quaternionf().rotateZ((float) Math.PI).rotateLocalY(2.7f);
     private boolean turnClientPlayer = false;
 
-    private List<SkillAttribute> attributes = new ArrayList<>();
+    private final List<SkillAttribute> attributes = new ArrayList<>();
     private boolean showAttributes = false;
     private int attributeRow = 0;
 
     private final WidgetButtonPage[] levelButtons = new WidgetButtonPage[12];
     private int skillRow = 0;
+
+    private boolean draggingSkillScrollbar = false;
+    private boolean draggingAttributeScrollbar = false;
 
     public LevelScreen() {
         super(Text.translatable("screen.levelz.skill_screen"));
@@ -281,6 +284,8 @@ public class LevelScreen extends Screen implements Tab {
         if (this.turnClientPlayer) {
             this.turnClientPlayer = false;
         }
+        this.draggingSkillScrollbar = false;
+        this.draggingAttributeScrollbar = false;
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
@@ -288,6 +293,16 @@ public class LevelScreen extends Screen implements Tab {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, this.getFocused() != null);
 
+        if (this.levelManager.getPlayerSkills().size() > 12 && isPointWithinBounds(this.x + 186, this.y + 87, 6, 120, mouseX, mouseY)) {
+            this.draggingSkillScrollbar = true;
+            updateSkillScrollFromMouse(mouseY);
+            return true;
+        }
+        if (this.showAttributes && this.attributes.size() > 15 && isPointWithinBounds(this.x + 270, this.y + 8, 6, 199, mouseX, mouseY)) {
+            this.draggingAttributeScrollbar = true;
+            updateAttributeScrollFromMouse(mouseY);
+            return true;
+        }
         if (!this.attributes.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 5, 15, 13, mouseX, mouseY)) {
             this.showAttributes = !this.showAttributes;
             this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -366,6 +381,19 @@ public class LevelScreen extends Screen implements Tab {
     }
 
     @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (this.draggingSkillScrollbar) {
+            updateSkillScrollFromMouse(mouseY);
+            return true;
+        }
+        if (this.draggingAttributeScrollbar) {
+            updateAttributeScrollFromMouse(mouseY);
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    @Override
     public boolean shouldPause() {
         return false;
     }
@@ -408,6 +436,36 @@ public class LevelScreen extends Screen implements Tab {
 
     public static boolean isPointWithinBounds(int x, int y, int width, int height, double pointX, double pointY) {
         return pointX >= (double) (x - 1) && pointX < (double) (x + width + 1) && pointY >= (double) (y - 1) && pointY < (double) (y + height + 1);
+    }
+
+    public static int computeRowFromMouse(double mouseY, int trackY, int trackHeight, int thumbHeight, int maxRow) {
+        if (maxRow <= 0) {
+            return 0;
+        }
+        int usableTrack = trackHeight - thumbHeight;
+        if (usableTrack <= 0) {
+            return 0;
+        }
+        double relativeY = mouseY - trackY - thumbHeight / 2.0;
+        int row = (int) Math.round(relativeY / usableTrack * maxRow);
+        return Math.max(0, Math.min(maxRow, row));
+    }
+
+    private void updateSkillScrollFromMouse(double mouseY) {
+        int maxSkillRow = (this.levelManager.getPlayerSkills().size() - 12) / 2;
+        if (this.levelManager.getPlayerSkills().size() % 2 != 0) {
+            maxSkillRow += 1;
+        }
+        int oldSkillRow = this.skillRow;
+        this.skillRow = computeRowFromMouse(mouseY, this.y + 87, 120, 34, maxSkillRow);
+        if (oldSkillRow != this.skillRow) {
+            updateLevelButtons();
+        }
+    }
+
+    private void updateAttributeScrollFromMouse(double mouseY) {
+        int maxAttributeRow = this.attributes.size() - 15;
+        this.attributeRow = computeRowFromMouse(mouseY, this.y + 8, 199, 41, maxAttributeRow);
     }
 
     private static class WidgetButtonPage extends ButtonWidget {

@@ -39,6 +39,8 @@ public class SkillInfoScreen extends Screen implements Tab {
 
     private int lineIndex = 0;
 
+    private boolean draggingScrollbar = false;
+
     public SkillInfoScreen(LevelManager levelManager, int skillId) {
         super(LevelManager.SKILLS.get(skillId).getText());
         this.skill = LevelManager.SKILLS.get(skillId);
@@ -201,6 +203,11 @@ public class SkillInfoScreen extends Screen implements Tab {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, false);
+        if (this.lines.size() > 10 && LevelScreen.isPointWithinBounds(this.x + 186, this.y + 20, 6, 187, mouseX, mouseY)) {
+            this.draggingScrollbar = true;
+            updateScrollFromMouse(mouseY);
+            return true;
+        }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -220,4 +227,23 @@ public class SkillInfoScreen extends Screen implements Tab {
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (this.draggingScrollbar) {
+            updateScrollFromMouse(mouseY);
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        this.draggingScrollbar = false;
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    private void updateScrollFromMouse(double mouseY) {
+        int maxRow = this.lines.size() - 10;
+        this.lineIndex = LevelScreen.computeRowFromMouse(mouseY, this.y + 20, 187, 31, maxRow);
+    }
 }
