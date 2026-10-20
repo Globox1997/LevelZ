@@ -221,7 +221,7 @@ The second one triggers when the player reached the set skill level.
     "criteria": {
         "otherlevelexample": {
             "trigger": "levelz:skill",
-             "conditions": {
+            "conditions": {
                 "skill_name": "health",
                 "skill_level": 20
             }
