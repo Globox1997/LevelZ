@@ -1,9 +1,16 @@
 package net.levelz.mixin.misc;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.levelz.access.LevelManagerAccess;
+import net.levelz.level.LevelManager;
 import net.levelz.util.BonusHelper;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.*;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -12,8 +19,8 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AnvilScreenHandler.class)
 public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
@@ -27,13 +34,6 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
         super(type, syncId, playerInventory, context);
     }
 
-    @Inject(method = "canTakeOutput", at = @At("HEAD"), cancellable = true)
-    protected void canTakeOutputMixin(PlayerEntity player, boolean present, CallbackInfoReturnable<Boolean> info) {
-        if (BonusHelper.anvilXpCapBonus(player)) {
-            info.setReturnValue(true);
-        }
-    }
-
     @Inject(method = "updateResult()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/CraftingResultInventory;setStack(ILnet/minecraft/item/ItemStack;)V", ordinal = 4))
     private void updateResultMixin(CallbackInfo info) {
         if (this.levelCost.get() > 1) {
@@ -41,18 +41,27 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
         }
     }
 
+    @ModifyArg(method = "updateResult()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/CraftingResultInventory;setStack(ILnet/minecraft/item/ItemStack;)V", ordinal = 4), index = 1)
+    private ItemStack updateResultEnchantmentMixin(ItemStack result) {
+        if (result.isEmpty() || this.player.isCreative() || result.isOf(Items.ENCHANTED_BOOK) || !this.input.getStack(1).isOf(Items.ENCHANTED_BOOK)) {
+            return result;
+        }
+        LevelManager levelManager = ((LevelManagerAccess) this.player).getLevelManager();
+        ItemStack base = this.input.getStack(0);
+        for (Object2IntMap.Entry<RegistryEntry<Enchantment>> entry : EnchantmentHelper.getEnchantments(result).getEnchantmentEntries()) {
+            int level = entry.getIntValue();
+            if (level > EnchantmentHelper.getLevel(entry.getKey(), base) && !levelManager.hasRequiredEnchantmentLevel(entry.getKey(), level)) {
+                this.levelCost.set(0);
+                return ItemStack.EMPTY;
+            }
+        }
+        return result;
+    }
+
     @Inject(method = "onTakeOutput", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/Property;get()I"), require = 0)
     private void onTakeOutputMixin(PlayerEntity playerEntity, ItemStack stack, CallbackInfo ci) {
         if (BonusHelper.anvilXpChanceBonus(playerEntity)) {
             this.levelCost.set(0);
-        }
-    }
-
-    @Inject(method = "getLevelCost", at = @At(value = "HEAD"), cancellable = true)
-    public void getLevelCostMixin(CallbackInfoReturnable<Integer> info) {
-        int levelCost = BonusHelper.anvilXpDiscountBonus(this.player, this.levelCost.get());
-        if (levelCost != this.levelCost.get()) {
-            info.setReturnValue(levelCost);
         }
     }
 }

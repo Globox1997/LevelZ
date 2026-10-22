@@ -58,7 +58,7 @@ public abstract class LivingEntityMixin extends Entity {
                 return original;
             }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(original.getItem())) {
+            if (!levelManager.hasRequiredStackLevel(original)) {
                 return ItemStack.EMPTY;
             }
         }

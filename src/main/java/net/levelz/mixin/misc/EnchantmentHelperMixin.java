@@ -37,7 +37,7 @@ public class EnchantmentHelperMixin {
     private static void onTargetDamagedMixin(ServerWorld world, Entity target, DamageSource damageSource, ItemStack weapon, CallbackInfo info) {
         if (weapon != null && damageSource.getAttacker() instanceof PlayerEntity playerEntity) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(weapon.getItem())) {
+            if (!levelManager.hasRequiredStackLevel(weapon)) {
                 info.cancel();
             }
         }

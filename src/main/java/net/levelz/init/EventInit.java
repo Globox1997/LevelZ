@@ -120,7 +120,7 @@ public class EventInit {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             if (!player.isCreative() && !player.isSpectator()) {
                 LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
-                if (!levelManager.hasRequiredItemLevel(player.getStackInHand(hand).getItem())) {
+                if (!levelManager.hasRequiredStackLevel(player.getStackInHand(hand))) {
                     // player.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) +
                     // ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED), true);
                     player.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);

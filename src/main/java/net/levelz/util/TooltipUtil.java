@@ -5,19 +5,23 @@ import java.util.List;
 import java.util.Map;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.restriction.PlayerRestriction;
+import net.levelz.registry.EnchantmentRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -67,6 +71,26 @@ public class TooltipUtil {
                     for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                         if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
                             lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                        }
+                    }
+                }
+            }
+            if (ConfigInit.CONFIG.restrictEnchantedItems) {
+                boolean addedHeader = false;
+                for (Object2IntMap.Entry<RegistryEntry<Enchantment>> enchantmentEntry : stack.getEnchantments().getEnchantmentEntries()) {
+                    if (isCreative || !levelManager.hasRequiredEnchantmentLevel(enchantmentEntry.getKey(), enchantmentEntry.getIntValue())) {
+                        int enchantmentId = EnchantmentRegistry.getId(enchantmentEntry.getKey(), enchantmentEntry.getIntValue());
+                        if (LevelManager.ENCHANTMENT_RESTRICTIONS.containsKey(enchantmentId)) {
+                            if (!addedHeader) {
+                                lines.add(Text.translatable("restriction.levelz.usable.tooltip"));
+                                addedHeader = true;
+                            }
+                            lines.add(Enchantment.getName(enchantmentEntry.getKey(), enchantmentEntry.getIntValue()));
+                            for (Map.Entry<Integer, Integer> entry : LevelManager.ENCHANTMENT_RESTRICTIONS.get(enchantmentId).getSkillLevelRestrictions().entrySet()) {
+                                if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
+                                    lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                                }
+                            }
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package net.levelz.level;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.registry.EnchantmentRegistry;
@@ -10,6 +11,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -265,6 +267,20 @@ public class LevelManager {
             PlayerRestriction playerRestriction = ITEM_RESTRICTIONS.get(itemId);
             for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                 if (this.getSkillLevel(entry.getKey()) < entry.getValue()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean hasRequiredStackLevel(ItemStack stack) {
+        if (!this.hasRequiredItemLevel(stack.getItem())) {
+            return false;
+        }
+        if (ConfigInit.CONFIG.restrictEnchantedItems) {
+            for (Object2IntMap.Entry<RegistryEntry<Enchantment>> entry : stack.getEnchantments().getEnchantmentEntries()) {
+                if (!this.hasRequiredEnchantmentLevel(entry.getKey(), entry.getIntValue())) {
                     return false;
                 }
             }

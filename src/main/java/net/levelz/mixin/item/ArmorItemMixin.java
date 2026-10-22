@@ -26,7 +26,7 @@ public class ArmorItemMixin {
                 return;
             }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(armor.getItem())) {
+            if (!levelManager.hasRequiredStackLevel(armor)) {
                 info.setReturnValue(false);
             }
         }

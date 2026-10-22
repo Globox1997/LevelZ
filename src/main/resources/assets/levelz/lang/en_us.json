@@ -92,6 +92,7 @@
   "text.autoconfig.levelz.option.restrictions": "Restrictions",
   "text.autoconfig.levelz.option.defaultRestrictions": "Default Restrictions",
   "text.autoconfig.levelz.option.defaultSkills": "Default Skills",
+  "text.autoconfig.levelz.option.restrictEnchantedItems": "Restrict Enchanted Items",
 
   "item.levelz.strange_potion": "Strange Potion",
   "item.levelz.rare_candy": "Rare Candy",

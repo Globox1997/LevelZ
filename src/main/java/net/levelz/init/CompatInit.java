@@ -23,7 +23,7 @@ public class CompatInit {
         if (FabricLoader.getInstance().isModLoaded("treechop")) {
             TreeChopEvents.BEFORE_CHOP.register((world, player, pos, state, chopData) -> {
                 LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
-                if (!levelManager.hasRequiredItemLevel(player.getMainHandStack().getItem())) {
+                if (!levelManager.hasRequiredStackLevel(player.getMainHandStack())) {
                     player.getWorld().breakBlock(pos, false);
                     return false;
                 } else if (!levelManager.hasRequiredMiningLevel(world.getBlockState(pos).getBlock())) {

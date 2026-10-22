@@ -20,7 +20,7 @@ public class BackpackItemMixin {
                 return;
             }
             LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(backpackItemStack.getItem())) {
+            if (!levelManager.hasRequiredStackLevel(backpackItemStack)) {
                 info.cancel();
             }
         }

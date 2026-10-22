@@ -213,6 +213,9 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @ConfigEntry.Gui.RequiresRestart
     @Comment("Remember to name your datapack json differently than default")
     public boolean defaultSkills = true;
+    @ConfigEntry.Category("progression_settings")
+    @Comment("Restrict usage of items with enchantments the player has not unlocked")
+    public boolean restrictEnchantedItems = false;
 
     @Override
     public void updateConfig(ConfigData data) {

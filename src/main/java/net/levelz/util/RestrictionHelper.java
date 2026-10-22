@@ -19,10 +19,10 @@ public class RestrictionHelper {
         if (!playerEntity.isCreative()) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             if (actionType.equals(SlotActionType.QUICK_MOVE)) {
-                return !slot.getStack().isEmpty() && !levelManager.hasRequiredItemLevel(slot.getStack().getItem());
+                return !slot.getStack().isEmpty() && !levelManager.hasRequiredStackLevel(slot.getStack());
             } else if (!cursorStack.isEmpty()) {
                 boolean isNonNormalSlot = !slot.getClass().equals(Slot.class);
-                if (!levelManager.hasRequiredItemLevel(cursorStack.getItem())) {
+                if (!levelManager.hasRequiredStackLevel(cursorStack)) {
                     if (screenHandler instanceof PlayerScreenHandler) {
                         if (isNonNormalSlot) {
                             return true;

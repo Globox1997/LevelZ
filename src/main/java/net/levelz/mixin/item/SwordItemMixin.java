@@ -22,7 +22,7 @@ public class SwordItemMixin {
                 return;
             }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(stack.getItem())) {
+            if (!levelManager.hasRequiredStackLevel(stack)) {
                 info.setReturnValue(false);
             }
         }
@@ -36,7 +36,7 @@ public class SwordItemMixin {
                 return;
             }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(stack.getItem())) {
+            if (!levelManager.hasRequiredStackLevel(stack)) {
                 info.cancel();
             }
         }

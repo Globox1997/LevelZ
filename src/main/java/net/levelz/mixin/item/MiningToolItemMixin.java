@@ -22,7 +22,7 @@ public class MiningToolItemMixin {
                 return;
             }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(stack.getItem())) {
+            if (!levelManager.hasRequiredStackLevel(stack)) {
                 info.setReturnValue(false);
             }
         }
@@ -35,7 +35,7 @@ public class MiningToolItemMixin {
                 return;
             }
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(stack.getItem())) {
+            if (!levelManager.hasRequiredStackLevel(stack)) {
                 info.cancel();
             }
         }

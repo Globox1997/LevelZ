@@ -27,7 +27,7 @@ public interface EquipmentMixin {
             return;
         }
         LevelManager levelManager = ((LevelManagerAccess) user).getLevelManager();
-        if (!levelManager.hasRequiredItemLevel(itemStack.getItem())) {
+        if (!levelManager.hasRequiredStackLevel(itemStack)) {
             user.sendMessage(Text.translatable("item.levelz.locked.tooltip").formatted(Formatting.RED), true);
             info.setReturnValue(TypedActionResult.fail(itemStack));
         }

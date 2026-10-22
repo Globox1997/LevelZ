@@ -82,7 +82,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
         if (this.playerEntity.isCreative()) {
             return original;
         }
-        if (!levelManager.hasRequiredItemLevel(getWeaponStack().getItem())) {
+        if (!levelManager.hasRequiredStackLevel(getWeaponStack())) {
             return 0.0f;
         }
         return original;

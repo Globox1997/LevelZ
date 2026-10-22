@@ -51,7 +51,7 @@ public abstract class BlockMixin {
                 LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
                 if (!levelManager.hasRequiredMiningLevel(state.getBlock())) {
                     info.cancel();
-                } else if (!levelManager.hasRequiredItemLevel(stack.getItem())) {
+                } else if (!levelManager.hasRequiredStackLevel(stack)) {
                     info.cancel();
                 }
             }
