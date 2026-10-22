@@ -38,7 +38,7 @@ public abstract class BlockMixin {
 
     @Unique
     @Nullable
-    private ServerPlayerEntity serverPlayerEntity = null;
+    private static ServerPlayerEntity breakingPlayer = null;
 
     @Inject(method = "dropStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getDroppedStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)Ljava/util/List;"), cancellable = true)
     private static void dropStacksMixin(BlockState state, World world, BlockPos pos, @Nullable BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfo info) {
@@ -70,17 +70,20 @@ public abstract class BlockMixin {
         if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F && !this.defaultState.isIn(TagInit.RESTRICTED_ORE_EXPERIENCE_BLOCKS)) {
             LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
                     (int) (size * ConfigInit.CONFIG.oreXPMultiplier
-                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.serverPlayerEntity != null
-                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) this.serverPlayerEntity).getLevelManager().getOverallLevel()
+                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && breakingPlayer != null
+                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) breakingPlayer).getLevelManager().getOverallLevel()
                             : 1.0F)));
         }
     }
 
-    @Inject(method = "onBreak", at = @At(value = "HEAD"))
-    private void onBreakMixin(World world, BlockPos pos, BlockState state, PlayerEntity player, CallbackInfoReturnable<BlockState> info) {
-        if (!world.isClient()) {
-            this.serverPlayerEntity = (ServerPlayerEntity) player;
-        }
+    @Inject(method = "afterBreak", at = @At(value = "HEAD"))
+    private void afterBreakMixin(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool, CallbackInfo info) {
+        breakingPlayer = player instanceof ServerPlayerEntity serverPlayer ? serverPlayer : null;
+    }
+
+    @Inject(method = "afterBreak", at = @At(value = "RETURN"))
+    private void afterBreakReturnMixin(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool, CallbackInfo info) {
+        breakingPlayer = null;
     }
 
 }
