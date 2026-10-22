@@ -51,6 +51,13 @@ public class EventInit {
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             LevelManager newLevelManager = ((LevelManagerAccess) newPlayer).getLevelManager();
 
+            if (alive) {
+                for (Skill skill : LevelManager.SKILLS.values()) {
+                    LevelHelper.updateSkill(newPlayer, skill);
+                }
+                return;
+            }
+
             if (ConfigInit.CONFIG.levelRetainPercentage < 100) {
                 LevelManager oldLevelManager = ((LevelManagerAccess) oldPlayer).getLevelManager();
                 float levelRetainPercentageFloat = ConfigInit.CONFIG.levelRetainPercentage / 100;
@@ -73,13 +80,13 @@ public class EventInit {
                 }
                 if (pointsToDistribute > 0) {
                     for (Map.Entry<Integer, PlayerSkill> entry : oldLevelManager.getPlayerSkills().entrySet()) {
-                        if (entry.getValue().getLevel() < newLevelManager.getSkillLevel(entry.getKey())) {
-                            int levelDifference = newLevelManager.getSkillLevel(entry.getKey()) - entry.getValue().getLevel();
+                        if (newLevelManager.getSkillLevel(entry.getKey()) < entry.getValue().getLevel()) {
+                            int levelDifference = entry.getValue().getLevel() - newLevelManager.getSkillLevel(entry.getKey());
                             if (levelDifference < pointsToDistribute) {
-                                newLevelManager.setSkillLevel(entry.getKey(), newLevelManager.getSkillLevel(entry.getKey() + levelDifference));
+                                newLevelManager.setSkillLevel(entry.getKey(), newLevelManager.getSkillLevel(entry.getKey()) + levelDifference);
                                 pointsToDistribute -= levelDifference;
                             } else {
-                                newLevelManager.setSkillLevel(entry.getKey(), newLevelManager.getSkillLevel(entry.getKey() + pointsToDistribute));
+                                newLevelManager.setSkillLevel(entry.getKey(), newLevelManager.getSkillLevel(entry.getKey()) + pointsToDistribute);
                                 pointsToDistribute = 0;
                                 break;
                             }
@@ -104,9 +111,9 @@ public class EventInit {
                 }
 
                 PacketHelper.updateLevels(newPlayer);
-                for (Skill skill : LevelManager.SKILLS.values()) {
-                    LevelHelper.updateSkill(newPlayer, skill);
-                }
+            }
+            for (Skill skill : LevelManager.SKILLS.values()) {
+                LevelHelper.updateSkill(newPlayer, skill);
             }
         });
 

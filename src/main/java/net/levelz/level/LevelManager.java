@@ -42,12 +42,19 @@ public class LevelManager {
 
     public LevelManager(PlayerEntity playerEntity) {
         this.playerEntity = playerEntity;
+        this.refreshSkills();
+    }
 
+    public void refreshSkills() {
         for (Skill skill : SKILLS.values()) {
-            if (!this.playerSkills.containsKey(skill.getId())) {
+            PlayerSkill playerSkill = this.playerSkills.get(skill.getId());
+            if (playerSkill == null) {
                 this.playerSkills.put(skill.getId(), new PlayerSkill(skill.getId(), 0));
-            } else if (this.playerSkills.get(skill.getId()).getLevel() > skill.getMaxLevel()) {
-                this.playerSkills.get(skill.getId()).setLevel(skill.getMaxLevel());
+            } else if (playerSkill.getLevel() < 0) {
+                playerSkill.setLevel(0);
+            } else if (!ConfigInit.CONFIG.allowHigherSkillLevel && playerSkill.getLevel() > skill.getMaxLevel()) {
+                this.skillPoints += playerSkill.getLevel() - skill.getMaxLevel();
+                playerSkill.setLevel(skill.getMaxLevel());
             }
         }
     }
@@ -70,7 +77,10 @@ public class LevelManager {
             }
             playerSkills.put(skill.getId(), skill);
         }
-
+        if (!Float.isFinite(this.levelProgress)) {
+            this.levelProgress = 0.0F;
+        }
+        this.refreshSkills();
     }
 
     public void writeNbt(NbtCompound nbt) {
@@ -127,12 +137,17 @@ public class LevelManager {
     }
 
     public void setSkillLevel(int skillId, int level) {
-        this.playerSkills.get(skillId).setLevel(level);
+        PlayerSkill playerSkill = this.playerSkills.get(skillId);
+        if (playerSkill == null) {
+            this.playerSkills.put(skillId, new PlayerSkill(skillId, level));
+        } else {
+            playerSkill.setLevel(level);
+        }
     }
 
     public int getSkillLevel(int skillId) {
-        // Maybe add a containsKey check here
-        return this.playerSkills.get(skillId).getLevel();
+        PlayerSkill playerSkill = this.playerSkills.get(skillId);
+        return playerSkill != null ? playerSkill.getLevel() : 0;
     }
 
     public void addExperienceLevels(int levels) {
