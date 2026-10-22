@@ -18,7 +18,7 @@ repositories {
     maven { url "https://www.cursemaven.com" }
     maven { url "https://maven.nucleoid.xyz/" }
     maven { url "https://maven.jamieswhiteshirt.com/libs-release/" }
-    maven { url "https://maven.bai.lol" }
+    maven { url "https://maven2.bai.lol" }
     maven { url "https://maven.ladysnake.org/releases" }
 }
 
@@ -47,7 +47,7 @@ dependencies {
     // Wthit
     modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-12.10.2")
 	// Jade
-    modCompileOnly ('maven.modrinth:jade:15.8.2+fabric'){
+    modCompileOnly ('maven.modrinth:jade:15.8.2+fabric') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // DragonLoot
