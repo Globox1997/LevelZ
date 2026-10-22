@@ -103,7 +103,7 @@ public class CommandInit {
                 } else if (reference == 1) {
                     int currentXP = (int) (levelManager.getLevelProgress() * levelManager.getNextLevelExperience());
                     float oldProgress = levelManager.getLevelProgress();
-                    levelManager.setLevelProgress(currentXP - i > 0 ? (float) (currentXP - 1) / (float) levelManager.getNextLevelExperience() : 0.0F);
+                    levelManager.setLevelProgress(currentXP - i > 0 ? (float) (currentXP - i) / (float) levelManager.getNextLevelExperience() : 0.0F);
                     levelManager.setTotalLevelExperience(currentXP - i > 0 ? levelManager.getTotalLevelExperience() - i
                             : levelManager.getTotalLevelExperience() - (int) (oldProgress * levelManager.getNextLevelExperience()));
                 } else if (reference == 2) {
@@ -122,7 +122,7 @@ public class CommandInit {
                     playerSkillLevel = levelManager.getSkillPoints();
                 } else if (skillKey.equals("level")) {
                     playerSkillLevel = levelManager.getOverallLevel();
-                } else {
+                } else if (!skillKey.equals("all")) {
                     for (Skill overallSkill : LevelManager.SKILLS.values()) {
                         if (overallSkill.getKey().equals(skillKey)) {
                             playerSkillLevel = levelManager.getSkillLevel(overallSkill.getId());

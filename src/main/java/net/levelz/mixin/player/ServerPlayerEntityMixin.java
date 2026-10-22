@@ -36,13 +36,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Se
     public void addLevelExperience(int experience) {
         if (!levelManager.isMaxLevel()) {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) (Object) this;
-            levelManager.setLevelProgress(levelManager.getLevelProgress() + Math.max((float) experience / levelManager.getNextLevelExperience(), 0));
+            levelManager.setLevelProgress(levelManager.getLevelProgress() + Math.max((float) experience / Math.max(levelManager.getNextLevelExperience(), 1), 0));
             levelManager.setTotalLevelExperience(MathHelper.clamp(levelManager.getTotalLevelExperience() + experience, 0, Integer.MAX_VALUE));
 
             while (levelManager.getLevelProgress() >= 1.0F && !levelManager.isMaxLevel()) {
                 levelManager.setLevelProgress((levelManager.getLevelProgress() - 1.0F) * (float) levelManager.getNextLevelExperience());
                 levelManager.addExperienceLevels(1);
-                levelManager.setLevelProgress(levelManager.getLevelProgress() / levelManager.getNextLevelExperience());
+                int nextLevelExperience = levelManager.getNextLevelExperience();
+                levelManager.setLevelProgress(nextLevelExperience > 0 ? levelManager.getLevelProgress() / nextLevelExperience : 0.0F);
 
                 PacketHelper.updateLevels(serverPlayerEntity);
                 CriteriaInit.LEVEL_UP.trigger(serverPlayerEntity);
