@@ -33,21 +33,28 @@ public class LevelClientPacket {
 
             context.client().execute(() -> {
                 LevelManager levelManager = ((LevelManagerAccess) context.player()).getLevelManager();
+                boolean integrated = context.client().isIntegratedServerRunning();
 
-                LevelManager.SKILLS.clear();
+                if (!integrated) {
+                    LevelManager.SKILLS.clear();
+                }
                 for (int i = 0; i < skillIds.size(); i++) {
-                    Skill skill = new Skill(skillIds.get(i), skillKeys.get(i), skillMaxLevels.get(i), skillAttributes.get(i).skillAttributes());
-                    LevelManager.SKILLS.put(skillIds.get(i), skill);
+                    if (!integrated) {
+                        Skill skill = new Skill(skillIds.get(i), skillKeys.get(i), skillMaxLevels.get(i), skillAttributes.get(i).skillAttributes());
+                        LevelManager.SKILLS.put(skillIds.get(i), skill);
+                    }
 
                     if (!levelManager.getPlayerSkills().containsKey(skillIds.get(i))) {
                         PlayerSkill playerSkill = new PlayerSkill(skillIds.get(i), 0);
                         levelManager.getPlayerSkills().put(skillIds.get(i), playerSkill);
                     }
                 }
-                LevelManager.BONUSES.clear();
-                for (int i = 0; i < skillBonuses.skillBonuses().size(); i++) {
-                    String bonusKey = skillBonuses.skillBonuses().get(i).getKey();
-                    LevelManager.BONUSES.put(bonusKey, skillBonuses.skillBonuses().get(i));
+                if (!integrated) {
+                    LevelManager.BONUSES.clear();
+                    for (int i = 0; i < skillBonuses.skillBonuses().size(); i++) {
+                        String bonusKey = skillBonuses.skillBonuses().get(i).getKey();
+                        LevelManager.BONUSES.put(bonusKey, skillBonuses.skillBonuses().get(i));
+                    }
                 }
             });
         });
@@ -86,6 +93,9 @@ public class LevelClientPacket {
             RestrictionPacket.RestrictionRecord enchantmentRestrictions = payload.enchantmentRestrictions();
 
             context.client().execute(() -> {
+                if (context.client().isIntegratedServerRunning()) {
+                    return;
+                }
                 LevelManager.BLOCK_RESTRICTIONS.clear();
                 LevelManager.CRAFTING_RESTRICTIONS.clear();
                 LevelManager.ENTITY_RESTRICTIONS.clear();
@@ -132,6 +142,9 @@ public class LevelClientPacket {
             List<String> ids = payload.ids();
             List<Integer> levels = payload.levels();
             context.client().execute(() -> {
+                if (context.client().isIntegratedServerRunning()) {
+                    return;
+                }
                 EnchantmentRegistry.ENCHANTMENTS.clear();
                 EnchantmentRegistry.INDEX_ENCHANTMENTS.clear();
 

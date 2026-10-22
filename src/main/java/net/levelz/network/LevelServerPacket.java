@@ -42,15 +42,15 @@ public class LevelServerPacket {
 
             context.server().execute(() -> {
                 LevelManager levelManager = ((LevelManagerAccess) context.player()).getLevelManager();
-                if (levelManager.getSkillPoints() - level >= 0) {
+                if (level > 0 && levelManager.getSkillPoints() - level >= 0) {
 
                     Skill skill = LevelManager.SKILLS.get(id);
                     PlayerSkill playerSkill = levelManager.getPlayerSkills().get(id);
 
-                    if (ConfigInit.CONFIG.overallMaxLevel > 0 && ConfigInit.CONFIG.overallMaxLevel <= levelManager.getOverallLevel()) {
+                    if (skill == null || playerSkill == null) {
                         return;
                     }
-                    if (!ConfigInit.CONFIG.allowHigherSkillLevel && playerSkill.getLevel() >= skill.getMaxLevel()) {
+                    if (!ConfigInit.CONFIG.allowHigherSkillLevel && playerSkill.getLevel() + level > skill.getMaxLevel()) {
                         return;
                     }
                     if (ConfigInit.CONFIG.allowHigherSkillLevel) {
@@ -64,7 +64,7 @@ public class LevelServerPacket {
                     }
 
                     for (int i = 1; i <= level; i++) {
-                        CriteriaInit.SKILL_UP.trigger(context.player(), skill.getKey(), playerSkill.getLevel() + level);
+                        CriteriaInit.SKILL_UP.trigger(context.player(), skill.getKey(), playerSkill.getLevel() + i);
                     }
 
                     levelManager.setSkillLevel(id, playerSkill.getLevel() + level);
