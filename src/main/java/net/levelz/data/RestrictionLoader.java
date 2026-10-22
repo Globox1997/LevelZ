@@ -37,7 +37,7 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
     private static final List<Integer> miningList = new ArrayList<>();
     private static final List<Integer> enchantmentList = new ArrayList<>();
 
-//    private ItemStringReader itemStringReader = new ItemStringReader(BuiltinRegistries.createWrapperLookup());
+    // private ItemStringReader itemStringReader = new ItemStringReader(BuiltinRegistries.createWrapperLookup());
 
     @Override
     public Identifier getFabricId() {
@@ -53,6 +53,12 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
         LevelManager.ITEM_RESTRICTIONS.clear();
         LevelManager.MINING_RESTRICTIONS.clear();
         LevelManager.ENCHANTMENT_RESTRICTIONS.clear();
+        blockList.clear();
+        craftingList.clear();
+        entityList.clear();
+        itemList.clear();
+        miningList.clear();
+        enchantmentList.clear();
 
         if (!ConfigInit.CONFIG.restrictions) {
             return;

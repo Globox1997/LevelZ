@@ -16,7 +16,7 @@ public class EnchantmentRegistry {
     public static final Map<String, Integer> INDEX_ENCHANTMENTS = new HashMap<>();
 
     public static boolean containsId(RegistryEntry<Enchantment> enchantment, int level) {
-        return containsId(enchantment.toString(), level);
+        return containsId(enchantment.getIdAsString(), level);
     }
 
     public static boolean containsId(Identifier identifier, int level) {
@@ -24,7 +24,7 @@ public class EnchantmentRegistry {
     }
 
     public static boolean containsId(String enchantment, int level) {
-        return INDEX_ENCHANTMENTS.containsKey(enchantment + level);
+        return INDEX_ENCHANTMENTS.containsKey(getKey(enchantment, level));
     }
 
     public static EnchantmentZ getEnchantmentZ(int key) {
@@ -40,7 +40,11 @@ public class EnchantmentRegistry {
     }
 
     public static int getId(String enchantment, int level) {
-        return getId(enchantment + level);
+        return getId(getKey(enchantment, level));
+    }
+
+    private static String getKey(String enchantment, int level) {
+        return enchantment + "#" + level;
     }
 
     private static int getId(String enchantment) {
@@ -57,7 +61,7 @@ public class EnchantmentRegistry {
         for (RegistryWrapper.Impl<Enchantment> enchantmentImpl : wrapper.stream().toList()) {
             for (RegistryEntry.Reference<Enchantment> enchantment : enchantmentImpl.streamEntries().toList()) {
                 for (int i = 1; i <= enchantment.value().getMaxLevel(); i++) {
-                    INDEX_ENCHANTMENTS.put(enchantment.getIdAsString() + i, ENCHANTMENTS.size());
+                    INDEX_ENCHANTMENTS.put(getKey(enchantment.getIdAsString(), i), ENCHANTMENTS.size());
                     ENCHANTMENTS.put(ENCHANTMENTS.size(), new EnchantmentZ(enchantment, i));
                 }
             }
