@@ -109,10 +109,10 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @Comment("Bonus id: exhaustionReduction")
     public float exhaustionReductionBonus = 0.02F;
 
-    @Comment("Bonus id: knockbackAttackChance")
+    @Comment("Bonus id: meleeKockbackAttackChance")
     public float meleeKnockbackAttackChanceBonus = 0.01F;
 
-    @Comment("Bonus id: criticalAttackChance")
+    @Comment("Bonus id: meleeCriticalAttackChance")
     public float meleeCriticalAttackChanceBonus = 0.01F;
 
     @Comment("Bonus id: meleeCriticalAttackDamage")
