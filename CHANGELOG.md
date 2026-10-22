@@ -1,7 +1,10 @@
 ### Added:
 - 
 ### Fixed:
-- Dragable scrollbars
-- Fixed resetCurrentXp being overridden by skill state copy on respawn causing xp duplication
+- Replaced restrictions disappearing after reload
+- Max level bugs
+- Crash after reload adding new skills
+- Ore xp scaling with the wrong player
 ### Changed:
-- Updated skill icons
+- Improved syncing on reload
+- Enchantment restrictions restrict enchanted book usage
