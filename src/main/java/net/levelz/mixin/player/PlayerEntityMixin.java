@@ -104,10 +104,14 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;dropShoulderEntities()V"), cancellable = true)
     private void damageMixin(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
-        BonusHelper.damageReflectionBonus(this.playerEntity, source, amount);
         if (!source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY) && BonusHelper.evadingDamageBonus(this.playerEntity)) {
             info.setReturnValue(false);
+            return;
         }
+        if (this.timeUntilRegen > 10 && amount <= this.lastDamageTaken) {
+            return;
+        }
+        BonusHelper.damageReflectionBonus(this.playerEntity, source, amount);
     }
 
     @Inject(method = "eatFood", at = @At(value = "HEAD"))
