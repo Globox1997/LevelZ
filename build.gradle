@@ -45,7 +45,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // Wthit
-    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-12.4.2")
+    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-12.10.2")
 	// Jade
     modCompileOnly ('maven.modrinth:jade:15.8.2+fabric'){
 		exclude(group: "net.fabricmc.fabric-api")
