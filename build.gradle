@@ -13,13 +13,8 @@ base {
 repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/" }
-    maven { url "https://jitpack.io" }
     maven { url "https://api.modrinth.com/maven" }
-    maven { url "https://www.cursemaven.com" }
     maven { url "https://maven.nucleoid.xyz/" }
-    maven { url "https://maven.jamieswhiteshirt.com/libs-release/" }
-    maven { url "https://maven2.bai.lol" }
-    maven { url "https://maven.ladysnake.org/releases" }
 }
 
 loom {
@@ -45,7 +40,9 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // Wthit
-    modCompileOnly ("mcp.mobius.waila:wthit-api:fabric-12.10.2")
+    modCompileOnly ('maven.modrinth:wthit:fabric-12.10.2') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 	// Jade
     modCompileOnly ('maven.modrinth:jade:15.8.2+fabric') {
 		exclude(group: "net.fabricmc.fabric-api")
