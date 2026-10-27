@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.levelz.access.LevelManagerAccess;
+import net.levelz.data.DatapackErrors;
 import net.levelz.level.LevelManager;
 import net.levelz.level.PlayerSkill;
 import net.levelz.level.Skill;
@@ -20,6 +21,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
 
@@ -34,6 +36,7 @@ public class EventInit {
             PacketHelper.updateSkills(handler.getPlayer());
             PacketHelper.updatePlayerSkills(handler.getPlayer(), null);
             PacketHelper.updateRestrictions(handler.getPlayer());
+            DatapackErrors.notify(handler.getPlayer());
         });
 
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
@@ -106,8 +109,10 @@ public class EventInit {
                 PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
 
                 if (ConfigInit.CONFIG.resetCurrentXp) {
-                    newLevelManager.setLevelProgress(0);
-                    newLevelManager.setTotalLevelExperience(0);
+                    float lostProgress = newLevelManager.getLevelProgress() * MathHelper.clamp(ConfigInit.CONFIG.currentXpLossPercentage, 0.0F, 100.0F) / 100.0F;
+                    int lostExperience = (int) (lostProgress * newLevelManager.getNextLevelExperience());
+                    newLevelManager.setLevelProgress(newLevelManager.getLevelProgress() - lostProgress);
+                    newLevelManager.setTotalLevelExperience(Math.max(newLevelManager.getTotalLevelExperience() - lostExperience, 0));
                 }
 
                 PacketHelper.updateLevels(newPlayer);
