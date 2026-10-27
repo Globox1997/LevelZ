@@ -6,19 +6,28 @@ import net.levelz.access.ServerPlayerSyncAccess;
 import net.levelz.init.CriteriaInit;
 import net.levelz.level.LevelManager;
 import net.levelz.util.PacketHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.scoreboard.ScoreAccess;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Map;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements ServerPlayerSyncAccess {
@@ -30,6 +39,27 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Se
 
     public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
+    }
+
+    @Inject(method = "teleportTo", at = @At("HEAD"), cancellable = true)
+    private void teleportToMixin(TeleportTarget teleportTarget, CallbackInfoReturnable<Entity> info) {
+        if (this.isCreative() || this.isSpectator() || teleportTarget.world() == this.getWorld()) {
+            return;
+        }
+        RegistryKey<World> dimension = teleportTarget.world().getRegistryKey();
+        if (!levelManager.hasRequiredDimensionLevel(dimension)) {
+            MutableText requirements = Text.empty();
+            for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredDimensionLevel(dimension).entrySet()) {
+                if (levelManager.getSkillLevel(entry.getKey()) < entry.getValue() && LevelManager.SKILLS.containsKey(entry.getKey())) {
+                    if (!requirements.getSiblings().isEmpty()) {
+                        requirements.append(", ");
+                    }
+                    requirements.append(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()));
+                }
+            }
+            this.sendMessage(Text.translatable("restriction.levelz.dimension.locked", requirements).formatted(Formatting.RED), true);
+            info.setReturnValue(null);
+        }
     }
 
     @Override

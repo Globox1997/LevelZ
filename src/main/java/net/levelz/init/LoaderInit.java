@@ -1,7 +1,9 @@
 package net.levelz.init;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.levelz.data.DatapackErrors;
 import net.levelz.data.RestrictionLoader;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.data.SkillLoader;
@@ -21,6 +23,11 @@ public class LoaderInit {
     public static void init() {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SkillLoader());
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(RestrictionLoader.ID, RestrictionLoader::new);
+        CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
+            if (!client) {
+                RestrictionLoader.onTagsLoaded(registries);
+            }
+        });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
             if (success) {
                 for (int i = 0; i < server.getPlayerManager().getPlayerList().size(); i++) {
@@ -34,6 +41,7 @@ public class LoaderInit {
                     PacketHelper.updatePlayerSkills(serverPlayerEntity, null);
                     PacketHelper.updateRestrictions(serverPlayerEntity);
                     PacketHelper.updateLevels(serverPlayerEntity);
+                    DatapackErrors.notify(serverPlayerEntity);
                 }
                 LOGGER.info("Finished reload on {}", Thread.currentThread());
             } else {
