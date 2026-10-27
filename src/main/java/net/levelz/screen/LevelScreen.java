@@ -58,6 +58,7 @@ public class LevelScreen extends Screen implements Tab {
 
     private final WidgetButtonPage[] levelButtons = new WidgetButtonPage[12];
     private int skillRow = 0;
+    private final List<Integer> skillIds = new ArrayList<>();
 
     private boolean draggingSkillScrollbar = false;
     private boolean draggingAttributeScrollbar = false;
@@ -86,29 +87,31 @@ public class LevelScreen extends Screen implements Tab {
             }
         }
 
-        Map<Integer, SkillAttribute> skillAttributes = new HashMap<>();
-        int attributeCount = 0;
+        Map<Integer, SkillAttribute> skillAttributes = new TreeMap<>();
         for (Skill skill : LevelManager.SKILLS.values()) {
             for (SkillAttribute skillAttribute : skill.getAttributes()) {
                 if (skillAttribute.getId() < 0) {
                     continue;
                 }
                 skillAttributes.put(skillAttribute.getId(), skillAttribute);
-                attributeCount++;
-
             }
         }
-        for (int i = 0; i < attributeCount; i++) {
-            this.attributes.add(skillAttributes.get(i));
-        }
+        this.attributes.clear();
+        this.attributes.addAll(skillAttributes.values());
+
+        this.skillIds.clear();
+        this.skillIds.addAll(new TreeSet<>(LevelManager.SKILLS.keySet()));
         for (int i = 0; i < 12; i++) {
-            if (this.levelManager.getPlayerSkills().size() <= i) {
+            if (this.skillIds.size() <= i) {
                 break;
             }
 
-            final int skillId = i;
+            final int buttonIndex = i;
             this.levelButtons[i] = this.addDrawableChild(new WidgetButtonPage(this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> {
-                ClientPlayNetworking.send(new StatPacket(this.skillRow * 2 + skillId, 1));
+                int skillIndex = this.skillRow * 2 + buttonIndex;
+                if (skillIndex < this.skillIds.size()) {
+                    ClientPlayNetworking.send(new StatPacket(this.skillIds.get(skillIndex), 1));
+                }
             }));
         }
         updateLevelButtons();
@@ -222,13 +225,11 @@ public class LevelScreen extends Screen implements Tab {
         context.drawTexture(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
         for (int i = 0; i < 12; i++) {
-            int skillId = i + this.skillRow * 2;
-            if (LevelManager.SKILLS.size() <= skillId) {
+            int skillIndex = i + this.skillRow * 2;
+            if (this.skillIds.size() <= skillIndex) {
                 break;
             }
-            if (this.levelManager.getPlayerSkills().size() <= skillId) {
-                break;
-            }
+            int skillId = this.skillIds.get(skillIndex);
             context.drawTexture(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
             context.drawTexture(LevelzMain.identifierOf("textures/gui/sprites/" + LevelManager.SKILLS.get(skillId).getKey() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
 
@@ -239,9 +240,9 @@ public class LevelScreen extends Screen implements Tab {
                 context.drawTooltip(this.textRenderer, LevelManager.SKILLS.get(skillId).getText(), mouseX, mouseY);
             }
         }
-        if (this.levelManager.getPlayerSkills().size() > 12) {
-            int scrollLevels = (this.levelManager.getPlayerSkills().size() - 12) / 2;
-            if (this.levelManager.getPlayerSkills().size() % 2 != 0) {
+        if (this.skillIds.size() > 12) {
+            int scrollLevels = (this.skillIds.size() - 12) / 2;
+            if (this.skillIds.size() % 2 != 0) {
                 scrollLevels += 1;
             }
 
@@ -293,7 +294,7 @@ public class LevelScreen extends Screen implements Tab {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, this.getFocused() != null);
 
-        if (this.levelManager.getPlayerSkills().size() > 12 && isPointWithinBounds(this.x + 186, this.y + 87, 6, 120, mouseX, mouseY)) {
+        if (this.skillIds.size() > 12 && isPointWithinBounds(this.x + 186, this.y + 87, 6, 120, mouseX, mouseY)) {
             this.draggingSkillScrollbar = true;
             updateSkillScrollFromMouse(mouseY);
             return true;
@@ -330,13 +331,11 @@ public class LevelScreen extends Screen implements Tab {
             }
         }
         for (int i = 0; i < 12; i++) {
-            int skillId = i + this.skillRow * 2;
-            if (LevelManager.SKILLS.size() <= skillId) {
+            int skillIndex = i + this.skillRow * 2;
+            if (this.skillIds.size() <= skillIndex) {
                 break;
             }
-            if (this.levelManager.getPlayerSkills().size() <= skillId) {
-                break;
-            }
+            int skillId = this.skillIds.get(skillIndex);
             if (isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
                 this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 this.client.setScreen(new SkillInfoScreen(this.levelManager, skillId));
@@ -359,10 +358,10 @@ public class LevelScreen extends Screen implements Tab {
                 this.attributeRow = Math.min(newAttributeRow, maxAttributeRow);
             }
         }
-        if (this.levelManager.getPlayerSkills().size() > 12 && isPointWithinBounds(this.x + 7, this.y + 86, 186, 122, mouseX, mouseY)) {
+        if (this.skillIds.size() > 12 && isPointWithinBounds(this.x + 7, this.y + 86, 186, 122, mouseX, mouseY)) {
 
-            int maxSkillRow = (this.levelManager.getPlayerSkills().size() - 12) / 2;
-            if (this.levelManager.getPlayerSkills().size() % 2 != 0) {
+            int maxSkillRow = (this.skillIds.size() - 12) / 2;
+            if (this.skillIds.size() % 2 != 0) {
                 maxSkillRow += 1;
             }
             int oldSkillRow = this.skillRow;
@@ -400,21 +399,19 @@ public class LevelScreen extends Screen implements Tab {
 
     public void updateLevelButtons() {
         for (int i = 0; i < this.levelButtons.length; i++) {
-            if (this.levelManager.getPlayerSkills().size() <= i) {
+            if (this.levelButtons[i] == null) {
                 break;
             }
-            int skillId = i + this.skillRow * 2;
-            if (LevelManager.SKILLS.size() <= skillId) {
+            int skillIndex = i + this.skillRow * 2;
+            if (this.skillIds.size() <= skillIndex) {
                 this.levelButtons[i].visible = false;
-                return;
+                continue;
             } else {
                 this.levelButtons[i].visible = true;
             }
+            int skillId = this.skillIds.get(skillIndex);
 
-
-            if (ConfigInit.CONFIG.overallMaxLevel > 0 && this.levelManager.getOverallLevel() >= ConfigInit.CONFIG.overallMaxLevel) {
-                this.levelButtons[i].active = false;
-            } else if (LevelManager.SKILLS.get(skillId).getMaxLevel() <= this.levelManager.getPlayerSkills().get(skillId).getLevel()) {
+            if (LevelManager.SKILLS.get(skillId).getMaxLevel() <= this.levelManager.getSkillLevel(skillId)) {
                 this.levelButtons[i].active = false;
             } else {
                 this.levelButtons[i].active = this.levelManager.getSkillPoints() > 0;
@@ -452,8 +449,8 @@ public class LevelScreen extends Screen implements Tab {
     }
 
     private void updateSkillScrollFromMouse(double mouseY) {
-        int maxSkillRow = (this.levelManager.getPlayerSkills().size() - 12) / 2;
-        if (this.levelManager.getPlayerSkills().size() % 2 != 0) {
+        int maxSkillRow = (this.skillIds.size() - 12) / 2;
+        if (this.skillIds.size() % 2 != 0) {
             maxSkillRow += 1;
         }
         int oldSkillRow = this.skillRow;
