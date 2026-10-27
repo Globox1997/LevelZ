@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
+import net.levelz.level.restriction.ComponentRestriction;
 import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.registry.EnchantmentRegistry;
 import net.minecraft.block.Block;
@@ -69,6 +70,17 @@ public class TooltipUtil {
                     PlayerRestriction playerRestriction = LevelManager.ITEM_RESTRICTIONS.get(itemId);
                     lines.add(Text.translatable("restriction.levelz.usable.tooltip"));
                     for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
+                        if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
+                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                        }
+                    }
+                }
+            }
+            List<ComponentRestriction> componentRestrictions = levelManager.getComponentRestrictions(stack);
+            if (!componentRestrictions.isEmpty() && (isCreative || !levelManager.hasRequiredComponentLevel(stack))) {
+                lines.add(Text.translatable("restriction.levelz.usable.tooltip"));
+                for (ComponentRestriction componentRestriction : componentRestrictions) {
+                    for (Map.Entry<Integer, Integer> entry : componentRestriction.getSkillLevelRestrictions().entrySet()) {
                         if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
                             lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
                         }

@@ -2,6 +2,7 @@ package net.levelz.level;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.levelz.init.ConfigInit;
+import net.levelz.level.restriction.ComponentRestriction;
 import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.registry.EnchantmentRegistry;
 import net.levelz.util.LevelHelper;
@@ -17,9 +18,14 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LevelManager {
@@ -31,6 +37,8 @@ public class LevelManager {
     public static final Map<Integer, PlayerRestriction> ITEM_RESTRICTIONS = new HashMap<>();
     public static final Map<Integer, PlayerRestriction> MINING_RESTRICTIONS = new HashMap<>();
     public static final Map<Integer, PlayerRestriction> ENCHANTMENT_RESTRICTIONS = new HashMap<>();
+    public static final Map<Integer, List<ComponentRestriction>> COMPONENT_RESTRICTIONS = new HashMap<>();
+    public static final Map<Identifier, PlayerRestriction> DIMENSION_RESTRICTIONS = new HashMap<>();
     public static final Map<String, SkillBonus> BONUSES = new HashMap<>();
 
     private final PlayerEntity playerEntity;
@@ -275,7 +283,7 @@ public class LevelManager {
     }
 
     public boolean hasRequiredStackLevel(ItemStack stack) {
-        if (!this.hasRequiredItemLevel(stack.getItem())) {
+        if (!this.hasRequiredItemLevel(stack.getItem()) || !this.hasRequiredComponentLevel(stack)) {
             return false;
         }
         if (ConfigInit.CONFIG.restrictEnchantedItems) {
@@ -283,6 +291,51 @@ public class LevelManager {
                 if (!this.hasRequiredEnchantmentLevel(entry.getKey(), entry.getIntValue())) {
                     return false;
                 }
+            }
+        }
+        return true;
+    }
+
+    public boolean hasRequiredComponentLevel(ItemStack stack) {
+        List<ComponentRestriction> componentRestrictions = COMPONENT_RESTRICTIONS.get(Registries.ITEM.getRawId(stack.getItem()));
+        if (componentRestrictions != null) {
+            for (ComponentRestriction componentRestriction : componentRestrictions) {
+                if (componentRestriction.matches(stack) && !this.hasRequiredSkillLevels(componentRestriction.getSkillLevelRestrictions())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public List<ComponentRestriction> getComponentRestrictions(ItemStack stack) {
+        List<ComponentRestriction> componentRestrictions = COMPONENT_RESTRICTIONS.get(Registries.ITEM.getRawId(stack.getItem()));
+        if (componentRestrictions == null) {
+            return List.of();
+        }
+        List<ComponentRestriction> matchingRestrictions = new ArrayList<>();
+        for (ComponentRestriction componentRestriction : componentRestrictions) {
+            if (componentRestriction.matches(stack)) {
+                matchingRestrictions.add(componentRestriction);
+            }
+        }
+        return matchingRestrictions;
+    }
+
+    public boolean hasRequiredDimensionLevel(RegistryKey<World> dimension) {
+        PlayerRestriction playerRestriction = DIMENSION_RESTRICTIONS.get(dimension.getValue());
+        return playerRestriction == null || this.hasRequiredSkillLevels(playerRestriction.getSkillLevelRestrictions());
+    }
+
+    public Map<Integer, Integer> getRequiredDimensionLevel(RegistryKey<World> dimension) {
+        PlayerRestriction playerRestriction = DIMENSION_RESTRICTIONS.get(dimension.getValue());
+        return playerRestriction != null ? playerRestriction.getSkillLevelRestrictions() : Map.of();
+    }
+
+    private boolean hasRequiredSkillLevels(Map<Integer, Integer> skillLevelRestrictions) {
+        for (Map.Entry<Integer, Integer> entry : skillLevelRestrictions.entrySet()) {
+            if (this.getSkillLevel(entry.getKey()) < entry.getValue()) {
+                return false;
             }
         }
         return true;

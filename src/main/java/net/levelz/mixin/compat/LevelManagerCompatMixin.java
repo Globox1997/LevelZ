@@ -6,6 +6,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -46,6 +47,13 @@ public class LevelManagerCompatMixin {
 
     @Inject(method = "hasRequiredItemLevel", at = @At("HEAD"), cancellable = true)
     private void hasRequiredItemLevelMixin(Item item, CallbackInfoReturnable<Boolean> info) {
+        if (this.playerEntity.getClass().getName().contains("deployer.DeployerFakePlayer") || this.playerEntity.getClass().getName().contains("core.TurtlePlayer")) {
+            info.setReturnValue(true);
+        }
+    }
+
+    @Inject(method = "hasRequiredComponentLevel", at = @At("HEAD"), cancellable = true)
+    private void hasRequiredComponentLevelMixin(ItemStack stack, CallbackInfoReturnable<Boolean> info) {
         if (this.playerEntity.getClass().getName().contains("deployer.DeployerFakePlayer") || this.playerEntity.getClass().getName().contains("core.TurtlePlayer")) {
             info.setReturnValue(true);
         }

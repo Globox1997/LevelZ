@@ -7,6 +7,7 @@ import net.levelz.access.LevelManagerAccess;
 import net.levelz.level.LevelManager;
 import net.levelz.level.PlayerSkill;
 import net.levelz.level.Skill;
+import net.levelz.level.restriction.ComponentRestriction;
 import net.levelz.network.packet.*;
 import net.levelz.registry.EnchantmentRegistry;
 import net.levelz.registry.EnchantmentZ;
@@ -17,6 +18,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,6 +93,7 @@ public class LevelClientPacket {
             RestrictionPacket.RestrictionRecord itemRestrictions = payload.itemRestrictions();
             RestrictionPacket.RestrictionRecord miningRestrictions = payload.miningRestrictions();
             RestrictionPacket.RestrictionRecord enchantmentRestrictions = payload.enchantmentRestrictions();
+            List<ComponentRestriction> componentRestrictions = payload.componentRestrictions();
 
             context.client().execute(() -> {
                 if (context.client().isIntegratedServerRunning()) {
@@ -120,6 +123,10 @@ public class LevelClientPacket {
                 }
                 for (int i = 0; i < enchantmentRestrictions.ids().size(); i++) {
                     LevelManager.ENCHANTMENT_RESTRICTIONS.put(enchantmentRestrictions.ids().get(i), enchantmentRestrictions.restrictions().get(i));
+                }
+                LevelManager.COMPONENT_RESTRICTIONS.clear();
+                for (ComponentRestriction componentRestriction : componentRestrictions) {
+                    LevelManager.COMPONENT_RESTRICTIONS.computeIfAbsent(componentRestriction.getId(), id -> new ArrayList<>()).add(componentRestriction);
                 }
             });
         });

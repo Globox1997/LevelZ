@@ -147,6 +147,10 @@ A restriction can include:
 - items: restricts usage of items
 - mining: restricts mining of blocks
 - enchantments: restricts enchantments
+- components: restricts usage of items with specific components, written like in the `/give` command
+- dimensions: restricts entering dimensions
+
+Blocks, crafting, entities, items, mining and enchantments also accept tags starting with `#`, like `#minecraft:pickaxes`.
 
 ```json
 {
@@ -176,8 +180,23 @@ A restriction can include:
       "minecraft:chiseled_polished_blackstone"
     ],
     "enchantments": {
-      "minecraft:unbreaking": 1
-    }
+      "minecraft:unbreaking": 1,
+      "#minecraft:curse": 1
+    },
+    "components": [
+      "minecraft:potion[potion_contents={potion:\"minecraft:strength\"}]"
+    ],
+    "dimensions": [
+      "minecraft:the_nether"
+    ]
+  },
+  "tags_example": {
+    "skills": {
+      "mining": 5
+    },
+    "items": [
+      "#minecraft:pickaxes"
+    ]
   },
   "...": {
     "skills": {
