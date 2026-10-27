@@ -25,6 +25,7 @@
   "text.autoconfig.levelz.option.startPoints": "Start Points",
   "text.autoconfig.levelz.option.pointsPerLevel": "Points Per Lvl",
   "text.autoconfig.levelz.option.resetCurrentXp": "Reset Current Experience",
+  "text.autoconfig.levelz.option.currentXpLossPercentage": "Current Experience Loss %",
   "text.autoconfig.levelz.option.xpBaseCost": "XP Base Cost",
   "text.autoconfig.levelz.option.xpCostMultiplicator": "XP Multiplicator",
   "text.autoconfig.levelz.option.xpExponent": "XP Exponent",
@@ -143,6 +144,8 @@
   "restriction.levelz.usable.tooltip": "§7Usable",
   "restriction.levelz.craftable.tooltip": "§7Craftable",
   "restriction.levelz.locked.tooltip": "Locked",
+  "restriction.levelz.dimension.locked": "Dimension locked: %s",
+  "text.levelz.datapack_errors": "[LevelZ] %s datapack problems found, check the server log for details",
 
   "item.levelz.locked.tooltip": "Locked",
 

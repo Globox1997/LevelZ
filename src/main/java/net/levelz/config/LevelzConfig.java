@@ -25,10 +25,6 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @ConfigEntry.Category("level_settings")
     public int pointsPerLevel = 3;
 
-    @Deprecated // Unused but if this gets removed, remove it in JobsAddon
-    @ConfigEntry.Category("level_settings")
-    @Comment("If true will reset stats on death \n!!!deprecated, not in use!!!")
-    public boolean hardMode = false;
     @ConfigEntry.Category("level_settings")
     @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
     @Comment("Retain % of levels and skill points, 0 = hard mode")
@@ -145,6 +141,10 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     public int xpMaxCost = 0;
     @ConfigEntry.Category("experience_settings")
     public boolean resetCurrentXp = true;
+    @ConfigEntry.Category("experience_settings")
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
+    @Comment("Lose % of the current level progress on death, requires resetCurrentXp")
+    public float currentXpLossPercentage = 100;
     @ConfigEntry.Category("experience_settings")
     public boolean dropXPbasedOnLvl = false;
     @ConfigEntry.Category("experience_settings")

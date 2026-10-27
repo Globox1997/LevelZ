@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -151,7 +152,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
     @Override
     protected void dropXp(@Nullable Entity attacker) {
         if (this.playerEntity.getWorld() instanceof ServerWorld serverWorld && this.shouldDropXp() && this.getWorld().getGameRules().getBoolean(GameRules.DO_MOB_LOOT) && ConfigInit.CONFIG.resetCurrentXp) {
-            LevelExperienceOrbEntity.spawn(serverWorld, this.getPos(), (int) (this.levelManager.getLevelProgress() * this.levelManager.getNextLevelExperience()));
+            LevelExperienceOrbEntity.spawn(serverWorld, this.getPos(), (int) (this.levelManager.getLevelProgress() * this.levelManager.getNextLevelExperience() * MathHelper.clamp(ConfigInit.CONFIG.currentXpLossPercentage, 0.0F, 100.0F) / 100.0F));
         }
         super.dropXp(attacker);
     }
