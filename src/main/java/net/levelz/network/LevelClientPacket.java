@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.levelz.access.LevelManagerAccess;
+import net.levelz.editor.EditorClientData;
 import net.levelz.level.LevelManager;
 import net.levelz.level.PlayerSkill;
 import net.levelz.level.Skill;
@@ -12,6 +13,8 @@ import net.levelz.network.packet.*;
 import net.levelz.registry.EnchantmentRegistry;
 import net.levelz.registry.EnchantmentZ;
 import net.levelz.screen.LevelScreen;
+import net.levelz.screen.RestrictionEditScreen;
+import net.levelz.screen.RestrictionEditorScreen;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
@@ -139,6 +142,30 @@ public class LevelClientPacket {
                 levelManager.setSkillLevel(id, level);
                 if (context.client().currentScreen instanceof LevelScreen levelScreen) {
                     levelScreen.updateLevelButtons();
+                }
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(EditorDataPacket.PACKET_ID, (payload, context) -> {
+            context.client().execute(() -> {
+                EditorClientData.update(payload.entries(), payload.skills(), payload.problems());
+                if (payload.openScreen()) {
+                    context.client().setScreen(new RestrictionEditorScreen());
+                } else if (context.client().currentScreen instanceof RestrictionEditorScreen restrictionEditorScreen) {
+                    restrictionEditorScreen.refresh();
+                } else if (context.client().currentScreen instanceof RestrictionEditScreen restrictionEditScreen) {
+                    restrictionEditScreen.onDataRefreshed();
+                }
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(EditorResultPacket.PACKET_ID, (payload, context) -> {
+            context.client().execute(() -> {
+                EditorClientData.lastResult = payload;
+                if (context.client().currentScreen instanceof RestrictionEditScreen restrictionEditScreen) {
+                    restrictionEditScreen.onResult(payload);
+                } else if (context.client().currentScreen instanceof RestrictionEditorScreen restrictionEditorScreen) {
+                    restrictionEditorScreen.onResult(payload);
                 }
             });
         });

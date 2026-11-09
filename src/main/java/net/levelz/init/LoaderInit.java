@@ -28,8 +28,10 @@ public class LoaderInit {
                 RestrictionLoader.onTagsLoaded(registries);
             }
         });
+        ServerLifecycleEvents.SERVER_STARTING.register(RestrictionLoader::applyOverrides);
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
             if (success) {
+                RestrictionLoader.applyOverrides(server);
                 for (int i = 0; i < server.getPlayerManager().getPlayerList().size(); i++) {
                     ServerPlayerEntity serverPlayerEntity = server.getPlayerManager().getPlayerList().get(i);
                     ((LevelManagerAccess) serverPlayerEntity).getLevelManager().refreshSkills();

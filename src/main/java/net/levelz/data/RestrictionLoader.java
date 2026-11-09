@@ -7,12 +7,15 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.levelz.LevelzMain;
+import net.levelz.editor.RestrictionEntry;
+import net.levelz.editor.RestrictionOverrides;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.Skill;
 import net.levelz.level.restriction.ComponentRestriction;
 import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.registry.EnchantmentRegistry;
+import net.levelz.util.PacketHelper;
 import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -23,6 +26,8 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import java.io.InputStreamReader;
@@ -33,6 +38,8 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
 
     public static final Identifier ID = LevelzMain.identifierOf("restriction");
 
+    public static final List<RestrictionEntry> ENTRIES = new ArrayList<>();
+
     private static final List<Integer> blockList = new ArrayList<>();
     private static final List<Integer> craftingList = new ArrayList<>();
     private static final List<Integer> entityList = new ArrayList<>();
@@ -41,6 +48,14 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
     private static final List<Integer> enchantmentList = new ArrayList<>();
     private static final List<Identifier> dimensionList = new ArrayList<>();
     private static final List<Consumer<DynamicRegistryManager>> TAG_TASKS = new ArrayList<>();
+
+    private enum Mode {
+        DATAPACK, OVERRIDE, REMOVE
+    }
+
+    private interface EntryAction {
+        void accept(int rawId, boolean fromTag);
+    }
 
     @Override
     public Identifier getFabricId() {
@@ -62,6 +77,7 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
         LevelManager.ENCHANTMENT_RESTRICTIONS.clear();
         LevelManager.COMPONENT_RESTRICTIONS.clear();
         LevelManager.DIMENSION_RESTRICTIONS.clear();
+        ENTRIES.clear();
         blockList.clear();
         craftingList.clear();
         entityList.clear();
@@ -70,17 +86,14 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
         enchantmentList.clear();
         dimensionList.clear();
         TAG_TASKS.clear();
+        DatapackErrors.clearRestrictionErrors();
 
         if (!ConfigInit.CONFIG.restrictions) {
             return;
         }
         EnchantmentRegistry.updateEnchantments(this.wrapperLookup());
         ItemStringReader itemStringReader = new ItemStringReader(this.wrapperLookup());
-
-        Map<String, Integer> skillKeyIdMap = new HashMap<>();
-        for (Skill skill : LevelManager.SKILLS.values()) {
-            skillKeyIdMap.put(skill.getKey(), skill.getId());
-        }
+        Map<String, Integer> skillKeyIdMap = getSkillKeyIdMap();
 
         manager.findResources("restriction", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
             if (!ConfigInit.CONFIG.defaultRestrictions && id.getPath().endsWith("/default.json")) {
@@ -94,12 +107,8 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
                 return;
             }
             for (String mapKey : data.keySet()) {
-                String source = mapKey + " in " + id;
-                try {
-                    loadRestriction(data.get(mapKey), source, skillKeyIdMap, itemStringReader);
-                } catch (Exception e) {
-                    DatapackErrors.report("Restriction {} could not be loaded: {}", source, e.getMessage());
-                }
+                ENTRIES.add(new RestrictionEntry(id.toString(), mapKey, data.get(mapKey).toString()));
+                loadRestrictionSafely(data.get(mapKey), mapKey + " in " + id, skillKeyIdMap, itemStringReader, false);
             }
         });
     }
@@ -111,43 +120,105 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
         TAG_TASKS.clear();
     }
 
-    private static void loadRestriction(JsonElement element, String source, Map<String, Integer> skillKeyIdMap, ItemStringReader itemStringReader) {
+    public static void applyOverrides(MinecraftServer server) {
+        if (!ConfigInit.CONFIG.restrictions) {
+            return;
+        }
+        JsonObject overrides = RestrictionOverrides.read(server);
+        if (overrides == null) {
+            return;
+        }
+        ItemStringReader itemStringReader = new ItemStringReader(server.getRegistryManager());
+        Map<String, Integer> skillKeyIdMap = getSkillKeyIdMap();
+        for (String mapKey : overrides.keySet()) {
+            ENTRIES.add(new RestrictionEntry(RestrictionOverrides.SOURCE, mapKey, overrides.get(mapKey).toString()));
+            loadRestrictionSafely(overrides.get(mapKey), getOverrideSource(mapKey), skillKeyIdMap, itemStringReader, true);
+        }
+        onTagsLoaded(server.getRegistryManager());
+    }
+
+    public static void reloadRestrictions(MinecraftServer server) {
+        new RestrictionLoader(server.getRegistryManager()).reload(server.getResourceManager());
+        onTagsLoaded(server.getRegistryManager());
+        applyOverrides(server);
+        for (ServerPlayerEntity serverPlayerEntity : server.getPlayerManager().getPlayerList()) {
+            PacketHelper.syncEnchantments(serverPlayerEntity);
+            PacketHelper.updateRestrictions(serverPlayerEntity);
+        }
+    }
+
+    public static String getOverrideSource(String mapKey) {
+        return mapKey + " in " + RestrictionOverrides.SOURCE;
+    }
+
+    private static Map<String, Integer> getSkillKeyIdMap() {
+        Map<String, Integer> skillKeyIdMap = new HashMap<>();
+        for (Skill skill : LevelManager.SKILLS.values()) {
+            skillKeyIdMap.put(skill.getKey(), skill.getId());
+        }
+        return skillKeyIdMap;
+    }
+
+    private static void loadRestrictionSafely(JsonElement element, String source, Map<String, Integer> skillKeyIdMap, ItemStringReader itemStringReader, boolean override) {
+        try {
+            loadRestriction(element, source, skillKeyIdMap, itemStringReader, override);
+        } catch (Exception e) {
+            DatapackErrors.report("Restriction {} could not be loaded: {}", source, e.getMessage());
+        }
+    }
+
+    private static void loadRestriction(JsonElement element, String source, Map<String, Integer> skillKeyIdMap, ItemStringReader itemStringReader, boolean override) {
         if (!element.isJsonObject()) {
             DatapackErrors.report("Restriction {} has to be a json object.", source);
             return;
         }
         JsonObject restrictionJsonObject = element.getAsJsonObject();
-        if (!restrictionJsonObject.has("skills") || !restrictionJsonObject.get("skills").isJsonObject()) {
-            DatapackErrors.report("Restriction {} is missing the \"skills\" object.", source);
+        boolean remove = restrictionJsonObject.has("remove") && restrictionJsonObject.get("remove").getAsBoolean();
+        if (remove && !override) {
+            DatapackErrors.report("Restriction {} uses \"remove\" which only works in the world overrides file.", source);
             return;
         }
         Map<Integer, Integer> skillLevelRestrictions = new HashMap<>();
-        JsonObject skillRestrictions = restrictionJsonObject.getAsJsonObject("skills");
-        for (String skillKey : skillRestrictions.keySet()) {
-            if (skillKeyIdMap.containsKey(skillKey)) {
-                skillLevelRestrictions.put(skillKeyIdMap.get(skillKey), skillRestrictions.get(skillKey).getAsInt());
-            } else {
-                DatapackErrors.report("Restriction {} contains the unknown skill {}. Known skills: {}", source, skillKey, skillKeyIdMap.keySet());
+        if (!remove) {
+            if (!restrictionJsonObject.has("skills") || !restrictionJsonObject.get("skills").isJsonObject()) {
+                DatapackErrors.report("Restriction {} is missing the \"skills\" object.", source);
+                return;
+            }
+            JsonObject skillRestrictions = restrictionJsonObject.getAsJsonObject("skills");
+            for (String skillKey : skillRestrictions.keySet()) {
+                if (skillKeyIdMap.containsKey(skillKey)) {
+                    skillLevelRestrictions.put(skillKeyIdMap.get(skillKey), skillRestrictions.get(skillKey).getAsInt());
+                } else {
+                    DatapackErrors.report("Restriction {} contains the unknown skill {}. Known skills: {}", source, skillKey, skillKeyIdMap.keySet());
+                }
+            }
+            if (skillLevelRestrictions.isEmpty()) {
+                DatapackErrors.report("Restriction {} does not contain any valid skills.", source);
+                return;
             }
         }
-        if (skillLevelRestrictions.isEmpty()) {
-            DatapackErrors.report("Restriction {} does not contain any valid skills.", source);
-            return;
-        }
+        Mode mode = remove ? Mode.REMOVE : override ? Mode.OVERRIDE : Mode.DATAPACK;
         boolean replace = restrictionJsonObject.has("replace") && restrictionJsonObject.get("replace").getAsBoolean();
 
-        loadEntries(restrictionJsonObject, "blocks", Registries.BLOCK, LevelManager.BLOCK_RESTRICTIONS, blockList, skillLevelRestrictions, replace, source);
-        loadEntries(restrictionJsonObject, "crafting", Registries.ITEM, LevelManager.CRAFTING_RESTRICTIONS, craftingList, skillLevelRestrictions, replace, source);
-        loadEntries(restrictionJsonObject, "entities", Registries.ENTITY_TYPE, LevelManager.ENTITY_RESTRICTIONS, entityList, skillLevelRestrictions, replace, source);
-        loadEntries(restrictionJsonObject, "items", Registries.ITEM, LevelManager.ITEM_RESTRICTIONS, itemList, skillLevelRestrictions, replace, source);
-        loadEntries(restrictionJsonObject, "mining", Registries.BLOCK, LevelManager.MINING_RESTRICTIONS, miningList, skillLevelRestrictions, replace, source);
-        loadEnchantments(restrictionJsonObject, skillLevelRestrictions, replace, source);
-        loadComponents(restrictionJsonObject, skillLevelRestrictions, source, itemStringReader);
-        loadDimensions(restrictionJsonObject, skillLevelRestrictions, replace, source);
+        loadEntries(restrictionJsonObject, "blocks", Registries.BLOCK, getAction(mode, LevelManager.BLOCK_RESTRICTIONS, blockList, skillLevelRestrictions, replace), source);
+        loadEntries(restrictionJsonObject, "crafting", Registries.ITEM, getAction(mode, LevelManager.CRAFTING_RESTRICTIONS, craftingList, skillLevelRestrictions, replace), source);
+        loadEntries(restrictionJsonObject, "entities", Registries.ENTITY_TYPE, getAction(mode, LevelManager.ENTITY_RESTRICTIONS, entityList, skillLevelRestrictions, replace), source);
+        loadEntries(restrictionJsonObject, "items", Registries.ITEM, getAction(mode, LevelManager.ITEM_RESTRICTIONS, itemList, skillLevelRestrictions, replace), source);
+        loadEntries(restrictionJsonObject, "mining", Registries.BLOCK, getAction(mode, LevelManager.MINING_RESTRICTIONS, miningList, skillLevelRestrictions, replace), source);
+        loadEnchantments(restrictionJsonObject, getAction(mode, LevelManager.ENCHANTMENT_RESTRICTIONS, enchantmentList, skillLevelRestrictions, replace), source);
+        loadComponents(restrictionJsonObject, mode, skillLevelRestrictions, source, itemStringReader);
+        loadDimensions(restrictionJsonObject, mode, skillLevelRestrictions, replace, source);
     }
 
-    private static <T> void loadEntries(JsonObject restrictionJsonObject, String type, Registry<T> registry, Map<Integer, PlayerRestriction> restrictions, List<Integer> replaceList,
-                                        Map<Integer, Integer> skillLevelRestrictions, boolean replace, String source) {
+    private static EntryAction getAction(Mode mode, Map<Integer, PlayerRestriction> restrictions, List<Integer> replaceList, Map<Integer, Integer> skillLevelRestrictions, boolean replace) {
+        return switch (mode) {
+            case DATAPACK -> (rawId, fromTag) -> addRestriction(rawId, restrictions, replaceList, skillLevelRestrictions, replace, fromTag);
+            case OVERRIDE -> (rawId, fromTag) -> restrictions.put(rawId, new PlayerRestriction(rawId, skillLevelRestrictions));
+            case REMOVE -> (rawId, fromTag) -> restrictions.remove(rawId);
+        };
+    }
+
+    private static <T> void loadEntries(JsonObject restrictionJsonObject, String type, Registry<T> registry, EntryAction action, String source) {
         if (!restrictionJsonObject.has(type)) {
             return;
         }
@@ -168,7 +239,7 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
                     boolean found = false;
                     for (RegistryEntry<T> tagEntry : registry.iterateEntries(tagKey)) {
                         found = true;
-                        addRestriction(registry.getRawId(tagEntry.value()), restrictions, replaceList, skillLevelRestrictions, replace, true);
+                        action.accept(registry.getRawId(tagEntry.value()), true);
                     }
                     if (!found) {
                         DatapackErrors.report("Restriction {} contains the tag {} in \"{}\" which is empty or does not exist.", source, entry, type);
@@ -181,11 +252,11 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
                 DatapackErrors.report("Restriction {} contains the unknown id {} in \"{}\".", source, entry, type);
                 continue;
             }
-            addRestriction(registry.getRawId(registry.get(identifier)), restrictions, replaceList, skillLevelRestrictions, replace, false);
+            action.accept(registry.getRawId(registry.get(identifier)), false);
         }
     }
 
-    private static void loadEnchantments(JsonObject restrictionJsonObject, Map<Integer, Integer> skillLevelRestrictions, boolean replace, String source) {
+    private static void loadEnchantments(JsonObject restrictionJsonObject, EntryAction action, String source) {
         if (!restrictionJsonObject.has("enchantments")) {
             return;
         }
@@ -208,7 +279,7 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
                     for (RegistryEntry<Enchantment> tagEntry : registries.get(RegistryKeys.ENCHANTMENT).iterateEntries(tagKey)) {
                         found = true;
                         if (EnchantmentRegistry.containsId(tagEntry, level)) {
-                            addRestriction(EnchantmentRegistry.getId(tagEntry, level), LevelManager.ENCHANTMENT_RESTRICTIONS, enchantmentList, skillLevelRestrictions, replace, true);
+                            action.accept(EnchantmentRegistry.getId(tagEntry, level), true);
                         }
                     }
                     if (!found) {
@@ -219,14 +290,14 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
             }
             Identifier enchantmentIdentifier = Identifier.tryParse(enchantment);
             if (enchantmentIdentifier != null && EnchantmentRegistry.containsId(enchantmentIdentifier, level)) {
-                addRestriction(EnchantmentRegistry.getId(enchantmentIdentifier, level), LevelManager.ENCHANTMENT_RESTRICTIONS, enchantmentList, skillLevelRestrictions, replace, false);
+                action.accept(EnchantmentRegistry.getId(enchantmentIdentifier, level), false);
             } else {
                 DatapackErrors.report("Restriction {} contains the unknown enchantment {} or level {} is above its max level.", source, enchantment, level);
             }
         }
     }
 
-    private static void loadComponents(JsonObject restrictionJsonObject, Map<Integer, Integer> skillLevelRestrictions, String source, ItemStringReader itemStringReader) {
+    private static void loadComponents(JsonObject restrictionJsonObject, Mode mode, Map<Integer, Integer> skillLevelRestrictions, String source, ItemStringReader itemStringReader) {
         if (!restrictionJsonObject.has("components")) {
             return;
         }
@@ -247,14 +318,20 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
                     continue;
                 }
                 int itemRawId = Registries.ITEM.getRawId(itemResult.item().value());
-                LevelManager.COMPONENT_RESTRICTIONS.computeIfAbsent(itemRawId, id -> new ArrayList<>()).add(new ComponentRestriction(itemRawId, itemResult.components(), skillLevelRestrictions));
+                List<ComponentRestriction> componentRestrictions = LevelManager.COMPONENT_RESTRICTIONS.computeIfAbsent(itemRawId, id -> new ArrayList<>());
+                if (mode != Mode.DATAPACK) {
+                    componentRestrictions.removeIf(componentRestriction -> componentRestriction.getComponents().equals(itemResult.components()));
+                }
+                if (mode != Mode.REMOVE) {
+                    componentRestrictions.add(new ComponentRestriction(itemRawId, itemResult.components(), skillLevelRestrictions));
+                }
             } catch (CommandSyntaxException e) {
                 DatapackErrors.report("Restriction {} contains the invalid component item {}: {}", source, itemString, e.getMessage());
             }
         }
     }
 
-    private static void loadDimensions(JsonObject restrictionJsonObject, Map<Integer, Integer> skillLevelRestrictions, boolean replace, String source) {
+    private static void loadDimensions(JsonObject restrictionJsonObject, Mode mode, Map<Integer, Integer> skillLevelRestrictions, boolean replace, String source) {
         if (!restrictionJsonObject.has("dimensions")) {
             return;
         }
@@ -268,11 +345,17 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
                 DatapackErrors.report("Restriction {} contains the invalid dimension id {}.", source, dimensionElement.getAsString());
                 continue;
             }
-            if (dimensionList.contains(dimensionIdentifier)) {
+            if (mode == Mode.REMOVE) {
+                LevelManager.DIMENSION_RESTRICTIONS.remove(dimensionIdentifier);
                 continue;
             }
-            if (replace) {
-                dimensionList.add(dimensionIdentifier);
+            if (mode == Mode.DATAPACK) {
+                if (dimensionList.contains(dimensionIdentifier)) {
+                    continue;
+                }
+                if (replace) {
+                    dimensionList.add(dimensionIdentifier);
+                }
             }
             LevelManager.DIMENSION_RESTRICTIONS.put(dimensionIdentifier, new PlayerRestriction(0, skillLevelRestrictions));
             TAG_TASKS.add(registries -> registries.getOptional(RegistryKeys.DIMENSION).ifPresent(registry -> {

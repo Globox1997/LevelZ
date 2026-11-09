@@ -3,6 +3,7 @@ package net.levelz.network;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.levelz.access.LevelManagerAccess;
+import net.levelz.editor.RestrictionEditor;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.CriteriaInit;
 import net.levelz.level.LevelManager;
@@ -35,6 +36,26 @@ public class LevelServerPacket {
         PayloadTypeRegistry.playS2C().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(AttributeSyncPacket.PACKET_ID, AttributeSyncPacket.PACKET_CODEC);
+
+        PayloadTypeRegistry.playS2C().register(EditorDataPacket.PACKET_ID, EditorDataPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(EditorResultPacket.PACKET_ID, EditorResultPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playC2S().register(EditorRequestPacket.PACKET_ID, EditorRequestPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playC2S().register(EditorSavePacket.PACKET_ID, EditorSavePacket.PACKET_CODEC);
+        PayloadTypeRegistry.playC2S().register(EditorDeletePacket.PACKET_ID, EditorDeletePacket.PACKET_CODEC);
+        PayloadTypeRegistry.playC2S().register(EditorExportPacket.PACKET_ID, EditorExportPacket.PACKET_CODEC);
+
+        ServerPlayNetworking.registerGlobalReceiver(EditorRequestPacket.PACKET_ID, (payload, context) -> {
+            context.server().execute(() -> RestrictionEditor.sendEditorData(context.player(), false));
+        });
+        ServerPlayNetworking.registerGlobalReceiver(EditorSavePacket.PACKET_ID, (payload, context) -> {
+            context.server().execute(() -> RestrictionEditor.save(context.player(), payload.key(), payload.json(), payload.baseHash()));
+        });
+        ServerPlayNetworking.registerGlobalReceiver(EditorDeletePacket.PACKET_ID, (payload, context) -> {
+            context.server().execute(() -> RestrictionEditor.delete(context.player(), payload.key(), payload.baseHash()));
+        });
+        ServerPlayNetworking.registerGlobalReceiver(EditorExportPacket.PACKET_ID, (payload, context) -> {
+            context.server().execute(() -> RestrictionEditor.export(context.player()));
+        });
 
         ServerPlayNetworking.registerGlobalReceiver(StatPacket.PACKET_ID, (payload, context) -> {
             int id = payload.id();

@@ -82,6 +82,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
         }
         LevelManager.SKILLS.clear();
         LevelManager.SKILLS.putAll(sortedMap);
+        DatapackErrors.markSkillErrors();
     }
 
     private static void loadSkill(JsonElement element, String source) {

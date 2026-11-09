@@ -14,9 +14,25 @@ public class DatapackErrors {
 
     private static final Logger LOGGER = LogManager.getLogger("LevelZ");
     private static final List<String> ERRORS = new ArrayList<>();
+    private static int skillErrorCount = 0;
 
     public static void clear() {
         ERRORS.clear();
+        skillErrorCount = 0;
+    }
+
+    public static void markSkillErrors() {
+        skillErrorCount = ERRORS.size();
+    }
+
+    public static void clearRestrictionErrors() {
+        while (ERRORS.size() > skillErrorCount) {
+            ERRORS.removeLast();
+        }
+    }
+
+    public static List<String> getErrors() {
+        return List.copyOf(ERRORS);
     }
 
     public static void report(String format, Object... args) {

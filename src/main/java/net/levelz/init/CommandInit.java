@@ -6,6 +6,9 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.access.ServerPlayerSyncAccess;
+import net.levelz.data.DatapackErrors;
+import net.levelz.data.RestrictionLoader;
+import net.levelz.editor.RestrictionEditor;
 import net.levelz.level.LevelManager;
 import net.levelz.level.Skill;
 import net.levelz.util.LevelHelper;
@@ -88,6 +91,17 @@ public class CommandInit {
                     })).then(CommandManager.literal("experience").executes((commandContext) -> {
                         return executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "experience", 0, 3);
                     })))));
+            dispatcher.register(CommandManager.literal("levelz").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(2))
+                    .then(CommandManager.literal("editor").executes(commandContext -> {
+                        RestrictionEditor.sendEditorData(commandContext.getSource().getPlayerOrThrow(), true);
+                        return 1;
+                    }))
+                    .then(CommandManager.literal("restrictions").then(CommandManager.literal("reload").executes(commandContext -> {
+                        RestrictionLoader.reloadRestrictions(commandContext.getSource().getServer());
+                        int problems = DatapackErrors.getErrors().size();
+                        commandContext.getSource().sendFeedback(() -> Text.translatable("commands.levelz.restrictions.reloaded", problems), true);
+                        return 1;
+                    }))));
         });
     }
 
