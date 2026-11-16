@@ -40,6 +40,11 @@ public class AbstractFurnaceBlockEntityMixin {
         this.serverPlayerEntity = player;
     }
 
+    @Inject(method = "dropExperienceForRecipesUsed", at = @At(value = "RETURN"))
+    private void dropExperienceForRecipesUsedReturnMixin(ServerPlayerEntity player, CallbackInfo info) {
+        this.serverPlayerEntity = null;
+    }
+
     @Inject(method = "getRecipesUsedAndDropExperience", at = @At(value = "TAIL"))
     private void getRecipesUsedAndDropExperienceMixin(ServerWorld world, Vec3d pos, CallbackInfoReturnable<List<Recipe<?>>> info) {
         if (ConfigInit.CONFIG.furnaceXPMultiplier > 0.0F) {
