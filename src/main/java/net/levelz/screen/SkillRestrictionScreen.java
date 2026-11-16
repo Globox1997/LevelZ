@@ -205,21 +205,18 @@ public class SkillRestrictionScreen extends Screen implements Tab {
         }
         this.lines.clear();
 
-        int count = 0;
         Map<Integer, PlayerRestriction> newMap = new LinkedHashMap<>();
         for (Map.Entry<Integer, PlayerRestriction> entry : this.restrictions.entrySet()) {
             newMap.put(entry.getKey(), entry.getValue());
-            count++;
-            if (count == this.restrictions.size() - 1) {
+            if (newMap.size() == 9) {
                 this.lines.add(new LineWidget(this.client, null, newMap, code));
-                break;
+                newMap = new LinkedHashMap<>();
             }
-            if (count != 0 && count % 9 == 0) {
-                this.lines.add(new LineWidget(this.client, null, new LinkedHashMap<>(newMap), code));
-                newMap.clear();
-            }
-
         }
+        if (!newMap.isEmpty()) {
+            this.lines.add(new LineWidget(this.client, null, newMap, code));
+        }
+        this.lineIndex = Math.max(0, Math.min(this.lineIndex, this.lines.size() - 10));
     }
 
     private void updateScrollFromMouse(double mouseY) {

@@ -50,6 +50,7 @@ public class SkillInfoScreen extends Screen implements Tab {
     @Override
     protected void init() {
         super.init();
+        this.lines.clear();
 
         this.x = (this.width - this.backgroundWidth) / 2;
         this.y = (this.height - this.backgroundHeight) / 2;
