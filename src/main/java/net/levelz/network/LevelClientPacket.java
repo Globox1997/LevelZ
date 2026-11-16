@@ -179,8 +179,7 @@ public class LevelClientPacket {
                 if (context.client().isIntegratedServerRunning()) {
                     return;
                 }
-                EnchantmentRegistry.ENCHANTMENTS.clear();
-                EnchantmentRegistry.INDEX_ENCHANTMENTS.clear();
+                EnchantmentRegistry.clear();
 
                 Registry<Enchantment> registry = context.player().getWorld().getRegistryManager().get(RegistryKeys.ENCHANTMENT);
                 for (int i = 0; i < keys.size(); i++) {

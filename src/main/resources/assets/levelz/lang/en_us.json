@@ -146,6 +146,7 @@
   "restriction.levelz.locked.tooltip": "Locked",
   "restriction.levelz.dimension.locked": "Dimension locked: %s",
   "text.levelz.datapack_errors": "[LevelZ] %s datapack problems found, check the server log for details",
+  "text.levelz.dev.added_id": "Added ID: %s",
   "commands.levelz.restrictions.reloaded": "Reloaded restrictions, %s datapack problems found",
   "editor.levelz.saved": "Restriction saved",
   "editor.levelz.deleted": "Restriction deleted",

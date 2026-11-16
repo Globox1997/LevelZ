@@ -375,6 +375,9 @@ public class LevelManager {
 
     // enchantment
     public boolean hasRequiredEnchantmentLevel(RegistryEntry<Enchantment> enchantment, int level) {
+        if (ENCHANTMENT_RESTRICTIONS.isEmpty()) {
+            return true;
+        }
         int enchantmentId = EnchantmentRegistry.getId(enchantment, level);
         if (ENCHANTMENT_RESTRICTIONS.containsKey(enchantmentId)) {
             PlayerRestriction playerRestriction = ENCHANTMENT_RESTRICTIONS.get(enchantmentId);
