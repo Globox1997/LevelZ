@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -40,7 +41,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
     private int killedMobsInChunk;
     @Unique
     @Nullable
-    private Chunk killedMobChunk;
+    private ChunkPos killedMobChunkPos;
 
     public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -131,10 +132,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
 
     @Override
     public void increaseKilledMobStat(Chunk chunk) {
-        if (killedMobChunk != null && killedMobChunk == chunk) {
+        if (chunk.getPos().equals(killedMobChunkPos)) {
             killedMobsInChunk++;
         } else {
-            killedMobChunk = chunk;
+            killedMobChunkPos = chunk.getPos();
             killedMobsInChunk = 0;
         }
     }

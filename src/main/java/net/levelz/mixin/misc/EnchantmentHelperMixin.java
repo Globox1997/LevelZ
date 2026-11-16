@@ -3,6 +3,7 @@ package net.levelz.mixin.misc;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.levelz.access.LevelManagerAccess;
+import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentEffectContext;
@@ -23,7 +24,7 @@ public class EnchantmentHelperMixin {
 
     @WrapOperation(method = "forEachEnchantment(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EquipmentSlot;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer;accept(Lnet/minecraft/registry/entry/RegistryEntry;ILnet/minecraft/enchantment/EnchantmentEffectContext;)V"))
     private static void forEachEnchantmentMixin(EnchantmentHelper.ContextAwareConsumer instance, RegistryEntry<Enchantment> enchantmentRegistryEntry, int i, EnchantmentEffectContext enchantmentEffectContext, Operation<Void> original) {
-        if (enchantmentEffectContext.owner() != null && enchantmentEffectContext.owner() instanceof PlayerEntity playerEntity) {
+        if (ConfigInit.CONFIG.restrictEnchantedItems && enchantmentEffectContext.owner() instanceof PlayerEntity playerEntity) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             if (levelManager.hasRequiredEnchantmentLevel(enchantmentRegistryEntry, i)) {
                 original.call(instance, enchantmentRegistryEntry, i, enchantmentEffectContext);

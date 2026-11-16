@@ -40,13 +40,13 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
 
     public static final List<RestrictionEntry> ENTRIES = new ArrayList<>();
 
-    private static final List<Integer> blockList = new ArrayList<>();
-    private static final List<Integer> craftingList = new ArrayList<>();
-    private static final List<Integer> entityList = new ArrayList<>();
-    private static final List<Integer> itemList = new ArrayList<>();
-    private static final List<Integer> miningList = new ArrayList<>();
-    private static final List<Integer> enchantmentList = new ArrayList<>();
-    private static final List<Identifier> dimensionList = new ArrayList<>();
+    private static final Set<Integer> blockList = new HashSet<>();
+    private static final Set<Integer> craftingList = new HashSet<>();
+    private static final Set<Integer> entityList = new HashSet<>();
+    private static final Set<Integer> itemList = new HashSet<>();
+    private static final Set<Integer> miningList = new HashSet<>();
+    private static final Set<Integer> enchantmentList = new HashSet<>();
+    private static final Set<Identifier> dimensionList = new HashSet<>();
     private static final List<Consumer<DynamicRegistryManager>> TAG_TASKS = new ArrayList<>();
 
     private enum Mode {
@@ -210,7 +210,7 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
         loadDimensions(restrictionJsonObject, mode, skillLevelRestrictions, replace, source);
     }
 
-    private static EntryAction getAction(Mode mode, Map<Integer, PlayerRestriction> restrictions, List<Integer> replaceList, Map<Integer, Integer> skillLevelRestrictions, boolean replace) {
+    private static EntryAction getAction(Mode mode, Map<Integer, PlayerRestriction> restrictions, Set<Integer> replaceList, Map<Integer, Integer> skillLevelRestrictions, boolean replace) {
         return switch (mode) {
             case DATAPACK -> (rawId, fromTag) -> addRestriction(rawId, restrictions, replaceList, skillLevelRestrictions, replace, fromTag);
             case OVERRIDE -> (rawId, fromTag) -> restrictions.put(rawId, new PlayerRestriction(rawId, skillLevelRestrictions));
@@ -366,7 +366,7 @@ public record RestrictionLoader(RegistryWrapper.WrapperLookup wrapperLookup) imp
         }
     }
 
-    private static void addRestriction(int rawId, Map<Integer, PlayerRestriction> restrictions, List<Integer> replaceList, Map<Integer, Integer> skillLevelRestrictions, boolean replace,
+    private static void addRestriction(int rawId, Map<Integer, PlayerRestriction> restrictions, Set<Integer> replaceList, Map<Integer, Integer> skillLevelRestrictions, boolean replace,
                                        boolean fromTag) {
         if (replaceList.contains(rawId)) {
             return;
