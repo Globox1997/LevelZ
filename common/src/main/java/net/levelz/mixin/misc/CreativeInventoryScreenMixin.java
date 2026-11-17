@@ -1,0 +1,33 @@
+package net.levelz.mixin.misc;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.levelz.init.ConfigInit;
+import net.levelz.init.KeyInit;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.ItemPickerMenu;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+@Mixin(CreativeModeInventoryScreen.class)
+public abstract class CreativeInventoryScreenMixin extends AbstractContainerScreen<ItemPickerMenu> {
+
+    public CreativeInventoryScreenMixin(ItemPickerMenu screenHandler, Inventory playerInventory, Component text) {
+        super(screenHandler, playerInventory, text);
+    }
+
+    @Inject(method = "keyReleased", at = @At("HEAD"))
+    private void keyReleasedMixin(KeyEvent event, CallbackInfoReturnable<Boolean> info) {
+        if (this.hoveredSlot != null && this.hoveredSlot.hasItem() && ConfigInit.CONFIG.devMode && KeyInit.devKey.matches(event) && this.minecraft.player != null) {
+            this.minecraft.player.sendSystemMessage(Component.translatable("text.levelz.dev.added_id", BuiltInRegistries.ITEM.getKey(this.hoveredSlot.getItem().getItem()).toString()));
+            KeyInit.writeId(BuiltInRegistries.ITEM.getKey(this.hoveredSlot.getItem().getItem()).toString());
+        }
+    }
+
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "levelz",
+  "version": "${version}",
+  "name": "LevelZ",
+  "description": "Adds player levels",
+  "authors": [
+    "Globox_Z"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/levelz",
+    "sources": "https://github.com/Globox1997/LevelZ",
+    "issues": "https://github.com/Globox1997/LevelZ/issues"
+  },
+  "license": "GPLv3",
+  "icon": "assets/levelz/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.levelz.fabric.LevelzFabric"
+    ],
+    "client": [
+      "net.levelz.LevelzClient"
+    ],
+    "modmenu": [
+      "net.levelz.config.ModMenuIntegration"
+    ],
+    "rei_client": [
+      "net.levelz.compat.LevelzReiPlugin"
+    ],
+    "jade": [
+      "net.levelz.waila.LevelJadePlugin"
+    ]
+  },
+  "mixins": [
+    "levelz.mixins.json",
+    "levelz.fabric.mixins.json"
+  ],
+  "depends": {
+    "java": ">=25",
+    "minecraft": ">=${minecraft_version}",
+    "fabric-api": ">=${fabric_version}",
+    "fabricloader": ">=${loader_version}",
+    "cloth-config2": ">=${cloth_config_version}",
+    "libz": "*"
+  }
+}

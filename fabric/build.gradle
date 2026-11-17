@@ -1,0 +1,117 @@
+plugins {
+    id 'net.fabricmc.fabric-loom'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    // LibZ
+    api("maven.modrinth:libz:${libz_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    // Cloth
+    implementation("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    // ModMenu
+    compileOnly localRuntime("com.terraformersmc:modmenu:${mod_menu_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    // Wthit
+    compileOnly('maven.modrinth:wthit:fabric-21.0.0') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    // Jade
+    compileOnly('maven.modrinth:jade:26.3.5+fabric') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    // DragonLoot
+    compileOnly('maven.modrinth:dragonloot:1.2.0+26.3-fabric') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    // REI
+    compileOnly "me.shedaniel:RoughlyEnoughItems-fabric:26.3.824"
+    // EMI
+    //    compileOnly ('maven.modrinth:emi:1.1.22+1.21.1+fabric') {
+    //        exclude(group: "net.fabricmc.fabric-api")
+    //    }
+
+    // PlaceHolder
+    compileOnly("eu.pb4:placeholder-api:3.2.0+26.3")
+    // Inmis
+    //    compileOnly ('maven.modrinth:inmis:2.8.1-1.21.1') {
+    //        exclude(group: "net.fabricmc.fabric-api")
+    //    }
+    // Accessories
+    //    compileOnly ('maven.modrinth:accessories:j6K4uRb7') {
+    //        exclude(group: "net.fabricmc.fabric-api")
+    //    }
+    // CosmeticArmor
+    //    modCompileOnly ('maven.modrinth:cosmetic-armor:1.5.0') {
+    //		exclude(group: "net.fabricmc.fabric-api")
+    //	}
+    // TreeChop
+    //    compileOnly ('maven.modrinth:treechop:0.19.2') {
+    //		exclude(group: "net.fabricmc.fabric-api")
+    //	}
+    // Alloygery
+    //    modCompileOnly ('maven.modrinth:alloygery:2.5.5+1.19.2') {
+    //		exclude(group: "net.fabricmc.fabric-api")
+    //	}
+    // Spell-Engine
+    compileOnly('maven.modrinth:spell-engine:1.10.9+26.3-fabric') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+}
+
+loom {
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('../run')
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
+        }
+    }
+}
+
+processResources {
+    def expandProps = [
+            'version'             : project.version,
+            'minecraft_version'   : minecraft_version,
+            'loader_version'      : loader_version,
+            'fabric_version'      : fabric_version,
+            'cloth_config_version': cloth_config_version
+    ]
+    inputs.properties(expandProps)
+
+    filesMatching('fabric.mod.json') {
+        expand expandProps
+    }
+}
+
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
+    configurations.named(variant) {
+        attributes {
+            attribute(loaderAttribute, 'fabric')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant ->
+        configurations.named(variant) {
+            attributes {
+                attribute(loaderAttribute, 'fabric')
+            }
+        }
+    }
+}

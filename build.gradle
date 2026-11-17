@@ -1,125 +1,101 @@
 plugins {
-    id 'net.fabricmc.fabric-loom' version "${loom_version}"
-    id 'maven-publish'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}" apply false
+    id 'net.neoforged.moddev' version "${moddev_version}" apply false
 }
 
-version = project.mod_version
-group = project.maven_group
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
 
-base {
-    archivesName = project.archives_base_name
-}
+    version = "${mod_version}+${minecraft_version}"
+    group = maven_group
 
-repositories {
-    maven { url "https://maven.shedaniel.me/" }
-    maven { url "https://maven.terraformersmc.com/" }
-    maven { url "https://api.modrinth.com/maven" }
-    maven { url "https://maven.nucleoid.xyz/" }
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/levelz.accesswidener")
-}
-
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // LibZ
-    api ("maven.modrinth:libz:${project.libz_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-    // Cloth
-    implementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    // ModMenu
-    compileOnly runtimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    // Wthit
-    compileOnly ('maven.modrinth:wthit:fabric-21.0.0') {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-	// Jade
-    compileOnly ('maven.modrinth:jade:26.3.5+fabric') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-    // DragonLoot
-	compileOnly ('maven.modrinth:dragonloot:1.2.0+26.3-fabric') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-    // REI
-    compileOnly "me.shedaniel:RoughlyEnoughItems-fabric:26.3.824"
-    // EMI
-    //    compileOnly ('maven.modrinth:emi:1.1.22+1.21.1+fabric') {
-    //        exclude(group: "net.fabricmc.fabric-api")
-    //    }
-
-    // PlaceHolder
-    compileOnly ("eu.pb4:placeholder-api:3.2.0+26.3")
-    // Inmis
-    //    compileOnly ('maven.modrinth:inmis:2.8.1-1.21.1') {
-    //        exclude(group: "net.fabricmc.fabric-api")
-    //    }
-    // Accessories
-    //    compileOnly ('maven.modrinth:accessories:j6K4uRb7') {
-    //        exclude(group: "net.fabricmc.fabric-api")
-    //    }
-    // CosmeticArmor
-    //    modCompileOnly ('maven.modrinth:cosmetic-armor:1.5.0') {
-    //		exclude(group: "net.fabricmc.fabric-api")
-    //	}
-    // TreeChop
-    //    compileOnly ('maven.modrinth:treechop:0.19.2') {
-    //		exclude(group: "net.fabricmc.fabric-api")
-    //	}
-    // Alloygery
-    //    modCompileOnly ('maven.modrinth:alloygery:2.5.5+1.19.2') {
-    //		exclude(group: "net.fabricmc.fabric-api")
-    //	}
-    // Spell-Engine
-    compileOnly ('maven.modrinth:spell-engine:1.10.9+26.3-fabric') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-}
-
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-		expand "version": project.version, "fabric_version": project.fabric_version, "loader_version": project.loader_version, "minecraft_version": project.minecraft_version, "cloth_config_version": project.cloth_config_version
-	}
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 25
-}
-
-java {
-    withSourcesJar()
-
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
-}
-
-jar {
-    inputs.property "archivesName", project.base.archivesName
-
-    from("LICENSE") {
-        rename { "${it}_${inputs.properties.archivesName}"}
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
+    base {
+        archivesName = "${archives_base_name}-${project.name}"
     }
 
     repositories {
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Fabric'
+                    url = uri('https://maven.fabricmc.net/')
+                }
+            }
+            filter {
+                includeGroupAndSubgroups('net.fabricmc')
+            }
+        }
+        maven { url = 'https://maven.shedaniel.me/' }
+        maven { url = 'https://maven.terraformersmc.com/' }
+        maven { url = 'https://api.modrinth.com/maven' }
+        maven { url = 'https://maven.nucleoid.xyz/' }
+    }
+
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+        withSourcesJar()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.encoding = 'UTF-8'
+        it.options.release = Integer.parseInt(java_version)
+    }
+
+    tasks.withType(Jar).configureEach {
+        def archivesBaseName = archives_base_name
+        from(rootProject.file('LICENSE')) {
+            rename { "${it}_${archivesBaseName}" }
+        }
+    }
+
+    publishing {
+        publications {
+            register('mavenJava', MavenPublication) {
+                artifactId = base.archivesName.get()
+                from components.java
+            }
+        }
+        repositories {
+        }
+    }
+}
+
+configure([project(':fabric'), project(':neoforge')]) {
+    configurations {
+        commonJava {
+            canBeResolved = true
+        }
+        commonResources {
+            canBeResolved = true
+        }
+    }
+
+    dependencies {
+        compileOnly(project(':common')) {
+            def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+            attributes {
+                attribute(loaderAttribute, 'common')
+            }
+        }
+        commonJava(project(path: ':common', configuration: 'commonJava'))
+        commonResources(project(path: ':common', configuration: 'commonResources'))
+    }
+
+    tasks.named('compileJava', JavaCompile) {
+        dependsOn(configurations.commonJava)
+        source(configurations.commonJava)
+    }
+
+    tasks.named('processResources', ProcessResources) {
+        dependsOn(configurations.commonResources)
+        from(configurations.commonResources)
+    }
+
+    tasks.named('sourcesJar', Jar) {
+        dependsOn(configurations.commonJava)
+        from(configurations.commonJava)
+        dependsOn(configurations.commonResources)
+        from(configurations.commonResources)
     }
 }

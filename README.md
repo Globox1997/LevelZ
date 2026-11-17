@@ -1,12 +1,12 @@
 # LevelZ
-
 LevelZ is a mod which adds skillables to the player which can get skilled to unlock blocks and strengthen passive
 skills.
 
 ### Installation
+LevelZ is a mod built for both the [Fabric Loader](https://fabricmc.net/) and [NeoForge](https://neoforged.net/).
 
-LevelZ is a mod built for the [Fabric Loader](https://fabricmc.net/). It
-requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api), [Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config) and [LibZ](https://www.curseforge.com/minecraft/mc-mods/libz) to be installed separately; all other dependencies are installed with the mod.
+- **Fabric:** requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api), [Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config) and [LibZ](https://www.curseforge.com/minecraft/mc-mods/libz) to be installed separately.
+- **NeoForge:** requires [Cloth Config API](https://www.curseforge.com/minecraft/mc-mods/cloth-config) and [LibZ](https://www.curseforge.com/minecraft/mc-mods/libz) to be installed separately.
 
 ### License
 #### Source Code
@@ -19,7 +19,6 @@ are **All Rights Reserved** and may not be used, modified, or redistributed
 without explicit permission from the copyright holder.
 
 ### Datapacks
-
 Most of the mods default settings can get changed via datapacks, Player attribute affecting settings can get changed via
 the config file.  
 If you don't know how to create a datapack check out [Data Pack Wiki](https://minecraft.wiki/w/Data_Pack)
@@ -127,7 +126,7 @@ A skill requires:
 - `healthRegen`: Each level grants %health on regeneration
 - `healthAbsorption`: Grants absorption on regeneration
 - `exhaustionReduction`: Each level grants %exhaust reduction
-- `meleeKockbackAttackChance`: Each level grants %chance to knockback
+- `meleeKnockbackAttackChance`: Each level grants %chance to knockback
 - `meleeCriticalAttackChance`: Each level grants %chance to critical hit
 - `meleeCriticalAttackDamage`: Each level grants +critical melee damage on critical hit
 - `meleeDoubleAttackDamageChance`: Chance to double melee damage
