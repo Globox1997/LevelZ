@@ -4,24 +4,23 @@ import net.levelz.access.ServerPlayerSyncAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.EntityInit;
 import net.levelz.network.packet.OrbPacket;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.server.network.EntityTrackerEntry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.TypeFilter;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,69 +37,69 @@ public class LevelExperienceOrbEntity extends Entity {
     private int health = 5;
     private int amount;
     private int pickingCount = 1;
-    private PlayerEntity target;
+    private Player target;
     private Map<Integer, Integer> clumpedMap;
 
-    public LevelExperienceOrbEntity(World world, double x, double y, double z, int amount) {
+    public LevelExperienceOrbEntity(Level world, double x, double y, double z, int amount) {
         this(EntityInit.LEVEL_EXPERIENCE_ORB, world);
-        this.setPosition(x, y, z);
-        this.setYaw((float) (this.random.nextDouble() * 360.0));
-        this.setVelocity((this.random.nextDouble() * (double) 0.2f - (double) 0.1f) * 2.0, this.random.nextDouble() * 0.2 * 2.0, (this.random.nextDouble() * (double) 0.2f - (double) 0.1f) * 2.0);
+        this.setPos(x, y, z);
+        this.setYRot((float) (this.random.nextDouble() * 360.0));
+        this.setDeltaMovement((this.random.nextDouble() * (double) 0.2f - (double) 0.1f) * 2.0, this.random.nextDouble() * 0.2 * 2.0, (this.random.nextDouble() * (double) 0.2f - (double) 0.1f) * 2.0);
         this.amount = amount;
     }
 
-    public LevelExperienceOrbEntity(EntityType<? extends LevelExperienceOrbEntity> entityType, World world) {
+    public LevelExperienceOrbEntity(EntityType<? extends LevelExperienceOrbEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     @Override
-    protected Entity.MoveEffect getMoveEffect() {
-        return Entity.MoveEffect.NONE;
+    protected Entity.MovementEmission getMovementEmission() {
+        return Entity.MovementEmission.NONE;
     }
 
     @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
     }
 
     @Override
     public void tick() {
-        Vec3d vec3d;
+        Vec3 vec3d;
         double d;
         super.tick();
-        this.prevX = this.getX();
-        this.prevY = this.getY();
-        this.prevZ = this.getZ();
-        if (this.isSubmergedIn(FluidTags.WATER)) {
+        this.xo = this.getX();
+        this.yo = this.getY();
+        this.zo = this.getZ();
+        if (this.isEyeInFluid(FluidTags.WATER)) {
             this.applyWaterMovement();
-        } else if (!this.hasNoGravity()) {
-            this.setVelocity(this.getVelocity().add(0.0, -0.03, 0.0));
+        } else if (!this.isNoGravity()) {
+            this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.03, 0.0));
         }
-        if (this.getWorld().getFluidState(this.getBlockPos()).isIn(FluidTags.LAVA)) {
-            this.setVelocity((this.random.nextFloat() - this.random.nextFloat()) * 0.2f, 0.2f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f);
+        if (this.level().getFluidState(this.blockPosition()).is(FluidTags.LAVA)) {
+            this.setDeltaMovement((this.random.nextFloat() - this.random.nextFloat()) * 0.2f, 0.2f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f);
         }
-        if (!this.getWorld().isSpaceEmpty(this.getBoundingBox())) {
-            this.pushOutOfBlocks(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0, this.getZ());
+        if (!this.level().noCollision(this.getBoundingBox())) {
+            this.moveTowardsClosestSpace(this.getX(), (this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0, this.getZ());
         }
-        if (this.age % 20 == 1) {
+        if (this.tickCount % 20 == 1) {
             this.expensiveUpdate();
         }
-        if (this.target != null && (this.target.isSpectator() || this.target.isDead())) {
+        if (this.target != null && (this.target.isSpectator() || this.target.isDeadOrDying())) {
             this.target = null;
         }
         if (this.target != null
-                && (d = (vec3d = new Vec3d(this.target.getX() - this.getX(), this.target.getY() + (double) this.target.getStandingEyeHeight() / 2.0 - this.getY(), this.target.getZ() - this.getZ()))
-                .lengthSquared()) < 64.0) {
+                && (d = (vec3d = new Vec3(this.target.getX() - this.getX(), this.target.getY() + (double) this.target.getEyeHeight() / 2.0 - this.getY(), this.target.getZ() - this.getZ()))
+                .lengthSqr()) < 64.0) {
             double e = 1.0 - Math.sqrt(d) / 8.0;
-            this.setVelocity(this.getVelocity().add(vec3d.normalize().multiply(e * e * 0.1)));
+            this.setDeltaMovement(this.getDeltaMovement().add(vec3d.normalize().scale(e * e * 0.1)));
         }
-        this.move(MovementType.SELF, this.getVelocity());
+        this.move(MoverType.SELF, this.getDeltaMovement());
         float vec3d2 = 0.98f;
-        if (this.isOnGround()) {
-            vec3d2 = this.getWorld().getBlockState(this.getBlockPos().down()).getBlock().getSlipperiness() * 0.98f;
+        if (this.onGround()) {
+            vec3d2 = this.level().getBlockState(this.blockPosition().below()).getBlock().getFriction() * 0.98f;
         }
-        this.setVelocity(this.getVelocity().multiply(vec3d2, 0.98, vec3d2));
-        if (this.isOnGround()) {
-            this.setVelocity(this.getVelocity().multiply(1.0, -0.9, 1.0));
+        this.setDeltaMovement(this.getDeltaMovement().multiply(vec3d2, 0.98, vec3d2));
+        if (this.onGround()) {
+            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, -0.9, 1.0));
         }
         ++this.orbAge;
         if (this.orbAge >= 6000) {
@@ -109,32 +108,32 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     private void expensiveUpdate() {
-        if (this.target == null || this.target.squaredDistanceTo(this) > 64.0) {
-            this.target = this.getWorld().getClosestPlayer(this, 8.0);
+        if (this.target == null || this.target.distanceToSqr(this) > 64.0) {
+            this.target = this.level().getNearestPlayer(this, 8.0);
         }
-        if (this.getWorld() instanceof ServerWorld) {
-            List<LevelExperienceOrbEntity> list = this.getWorld().getEntitiesByType(TypeFilter.instanceOf(LevelExperienceOrbEntity.class), this.getBoundingBox().expand(0.5), this::isMergeable);
+        if (this.level() instanceof ServerLevel) {
+            List<LevelExperienceOrbEntity> list = this.level().getEntities(EntityTypeTest.forClass(LevelExperienceOrbEntity.class), this.getBoundingBox().inflate(0.5), this::isMergeable);
             for (LevelExperienceOrbEntity experienceOrbEntity : list) {
                 this.merge(experienceOrbEntity);
             }
         }
     }
 
-    public static void spawn(ServerWorld world, Vec3d pos, int amount) {
+    public static void spawn(ServerLevel world, Vec3 pos, int amount) {
         while (amount > 0) {
             int i = LevelExperienceOrbEntity.roundToOrbSize(amount);
             amount -= i;
             if (LevelExperienceOrbEntity.wasMergedIntoExistingOrb(world, pos, i)) {
                 continue;
             }
-            world.spawnEntity(new LevelExperienceOrbEntity(world, pos.getX(), pos.getY(), pos.getZ(), i));
+            world.addFreshEntity(new LevelExperienceOrbEntity(world, pos.x(), pos.y(), pos.z(), i));
         }
     }
 
-    private static boolean wasMergedIntoExistingOrb(ServerWorld world, Vec3d pos, int amount) {
-        Box box = Box.of(pos, 1.0, 1.0, 1.0);
+    private static boolean wasMergedIntoExistingOrb(ServerLevel world, Vec3 pos, int amount) {
+        AABB box = AABB.ofSize(pos, 1.0, 1.0, 1.0);
         int i = world.getRandom().nextInt(40);
-        List<LevelExperienceOrbEntity> list = world.getEntitiesByType(TypeFilter.instanceOf(LevelExperienceOrbEntity.class), box, orb -> LevelExperienceOrbEntity.isMergeable(orb, i, amount));
+        List<LevelExperienceOrbEntity> list = world.getEntities(EntityTypeTest.forClass(LevelExperienceOrbEntity.class), box, orb -> LevelExperienceOrbEntity.isMergeable(orb, i, amount));
         if (!list.isEmpty()) {
             LevelExperienceOrbEntity experienceOrbEntity = list.get(0);
             Map<Integer, Integer> clumpedMap = experienceOrbEntity.getClumpedMap();
@@ -164,23 +163,23 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     private void applyWaterMovement() {
-        Vec3d vec3d = this.getVelocity();
-        this.setVelocity(vec3d.x * (double) 0.99f, Math.min(vec3d.y + (double) 5.0E-4f, (double) 0.06f), vec3d.z * (double) 0.99f);
+        Vec3 vec3d = this.getDeltaMovement();
+        this.setDeltaMovement(vec3d.x * (double) 0.99f, Math.min(vec3d.y + (double) 5.0E-4f, (double) 0.06f), vec3d.z * (double) 0.99f);
     }
 
     @Override
-    protected void onSwimmingStart() {
+    protected void doWaterSplashEffect() {
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
         }
-        if (this.getWorld().isClient()) {
+        if (this.level().isClientSide()) {
             return true;
         }
-        this.scheduleVelocityUpdate();
+        this.markHurt();
         this.health = (int) ((float) this.health - amount);
         if (this.health <= 0) {
             this.discard();
@@ -189,19 +188,19 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
+    public void addAdditionalSaveData(CompoundTag nbt) {
         nbt.putShort("Health", (short) this.health);
         nbt.putShort("Age", (short) this.orbAge);
         nbt.putShort("Value", (short) this.amount);
         nbt.putInt("Count", this.pickingCount);
 
-        NbtCompound map = new NbtCompound();
+        CompoundTag map = new CompoundTag();
         getClumpedMap().forEach((value, count) -> map.putInt(value + "", count));
         nbt.put("clumpedMap", map);
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
+    public void readAdditionalSaveData(CompoundTag nbt) {
         this.health = nbt.getShort("Health");
         this.orbAge = nbt.getShort("Age");
         this.amount = nbt.getShort("Value");
@@ -209,8 +208,8 @@ public class LevelExperienceOrbEntity extends Entity {
 
         Map<Integer, Integer> map = new HashMap<>();
         if (nbt.contains("clumpedMap")) {
-            NbtCompound clumpedMap = nbt.getCompound("clumpedMap");
-            for (String s : clumpedMap.getKeys()) {
+            CompoundTag clumpedMap = nbt.getCompound("clumpedMap");
+            for (String s : clumpedMap.getAllKeys()) {
                 map.put(Integer.parseInt(s), clumpedMap.getInt(s));
             }
         } else {
@@ -220,10 +219,10 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     @Override
-    public void onPlayerCollision(PlayerEntity player) {
-        if (!this.getWorld().isClient() && player.experiencePickUpDelay == 0 && this.orbAge > 20) {
-            player.experiencePickUpDelay = 2;
-            player.sendPickup(this, 1);
+    public void playerTouch(Player player) {
+        if (!this.level().isClientSide() && player.takeXpDelay == 0 && this.orbAge > 20) {
+            player.takeXpDelay = 2;
+            player.take(this, 1);
             getClumpedMap().forEach((value, amount) -> {
                 ((ServerPlayerSyncAccess) player).addLevelExperience(value * amount);
             });
@@ -310,13 +309,13 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     @Override
-    public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entityTrackerEntry) {
         return new OrbPacket(this, entityTrackerEntry);
     }
 
     @Override
-    public SoundCategory getSoundCategory() {
-        return SoundCategory.AMBIENT;
+    public SoundSource getSoundSource() {
+        return SoundSource.AMBIENT;
     }
 
     private Map<Integer, Integer> getClumpedMap() {

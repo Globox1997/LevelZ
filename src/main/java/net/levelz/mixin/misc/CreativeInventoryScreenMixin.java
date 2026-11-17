@@ -9,26 +9,26 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen.CreativeScreenHandler;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.ItemPickerMenu;
+import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 @Environment(EnvType.CLIENT)
-@Mixin(CreativeInventoryScreen.class)
-public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScreen<CreativeScreenHandler> {
+@Mixin(CreativeModeInventoryScreen.class)
+public abstract class CreativeInventoryScreenMixin extends EffectRenderingInventoryScreen<ItemPickerMenu> {
 
-    public CreativeInventoryScreenMixin(CreativeScreenHandler screenHandler, PlayerInventory playerInventory, Text text) {
+    public CreativeInventoryScreenMixin(ItemPickerMenu screenHandler, Inventory playerInventory, Component text) {
         super(screenHandler, playerInventory, text);
     }
 
     @Inject(method = "keyReleased", at = @At("HEAD"))
     private void keyReleasedMixin(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> info) {
-        if (this.focusedSlot != null && this.focusedSlot.hasStack() && ConfigInit.CONFIG.devMode && KeyInit.devKey.matchesKey(keyCode, scanCode) && this.client.player != null) {
-            this.client.player.sendMessage(Text.translatable("text.levelz.dev.added_id", Registries.ITEM.getId(this.focusedSlot.getStack().getItem()).toString()));
-            KeyInit.writeId(Registries.ITEM.getId(this.focusedSlot.getStack().getItem()).toString());
+        if (this.hoveredSlot != null && this.hoveredSlot.hasItem() && ConfigInit.CONFIG.devMode && KeyInit.devKey.matches(keyCode, scanCode) && this.minecraft.player != null) {
+            this.minecraft.player.sendSystemMessage(Component.translatable("text.levelz.dev.added_id", BuiltInRegistries.ITEM.getKey(this.hoveredSlot.getItem().getItem()).toString()));
+            KeyInit.writeId(BuiltInRegistries.ITEM.getKey(this.hoveredSlot.getItem().getItem()).toString());
         }
     }
 

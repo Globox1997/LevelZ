@@ -10,14 +10,13 @@ import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.screen.widget.LineWidget;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.registry.Registries;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 @Environment(EnvType.CLIENT)
 public class SkillRestrictionScreen extends Screen implements Tab {
 
-    public static final Identifier BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_info_background.png");
+    public static final ResourceLocation BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_info_background.png");
 
     private final int backgroundWidth = 200;
     private final int backgroundHeight = 215;
@@ -38,7 +37,7 @@ public class SkillRestrictionScreen extends Screen implements Tab {
 
     private final LevelManager levelManager;
     private Map<Integer, PlayerRestriction> restrictions;
-    private final Text title;
+    private final Component title;
     private final int code;
 
     private int lineIndex = 0;
@@ -46,7 +45,7 @@ public class SkillRestrictionScreen extends Screen implements Tab {
 
     private boolean draggingScrollbar = false;
 
-    public SkillRestrictionScreen(LevelManager levelManager, Map<Integer, PlayerRestriction> restrictions, Text title, int code) {
+    public SkillRestrictionScreen(LevelManager levelManager, Map<Integer, PlayerRestriction> restrictions, Component title, int code) {
         super(title);
         this.levelManager = levelManager;
         this.restrictions = restrictions;
@@ -65,15 +64,15 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     }
 
     @Override
-    public boolean shouldPause() {
+    public boolean isPauseScreen() {
         return false;
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
-        context.drawText(this.textRenderer, this.title, this.x + 7, this.y + 7, 0x3F3F3F, false);
+        context.drawString(this.font, this.title, this.x + 7, this.y + 7, 0x3F3F3F, false);
 
         for (int i = 0; i < 10; i++) {
             if (this.lines.size() <= i) {
@@ -86,36 +85,36 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     }
 
     @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderInGameBackground(context);
-        context.drawTexture(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        renderTransparentBackground(context);
+        context.blit(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
 
         if (this.lines.size() > 10) {
             int scrollLevels = this.lines.size() - 10;
             int sliderY = this.lineIndex * 156 / scrollLevels;
-            context.drawTexture(BACKGROUND_TEXTURE, this.x + 186, this.y + 20 + sliderY, 200, 0, 6, 31);
+            context.blit(BACKGROUND_TEXTURE, this.x + 186, this.y + 20 + sliderY, 200, 0, 6, 31);
         } else {
-            context.drawTexture(BACKGROUND_TEXTURE, this.x + 186, this.y + 20, 206, 0, 6, 31);
+            context.blit(BACKGROUND_TEXTURE, this.x + 186, this.y + 20, 206, 0, 6, 31);
         }
         int sortU = LevelScreen.isPointWithinBounds(this.x + 179, this.y + 4, 14, 14, mouseX, mouseY) ? 14 : 0;
         int sortV = this.sortAlphabetical ? 180 : 166;
-        context.drawTexture(LevelScreen.ICON_TEXTURE, this.x + 179, this.y + 4, sortU, sortV, 14, 14);
+        context.blit(LevelScreen.ICON_TEXTURE, this.x + 179, this.y + 4, sortU, sortV, 14, 14);
 
-        DrawTabHelper.drawTab(client, context, this, this.x, this.y, mouseX, mouseY);
+        DrawTabHelper.drawTab(minecraft, context, this, this.x, this.y, mouseX, mouseY);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
+        if (this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
             if (ConfigInit.CONFIG.switchScreen) {
-                this.client.setScreen(new LevelScreen());
+                this.minecraft.setScreen(new LevelScreen());
             } else {
-                this.close();
+                this.onClose();
             }
             return true;
 
-        } else if (KeyInit.screenKey.matchesKey(keyCode, scanCode)) {
-            this.client.setScreen(new LevelScreen());
+        } else if (KeyInit.screenKey.matches(keyCode, scanCode)) {
+            this.minecraft.setScreen(new LevelScreen());
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -123,7 +122,7 @@ public class SkillRestrictionScreen extends Screen implements Tab {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, false);
+        DrawTabHelper.onTabButtonClick(minecraft, this, this.x, this.y, mouseX, mouseY, false);
         if (this.lines.size() > 10 && LevelScreen.isPointWithinBounds(this.x + 186, this.y + 20, 6, 187, mouseX, mouseY)) {
             this.draggingScrollbar = true;
             updateScrollFromMouse(mouseY);
@@ -132,7 +131,7 @@ public class SkillRestrictionScreen extends Screen implements Tab {
         if (LevelScreen.isPointWithinBounds(this.x + 179, this.y + 4, 14, 14, mouseX, mouseY)) {
             this.sortAlphabetical = !this.sortAlphabetical;
             sortRestrictions();
-            this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
@@ -174,8 +173,8 @@ public class SkillRestrictionScreen extends Screen implements Tab {
             if (this.sortAlphabetical) {
                 this.restrictions = this.restrictions.entrySet().stream()
                         .sorted((entry1, entry2) -> {
-                            String itemName1 = Registries.ITEM.get(entry1.getKey()).getName().getString();
-                            String itemName2 = Registries.ITEM.get(entry2.getKey()).getName().getString();
+                            String itemName1 = BuiltInRegistries.ITEM.byId(entry1.getKey()).getDescription().getString();
+                            String itemName2 = BuiltInRegistries.ITEM.byId(entry2.getKey()).getDescription().getString();
                             return itemName1.compareToIgnoreCase(itemName2);
                         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
             } else {
@@ -190,8 +189,8 @@ public class SkillRestrictionScreen extends Screen implements Tab {
             if (this.sortAlphabetical) {
                 this.restrictions = this.restrictions.entrySet().stream()
                         .sorted((entry1, entry2) -> {
-                            String itemName1 = Registries.BLOCK.get(entry1.getKey()).getName().getString();
-                            String itemName2 = Registries.BLOCK.get(entry2.getKey()).getName().getString();
+                            String itemName1 = BuiltInRegistries.BLOCK.byId(entry1.getKey()).getName().getString();
+                            String itemName2 = BuiltInRegistries.BLOCK.byId(entry2.getKey()).getName().getString();
                             return itemName1.compareToIgnoreCase(itemName2);
                         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
             } else {
@@ -209,12 +208,12 @@ public class SkillRestrictionScreen extends Screen implements Tab {
         for (Map.Entry<Integer, PlayerRestriction> entry : this.restrictions.entrySet()) {
             newMap.put(entry.getKey(), entry.getValue());
             if (newMap.size() == 9) {
-                this.lines.add(new LineWidget(this.client, null, newMap, code));
+                this.lines.add(new LineWidget(this.minecraft, null, newMap, code));
                 newMap = new LinkedHashMap<>();
             }
         }
         if (!newMap.isEmpty()) {
-            this.lines.add(new LineWidget(this.client, null, newMap, code));
+            this.lines.add(new LineWidget(this.minecraft, null, newMap, code));
         }
         this.lineIndex = Math.max(0, Math.min(this.lineIndex, this.lines.size() - 10));
     }

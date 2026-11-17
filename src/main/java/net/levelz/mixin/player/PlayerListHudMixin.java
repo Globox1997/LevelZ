@@ -10,25 +10,25 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.access.ClientPlayerListAccess;
 import net.levelz.init.ConfigInit;
-import net.minecraft.client.gui.hud.PlayerListHud;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.scoreboard.Team;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.PlayerTabOverlay;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.scores.PlayerTeam;
 
 @Environment(EnvType.CLIENT)
-@Mixin(PlayerListHud.class)
+@Mixin(PlayerTabOverlay.class)
 public class PlayerListHudMixin {
 
-    @Inject(method = "getPlayerName", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
-    private void getPlayerNameMixin(PlayerListEntry entry, CallbackInfoReturnable<Text> info) {
+    @Inject(method = "getNameForDisplay", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
+    private void getPlayerNameMixin(PlayerInfo entry, CallbackInfoReturnable<Component> info) {
         if (ConfigInit.CONFIG.showLevelList)
-            info.setReturnValue(this.applyGameModeFormatting(entry,
-                    Team.decorateName(entry.getScoreboardTeam(), Text.translatable("text.levelz.scoreboard", ((ClientPlayerListAccess) entry).getLevel(), entry.getProfile().getName()))));
+            info.setReturnValue(this.decorateName(entry,
+                    PlayerTeam.formatNameForTeam(entry.getTeam(), Component.translatable("text.levelz.scoreboard", ((ClientPlayerListAccess) entry).getLevel(), entry.getProfile().getName()))));
     }
 
     @Shadow
-    private Text applyGameModeFormatting(PlayerListEntry entry, MutableText name) {
+    private Component decorateName(PlayerInfo entry, MutableComponent name) {
         return null;
     }
 

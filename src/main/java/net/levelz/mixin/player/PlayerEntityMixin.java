@@ -6,21 +6,21 @@ import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.util.BonusHelper;
-import net.minecraft.component.type.FoodComponent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,11 +29,11 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements LevelManagerAccess, PlayerDropAccess {
 
     @Unique
-    private final PlayerEntity playerEntity = (PlayerEntity) (Object) this;
+    private final Player playerEntity = (Player) (Object) this;
     @Unique
     private final LevelManager levelManager = new LevelManager(playerEntity);
 
@@ -43,27 +43,27 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
     @Nullable
     private ChunkPos killedMobChunkPos;
 
-    public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+    public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    @Inject(method = "readCustomDataFromNbt", at = @At(value = "TAIL"))
-    public void readCustomDataFromNbtMixin(NbtCompound nbt, CallbackInfo info) {
+    @Inject(method = "readAdditionalSaveData", at = @At(value = "TAIL"))
+    public void readCustomDataFromNbtMixin(CompoundTag nbt, CallbackInfo info) {
         this.levelManager.readNbt(nbt);
     }
 
-    @Inject(method = "writeCustomDataToNbt", at = @At(value = "TAIL"))
-    public void writeCustomDataToNbtMixin(NbtCompound nbt, CallbackInfo info) {
+    @Inject(method = "addAdditionalSaveData", at = @At(value = "TAIL"))
+    public void writeCustomDataToNbtMixin(CompoundTag nbt, CallbackInfo info) {
         this.levelManager.writeNbt(nbt);
     }
 
-    @ModifyVariable(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"), ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = "causeFoodExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;addExhaustion(F)V"), ordinal = 0, argsOnly = true)
     private float addExhaustionMixin(float original) {
         original *= BonusHelper.exhaustionReductionBonus(this.playerEntity);
         return original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/item/Item;getBonusAttackDamage(Lnet/minecraft/entity/Entity;FLnet/minecraft/entity/damage/DamageSource;)F"), ordinal = 0)
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/item/Item;getAttackDamageBonus(Lnet/minecraft/world/entity/Entity;FLnet/minecraft/world/damagesource/DamageSource;)F"), ordinal = 0)
     private boolean attackKnockbackkMixin(boolean original) {
         if (!original && BonusHelper.meleeKnockbackAttackChanceBonus(this.playerEntity)) {
             return true;
@@ -71,7 +71,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
         return original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/item/Item;getBonusAttackDamage(Lnet/minecraft/entity/Entity;FLnet/minecraft/entity/damage/DamageSource;)F"), ordinal = 1)
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/item/Item;getAttackDamageBonus(Lnet/minecraft/world/entity/Entity;FLnet/minecraft/world/damagesource/DamageSource;)F"), ordinal = 1)
     private boolean attackCriticalMixin(boolean original) {
         if (!original && BonusHelper.meleeCriticalAttackChanceBonus(this.playerEntity)) {
             return true;
@@ -79,24 +79,24 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
         return original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getWeaponStack()Lnet/minecraft/item/ItemStack;"), ordinal = 0)
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;getWeaponItem()Lnet/minecraft/world/item/ItemStack;"), ordinal = 0)
     private float attackMixin(float original) {
         if (this.playerEntity.isCreative()) {
             return original;
         }
-        if (!levelManager.hasRequiredStackLevel(getWeaponStack())) {
+        if (!levelManager.hasRequiredStackLevel(getWeaponItem())) {
             return 0.0f;
         }
         return original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;playSound(Lnet/minecraft/entity/player/PlayerEntity;DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V", ordinal = 0), ordinal = 0)
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V", ordinal = 0), ordinal = 0)
     private float attackCriticalDamageMixin(float original) {
         original += BonusHelper.meleeCriticalDamageBonus(this.playerEntity);
         return original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getVelocity()Lnet/minecraft/util/math/Vec3d;"), ordinal = 3)
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;"), ordinal = 3)
     private float attackDoubleDamageMixin(float original) {
         if (BonusHelper.meleeDoubleDamageBonus(this.playerEntity)) {
             original *= 2f;
@@ -104,25 +104,25 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
         return original;
     }
 
-    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;dropShoulderEntities()V"), cancellable = true)
+    @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;removeEntitiesOnShoulder()V"), cancellable = true)
     private void damageMixin(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
-        if (!source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY) && BonusHelper.evadingDamageBonus(this.playerEntity)) {
+        if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && BonusHelper.evadingDamageBonus(this.playerEntity)) {
             info.setReturnValue(false);
             return;
         }
-        if (this.timeUntilRegen > 10 && amount <= this.lastDamageTaken) {
+        if (this.invulnerableTime > 10 && amount <= this.lastHurt) {
             return;
         }
         BonusHelper.damageReflectionBonus(this.playerEntity, source, amount);
     }
 
-    @Inject(method = "eatFood", at = @At(value = "HEAD"))
-    private void eatFoodMixin(World world, ItemStack stack, FoodComponent foodComponent, CallbackInfoReturnable<ItemStack> info) {
+    @Inject(method = "eat(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/food/FoodProperties;)Lnet/minecraft/world/item/ItemStack;", at = @At(value = "HEAD"))
+    private void eatFoodMixin(Level world, ItemStack stack, FoodProperties foodComponent, CallbackInfoReturnable<ItemStack> info) {
         BonusHelper.foodIncreasionBonus(this.playerEntity, stack);
     }
 
     @Shadow
-    public abstract ItemStack getWeaponStack();
+    public abstract ItemStack getWeaponItem();
 
 
     @Override
@@ -131,7 +131,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
     }
 
     @Override
-    public void increaseKilledMobStat(Chunk chunk) {
+    public void increaseKilledMobStat(ChunkAccess chunk) {
         if (chunk.getPos().equals(killedMobChunkPos)) {
             killedMobsInChunk++;
         } else {
@@ -151,11 +151,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
     }
 
     @Override
-    protected void dropXp(@Nullable Entity attacker) {
-        if (this.playerEntity.getWorld() instanceof ServerWorld serverWorld && this.shouldDropXp() && this.getWorld().getGameRules().getBoolean(GameRules.DO_MOB_LOOT) && ConfigInit.CONFIG.resetCurrentXp) {
-            LevelExperienceOrbEntity.spawn(serverWorld, this.getPos(), (int) (this.levelManager.getLevelProgress() * this.levelManager.getNextLevelExperience() * MathHelper.clamp(ConfigInit.CONFIG.currentXpLossPercentage, 0.0F, 100.0F) / 100.0F));
+    protected void dropExperience(@Nullable Entity attacker) {
+        if (this.playerEntity.level() instanceof ServerLevel serverWorld && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT) && ConfigInit.CONFIG.resetCurrentXp) {
+            LevelExperienceOrbEntity.spawn(serverWorld, this.position(), (int) (this.levelManager.getLevelProgress() * this.levelManager.getNextLevelExperience() * Mth.clamp(ConfigInit.CONFIG.currentXpLossPercentage, 0.0F, 100.0F) / 100.0F));
         }
-        super.dropXp(attacker);
+        super.dropExperience(attacker);
     }
 
 }

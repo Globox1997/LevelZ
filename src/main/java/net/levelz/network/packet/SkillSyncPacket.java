@@ -3,57 +3,56 @@ package net.levelz.network.packet;
 import net.levelz.LevelzMain;
 import net.levelz.level.SkillAttribute;
 import net.levelz.level.SkillBonus;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import java.util.ArrayList;
 import java.util.List;
 
 public record SkillSyncPacket(List<Integer> skillIds, List<String> skillKeys, List<Integer> skillMaxLevels, List<SkillAttributesRecord> skillAttributes,
-                              SkillBonusesRecord skillBonuses) implements CustomPayload {
+                              SkillBonusesRecord skillBonuses) implements CustomPacketPayload {
 
-    public static final CustomPayload.Id<SkillSyncPacket> PACKET_ID = new CustomPayload.Id<>(LevelzMain.identifierOf("skill_sync_packet"));
+    public static final CustomPacketPayload.Type<SkillSyncPacket> PACKET_ID = new CustomPacketPayload.Type<>(LevelzMain.identifierOf("skill_sync_packet"));
 
-    public static final PacketCodec<RegistryByteBuf, SkillSyncPacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
-        buf.writeCollection(value.skillIds, PacketByteBuf::writeInt);
-        buf.writeCollection(value.skillKeys, PacketByteBuf::writeString);
-        buf.writeCollection(value.skillMaxLevels, PacketByteBuf::writeInt);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SkillSyncPacket> PACKET_CODEC = StreamCodec.ofMember((value, buf) -> {
+        buf.writeCollection(value.skillIds, FriendlyByteBuf::writeInt);
+        buf.writeCollection(value.skillKeys, FriendlyByteBuf::writeUtf);
+        buf.writeCollection(value.skillMaxLevels, FriendlyByteBuf::writeInt);
         buf.writeCollection(value.skillAttributes, (bufx, list) -> new SkillAttributesRecord(list.skillAttributes()).write(bufx));
         value.skillBonuses.write(buf);
-    }, buf -> new SkillSyncPacket(buf.readList(PacketByteBuf::readInt), buf.readList(PacketByteBuf::readString), buf.readList(PacketByteBuf::readInt), buf.readList(SkillAttributesRecord::read), SkillBonusesRecord.read(buf)));
+    }, buf -> new SkillSyncPacket(buf.readList(FriendlyByteBuf::readInt), buf.readList(FriendlyByteBuf::readUtf), buf.readList(FriendlyByteBuf::readInt), buf.readList(SkillAttributesRecord::read), SkillBonusesRecord.read(buf)));
 
 
     public record SkillAttributesRecord(List<SkillAttribute> skillAttributes) {
 
-        public void write(PacketByteBuf buf) {
+        public void write(FriendlyByteBuf buf) {
             buf.writeInt(skillAttributes().size());
             for (int i = 0; i < skillAttributes().size(); i++) {
                 SkillAttribute skillAttribute = skillAttributes().get(i);
                 buf.writeInt(skillAttribute.getId());
-                buf.writeString(skillAttribute.getAttibute().getIdAsString());
+                buf.writeUtf(skillAttribute.getAttibute().getRegisteredName());
                 buf.writeFloat(skillAttribute.getBaseValue());
                 buf.writeFloat(skillAttribute.getLevelValue());
-                buf.writeString(skillAttribute.getOperation().asString());
+                buf.writeUtf(skillAttribute.getOperation().getSerializedName());
 
             }
         }
 
-        public static SkillAttributesRecord read(PacketByteBuf buf) {
+        public static SkillAttributesRecord read(FriendlyByteBuf buf) {
             List<SkillAttribute> skillAttributes = new ArrayList<>();
             int size = buf.readInt();
             for (int i = 0; i < size; i++) {
                 int id = buf.readInt();
-                RegistryEntry<EntityAttribute> attibute = Registries.ATTRIBUTE.getEntry(Identifier.of(buf.readString())).get();
+                Holder<Attribute> attibute = BuiltInRegistries.ATTRIBUTE.getHolder(ResourceLocation.parse(buf.readUtf())).get();
                 float baseValue = buf.readFloat();
                 float levelValue = buf.readFloat();
-                EntityAttributeModifier.Operation operation = EntityAttributeModifier.Operation.valueOf(buf.readString().toUpperCase());
+                AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(buf.readUtf().toUpperCase());
                 skillAttributes.add(new SkillAttribute(id, attibute, baseValue, levelValue, operation));
             }
             return new SkillAttributesRecord(skillAttributes);
@@ -63,21 +62,21 @@ public record SkillSyncPacket(List<Integer> skillIds, List<String> skillKeys, Li
 
     public record SkillBonusesRecord(List<SkillBonus> skillBonuses) {
 
-        public void write(PacketByteBuf buf) {
+        public void write(FriendlyByteBuf buf) {
             buf.writeInt(skillBonuses().size());
             for (int i = 0; i < skillBonuses().size(); i++) {
                 SkillBonus skillBonus = skillBonuses().get(i);
-                buf.writeString(skillBonus.getKey());
+                buf.writeUtf(skillBonus.getKey());
                 buf.writeInt(skillBonus.getId());
                 buf.writeInt(skillBonus.getLevel());
             }
         }
 
-        public static SkillBonusesRecord read(PacketByteBuf buf) {
+        public static SkillBonusesRecord read(FriendlyByteBuf buf) {
             List<SkillBonus> skillBonuses = new ArrayList<>();
             int size = buf.readInt();
             for (int i = 0; i < size; i++) {
-                String key = buf.readString();
+                String key = buf.readUtf();
                 int id = buf.readInt();
                 int level = buf.readInt();
                 skillBonuses.add(new SkillBonus(key, id, level));
@@ -89,7 +88,7 @@ public record SkillSyncPacket(List<Integer> skillIds, List<String> skillKeys, Li
 
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 

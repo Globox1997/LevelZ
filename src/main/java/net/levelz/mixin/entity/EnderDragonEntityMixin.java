@@ -3,15 +3,15 @@ package net.levelz.mixin.entity;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,33 +20,33 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(EnderDragonEntity.class)
-public abstract class EnderDragonEntityMixin extends MobEntity {
+@Mixin(EnderDragon.class)
+public abstract class EnderDragonEntityMixin extends Mob {
 
     @Unique
     @Nullable
-    ServerPlayerEntity serverPlayerEntity = null;
+    ServerPlayer serverPlayerEntity = null;
 
-    public EnderDragonEntityMixin(EntityType<? extends MobEntity> entityType, World world) {
+    public EnderDragonEntityMixin(EntityType<? extends Mob> entityType, Level world) {
         super(entityType, world);
     }
 
-    @Inject(method = "updatePostDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
+    @Inject(method = "tickDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
     protected void updatePostDeathMixin(CallbackInfo info, boolean f, int g) {
         if (ConfigInit.CONFIG.dragonXPMultiplier > 0.0F) {
-            LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(),
-                    MathHelper.floor((float) g * 0.08f * ConfigInit.CONFIG.dragonXPMultiplier
+            LevelExperienceOrbEntity.spawn((ServerLevel) this.level(), this.position(),
+                    Mth.floor((float) g * 0.08f * ConfigInit.CONFIG.dragonXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
                             ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) serverPlayerEntity).getLevelManager().getOverallLevel()
                             : 1.0F)));
         }
     }
 
-    @Inject(method = "updatePostDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
+    @Inject(method = "tickDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
     protected void updatePostDeathXPMixin(CallbackInfo info, boolean f, int g) {
         if (ConfigInit.CONFIG.dragonXPMultiplier > 0.0F) {
-            LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(),
-                    MathHelper.floor((float) g * 0.2f * ConfigInit.CONFIG.dragonXPMultiplier
+            LevelExperienceOrbEntity.spawn((ServerLevel) this.level(), this.position(),
+                    Mth.floor((float) g * 0.2f * ConfigInit.CONFIG.dragonXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
                             ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) serverPlayerEntity).getLevelManager().getOverallLevel()
                             : 1.0F)));
@@ -54,16 +54,16 @@ public abstract class EnderDragonEntityMixin extends MobEntity {
     }
 
     @Override
-    public void onDeath(DamageSource source) {
-        if (!this.getWorld().isClient()) {
-            if (source.getSource() instanceof ProjectileEntity projectileEntity) {
-                if (projectileEntity.getOwner() instanceof ServerPlayerEntity serverPlayerEntity) {
+    public void die(DamageSource source) {
+        if (!this.level().isClientSide()) {
+            if (source.getDirectEntity() instanceof Projectile projectileEntity) {
+                if (projectileEntity.getOwner() instanceof ServerPlayer serverPlayerEntity) {
                     this.serverPlayerEntity = serverPlayerEntity;
                 }
-            } else if (source.getSource() instanceof ServerPlayerEntity serverPlayerEntity) {
+            } else if (source.getDirectEntity() instanceof ServerPlayer serverPlayerEntity) {
                 this.serverPlayerEntity = serverPlayerEntity;
             }
         }
-        super.onDeath(source);
+        super.die(source);
     }
 }

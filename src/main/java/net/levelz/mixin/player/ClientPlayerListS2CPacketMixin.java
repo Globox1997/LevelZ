@@ -7,7 +7,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.levelz.access.LevelManagerAccess;
-import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,36 +18,33 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.levelz.access.ClientPlayerListAccess;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
 
-@Mixin(PlayerListS2CPacket.class)
+@Mixin(ClientboundPlayerInfoUpdatePacket.class)
 public abstract class ClientPlayerListS2CPacketMixin implements ClientPlayerListAccess {
 
     @Unique
     private Map<UUID, Integer> levelMap = new HashMap<UUID, Integer>();
 
-    @Inject(method = "Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket;<init>(Ljava/util/EnumSet;Ljava/util/Collection;)V", at = @At("TAIL"))
-    public void playerListS2CPacketMixin(EnumSet<PlayerListS2CPacket.Action> actions, Collection<ServerPlayerEntity> players, CallbackInfo info) {
+    @Inject(method = "<init>(Ljava/util/EnumSet;Ljava/util/Collection;)V", at = @At("TAIL"))
+    public void playerListS2CPacketMixin(EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions, Collection<ServerPlayer> players, CallbackInfo info) {
         players.forEach((player) -> {
-            this.levelMap.put(player.getUuid(), ((LevelManagerAccess) player).getLevelManager().getOverallLevel());
+            this.levelMap.put(player.getUUID(), ((LevelManagerAccess) player).getLevelManager().getOverallLevel());
         });
     }
 
-    @Inject(method = "Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket;<init>(Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket$Action;Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At("TAIL"))
-    public void playerListS2CPacketMixin(PlayerListS2CPacket.Action action, ServerPlayerEntity player, CallbackInfo info) {
-        this.levelMap.put(player.getUuid(), ((LevelManagerAccess) player).getLevelManager().getOverallLevel());
+    @Inject(method = "<init>(Lnet/minecraft/network/protocol/game/ClientboundPlayerInfoUpdatePacket$Action;Lnet/minecraft/server/level/ServerPlayer;)V", at = @At("TAIL"))
+    public void playerListS2CPacketMixin(ClientboundPlayerInfoUpdatePacket.Action action, ServerPlayer player, CallbackInfo info) {
+        this.levelMap.put(player.getUUID(), ((LevelManagerAccess) player).getLevelManager().getOverallLevel());
     }
 
-    @Inject(method = "<init>(Lnet/minecraft/network/RegistryByteBuf;)V", at = @At("TAIL"))
-    public void playerListS2CPacketMixin(RegistryByteBuf buf, CallbackInfo info) {
-        this.levelMap = buf.readMap((bufx -> bufx.readUuid()), PacketByteBuf::readInt);
+    @Inject(method = "<init>(Lnet/minecraft/network/RegistryFriendlyByteBuf;)V", at = @At("TAIL"))
+    public void playerListS2CPacketMixin(RegistryFriendlyByteBuf buf, CallbackInfo info) {
+        this.levelMap = buf.readMap((bufx -> bufx.readUUID()), FriendlyByteBuf::readInt);
     }
 
     @Inject(method = "write", at = @At("TAIL"))
-    private void writeMixin(RegistryByteBuf buf, CallbackInfo info) {
-        buf.writeMap(this.levelMap, ((bufx, value) -> bufx.writeUuid(value)), PacketByteBuf::writeInt);
+    private void writeMixin(RegistryFriendlyByteBuf buf, CallbackInfo info) {
+        buf.writeMap(this.levelMap, ((bufx, value) -> bufx.writeUUID(value)), FriendlyByteBuf::writeInt);
     }
 
     @Override

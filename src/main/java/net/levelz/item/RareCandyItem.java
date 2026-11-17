@@ -3,32 +3,32 @@ package net.levelz.item;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.access.ServerPlayerSyncAccess;
 import net.levelz.level.LevelManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 // Texture made by Pois1x
 public class RareCandyItem extends Item {
 
-    public RareCandyItem(Settings settings) {
+    public RareCandyItem(Properties settings) {
         super(settings);
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        ItemStack stack = user.getStackInHand(hand);
-        if (!world.isClient()) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+        ItemStack stack = user.getItemInHand(hand);
+        if (!world.isClientSide()) {
             if (!user.isCreative()) {
-                stack.decrement(1);
+                stack.shrink(1);
             }
             LevelManager levelManager = ((LevelManagerAccess) user).getLevelManager();
             ((ServerPlayerSyncAccess) user)
                     .addLevelExperience(levelManager.getNextLevelExperience() - ((int) (levelManager.getLevelProgress() * levelManager.getNextLevelExperience())));
         }
-        return TypedActionResult.success(stack, world.isClient());
+        return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
     }
 
 }

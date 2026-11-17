@@ -1,10 +1,10 @@
 package net.levelz.access;
 
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public interface PlayerDropAccess {
 
-    void increaseKilledMobStat(Chunk chunk);
+    void increaseKilledMobStat(ChunkAccess chunk);
 
     boolean allowMobDrop();
 

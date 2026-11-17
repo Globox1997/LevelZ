@@ -1,19 +1,19 @@
 package net.levelz.network.packet;
 
 import net.levelz.LevelzMain;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public record EditorRequestPacket() implements CustomPayload {
+public record EditorRequestPacket() implements CustomPacketPayload {
 
-    public static final CustomPayload.Id<EditorRequestPacket> PACKET_ID = new CustomPayload.Id<>(LevelzMain.identifierOf("editor_request_packet"));
+    public static final CustomPacketPayload.Type<EditorRequestPacket> PACKET_ID = new CustomPacketPayload.Type<>(LevelzMain.identifierOf("editor_request_packet"));
 
-    public static final PacketCodec<RegistryByteBuf, EditorRequestPacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
+    public static final StreamCodec<RegistryFriendlyByteBuf, EditorRequestPacket> PACKET_CODEC = StreamCodec.ofMember((value, buf) -> {
     }, buf -> new EditorRequestPacket());
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 

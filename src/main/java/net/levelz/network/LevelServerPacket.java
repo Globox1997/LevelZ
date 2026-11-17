@@ -12,14 +12,13 @@ import net.levelz.level.Skill;
 import net.levelz.network.packet.*;
 import net.levelz.util.LevelHelper;
 import net.levelz.util.PacketHelper;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.PacketType;
-import net.minecraft.network.packet.s2c.play.EntityAttributesS2CPacket;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.PacketType;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import java.util.List;
 
 public class LevelServerPacket {
@@ -104,12 +103,12 @@ public class LevelServerPacket {
                 // Collection<EntityAttributeInstance> collection = context.player().getAttributes().getAttributesToSend();
                 // context.player().networkHandler.sendPacket(new EntityAttributesS2CPacket(context.player().getId(), collection));
                 // Is required lul
-                context.player().networkHandler.sendPacket(new EntityAttributesS2CPacket(context.player().getId(), List.of(context.player().getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE))));
+                context.player().connection.send(new ClientboundUpdateAttributesPacket(context.player().getId(), List.of(context.player().getAttribute(Attributes.ATTACK_DAMAGE))));
             });
         });
     }
 
-    private static <T extends Packet<ClientPlayPacketListener>> PacketType<T> s2c(String id) {
-        return new PacketType<>(NetworkSide.CLIENTBOUND, Identifier.ofVanilla(id));
+    private static <T extends Packet<ClientGamePacketListener>> PacketType<T> s2c(String id) {
+        return new PacketType<>(PacketFlow.CLIENTBOUND, ResourceLocation.withDefaultNamespace(id));
     }
 }

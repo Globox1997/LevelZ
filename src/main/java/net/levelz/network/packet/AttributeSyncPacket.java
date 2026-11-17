@@ -1,19 +1,19 @@
 package net.levelz.network.packet;
 
 import net.levelz.LevelzMain;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public record AttributeSyncPacket() implements CustomPayload {
+public record AttributeSyncPacket() implements CustomPacketPayload {
 
-    public static final CustomPayload.Id<AttributeSyncPacket> PACKET_ID = new CustomPayload.Id<>(LevelzMain.identifierOf("attribute_sync_packet"));
+    public static final CustomPacketPayload.Type<AttributeSyncPacket> PACKET_ID = new CustomPacketPayload.Type<>(LevelzMain.identifierOf("attribute_sync_packet"));
 
-    public static final PacketCodec<RegistryByteBuf, AttributeSyncPacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
+    public static final StreamCodec<RegistryFriendlyByteBuf, AttributeSyncPacket> PACKET_CODEC = StreamCodec.ofMember((value, buf) -> {
     }, buf -> new AttributeSyncPacket());
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 

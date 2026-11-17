@@ -15,12 +15,11 @@ import net.levelz.registry.EnchantmentZ;
 import net.levelz.screen.LevelScreen;
 import net.levelz.screen.RestrictionEditScreen;
 import net.levelz.screen.RestrictionEditorScreen;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,7 @@ public class LevelClientPacket {
 
             context.client().execute(() -> {
                 LevelManager levelManager = ((LevelManagerAccess) context.player()).getLevelManager();
-                boolean integrated = context.client().isIntegratedServerRunning();
+                boolean integrated = context.client().hasSingleplayerServer();
 
                 if (!integrated) {
                     LevelManager.SKILLS.clear();
@@ -99,7 +98,7 @@ public class LevelClientPacket {
             List<ComponentRestriction> componentRestrictions = payload.componentRestrictions();
 
             context.client().execute(() -> {
-                if (context.client().isIntegratedServerRunning()) {
+                if (context.client().hasSingleplayerServer()) {
                     return;
                 }
                 LevelManager.BLOCK_RESTRICTIONS.clear();
@@ -140,7 +139,7 @@ public class LevelClientPacket {
             context.client().execute(() -> {
                 LevelManager levelManager = ((LevelManagerAccess) context.player()).getLevelManager();
                 levelManager.setSkillLevel(id, level);
-                if (context.client().currentScreen instanceof LevelScreen levelScreen) {
+                if (context.client().screen instanceof LevelScreen levelScreen) {
                     levelScreen.updateLevelButtons();
                 }
             });
@@ -151,9 +150,9 @@ public class LevelClientPacket {
                 EditorClientData.update(payload.entries(), payload.skills(), payload.problems());
                 if (payload.openScreen()) {
                     context.client().setScreen(new RestrictionEditorScreen());
-                } else if (context.client().currentScreen instanceof RestrictionEditorScreen restrictionEditorScreen) {
+                } else if (context.client().screen instanceof RestrictionEditorScreen restrictionEditorScreen) {
                     restrictionEditorScreen.refresh();
-                } else if (context.client().currentScreen instanceof RestrictionEditScreen restrictionEditScreen) {
+                } else if (context.client().screen instanceof RestrictionEditScreen restrictionEditScreen) {
                     restrictionEditScreen.onDataRefreshed();
                 }
             });
@@ -162,9 +161,9 @@ public class LevelClientPacket {
         ClientPlayNetworking.registerGlobalReceiver(EditorResultPacket.PACKET_ID, (payload, context) -> {
             context.client().execute(() -> {
                 EditorClientData.lastResult = payload;
-                if (context.client().currentScreen instanceof RestrictionEditScreen restrictionEditScreen) {
+                if (context.client().screen instanceof RestrictionEditScreen restrictionEditScreen) {
                     restrictionEditScreen.onResult(payload);
-                } else if (context.client().currentScreen instanceof RestrictionEditorScreen restrictionEditorScreen) {
+                } else if (context.client().screen instanceof RestrictionEditorScreen restrictionEditorScreen) {
                     restrictionEditorScreen.onResult(payload);
                 }
             });
@@ -176,15 +175,15 @@ public class LevelClientPacket {
             List<String> ids = payload.ids();
             List<Integer> levels = payload.levels();
             context.client().execute(() -> {
-                if (context.client().isIntegratedServerRunning()) {
+                if (context.client().hasSingleplayerServer()) {
                     return;
                 }
                 EnchantmentRegistry.clear();
 
-                Registry<Enchantment> registry = context.player().getWorld().getRegistryManager().get(RegistryKeys.ENCHANTMENT);
+                Registry<Enchantment> registry = context.player().level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
                 for (int i = 0; i < keys.size(); i++) {
                     int key = keys.get(i);
-                    RegistryEntry<Enchantment> entry = registry.getEntry(Identifier.of(ids.get(i))).get();
+                    Holder<Enchantment> entry = registry.getHolder(ResourceLocation.parse(ids.get(i))).get();
                     int level = levels.get(i);
                     EnchantmentRegistry.ENCHANTMENTS.put(key, new EnchantmentZ(entry, level));
                 }

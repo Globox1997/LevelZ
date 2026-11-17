@@ -6,19 +6,19 @@ import net.levelz.screen.LevelScreen;
 import net.levelz.screen.SkillInfoScreen;
 import net.levelz.screen.SkillRestrictionScreen;
 import net.libz.api.InventoryTab;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 @Environment(EnvType.CLIENT)
 public class LevelzTab extends InventoryTab {
 
-    public LevelzTab(Text title, Identifier texture, int preferedPos, Class<?>... screenClasses) {
+    public LevelzTab(Component title, ResourceLocation texture, int preferedPos, Class<?>... screenClasses) {
         super(title, texture, preferedPos, screenClasses);
     }
 
     @Override
-    public boolean canClick(Class<?> screenClass, MinecraftClient client) {
+    public boolean canClick(Class<?> screenClass, Minecraft client) {
         if (screenClass.equals(SkillInfoScreen.class) || screenClass.equals(SkillRestrictionScreen.class)) {
             return true;
         }
@@ -26,7 +26,7 @@ public class LevelzTab extends InventoryTab {
     }
 
     @Override
-    public void onClick(MinecraftClient client) {
+    public void onClick(Minecraft client) {
         client.setScreen(new LevelScreen());
     }
 

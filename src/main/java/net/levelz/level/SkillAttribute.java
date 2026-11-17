@@ -1,18 +1,18 @@
 package net.levelz.level;
 
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 public class SkillAttribute {
 
     private final int id;
-    private final RegistryEntry<EntityAttribute> attibute;
+    private final Holder<Attribute> attibute;
     private final float baseValue;
     private final float levelValue;
-    private final EntityAttributeModifier.Operation operation;
+    private final AttributeModifier.Operation operation;
 
-    public SkillAttribute(int id, RegistryEntry<EntityAttribute> attibute, float baseValue, float levelValue, EntityAttributeModifier.Operation operation) {
+    public SkillAttribute(int id, Holder<Attribute> attibute, float baseValue, float levelValue, AttributeModifier.Operation operation) {
         this.id = id;
         this.attibute = attibute;
         this.baseValue = baseValue;
@@ -24,7 +24,7 @@ public class SkillAttribute {
         return id;
     }
 
-    public RegistryEntry<EntityAttribute> getAttibute() {
+    public Holder<Attribute> getAttibute() {
         return attibute;
     }
 
@@ -36,7 +36,7 @@ public class SkillAttribute {
         return levelValue;
     }
 
-    public EntityAttributeModifier.Operation getOperation() {
+    public AttributeModifier.Operation getOperation() {
         return operation;
     }
 

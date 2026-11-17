@@ -3,12 +3,11 @@ package net.levelz.network.packet;
 import net.levelz.LevelzMain;
 import net.levelz.level.restriction.ComponentRestriction;
 import net.levelz.level.restriction.PlayerRestriction;
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +15,11 @@ import java.util.Map;
 
 public record RestrictionPacket(RestrictionRecord blockRestrictions, RestrictionRecord craftingRestrictions, RestrictionRecord entityRestrictions,
                                 RestrictionRecord itemRestrictions, RestrictionRecord miningRestrictions, RestrictionRecord enchantmentRestrictions,
-                                List<ComponentRestriction> componentRestrictions) implements CustomPayload {
+                                List<ComponentRestriction> componentRestrictions) implements CustomPacketPayload {
 
-    public static final CustomPayload.Id<RestrictionPacket> PACKET_ID = new CustomPayload.Id<>(LevelzMain.identifierOf("restriction_packet"));
+    public static final CustomPacketPayload.Type<RestrictionPacket> PACKET_ID = new CustomPacketPayload.Type<>(LevelzMain.identifierOf("restriction_packet"));
 
-    public static final PacketCodec<RegistryByteBuf, RestrictionPacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
+    public static final StreamCodec<RegistryFriendlyByteBuf, RestrictionPacket> PACKET_CODEC = StreamCodec.ofMember((value, buf) -> {
         value.blockRestrictions.write(buf);
         value.craftingRestrictions.write(buf);
         value.entityRestrictions.write(buf);
@@ -31,11 +30,11 @@ public record RestrictionPacket(RestrictionRecord blockRestrictions, Restriction
     }, buf -> new RestrictionPacket(RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf), RestrictionRecord.read(buf),
             readComponentRestrictions(buf)));
 
-    private static void writeComponentRestrictions(RegistryByteBuf buf, List<ComponentRestriction> componentRestrictions) {
+    private static void writeComponentRestrictions(RegistryFriendlyByteBuf buf, List<ComponentRestriction> componentRestrictions) {
         buf.writeInt(componentRestrictions.size());
         for (ComponentRestriction componentRestriction : componentRestrictions) {
             buf.writeInt(componentRestriction.getId());
-            ComponentChanges.PACKET_CODEC.encode(buf, componentRestriction.getComponents());
+            DataComponentPatch.STREAM_CODEC.encode(buf, componentRestriction.getComponents());
             buf.writeInt(componentRestriction.getSkillLevelRestrictions().size());
             for (Map.Entry<Integer, Integer> entry : componentRestriction.getSkillLevelRestrictions().entrySet()) {
                 buf.writeInt(entry.getKey());
@@ -44,12 +43,12 @@ public record RestrictionPacket(RestrictionRecord blockRestrictions, Restriction
         }
     }
 
-    private static List<ComponentRestriction> readComponentRestrictions(RegistryByteBuf buf) {
+    private static List<ComponentRestriction> readComponentRestrictions(RegistryFriendlyByteBuf buf) {
         List<ComponentRestriction> componentRestrictions = new ArrayList<>();
         int size = buf.readInt();
         for (int i = 0; i < size; i++) {
             int id = buf.readInt();
-            ComponentChanges components = ComponentChanges.PACKET_CODEC.decode(buf);
+            DataComponentPatch components = DataComponentPatch.STREAM_CODEC.decode(buf);
             int skillLevelSize = buf.readInt();
             Map<Integer, Integer> skillLevelRestrictions = new HashMap<>();
             for (int u = 0; u < skillLevelSize; u++) {
@@ -62,7 +61,7 @@ public record RestrictionPacket(RestrictionRecord blockRestrictions, Restriction
 
     public record RestrictionRecord(List<Integer> ids, List<PlayerRestriction> restrictions) {
 
-        public void write(PacketByteBuf buf) {
+        public void write(FriendlyByteBuf buf) {
             buf.writeInt(ids().size());
             for (Integer id : ids) {
                 buf.writeInt(id);
@@ -79,7 +78,7 @@ public record RestrictionPacket(RestrictionRecord blockRestrictions, Restriction
             }
         }
 
-        public static RestrictionRecord read(PacketByteBuf buf) {
+        public static RestrictionRecord read(FriendlyByteBuf buf) {
             List<Integer> ids = new ArrayList<>();
             int idSize = buf.readInt();
             for (int i = 0; i < idSize; i++) {
@@ -104,7 +103,7 @@ public record RestrictionPacket(RestrictionRecord blockRestrictions, Restriction
     }
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 

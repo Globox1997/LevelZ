@@ -1,21 +1,20 @@
 package net.levelz.level.restriction;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.entry.RegistryEntry;
-
 import java.util.Map;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class EnchantmentRestriction {
 
-    private final RegistryEntry<Enchantment> enchantment;
+    private final Holder<Enchantment> enchantment;
     private final Map<Integer, Map<Integer, Integer>> skillLevelRestrictions;
 
-    public EnchantmentRestriction(RegistryEntry<Enchantment> enchantment, Map<Integer, Map<Integer, Integer>> skillLevelRestrictions) {
+    public EnchantmentRestriction(Holder<Enchantment> enchantment, Map<Integer, Map<Integer, Integer>> skillLevelRestrictions) {
         this.enchantment = enchantment;
         this.skillLevelRestrictions = skillLevelRestrictions;
     }
 
-    public RegistryEntry<Enchantment> getEnchantment() {
+    public Holder<Enchantment> getEnchantment() {
         return enchantment;
     }
 

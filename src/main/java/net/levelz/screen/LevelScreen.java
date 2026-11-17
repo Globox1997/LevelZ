@@ -17,18 +17,18 @@ import net.levelz.network.packet.AttributeSyncPacket;
 import net.levelz.network.packet.StatPacket;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -38,9 +38,9 @@ import java.util.*;
 @Environment(EnvType.CLIENT)
 public class LevelScreen extends Screen implements Tab {
 
-    public static final Identifier BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_background.png");
-    public static final Identifier ATTRIBUTE_BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/attribute_background.png");
-    public static final Identifier ICON_TEXTURE = LevelzMain.identifierOf("textures/gui/icons.png");
+    public static final ResourceLocation BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_background.png");
+    public static final ResourceLocation ATTRIBUTE_BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/attribute_background.png");
+    public static final ResourceLocation ICON_TEXTURE = LevelzMain.identifierOf("textures/gui/icons.png");
 
     private final int backgroundWidth = 200;
     private final int backgroundHeight = 215;
@@ -48,7 +48,7 @@ public class LevelScreen extends Screen implements Tab {
     private int y;
 
     private LevelManager levelManager;
-    private ClientPlayerEntity clientPlayerEntity;
+    private LocalPlayer clientPlayerEntity;
     private final Quaternionf quaternionf = new Quaternionf().rotateZ((float) Math.PI).rotateLocalY(2.7f);
     private boolean turnClientPlayer = false;
 
@@ -64,7 +64,7 @@ public class LevelScreen extends Screen implements Tab {
     private boolean draggingAttributeScrollbar = false;
 
     public LevelScreen() {
-        super(Text.translatable("screen.levelz.skill_screen"));
+        super(Component.translatable("screen.levelz.skill_screen"));
     }
 
     @Override
@@ -75,15 +75,15 @@ public class LevelScreen extends Screen implements Tab {
         this.x = (this.width - this.backgroundWidth) / 2;
         this.y = (this.height - this.backgroundHeight) / 2;
 
-        this.levelManager = ((LevelManagerAccess) this.client.player).getLevelManager();
-        this.clientPlayerEntity = this.client.interactionManager.createPlayer(this.client.world, this.client.player.getStatHandler(), this.client.player.getRecipeBook(), false, false);
+        this.levelManager = ((LevelManagerAccess) this.minecraft.player).getLevelManager();
+        this.clientPlayerEntity = this.minecraft.gameMode.createPlayer(this.minecraft.level, this.minecraft.player.getStats(), this.minecraft.player.getRecipeBook(), false, false);
         ((ClientPlayerAccess) this.clientPlayerEntity).setShouldRenderClientName(false);
-        byte playerModelParts = this.client.player.getDataTracker().get(PlayerEntityAccessor.getPLAYER_MODEL_PARTS());
-        this.clientPlayerEntity.getDataTracker().set(PlayerEntityAccessor.getPLAYER_MODEL_PARTS(), playerModelParts);
+        byte playerModelParts = this.minecraft.player.getEntityData().get(PlayerEntityAccessor.getPLAYER_MODEL_PARTS());
+        this.clientPlayerEntity.getEntityData().set(PlayerEntityAccessor.getPLAYER_MODEL_PARTS(), playerModelParts);
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            if (!this.client.player.getEquippedStack(equipmentSlot).isEmpty()) {
-                this.clientPlayerEntity.equipStack(equipmentSlot, this.client.player.getEquippedStack(equipmentSlot));
+            if (!this.minecraft.player.getItemBySlot(equipmentSlot).isEmpty()) {
+                this.clientPlayerEntity.setItemSlot(equipmentSlot, this.minecraft.player.getItemBySlot(equipmentSlot));
             }
         }
 
@@ -107,7 +107,7 @@ public class LevelScreen extends Screen implements Tab {
             }
 
             final int buttonIndex = i;
-            this.levelButtons[i] = this.addDrawableChild(new WidgetButtonPage(this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> {
+            this.levelButtons[i] = this.addRenderableWidget(new WidgetButtonPage(this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> {
                 int skillIndex = this.skillRow * 2 + buttonIndex;
                 if (skillIndex < this.skillIds.size()) {
                     ClientPlayNetworking.send(new StatPacket(this.skillIds.get(skillIndex), 1));
@@ -118,111 +118,111 @@ public class LevelScreen extends Screen implements Tab {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
-        if (this.client != null && this.client.player != null) {
-            Text title = Text.translatable("text.levelz.gui.title", this.client.player.getName().getString());
-            context.drawText(this.textRenderer, title, this.x + 118 - this.textRenderer.getWidth(title) / 2, this.y + 7, 0x3F3F3F, false);
+        if (this.minecraft != null && this.minecraft.player != null) {
+            Component title = Component.translatable("text.levelz.gui.title", this.minecraft.player.getName().getString());
+            context.drawString(this.font, title, this.x + 118 - this.font.width(title) / 2, this.y + 7, 0x3F3F3F, false);
 
             if (!this.attributes.isEmpty()) {
                 if (this.showAttributes) {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 5, 30, 114, 15, 13);
-                    context.drawTexture(ATTRIBUTE_BACKGROUND_TEXTURE, this.x + 202, this.y, 0, 0, 82, 215);
+                    context.blit(ICON_TEXTURE, this.x + 178, this.y + 5, 30, 114, 15, 13);
+                    context.blit(ATTRIBUTE_BACKGROUND_TEXTURE, this.x + 202, this.y, 0, 0, 82, 215);
                     int maxAttributes = Math.min(this.attributes.size(), 15);
                     if (this.attributes.size() > 15) {
                         int scrollLevels = this.attributes.size() - 15;
                         int sliderY = this.attributeRow * 158 / scrollLevels;
-                        context.drawTexture(ATTRIBUTE_BACKGROUND_TEXTURE, this.x + 270, this.y + 8 + sliderY, 82, 0, 6, 41);
+                        context.blit(ATTRIBUTE_BACKGROUND_TEXTURE, this.x + 270, this.y + 8 + sliderY, 82, 0, 6, 41);
                     } else {
-                        context.drawTexture(ATTRIBUTE_BACKGROUND_TEXTURE, this.x + 270, this.y + 8, 88, 0, 6, 41);
+                        context.blit(ATTRIBUTE_BACKGROUND_TEXTURE, this.x + 270, this.y + 8, 88, 0, 6, 41);
                     }
-                    context.drawText(this.textRenderer, Text.translatable("text.levelz.gui.attributes"), this.x + 214, this.y + 12, 0xE0E0E0, false);
+                    context.drawString(this.font, Component.translatable("text.levelz.gui.attributes"), this.x + 214, this.y + 12, 0xE0E0E0, false);
 
                     int k = 27;
                     for (int i = this.attributeRow; i < this.attributeRow + maxAttributes; i++) {
-                        String attributeKey = this.attributes.get(i).getAttibute().getIdAsString();
+                        String attributeKey = this.attributes.get(i).getAttibute().getRegisteredName();
                         if (attributeKey.contains(":")) {
                             attributeKey = attributeKey.split(":")[1];
                         }
-                        context.drawTexture(LevelzMain.identifierOf("textures/gui/sprites/" + attributeKey + ".png"), this.x + 214, this.y + k, 0, 0, 9, 9, 9, 9);
-                        float attributeValue = (float) Math.round(this.client.player.getAttributeInstance(this.attributes.get(i).getAttibute()).getValue() * 100.0D) / 100.0F;
-                        context.drawText(this.textRenderer, Text.of(String.valueOf(attributeValue)), this.x + 214 + 15, this.y + k, 0xE0E0E0, false);
+                        context.blit(LevelzMain.identifierOf("textures/gui/sprites/" + attributeKey + ".png"), this.x + 214, this.y + k, 0, 0, 9, 9, 9, 9);
+                        float attributeValue = (float) Math.round(this.minecraft.player.getAttribute(this.attributes.get(i).getAttibute()).getValue() * 100.0D) / 100.0F;
+                        context.drawString(this.font, Component.nullToEmpty(String.valueOf(attributeValue)), this.x + 214 + 15, this.y + k, 0xE0E0E0, false);
 
                         k += 12;
                     }
                 } else {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 5, 15, 114, 15, 13);
+                    context.blit(ICON_TEXTURE, this.x + 178, this.y + 5, 15, 114, 15, 13);
                 }
                 if (isPointWithinBounds(this.x + 178, this.y + 5, 15, 13, mouseX, mouseY)) {
-                    context.drawTooltip(this.textRenderer, Text.translatable("text.levelz.gui.attributes"), mouseX, mouseY);
+                    context.renderTooltip(this.font, Component.translatable("text.levelz.gui.attributes"), mouseX, mouseY);
                 }
             } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 5, 0, 114, 15, 13);
+                context.blit(ICON_TEXTURE, this.x + 178, this.y + 5, 0, 114, 15, 13);
             }
 
             // Level label
-            Text skillLevelText = Text.translatable("text.levelz.gui.level", this.levelManager.getOverallLevel());
-            context.drawText(this.textRenderer, skillLevelText, this.x + 62, this.y + 42, 0x3F3F3F, false);
+            Component skillLevelText = Component.translatable("text.levelz.gui.level", this.levelManager.getOverallLevel());
+            context.drawString(this.font, skillLevelText, this.x + 62, this.y + 42, 0x3F3F3F, false);
             // Point label
-            Text skillPointText = Text.translatable("text.levelz.gui.points", this.levelManager.getSkillPoints());
-            context.drawText(this.textRenderer, skillPointText, this.x + 62, this.y + 54, 0x3F3F3F, false);
+            Component skillPointText = Component.translatable("text.levelz.gui.points", this.levelManager.getSkillPoints());
+            context.drawString(this.font, skillPointText, this.x + 62, this.y + 54, 0x3F3F3F, false);
 
             // Experience bar
-            context.drawTexture(ICON_TEXTURE, this.x + 62, this.y + 21, 0, 100, 131, 5);
+            context.blit(ICON_TEXTURE, this.x + 62, this.y + 21, 0, 100, 131, 5);
 
             int nextLevelExperience = this.levelManager.getNextLevelExperience();
             float levelProgress = this.levelManager.getLevelProgress();
             long experience = (int) (nextLevelExperience * levelProgress);
 
-            context.drawTexture(ICON_TEXTURE, this.x + 62, this.y + 21, 0, 105, (int) (130.0f * levelProgress), 5);
+            context.blit(ICON_TEXTURE, this.x + 62, this.y + 21, 0, 105, (int) (130.0f * levelProgress), 5);
             // current xp label
-            Text currentXpText = Text.translatable("text.levelz.gui.current_xp", experience, nextLevelExperience);
-            context.drawText(this.textRenderer, currentXpText, this.x - this.textRenderer.getWidth(currentXpText) / 2 + 127, this.y + 30, 0x3F3F3F, false);
+            Component currentXpText = Component.translatable("text.levelz.gui.current_xp", experience, nextLevelExperience);
+            context.drawString(this.font, currentXpText, this.x - this.font.width(currentXpText) / 2 + 127, this.y + 30, 0x3F3F3F, false);
 
             if (!LevelManager.CRAFTING_RESTRICTIONS.isEmpty()) {
                 if (isPointWithinBounds(this.x + 178, this.y + 29, 14, 13, mouseX, mouseY)) {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 29, 30, 80, 15, 13);
-                    context.drawTooltip(this.textRenderer, Text.translatable("restriction.levelz.crafting"), mouseX, mouseY);
+                    context.blit(ICON_TEXTURE, this.x + 178, this.y + 29, 30, 80, 15, 13);
+                    context.renderTooltip(this.font, Component.translatable("restriction.levelz.crafting"), mouseX, mouseY);
                 } else {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 29, 15, 80, 15, 13);
+                    context.blit(ICON_TEXTURE, this.x + 178, this.y + 29, 15, 80, 15, 13);
                 }
             } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 29, 0, 80, 15, 13);
+                context.blit(ICON_TEXTURE, this.x + 178, this.y + 29, 0, 80, 15, 13);
             }
 
             if (!LevelManager.MINING_RESTRICTIONS.isEmpty()) {
                 if (isPointWithinBounds(this.x + 178, this.y + 45, 14, 13, mouseX, mouseY)) {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 45, 75, 80, 15, 13);
-                    context.drawTooltip(this.textRenderer, Text.translatable("restriction.levelz.mining"), mouseX, mouseY);
+                    context.blit(ICON_TEXTURE, this.x + 178, this.y + 45, 75, 80, 15, 13);
+                    context.renderTooltip(this.font, Component.translatable("restriction.levelz.mining"), mouseX, mouseY);
                 } else {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 45, 60, 80, 15, 13);
+                    context.blit(ICON_TEXTURE, this.x + 178, this.y + 45, 60, 80, 15, 13);
                 }
             } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 45, 45, 80, 15, 13);
+                context.blit(ICON_TEXTURE, this.x + 178, this.y + 45, 45, 80, 15, 13);
             }
         }
 
         if (this.clientPlayerEntity != null) {
-            InventoryScreen.drawEntity(context, this.x + 33, this.y + 43, 30f, new Vector3f(0.0F, this.clientPlayerEntity.getHeight() / 2.0F, 0.0F), this.quaternionf, null, this.clientPlayerEntity);
+            InventoryScreen.renderEntityInInventory(context, this.x + 33, this.y + 43, 30f, new Vector3f(0.0F, this.clientPlayerEntity.getBbHeight() / 2.0F, 0.0F), this.quaternionf, null, this.clientPlayerEntity);
 
             if (isPointWithinBounds(this.x + 9, this.y + 67, 15, 10, mouseX, mouseY)) {
-                context.drawTexture(ICON_TEXTURE, this.x + 9, this.y + 67, 0, 138, 15, 10);
+                context.blit(ICON_TEXTURE, this.x + 9, this.y + 67, 0, 138, 15, 10);
             } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 9, this.y + 67, 0, 128, 15, 10);
+                context.blit(ICON_TEXTURE, this.x + 9, this.y + 67, 0, 128, 15, 10);
             }
             if (isPointWithinBounds(this.x + 41, this.y + 67, 15, 10, mouseX, mouseY)) {
-                context.drawTexture(ICON_TEXTURE, this.x + 41, this.y + 67, 15, 138, 15, 10);
+                context.blit(ICON_TEXTURE, this.x + 41, this.y + 67, 15, 138, 15, 10);
             } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 41, this.y + 67, 15, 128, 15, 10);
+                context.blit(ICON_TEXTURE, this.x + 41, this.y + 67, 15, 128, 15, 10);
             }
         }
     }
 
     @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderInGameBackground(context);
-        context.drawTexture(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        renderTransparentBackground(context);
+        context.blit(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
         for (int i = 0; i < 12; i++) {
             int skillIndex = i + this.skillRow * 2;
@@ -230,14 +230,14 @@ public class LevelScreen extends Screen implements Tab {
                 break;
             }
             int skillId = this.skillIds.get(skillIndex);
-            context.drawTexture(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
-            context.drawTexture(LevelzMain.identifierOf("textures/gui/sprites/" + LevelManager.SKILLS.get(skillId).getKey() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
+            context.blit(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
+            context.blit(LevelzMain.identifierOf("textures/gui/sprites/" + LevelManager.SKILLS.get(skillId).getKey() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
 
-            Text skillLevel = Text.translatable("text.levelz.gui.current_level", this.levelManager.getSkillLevel(skillId), LevelManager.SKILLS.get(skillId).getMaxLevel());
-            context.drawText(this.textRenderer, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.textRenderer.getWidth(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
+            Component skillLevel = Component.translatable("text.levelz.gui.current_level", this.levelManager.getSkillLevel(skillId), LevelManager.SKILLS.get(skillId).getMaxLevel());
+            context.drawString(this.font, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.font.width(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
 
             if (isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
-                context.drawTooltip(this.textRenderer, LevelManager.SKILLS.get(skillId).getText(), mouseX, mouseY);
+                context.renderTooltip(this.font, LevelManager.SKILLS.get(skillId).getText(), mouseX, mouseY);
             }
         }
         if (this.skillIds.size() > 12) {
@@ -247,19 +247,19 @@ public class LevelScreen extends Screen implements Tab {
             }
 
             int sliderY = this.skillRow * 86 / scrollLevels;
-            context.drawTexture(BACKGROUND_TEXTURE, this.x + 186, this.y + 87 + sliderY, 200, 0, 6, 34);
+            context.blit(BACKGROUND_TEXTURE, this.x + 186, this.y + 87 + sliderY, 200, 0, 6, 34);
         } else {
-            context.drawTexture(BACKGROUND_TEXTURE, this.x + 186, this.y + 87, 206, 0, 6, 34);
+            context.blit(BACKGROUND_TEXTURE, this.x + 186, this.y + 87, 206, 0, 6, 34);
         }
-        DrawTabHelper.drawTab(client, context, this, this.x, this.y, mouseX, mouseY);
+        DrawTabHelper.drawTab(minecraft, context, this, this.x, this.y, mouseX, mouseY);
     }
 
     @Override
     public void tick() {
         super.tick();
         if (this.clientPlayerEntity != null && this.turnClientPlayer) {
-            double mouseX = this.client.mouse.getX() * (double) this.client.getWindow().getScaledWidth() / (double) this.client.getWindow().getWidth();
-            double mouseY = this.client.mouse.getY() * (double) this.client.getWindow().getScaledHeight() / (double) this.client.getWindow().getHeight();
+            double mouseX = this.minecraft.mouseHandler.xpos() * (double) this.minecraft.getWindow().getGuiScaledWidth() / (double) this.minecraft.getWindow().getScreenWidth();
+            double mouseY = this.minecraft.mouseHandler.ypos() * (double) this.minecraft.getWindow().getGuiScaledHeight() / (double) this.minecraft.getWindow().getScreenHeight();
             if (isPointWithinBounds(this.x + 9, this.y + 67, 15, 10, mouseX, mouseY)) {
                 this.quaternionf.rotateLocalY(0.087f);
             } else if (isPointWithinBounds(this.x + 41, this.y + 67, 15, 10, mouseX, mouseY)) {
@@ -272,8 +272,8 @@ public class LevelScreen extends Screen implements Tab {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (KeyInit.screenKey.matchesKey(keyCode, scanCode) || Objects.requireNonNull(client).options.inventoryKey.matchesKey(keyCode, scanCode)) {
-            this.close();
+        if (KeyInit.screenKey.matches(keyCode, scanCode) || Objects.requireNonNull(minecraft).options.keyInventory.matches(keyCode, scanCode)) {
+            this.onClose();
             return true;
         } else {
             return super.keyPressed(keyCode, scanCode, modifiers);
@@ -292,7 +292,7 @@ public class LevelScreen extends Screen implements Tab {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, this.getFocused() != null);
+        DrawTabHelper.onTabButtonClick(minecraft, this, this.x, this.y, mouseX, mouseY, this.getFocused() != null);
 
         if (this.skillIds.size() > 12 && isPointWithinBounds(this.x + 186, this.y + 87, 6, 120, mouseX, mouseY)) {
             this.draggingSkillScrollbar = true;
@@ -306,27 +306,27 @@ public class LevelScreen extends Screen implements Tab {
         }
         if (!this.attributes.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 5, 15, 13, mouseX, mouseY)) {
             this.showAttributes = !this.showAttributes;
-            this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             return true;
         }
         if (!LevelManager.CRAFTING_RESTRICTIONS.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 29, 14, 13, mouseX, mouseY)) {
-            this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            this.client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.CRAFTING_RESTRICTIONS, Text.translatable("restriction.levelz.crafting"), 0));
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            this.minecraft.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.CRAFTING_RESTRICTIONS, Component.translatable("restriction.levelz.crafting"), 0));
             return true;
         }
         if (!LevelManager.MINING_RESTRICTIONS.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 45, 14, 13, mouseX, mouseY)) {
-            this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            this.client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.MINING_RESTRICTIONS, Text.translatable("restriction.levelz.mining"), 1));
+            this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            this.minecraft.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.MINING_RESTRICTIONS, Component.translatable("restriction.levelz.mining"), 1));
             return true;
         }
         if (this.clientPlayerEntity != null) {
             if (isPointWithinBounds(this.x + 9, this.y + 67, 15, 10, mouseX, mouseY)) {
                 this.turnClientPlayer = true;
-                this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 return true;
             } else if (isPointWithinBounds(this.x + 41, this.y + 67, 15, 10, mouseX, mouseY)) {
                 this.turnClientPlayer = true;
-                this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 return true;
             }
         }
@@ -337,8 +337,8 @@ public class LevelScreen extends Screen implements Tab {
             }
             int skillId = this.skillIds.get(skillIndex);
             if (isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
-                this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                this.client.setScreen(new SkillInfoScreen(this.levelManager, skillId));
+                this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                this.minecraft.setScreen(new SkillInfoScreen(this.levelManager, skillId));
                 return true;
             }
         }
@@ -393,7 +393,7 @@ public class LevelScreen extends Screen implements Tab {
     }
 
     @Override
-    public boolean shouldPause() {
+    public boolean isPauseScreen() {
         return false;
     }
 
@@ -465,17 +465,17 @@ public class LevelScreen extends Screen implements Tab {
         this.attributeRow = computeRowFromMouse(mouseY, this.y + 8, 199, 41, maxAttributeRow);
     }
 
-    private static class WidgetButtonPage extends ButtonWidget {
+    private static class WidgetButtonPage extends Button {
 
         private final boolean hoverOutline;
         private final boolean clickable;
         private final int textureX;
         private final int textureY;
-        private List<Text> tooltip = new ArrayList<Text>();
+        private List<Component> tooltip = new ArrayList<Component>();
         private int clickedKey = -1;
 
-        public WidgetButtonPage(int x, int y, int sizeX, int sizeY, int textureX, int textureY, boolean hoverOutline, boolean clickable, @Nullable Text tooltip, ButtonWidget.PressAction onPress) {
-            super(x, y, sizeX, sizeY, ScreenTexts.EMPTY, onPress, DEFAULT_NARRATION_SUPPLIER);
+        public WidgetButtonPage(int x, int y, int sizeX, int sizeY, int textureX, int textureY, boolean hoverOutline, boolean clickable, @Nullable Component tooltip, Button.OnPress onPress) {
+            super(x, y, sizeX, sizeY, CommonComponents.EMPTY, onPress, DEFAULT_NARRATION);
             this.hoverOutline = hoverOutline;
             this.clickable = clickable;
             this.textureX = textureX;
@@ -488,16 +488,16 @@ public class LevelScreen extends Screen implements Tab {
         }
 
         @Override
-        protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-            MinecraftClient minecraftClient = MinecraftClient.getInstance();
-            context.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+        protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+            Minecraft minecraftClient = Minecraft.getInstance();
+            context.setColor(1.0F, 1.0F, 1.0F, this.alpha);
             RenderSystem.enableBlend();
             RenderSystem.enableDepthTest();
             int i = hoverOutline ? this.getTextureY() : 0;
-            context.drawTexture(ICON_TEXTURE, this.getX(), this.getY(), this.textureX + i * this.width, this.textureY, this.width, this.height);
-            context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+            context.blit(ICON_TEXTURE, this.getX(), this.getY(), this.textureX + i * this.width, this.textureY, this.width, this.height);
+            context.setColor(1.0f, 1.0f, 1.0f, 1.0f);
             if (this.isHovered()) {
-                context.drawTooltip(minecraftClient.textRenderer, this.tooltip, mouseX, mouseY);
+                context.renderComponentTooltip(minecraftClient.font, this.tooltip, mouseX, mouseY);
             }
         }
 
@@ -523,7 +523,7 @@ public class LevelScreen extends Screen implements Tab {
             return super.keyPressed(keyCode, scanCode, modifiers);
         }
 
-        public void addTooltip(Text text) {
+        public void addTooltip(Component text) {
             this.tooltip.add(text);
         }
 

@@ -12,11 +12,10 @@ import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.screen.widget.LineWidget;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,7 @@ import java.util.TreeMap;
 @Environment(EnvType.CLIENT)
 public class SkillInfoScreen extends Screen implements Tab {
 
-    public static final Identifier BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_info_background.png");
+    public static final ResourceLocation BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_info_background.png");
 
     private final int backgroundWidth = 200;
     private final int backgroundHeight = 215;
@@ -57,15 +56,15 @@ public class SkillInfoScreen extends Screen implements Tab {
 
         for (int i = 0; i < 50; i++) {
             String skillExtra = "skill.levelz." + this.skill.getKey() + "." + i;
-            Text skillExtraText = Text.translatable(skillExtra);
+            Component skillExtraText = Component.translatable(skillExtra);
 
             if (skillExtraText.getString().equals(skillExtra)) {
                 break;
             }
-            this.lines.add(new LineWidget(this.client, skillExtraText, null, 0));
+            this.lines.add(new LineWidget(this.minecraft, skillExtraText, null, 0));
         }
         if (!this.lines.isEmpty()) {
-            this.lines.addFirst(new LineWidget(this.client, Text.translatable("skill.levelz.info"), null, 0));
+            this.lines.addFirst(new LineWidget(this.minecraft, Component.translatable("skill.levelz.info"), null, 0));
         }
         int skillInfoLines = this.lines.size();
         for (String bonusKey : SkillBonus.BONUS_KEYS) {
@@ -74,7 +73,7 @@ public class SkillInfoScreen extends Screen implements Tab {
                 if (bonus.getId() == this.skill.getId()) {
                     for (int i = 0; i < 50; i++) {
                         String bonusInfo = "bonus.levelz." + bonus.getKey() + "." + i;
-                        Text bonusInfoText = Text.translatable(bonusInfo, Text.translatable("text.levelz.gui.short_lower_level", bonus.getLevel()));
+                        Component bonusInfoText = Component.translatable(bonusInfo, Component.translatable("text.levelz.gui.short_lower_level", bonus.getLevel()));
 
                         if (bonusInfoText.getString().equals(bonusInfo)) {
                             break;
@@ -82,22 +81,22 @@ public class SkillInfoScreen extends Screen implements Tab {
                         if (bonusInfoText.getString().startsWith("---")) {
                             break;
                         }
-                        this.lines.add(new LineWidget(this.client, bonusInfoText, null, 0));
+                        this.lines.add(new LineWidget(this.minecraft, bonusInfoText, null, 0));
                     }
                 }
             }
         }
         if (this.lines.size() > skillInfoLines) {
-            this.lines.add(skillInfoLines, new LineWidget(this.client, Text.translatable("bonus.levelz.info"), null, 0));
+            this.lines.add(skillInfoLines, new LineWidget(this.minecraft, Component.translatable("bonus.levelz.info"), null, 0));
         }
 
-        addRestrictionLines(LevelManager.ITEM_RESTRICTIONS, Text.translatable("restriction.levelz.item_usage"), 0);
-        addRestrictionLines(LevelManager.BLOCK_RESTRICTIONS, Text.translatable("restriction.levelz.block_usage"), 1);
-        addRestrictionLines(LevelManager.ENTITY_RESTRICTIONS, Text.translatable("restriction.levelz.entity_usage"), 2);
-        addRestrictionLines(LevelManager.ENCHANTMENT_RESTRICTIONS, Text.translatable("restriction.levelz.enchantments"), 3);
+        addRestrictionLines(LevelManager.ITEM_RESTRICTIONS, Component.translatable("restriction.levelz.item_usage"), 0);
+        addRestrictionLines(LevelManager.BLOCK_RESTRICTIONS, Component.translatable("restriction.levelz.block_usage"), 1);
+        addRestrictionLines(LevelManager.ENTITY_RESTRICTIONS, Component.translatable("restriction.levelz.entity_usage"), 2);
+        addRestrictionLines(LevelManager.ENCHANTMENT_RESTRICTIONS, Component.translatable("restriction.levelz.enchantments"), 3);
     }
 
-    private void addRestrictionLines(Map<Integer, PlayerRestriction> levelRestrictions, Text restrictionText, int code) {
+    private void addRestrictionLines(Map<Integer, PlayerRestriction> levelRestrictions, Component restrictionText, int code) {
         // Lvl, Id (ex. Item), PlayerRestriction
         Map<Integer, Map<Integer, PlayerRestriction>> map = new TreeMap<>();
 
@@ -120,10 +119,10 @@ public class SkillInfoScreen extends Screen implements Tab {
         }
 
         if (!map.isEmpty()) {
-            this.lines.add(new LineWidget(this.client, restrictionText, null, 0));
+            this.lines.add(new LineWidget(this.minecraft, restrictionText, null, 0));
         }
         for (Map.Entry<Integer, Map<Integer, PlayerRestriction>> restrictions : map.entrySet()) {
-            this.lines.add(new LineWidget(this.client, Text.translatable("text.levelz.gui.short_level", restrictions.getKey()), null, 0));
+            this.lines.add(new LineWidget(this.minecraft, Component.translatable("text.levelz.gui.short_level", restrictions.getKey()), null, 0));
 
             if (restrictions.getValue().size() > 10) {
                 Map<Integer, PlayerRestriction> newMap = new TreeMap<>();
@@ -133,31 +132,31 @@ public class SkillInfoScreen extends Screen implements Tab {
                     newMap.put(specificRestriction.getKey(), specificRestriction.getValue());
                     count++;
                     if (count == restrictions.getValue().size()) {
-                        this.lines.add(new LineWidget(this.client, null, newMap, code));
+                        this.lines.add(new LineWidget(this.minecraft, null, newMap, code));
                         break;
                     }
                     if (count % 9 == 0) {
-                        this.lines.add(new LineWidget(this.client, null, new TreeMap<>(newMap), code));
+                        this.lines.add(new LineWidget(this.minecraft, null, new TreeMap<>(newMap), code));
                         newMap.clear();
                     }
                 }
             } else {
-                this.lines.add(new LineWidget(this.client, null, restrictions.getValue(), code));
+                this.lines.add(new LineWidget(this.minecraft, null, restrictions.getValue(), code));
             }
         }
     }
 
     @Override
-    public boolean shouldPause() {
+    public boolean isPauseScreen() {
         return false;
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
-        context.drawText(this.textRenderer, this.title, this.x + 7, this.y + 7, 0x3F3F3F, false);
-        context.drawText(this.textRenderer, Text.translatable("text.levelz.gui.short_level", this.levelManager.getSkillLevel(this.skill.getId())), this.x + 11 + this.textRenderer.getWidth(this.title), this.y + 7, 0x3F3F3F, false);
+        context.drawString(this.font, this.title, this.x + 7, this.y + 7, 0x3F3F3F, false);
+        context.drawString(this.font, Component.translatable("text.levelz.gui.short_level", this.levelManager.getSkillLevel(this.skill.getId())), this.x + 11 + this.font.width(this.title), this.y + 7, 0x3F3F3F, false);
 
         for (int i = 0; i < 10; i++) {
             if (this.lines.size() <= i) {
@@ -170,32 +169,32 @@ public class SkillInfoScreen extends Screen implements Tab {
     }
 
     @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderInGameBackground(context);
-        context.drawTexture(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        renderTransparentBackground(context);
+        context.blit(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
 
         if (this.lines.size() > 10) {
             int scrollLevels = this.lines.size() - 10;
             int sliderY = this.lineIndex * 156 / scrollLevels;
-            context.drawTexture(BACKGROUND_TEXTURE, this.x + 186, this.y + 20 + sliderY, 200, 0, 6, 31);
+            context.blit(BACKGROUND_TEXTURE, this.x + 186, this.y + 20 + sliderY, 200, 0, 6, 31);
         } else {
-            context.drawTexture(BACKGROUND_TEXTURE, this.x + 186, this.y + 20, 206, 0, 6, 31);
+            context.blit(BACKGROUND_TEXTURE, this.x + 186, this.y + 20, 206, 0, 6, 31);
         }
-        DrawTabHelper.drawTab(client, context, this, this.x, this.y, mouseX, mouseY);
+        DrawTabHelper.drawTab(minecraft, context, this, this.x, this.y, mouseX, mouseY);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
+        if (this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
             if (ConfigInit.CONFIG.switchScreen) {
-                this.client.setScreen(new LevelScreen());
+                this.minecraft.setScreen(new LevelScreen());
             } else {
-                this.close();
+                this.onClose();
             }
             return true;
 
-        } else if (KeyInit.screenKey.matchesKey(keyCode, scanCode)) {
-            this.client.setScreen(new LevelScreen());
+        } else if (KeyInit.screenKey.matches(keyCode, scanCode)) {
+            this.minecraft.setScreen(new LevelScreen());
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -203,7 +202,7 @@ public class SkillInfoScreen extends Screen implements Tab {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, false);
+        DrawTabHelper.onTabButtonClick(minecraft, this, this.x, this.y, mouseX, mouseY, false);
         if (this.lines.size() > 10 && LevelScreen.isPointWithinBounds(this.x + 186, this.y + 20, 6, 187, mouseX, mouseY)) {
             this.draggingScrollbar = true;
             updateScrollFromMouse(mouseY);

@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.levelz.data.DatapackErrors;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.world.level.storage.LevelResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class RestrictionOverrides {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public static Path getPath(MinecraftServer server) {
-        return server.getSavePath(WorldSavePath.ROOT).resolve("levelz").resolve("restrictions.json");
+        return server.getWorldPath(LevelResource.ROOT).resolve("levelz").resolve("restrictions.json");
     }
 
     @Nullable

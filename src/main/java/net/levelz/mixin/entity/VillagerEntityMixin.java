@@ -4,15 +4,15 @@ import net.levelz.access.LevelManagerAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.util.BonusHelper;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,37 +21,37 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(VillagerEntity.class)
-public abstract class VillagerEntityMixin extends MerchantEntity {
+@Mixin(Villager.class)
+public abstract class VillagerEntityMixin extends AbstractVillager {
 
     @Shadow
     @Nullable
-    private PlayerEntity lastCustomer;
+    private Player lastTradedPlayer;
 
-    public VillagerEntityMixin(EntityType<? extends MerchantEntity> entityType, World world) {
+    public VillagerEntityMixin(EntityType<? extends AbstractVillager> entityType, Level world) {
         super(entityType, world);
     }
 
 
-    @Inject(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    protected void afterUsingMixin(TradeOffer offer, CallbackInfo info, int i) {
-        BonusHelper.tradeXpBonus((ServerWorld) this.getWorld(), this.lastCustomer, this, i);
+    @Inject(method = "rewardTradeXp", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    protected void afterUsingMixin(MerchantOffer offer, CallbackInfo info, int i) {
+        BonusHelper.tradeXpBonus((ServerLevel) this.level(), this.lastTradedPlayer, this, i);
     }
 
-    @Inject(method = "prepareOffersFor", at = @At(value = "TAIL"))
-    private void prepareOffersForMixin(PlayerEntity player, CallbackInfo info) {
-        if (!player.hasStatusEffect(StatusEffects.HERO_OF_THE_VILLAGE)) {
-            for (TradeOffer tradeOffer : this.getOffers()) {
-                int originalPrice = tradeOffer.getOriginalFirstBuyItem().getCount();
-                tradeOffer.increaseSpecialPrice(-(int) (originalPrice - originalPrice * BonusHelper.priceDiscountBonus(player)));
+    @Inject(method = "updateSpecialPrices", at = @At(value = "TAIL"))
+    private void prepareOffersForMixin(Player player, CallbackInfo info) {
+        if (!player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) {
+            for (MerchantOffer tradeOffer : this.getOffers()) {
+                int originalPrice = tradeOffer.getBaseCostA().getCount();
+                tradeOffer.addToSpecialPriceDiff(-(int) (originalPrice - originalPrice * BonusHelper.priceDiscountBonus(player)));
             }
         }
     }
 
-    @Inject(method = "setAttacker", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;handleInteraction(Lnet/minecraft/entity/EntityInteraction;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/InteractionObserver;)V"), cancellable = true)
+    @Inject(method = "setLastHurtByMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;onReputationEvent(Lnet/minecraft/world/entity/ai/village/ReputationEventType;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/ReputationEventHandler;)V"), cancellable = true)
     private void setAttackerMixin(@Nullable LivingEntity attacker, CallbackInfo info) {
-        if (attacker instanceof PlayerEntity playerEntity && BonusHelper.merchantImmuneBonus(playerEntity)) {
-            super.setAttacker(attacker);
+        if (attacker instanceof Player playerEntity && BonusHelper.merchantImmuneBonus(playerEntity)) {
+            super.setLastHurtByMob(attacker);
             info.cancel();
         }
     }

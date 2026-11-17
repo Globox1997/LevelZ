@@ -1,8 +1,7 @@
 package net.levelz.level;
 
-import net.minecraft.text.Text;
-
 import java.util.List;
+import net.minecraft.network.chat.Component;
 
 public class Skill {
 
@@ -34,8 +33,8 @@ public class Skill {
         return attributes;
     }
 
-    public Text getText() {
-        return Text.translatable("skill.levelz." + key);
+    public Component getText() {
+        return Component.translatable("skill.levelz." + key);
     }
 
 }

@@ -6,7 +6,7 @@ import net.levelz.level.*;
 import net.levelz.network.packet.*;
 import net.levelz.registry.EnchantmentRegistry;
 import net.levelz.registry.EnchantmentZ;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class PacketHelper {
 
-    public static void updateLevels(ServerPlayerEntity serverPlayerEntity) {
+    public static void updateLevels(ServerPlayer serverPlayerEntity) {
         LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).getLevelManager();
         int overallLevel = levelManager.getOverallLevel();
         int skillPoints = levelManager.getSkillPoints();
@@ -25,7 +25,7 @@ public class PacketHelper {
         ServerPlayNetworking.send(serverPlayerEntity, new LevelPacket(overallLevel, skillPoints, totalLevelExperience, levelProgress));
     }
 
-    public static void updateSkills(ServerPlayerEntity serverPlayerEntity) {
+    public static void updateSkills(ServerPlayer serverPlayerEntity) {
         List<Integer> skillIds = new ArrayList<>();
         List<String> skillKeys = new ArrayList<>();
         List<Integer> skillMaxLevels = new ArrayList<>();
@@ -45,7 +45,7 @@ public class PacketHelper {
         ServerPlayNetworking.send(serverPlayerEntity, new SkillSyncPacket(skillIds, skillKeys, skillMaxLevels, skillAttributes, skillBonusesRecord));
     }
 
-    public static void updatePlayerSkills(ServerPlayerEntity serverPlayerEntity, @Nullable ServerPlayerEntity oldPlayerEntity) {
+    public static void updatePlayerSkills(ServerPlayer serverPlayerEntity, @Nullable ServerPlayer oldPlayerEntity) {
         LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).getLevelManager();
         if (oldPlayerEntity != null) {
             LevelManager oldLevelManager = ((LevelManagerAccess) oldPlayerEntity).getLevelManager();
@@ -65,7 +65,7 @@ public class PacketHelper {
         ServerPlayNetworking.send(serverPlayerEntity, new PlayerSkillSyncPacket(playerSkillIds, playerSkillLevels));
     }
 
-    public static void updateRestrictions(ServerPlayerEntity serverPlayerEntity) {
+    public static void updateRestrictions(ServerPlayer serverPlayerEntity) {
         ServerPlayNetworking.send(serverPlayerEntity, new RestrictionPacket(new RestrictionPacket.RestrictionRecord(LevelManager.BLOCK_RESTRICTIONS.keySet().stream().toList(), LevelManager.BLOCK_RESTRICTIONS.values().stream().toList()),
                 new RestrictionPacket.RestrictionRecord(LevelManager.CRAFTING_RESTRICTIONS.keySet().stream().toList(), LevelManager.CRAFTING_RESTRICTIONS.values().stream().toList()), new RestrictionPacket.RestrictionRecord(LevelManager.ENTITY_RESTRICTIONS.keySet().stream().toList(), LevelManager.ENTITY_RESTRICTIONS.values().stream().toList()),
                 new RestrictionPacket.RestrictionRecord(LevelManager.ITEM_RESTRICTIONS.keySet().stream().toList(), LevelManager.ITEM_RESTRICTIONS.values().stream().toList()), new RestrictionPacket.RestrictionRecord(LevelManager.MINING_RESTRICTIONS.keySet().stream().toList(), LevelManager.MINING_RESTRICTIONS.values().stream().toList()),
@@ -73,13 +73,13 @@ public class PacketHelper {
                 LevelManager.COMPONENT_RESTRICTIONS.values().stream().flatMap(List::stream).toList()));
     }
 
-    public static void syncEnchantments(ServerPlayerEntity serverPlayerEntity) {
+    public static void syncEnchantments(ServerPlayer serverPlayerEntity) {
         List<Integer> keys = new ArrayList<>();
         List<String> ids = new ArrayList<>();
         List<Integer> levels = new ArrayList<>();
         for (Map.Entry<Integer, EnchantmentZ> entry : EnchantmentRegistry.ENCHANTMENTS.entrySet()) {
             keys.add(entry.getKey());
-            ids.add(entry.getValue().getEntry().getIdAsString());
+            ids.add(entry.getValue().getEntry().getRegisteredName());
             levels.add(entry.getValue().getLevel());
         }
         ServerPlayNetworking.send(serverPlayerEntity, new EnchantmentZPacket(EnchantmentRegistry.INDEX_ENCHANTMENTS, keys, ids, levels));

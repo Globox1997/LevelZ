@@ -1,14 +1,14 @@
 package net.levelz.data;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
 public class DatapackErrors {
 
@@ -41,9 +41,9 @@ public class DatapackErrors {
         ERRORS.add(message);
     }
 
-    public static void notify(ServerPlayerEntity serverPlayerEntity) {
-        if (!ERRORS.isEmpty() && serverPlayerEntity.hasPermissionLevel(2)) {
-            serverPlayerEntity.sendMessage(Text.translatable("text.levelz.datapack_errors", ERRORS.size()).formatted(Formatting.RED), false);
+    public static void notify(ServerPlayer serverPlayerEntity) {
+        if (!ERRORS.isEmpty() && serverPlayerEntity.hasPermissions(2)) {
+            serverPlayerEntity.displayClientMessage(Component.translatable("text.levelz.datapack_errors", ERRORS.size()).withStyle(ChatFormatting.RED), false);
         }
     }
 

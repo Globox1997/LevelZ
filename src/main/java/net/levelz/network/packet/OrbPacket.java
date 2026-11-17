@@ -3,32 +3,32 @@ package net.levelz.network.packet;
 import net.levelz.access.OrbAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.network.LevelServerPacket;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.PacketType;
-import net.minecraft.server.network.EntityTrackerEntry;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketType;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.world.phys.Vec3;
 
-public class OrbPacket implements Packet<ClientPlayPacketListener> {
-    public static final PacketCodec<PacketByteBuf, OrbPacket> CODEC = Packet.createCodec(OrbPacket::write, OrbPacket::new);
+public class OrbPacket implements Packet<ClientGamePacketListener> {
+    public static final StreamCodec<FriendlyByteBuf, OrbPacket> CODEC = Packet.codec(OrbPacket::write, OrbPacket::new);
     private final int entityId;
     private final double x;
     private final double y;
     private final double z;
     private final int experience;
 
-    public OrbPacket(LevelExperienceOrbEntity orb, EntityTrackerEntry entry) {
+    public OrbPacket(LevelExperienceOrbEntity orb, ServerEntity entry) {
         this.entityId = orb.getId();
-        Vec3d vec3d = entry.getPos();
-        this.x = vec3d.getX();
-        this.y = vec3d.getY();
-        this.z = vec3d.getZ();
+        Vec3 vec3d = entry.getPositionBase();
+        this.x = vec3d.x();
+        this.y = vec3d.y();
+        this.z = vec3d.z();
         this.experience = orb.getExperienceAmount();
     }
 
-    private OrbPacket(PacketByteBuf buf) {
+    private OrbPacket(FriendlyByteBuf buf) {
         this.entityId = buf.readVarInt();
         this.x = buf.readDouble();
         this.y = buf.readDouble();
@@ -36,7 +36,7 @@ public class OrbPacket implements Packet<ClientPlayPacketListener> {
         this.experience = buf.readShort();
     }
 
-    private void write(PacketByteBuf buf) {
+    private void write(FriendlyByteBuf buf) {
         buf.writeVarInt(this.entityId);
         buf.writeDouble(this.x);
         buf.writeDouble(this.y);
@@ -45,11 +45,11 @@ public class OrbPacket implements Packet<ClientPlayPacketListener> {
     }
 
     @Override
-    public PacketType<OrbPacket> getPacketId() {
+    public PacketType<OrbPacket> type() {
         return LevelServerPacket.ADD_LEVEL_EXPERIENCE_ORB;
     }
 
-    public void apply(ClientPlayPacketListener clientPlayPacketListener) {
+    public void handle(ClientGamePacketListener clientPlayPacketListener) {
         ((OrbAccess) clientPlayPacketListener).onLevelExperienceOrbSpawn(this);
     }
 

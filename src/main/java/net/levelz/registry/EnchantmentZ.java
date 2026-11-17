@@ -1,19 +1,19 @@
 package net.levelz.registry;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class EnchantmentZ {
 
-    private final RegistryEntry<Enchantment> entry;
+    private final Holder<Enchantment> entry;
     private final int level;
 
-    public EnchantmentZ(RegistryEntry<Enchantment> entry, int level) {
+    public EnchantmentZ(Holder<Enchantment> entry, int level) {
         this.entry = entry;
         this.level = level;
     }
 
-    public RegistryEntry<Enchantment> getEntry() {
+    public Holder<Enchantment> getEntry() {
         return entry;
     }
 

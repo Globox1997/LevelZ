@@ -1,13 +1,13 @@
 package net.levelz.mixin.compat;
 
 import net.levelz.level.LevelManager;
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -22,7 +22,7 @@ public class LevelManagerCompatMixin {
     @Shadow
     @Mutable
     @Final
-    private PlayerEntity playerEntity;
+    private Player playerEntity;
 
     @Inject(method = "hasRequiredBlockLevel", at = @At("HEAD"), cancellable = true)
     private void hasRequiredBlockLevelMixin(Block block, CallbackInfoReturnable<Boolean> info) {
@@ -67,7 +67,7 @@ public class LevelManagerCompatMixin {
     }
 
     @Inject(method = "hasRequiredEnchantmentLevel", at = @At("HEAD"), cancellable = true)
-    private void hasRequiredEnchantmentLevelMixin(RegistryEntry<Enchantment> enchantment, int level, CallbackInfoReturnable<Boolean> info) {
+    private void hasRequiredEnchantmentLevelMixin(Holder<Enchantment> enchantment, int level, CallbackInfoReturnable<Boolean> info) {
         if (this.playerEntity.getClass().getName().contains("deployer.DeployerFakePlayer") || this.playerEntity.getClass().getName().contains("core.TurtlePlayer")) {
             info.setReturnValue(true);
         }

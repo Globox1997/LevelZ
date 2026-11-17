@@ -1,27 +1,27 @@
 package net.levelz.mixin.entity;
 
 import net.levelz.util.BonusHelper;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.WanderingTraderEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(WanderingTraderEntity.class)
-public abstract class WanderingTraderEntityMixin extends MerchantEntity {
+@Mixin(WanderingTrader.class)
+public abstract class WanderingTraderEntityMixin extends AbstractVillager {
 
-    public WanderingTraderEntityMixin(EntityType<? extends MerchantEntity> entityType, World world) {
+    public WanderingTraderEntityMixin(EntityType<? extends AbstractVillager> entityType, Level world) {
         super(entityType, world);
     }
 
-    @Inject(method = "afterUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    protected void afterUsingMixin(TradeOffer offer, CallbackInfo info, int i) {
-        BonusHelper.tradeXpBonus((ServerWorld) this.getWorld(), this.getCustomer(), this, i);
+    @Inject(method = "rewardTradeXp", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    protected void afterUsingMixin(MerchantOffer offer, CallbackInfo info, int i) {
+        BonusHelper.tradeXpBonus((ServerLevel) this.level(), this.getTradingPlayer(), this, i);
     }
 }

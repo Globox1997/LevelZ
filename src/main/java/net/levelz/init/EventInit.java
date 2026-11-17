@@ -14,15 +14,14 @@ import net.levelz.level.Skill;
 import net.levelz.mixin.entity.EntityAccessor;
 import net.levelz.util.LevelHelper;
 import net.levelz.util.PacketHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.ItemStack;
 import java.util.Map;
 
 public class EventInit {
@@ -104,12 +103,12 @@ public class EventInit {
 
                 newLevelManager.setOverallLevel(retainedLevel);
                 PacketHelper.updateLevels(newPlayer);
-                newPlayer.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, newPlayer));
+                newPlayer.getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE, newPlayer));
             } else {
                 PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
 
                 if (ConfigInit.CONFIG.resetCurrentXp) {
-                    float lostProgress = newLevelManager.getLevelProgress() * MathHelper.clamp(ConfigInit.CONFIG.currentXpLossPercentage, 0.0F, 100.0F) / 100.0F;
+                    float lostProgress = newLevelManager.getLevelProgress() * Mth.clamp(ConfigInit.CONFIG.currentXpLossPercentage, 0.0F, 100.0F) / 100.0F;
                     int lostExperience = (int) (lostProgress * newLevelManager.getNextLevelExperience());
                     newLevelManager.setLevelProgress(newLevelManager.getLevelProgress() - lostProgress);
                     newLevelManager.setTotalLevelExperience(Math.max(newLevelManager.getTotalLevelExperience() - lostExperience, 0));
@@ -125,28 +124,28 @@ public class EventInit {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             if (!player.isCreative() && !player.isSpectator()) {
                 LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
-                if (!levelManager.hasRequiredStackLevel(player.getStackInHand(hand))) {
+                if (!levelManager.hasRequiredStackLevel(player.getItemInHand(hand))) {
                     // player.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) +
                     // ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED), true);
-                    player.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);
-                    return TypedActionResult.fail(player.getStackInHand(hand));
+                    player.displayClientMessage(Component.translatable("restriction.levelz.locked.tooltip").withStyle(ChatFormatting.RED), true);
+                    return InteractionResultHolder.fail(player.getItemInHand(hand));
                 }
             }
-            return TypedActionResult.pass(ItemStack.EMPTY);
+            return InteractionResultHolder.pass(ItemStack.EMPTY);
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, result) -> {
             if (!player.isCreative() && !player.isSpectator()) {
                 BlockPos blockPos = result.getBlockPos();
-                if (world.canPlayerModifyAt(player, blockPos)) {
+                if (world.mayInteract(player, blockPos)) {
                     LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                     if (!levelManager.hasRequiredBlockLevel(world.getBlockState(blockPos).getBlock())) {
-                        player.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);
-                        return ActionResult.success(false);
+                        player.displayClientMessage(Component.translatable("restriction.levelz.locked.tooltip").withStyle(ChatFormatting.RED), true);
+                        return InteractionResult.sidedSuccess(false);
                     }
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
@@ -154,12 +153,12 @@ public class EventInit {
                 if (!entity.hasControllingPassenger() || !((EntityAccessor) entity).callCanAddPassenger(player)) {
                     LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                     if (!levelManager.hasRequiredEntityLevel(entity.getType())) {
-                        player.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);
-                        return ActionResult.success(false);
+                        player.displayClientMessage(Component.translatable("restriction.levelz.locked.tooltip").withStyle(ChatFormatting.RED), true);
+                        return InteractionResult.sidedSuccess(false);
                     }
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 

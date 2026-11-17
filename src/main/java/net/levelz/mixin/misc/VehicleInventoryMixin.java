@@ -7,14 +7,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.levelz.access.PlayerDropAccess;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.vehicle.VehicleInventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.ContainerEntity;
 
-@Mixin(VehicleInventory.class)
+@Mixin(ContainerEntity.class)
 public interface VehicleInventoryMixin {
 
-    @Inject(method = "generateInventoryLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/VehicleInventory;setLootTable(Lnet/minecraft/registry/RegistryKey;)V"))
-    default void generateInventoryLootMixin(@Nullable PlayerEntity player, CallbackInfo info) {
+    @Inject(method = "unpackChestVehicleLootTable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/ContainerEntity;setLootTable(Lnet/minecraft/resources/ResourceKey;)V"))
+    default void generateInventoryLootMixin(@Nullable Player player, CallbackInfo info) {
         if (player != null) {
             ((PlayerDropAccess) player).resetKilledMobStat();
         }

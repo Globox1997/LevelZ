@@ -1,28 +1,27 @@
 package net.levelz.registry;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class EnchantmentRegistry {
 
     public static final Map<Integer, EnchantmentZ> ENCHANTMENTS = new HashMap<>();
     public static final Map<String, Integer> INDEX_ENCHANTMENTS = new HashMap<>();
 
-    private static final Map<RegistryEntry<Enchantment>, int[]> ID_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Holder<Enchantment>, int[]> ID_CACHE = new ConcurrentHashMap<>();
 
-    public static boolean containsId(RegistryEntry<Enchantment> enchantment, int level) {
+    public static boolean containsId(Holder<Enchantment> enchantment, int level) {
         return getId(enchantment, level) >= 0;
     }
 
-    public static boolean containsId(Identifier identifier, int level) {
+    public static boolean containsId(ResourceLocation identifier, int level) {
         return containsId(identifier.toString(), level);
     }
 
@@ -34,13 +33,13 @@ public class EnchantmentRegistry {
         return ENCHANTMENTS.get(key);
     }
 
-    public static int getId(RegistryEntry<Enchantment> enchantment, int level) {
+    public static int getId(Holder<Enchantment> enchantment, int level) {
         int[] ids = ID_CACHE.computeIfAbsent(enchantment, EnchantmentRegistry::createIds);
         return level > 0 && level < ids.length ? ids[level] : -1;
     }
 
-    private static int[] createIds(RegistryEntry<Enchantment> enchantment) {
-        String enchantmentId = enchantment.getIdAsString();
+    private static int[] createIds(Holder<Enchantment> enchantment) {
+        String enchantmentId = enchantment.getRegisteredName();
         int maxLevel = enchantment.value().getMaxLevel();
         int[] ids = new int[maxLevel + 1];
         ids[0] = -1;
@@ -56,7 +55,7 @@ public class EnchantmentRegistry {
         ID_CACHE.clear();
     }
 
-    public static int getId(Identifier identifier, int level) {
+    public static int getId(ResourceLocation identifier, int level) {
         return getId(identifier.toString(), level);
     }
 
@@ -75,13 +74,13 @@ public class EnchantmentRegistry {
         return -1;
     }
 
-    public static void updateEnchantments(RegistryWrapper.WrapperLookup wrapperLookup) {
+    public static void updateEnchantments(HolderLookup.Provider wrapperLookup) {
         clear();
-        Optional<RegistryWrapper.Impl<Enchantment>> wrapper = wrapperLookup.getOptionalWrapper(RegistryKeys.ENCHANTMENT);
-        for (RegistryWrapper.Impl<Enchantment> enchantmentImpl : wrapper.stream().toList()) {
-            for (RegistryEntry.Reference<Enchantment> enchantment : enchantmentImpl.streamEntries().toList()) {
+        Optional<HolderLookup.RegistryLookup<Enchantment>> wrapper = wrapperLookup.lookup(Registries.ENCHANTMENT);
+        for (HolderLookup.RegistryLookup<Enchantment> enchantmentImpl : wrapper.stream().toList()) {
+            for (Holder.Reference<Enchantment> enchantment : enchantmentImpl.listElements().toList()) {
                 for (int i = 1; i <= enchantment.value().getMaxLevel(); i++) {
-                    INDEX_ENCHANTMENTS.put(getKey(enchantment.getIdAsString(), i), ENCHANTMENTS.size());
+                    INDEX_ENCHANTMENTS.put(getKey(enchantment.getRegisteredName(), i), ENCHANTMENTS.size());
                     ENCHANTMENTS.put(ENCHANTMENTS.size(), new EnchantmentZ(enchantment, i));
                 }
             }

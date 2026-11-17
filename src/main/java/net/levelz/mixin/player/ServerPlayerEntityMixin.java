@@ -6,20 +6,20 @@ import net.levelz.access.ServerPlayerSyncAccess;
 import net.levelz.init.CriteriaInit;
 import net.levelz.level.LevelManager;
 import net.levelz.util.PacketHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.scoreboard.ScoreAccess;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.TeleportTarget;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.scores.ScoreAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,35 +29,35 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 
-@Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity implements ServerPlayerSyncAccess {
+@Mixin(ServerPlayer.class)
+public abstract class ServerPlayerEntityMixin extends Player implements ServerPlayerSyncAccess {
 
     @Unique
     private final LevelManager levelManager = ((LevelManagerAccess) this).getLevelManager();
     @Unique
     private int syncedLevelExperience = -99999999;
 
-    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
+    public ServerPlayerEntityMixin(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
 
-    @Inject(method = "teleportTo", at = @At("HEAD"), cancellable = true)
-    private void teleportToMixin(TeleportTarget teleportTarget, CallbackInfoReturnable<Entity> info) {
-        if (this.isCreative() || this.isSpectator() || teleportTarget.world() == this.getWorld()) {
+    @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
+    private void teleportToMixin(DimensionTransition teleportTarget, CallbackInfoReturnable<Entity> info) {
+        if (this.isCreative() || this.isSpectator() || teleportTarget.newLevel() == this.level()) {
             return;
         }
-        RegistryKey<World> dimension = teleportTarget.world().getRegistryKey();
+        ResourceKey<Level> dimension = teleportTarget.newLevel().dimension();
         if (!levelManager.hasRequiredDimensionLevel(dimension)) {
-            MutableText requirements = Text.empty();
+            MutableComponent requirements = Component.empty();
             for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredDimensionLevel(dimension).entrySet()) {
                 if (levelManager.getSkillLevel(entry.getKey()) < entry.getValue() && LevelManager.SKILLS.containsKey(entry.getKey())) {
                     if (!requirements.getSiblings().isEmpty()) {
                         requirements.append(", ");
                     }
-                    requirements.append(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()));
+                    requirements.append(Component.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()));
                 }
             }
-            this.sendMessage(Text.translatable("restriction.levelz.dimension.locked", requirements).formatted(Formatting.RED), true);
+            this.displayClientMessage(Component.translatable("restriction.levelz.dimension.locked", requirements).withStyle(ChatFormatting.RED), true);
             info.setReturnValue(null);
         }
     }
@@ -65,9 +65,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Se
     @Override
     public void addLevelExperience(int experience) {
         if (!levelManager.isMaxLevel()) {
-            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) (Object) this;
+            ServerPlayer serverPlayerEntity = (ServerPlayer) (Object) this;
             levelManager.setLevelProgress(levelManager.getLevelProgress() + Math.max((float) experience / Math.max(levelManager.getNextLevelExperience(), 1), 0));
-            levelManager.setTotalLevelExperience(MathHelper.clamp(levelManager.getTotalLevelExperience() + experience, 0, Integer.MAX_VALUE));
+            levelManager.setTotalLevelExperience(Mth.clamp(levelManager.getTotalLevelExperience() + experience, 0, Integer.MAX_VALUE));
 
             while (levelManager.getLevelProgress() >= 1.0F && !levelManager.isMaxLevel()) {
                 levelManager.setLevelProgress((levelManager.getLevelProgress() - 1.0F) * (float) levelManager.getNextLevelExperience());
@@ -77,21 +77,21 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Se
 
                 PacketHelper.updateLevels(serverPlayerEntity);
                 CriteriaInit.LEVEL_UP.trigger(serverPlayerEntity);
-                serverPlayerEntity.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
-                serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, serverPlayerEntity, ScoreAccess::incrementScore);
+                serverPlayerEntity.getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
+                serverPlayerEntity.getScoreboard().forAllObjectives(CriteriaInit.LEVELZ, serverPlayerEntity, ScoreAccess::increment);
                 if (levelManager.getOverallLevel() > 0) {
-                    serverPlayerEntity.getWorld().playSound(null, serverPlayerEntity.getX(), serverPlayerEntity.getY(), serverPlayerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, serverPlayerEntity.getSoundCategory(), 1.0F, 1.0F);
+                    serverPlayerEntity.level().playSound(null, serverPlayerEntity.getX(), serverPlayerEntity.getY(), serverPlayerEntity.getZ(), SoundEvents.PLAYER_LEVELUP, serverPlayerEntity.getSoundSource(), 1.0F, 1.0F);
                 }
             }
         }
         this.syncedLevelExperience = -1;
     }
 
-    @Inject(method = "playerTick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;totalExperience:I", ordinal = 0, shift = At.Shift.BEFORE))
+    @Inject(method = "doTick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerPlayer;totalExperience:I", ordinal = 0, shift = At.Shift.BEFORE))
     private void playerTickMixin(CallbackInfo info) {
         if (levelManager.getTotalLevelExperience() != this.syncedLevelExperience) {
             this.syncedLevelExperience = levelManager.getTotalLevelExperience();
-            PacketHelper.updateLevels((ServerPlayerEntity) (Object) this);
+            PacketHelper.updateLevels((ServerPlayer) (Object) this);
         }
 
     }

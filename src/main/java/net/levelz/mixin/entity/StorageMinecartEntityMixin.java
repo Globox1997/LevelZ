@@ -6,16 +6,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.access.PlayerDropAccess;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.vehicle.StorageMinecartEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecartContainer;
 
-@Mixin(StorageMinecartEntity.class)
+@Mixin(AbstractMinecartContainer.class)
 public class StorageMinecartEntityMixin {
 
     @Inject(method = "interact", at = @At("HEAD"))
-    private void interactMixin(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+    private void interactMixin(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
         ((PlayerDropAccess) player).resetKilledMobStat();
     }
 }

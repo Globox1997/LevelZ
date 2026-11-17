@@ -1,10 +1,10 @@
 package net.levelz.mixin.compat;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.world.World;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -18,15 +18,15 @@ public abstract class TieredCompatMixin extends Entity {
     @Mutable
     @Shadow
     @Final
-    private static TrackedData<Float> HEALTH;
+    private static EntityDataAccessor<Float> DATA_HEALTH_ID;
 
-    public TieredCompatMixin(EntityType<?> type, World world) {
+    public TieredCompatMixin(EntityType<?> type, Level world) {
         super(type, world);
     }
 
-    @Redirect(method = "readCustomDataFromNbt", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setHealth(F)V"))
+    @Redirect(method = "readAdditionalSaveData", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setHealth(F)V"))
     private void readCustomDataFromNbtMixin(LivingEntity livingEntity, float health) {
-        this.dataTracker.set(HEALTH, health);
+        this.entityData.set(DATA_HEALTH_ID, health);
     }
 
 }

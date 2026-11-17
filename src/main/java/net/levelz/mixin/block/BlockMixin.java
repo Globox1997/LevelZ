@@ -7,18 +7,18 @@ import net.levelz.init.EntityInit;
 import net.levelz.init.TagInit;
 import net.levelz.level.LevelManager;
 import net.levelz.util.BonusHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContextParameterSet;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,15 +34,15 @@ import java.util.List;
 @Mixin(Block.class)
 public abstract class BlockMixin {
     @Shadow
-    private BlockState defaultState;
+    private BlockState defaultBlockState;
 
     @Unique
     @Nullable
-    private static ServerPlayerEntity breakingPlayer = null;
+    private static ServerPlayer breakingPlayer = null;
 
-    @Inject(method = "dropStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getDroppedStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)Ljava/util/List;"), cancellable = true)
-    private static void dropStacksMixin(BlockState state, World world, BlockPos pos, @Nullable BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfo info) {
-        if (entity instanceof PlayerEntity playerEntity) {
+    @Inject(method = "dropResources(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;getDrops(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"), cancellable = true)
+    private static void dropStacksMixin(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfo info) {
+        if (entity instanceof Player playerEntity) {
             if (playerEntity.isCreative()) {
                 return;
             }
@@ -58,17 +58,17 @@ public abstract class BlockMixin {
         }
     }
 
-    @Inject(method = "getDroppedStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getDroppedStacks(Lnet/minecraft/loot/context/LootContextParameterSet$Builder;)Ljava/util/List;"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private static void getDroppedStacksMixin(BlockState state, ServerWorld world, BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity entity, ItemStack stack, CallbackInfoReturnable<List<ItemStack>> info, LootContextParameterSet.Builder builder) {
-        if (entity instanceof PlayerEntity playerEntity) {
+    @Inject(method = "getDrops(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getDrops(Lnet/minecraft/world/level/storage/loot/LootParams$Builder;)Ljava/util/List;"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private static void getDroppedStacksMixin(BlockState state, ServerLevel world, BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity entity, ItemStack stack, CallbackInfoReturnable<List<ItemStack>> info, LootParams.Builder builder) {
+        if (entity instanceof Player playerEntity) {
             BonusHelper.miningDropChanceBonus(playerEntity, state, pos, builder);
         }
     }
 
-    @Inject(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
-    protected void dropExperienceMixin(ServerWorld world, BlockPos pos, int size, CallbackInfo info) {
-        if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F && !this.defaultState.isIn(TagInit.RESTRICTED_ORE_EXPERIENCE_BLOCKS)) {
-            LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
+    @Inject(method = "popExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"))
+    protected void dropExperienceMixin(ServerLevel world, BlockPos pos, int size, CallbackInfo info) {
+        if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F && !this.defaultBlockState.is(TagInit.RESTRICTED_ORE_EXPERIENCE_BLOCKS)) {
+            LevelExperienceOrbEntity.spawn(world, Vec3.atCenterOf(pos),
                     (int) (size * ConfigInit.CONFIG.oreXPMultiplier
                             * (ConfigInit.CONFIG.dropXPbasedOnLvl && breakingPlayer != null
                             ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) breakingPlayer).getLevelManager().getOverallLevel()
@@ -76,13 +76,13 @@ public abstract class BlockMixin {
         }
     }
 
-    @Inject(method = "afterBreak", at = @At(value = "HEAD"))
-    private void afterBreakMixin(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool, CallbackInfo info) {
-        breakingPlayer = player instanceof ServerPlayerEntity serverPlayer ? serverPlayer : null;
+    @Inject(method = "playerDestroy", at = @At(value = "HEAD"))
+    private void afterBreakMixin(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool, CallbackInfo info) {
+        breakingPlayer = player instanceof ServerPlayer serverPlayer ? serverPlayer : null;
     }
 
-    @Inject(method = "afterBreak", at = @At(value = "RETURN"))
-    private void afterBreakReturnMixin(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool, CallbackInfo info) {
+    @Inject(method = "playerDestroy", at = @At(value = "RETURN"))
+    private void afterBreakReturnMixin(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool, CallbackInfo info) {
         breakingPlayer = null;
     }
 

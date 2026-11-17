@@ -1,21 +1,21 @@
 package net.levelz.network.packet;
 
 import net.levelz.LevelzMain;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public record EditorDeletePacket(String key, int baseHash) implements CustomPayload {
+public record EditorDeletePacket(String key, int baseHash) implements CustomPacketPayload {
 
-    public static final CustomPayload.Id<EditorDeletePacket> PACKET_ID = new CustomPayload.Id<>(LevelzMain.identifierOf("editor_delete_packet"));
+    public static final CustomPacketPayload.Type<EditorDeletePacket> PACKET_ID = new CustomPacketPayload.Type<>(LevelzMain.identifierOf("editor_delete_packet"));
 
-    public static final PacketCodec<RegistryByteBuf, EditorDeletePacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
-        buf.writeString(value.key);
+    public static final StreamCodec<RegistryFriendlyByteBuf, EditorDeletePacket> PACKET_CODEC = StreamCodec.ofMember((value, buf) -> {
+        buf.writeUtf(value.key);
         buf.writeInt(value.baseHash);
-    }, buf -> new EditorDeletePacket(buf.readString(), buf.readInt()));
+    }, buf -> new EditorDeletePacket(buf.readUtf(), buf.readInt()));
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 

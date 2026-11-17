@@ -6,10 +6,10 @@ import org.spongepowered.asm.mixin.Unique;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.access.ClientPlayerListAccess;
-import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.multiplayer.PlayerInfo;
 
 @Environment(EnvType.CLIENT)
-@Mixin(PlayerListEntry.class)
+@Mixin(PlayerInfo.class)
 public abstract class ClientPlayerListEntryMixin implements ClientPlayerListAccess {
 
     @Unique

@@ -11,23 +11,23 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.access.ClientPlayerListAccess;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 
 @SuppressWarnings("rawtypes")
 @Environment(EnvType.CLIENT)
-@Mixin(ClientPlayNetworkHandler.class)
+@Mixin(ClientPacketListener.class)
 public class ClientPlayNetworkHandlerMixin {
 
-    @Inject(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/SocialInteractionsManager;setPlayerOnline(Lnet/minecraft/client/network/PlayerListEntry;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void onPlayerListMixin(PlayerListS2CPacket packet, CallbackInfo info, Iterator var2, PlayerListS2CPacket.Entry entry, PlayerListEntry playerListEntry) {
+    @Inject(method = "handlePlayerInfoUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/social/PlayerSocialManager;addPlayer(Lnet/minecraft/client/multiplayer/PlayerInfo;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void onPlayerListMixin(ClientboundPlayerInfoUpdatePacket packet, CallbackInfo info, Iterator var2, ClientboundPlayerInfoUpdatePacket.Entry entry, PlayerInfo playerListEntry) {
         ((ClientPlayerListAccess) playerListEntry).setLevel(((ClientPlayerListAccess) packet).getLevelMap().getOrDefault(playerListEntry.getProfile().getId(), 0));
     }
 
-    @Inject(method = "onPlayerList", at = @At(value = "INVOKE", target = "Ljava/util/EnumSet;iterator()Ljava/util/Iterator;"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void onPlayerListGameModeMixin(PlayerListS2CPacket packet, CallbackInfo info, Iterator var2, PlayerListS2CPacket.Entry entry, PlayerListEntry playerListEntry) {
-        if (packet.getActions().contains(PlayerListS2CPacket.Action.UPDATE_GAME_MODE)) {
+    @Inject(method = "handlePlayerInfoUpdate", at = @At(value = "INVOKE", target = "Ljava/util/EnumSet;iterator()Ljava/util/Iterator;"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void onPlayerListGameModeMixin(ClientboundPlayerInfoUpdatePacket packet, CallbackInfo info, Iterator var2, ClientboundPlayerInfoUpdatePacket.Entry entry, PlayerInfo playerListEntry) {
+        if (packet.actions().contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE)) {
             ((ClientPlayerListAccess) playerListEntry).setLevel(((ClientPlayerListAccess) packet).getLevelMap().getOrDefault(playerListEntry.getProfile().getId(), 0));
         }
     }

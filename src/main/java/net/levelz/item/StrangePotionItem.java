@@ -5,31 +5,33 @@ import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.util.LevelHelper;
 import net.levelz.util.PacketHelper;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
-
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class StrangePotionItem extends Item {
 
-    public StrangePotionItem(Settings settings) {
+    public StrangePotionItem(Properties settings) {
         super(settings);
     }
 
     @Override
-    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        if (!world.isClient() && user instanceof ServerPlayerEntity playerEntity) {
-            Criteria.CONSUME_ITEM.trigger(playerEntity, stack);
+    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity user) {
+        if (!world.isClientSide() && user instanceof ServerPlayer playerEntity) {
+            CriteriaTriggers.CONSUME_ITEM.trigger(playerEntity, stack);
 
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             List<Integer> list = new ArrayList<>(levelManager.getPlayerSkills().keySet());
@@ -43,31 +45,31 @@ public class StrangePotionItem extends Item {
             PacketHelper.updatePlayerSkills(playerEntity, null);
 
             if (!playerEntity.isCreative()) {
-                stack.decrement(1);
+                stack.shrink(1);
                 if (stack.isEmpty()) {
                     return new ItemStack(Items.GLASS_BOTTLE);
                 }
-                playerEntity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
+                playerEntity.getInventory().add(new ItemStack(Items.GLASS_BOTTLE));
             }
 
-            user.emitGameEvent(GameEvent.DRINK);
+            user.gameEvent(GameEvent.DRINK);
         }
         return stack;
     }
 
     @Override
-    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
+    public int getUseDuration(ItemStack stack, LivingEntity user) {
         return 32;
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.DRINK;
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.DRINK;
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        return ItemUsage.consumeHeldItem(world, user, hand);
+    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+        return ItemUtils.startUsingInstantly(world, user, hand);
     }
 
 }

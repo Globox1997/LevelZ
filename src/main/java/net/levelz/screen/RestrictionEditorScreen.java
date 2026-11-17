@@ -12,18 +12,18 @@ import net.levelz.editor.RestrictionOverrides;
 import net.levelz.network.packet.EditorExportPacket;
 import net.levelz.network.packet.EditorRequestPacket;
 import net.levelz.network.packet.EditorResultPacket;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Language;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -37,17 +37,17 @@ public class RestrictionEditorScreen extends Screen {
     public static final List<String> CATEGORIES = List.of("blocks", "crafting", "entities", "items", "mining", "enchantments", "components", "dimensions");
     private static final List<String> FLAGS = List.of("skills", "replace", "remove");
 
-    private TextFieldWidget searchField;
+    private EditBox searchField;
     private EntryList entryList;
-    private ButtonWidget problemsButton;
-    private ButtonWidget editButton;
-    private Text status = Text.empty();
+    private Button problemsButton;
+    private Button editButton;
+    private Component status = Component.empty();
     private String search = "";
     private boolean showProblems = false;
     @Nullable
     private RestrictionEntry selectedEntry = null;
 
-    private final List<OrderedText> detailLines = new ArrayList<>();
+    private final List<FormattedCharSequence> detailLines = new ArrayList<>();
     private double detailScroll = 0.0D;
     private int detailX;
     private int detailY;
@@ -55,7 +55,7 @@ public class RestrictionEditorScreen extends Screen {
     private int detailHeight;
 
     public RestrictionEditorScreen() {
-        super(Text.translatable("screen.levelz.restriction_editor"));
+        super(Component.translatable("screen.levelz.restriction_editor"));
     }
 
     @Override
@@ -66,38 +66,38 @@ public class RestrictionEditorScreen extends Screen {
         this.detailWidth = this.width - this.detailX - 10;
         this.detailHeight = this.height - 104;
 
-        this.searchField = new TextFieldWidget(this.textRenderer, 10, 22, listWidth, 18, Text.translatable("editor.levelz.search"));
-        this.searchField.setPlaceholder(Text.translatable("editor.levelz.search").formatted(Formatting.GRAY));
-        this.searchField.setText(this.search);
-        this.searchField.setChangedListener(text -> {
+        this.searchField = new EditBox(this.font, 10, 22, listWidth, 18, Component.translatable("editor.levelz.search"));
+        this.searchField.setHint(Component.translatable("editor.levelz.search").withStyle(ChatFormatting.GRAY));
+        this.searchField.setValue(this.search);
+        this.searchField.setResponder(text -> {
             this.search = text;
             this.refresh();
         });
-        this.addDrawableChild(this.searchField);
+        this.addRenderableWidget(this.searchField);
 
-        this.entryList = new EntryList(this.client, listWidth, this.detailHeight, this.detailY, 12);
+        this.entryList = new EntryList(this.minecraft, listWidth, this.detailHeight, this.detailY, 12);
         this.entryList.setX(10);
-        this.addDrawableChild(this.entryList);
+        this.addRenderableWidget(this.entryList);
 
         int editButtonY = this.height - 52;
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("editor.levelz.new"), button -> this.client.setScreen(new RestrictionEditScreen(this, null)))
-                .dimensions(this.width / 2 - 155, editButtonY, 100, 20).build());
-        this.editButton = this.addDrawableChild(ButtonWidget.builder(Text.translatable("editor.levelz.edit"), button -> {
+        this.addRenderableWidget(Button.builder(Component.translatable("editor.levelz.new"), button -> this.minecraft.setScreen(new RestrictionEditScreen(this, null)))
+                .bounds(this.width / 2 - 155, editButtonY, 100, 20).build());
+        this.editButton = this.addRenderableWidget(Button.builder(Component.translatable("editor.levelz.edit"), button -> {
             if (this.selectedEntry != null) {
-                this.client.setScreen(new RestrictionEditScreen(this, this.selectedEntry));
+                this.minecraft.setScreen(new RestrictionEditScreen(this, this.selectedEntry));
             }
-        }).dimensions(this.width / 2 - 50, editButtonY, 100, 20).build());
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("editor.levelz.export"), button -> ClientPlayNetworking.send(new EditorExportPacket()))
-                .dimensions(this.width / 2 + 55, editButtonY, 100, 20).build());
+        }).bounds(this.width / 2 - 50, editButtonY, 100, 20).build());
+        this.addRenderableWidget(Button.builder(Component.translatable("editor.levelz.export"), button -> ClientPlayNetworking.send(new EditorExportPacket()))
+                .bounds(this.width / 2 + 55, editButtonY, 100, 20).build());
 
         int buttonY = this.height - 28;
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("editor.levelz.refresh"), button -> ClientPlayNetworking.send(new EditorRequestPacket()))
-                .dimensions(this.width / 2 - 155, buttonY, 100, 20).build());
-        this.problemsButton = this.addDrawableChild(ButtonWidget.builder(Text.empty(), button -> {
+        this.addRenderableWidget(Button.builder(Component.translatable("editor.levelz.refresh"), button -> ClientPlayNetworking.send(new EditorRequestPacket()))
+                .bounds(this.width / 2 - 155, buttonY, 100, 20).build());
+        this.problemsButton = this.addRenderableWidget(Button.builder(Component.empty(), button -> {
             this.showProblems = !this.showProblems;
             this.updateDetail();
-        }).dimensions(this.width / 2 - 50, buttonY, 100, 20).build());
-        this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> this.close()).dimensions(this.width / 2 + 55, buttonY, 100, 20).build());
+        }).bounds(this.width / 2 - 50, buttonY, 100, 20).build());
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose()).bounds(this.width / 2 + 55, buttonY, 100, 20).build());
 
         this.refresh();
     }
@@ -112,7 +112,7 @@ public class RestrictionEditorScreen extends Screen {
             }
         }
         this.entryList.setEntries(entries, this.selectedEntry);
-        this.problemsButton.setMessage(Text.translatable("editor.levelz.problems", EditorClientData.PROBLEMS.size()));
+        this.problemsButton.setMessage(Component.translatable("editor.levelz.problems", EditorClientData.PROBLEMS.size()));
         this.updateDetail();
     }
 
@@ -121,44 +121,44 @@ public class RestrictionEditorScreen extends Screen {
         this.showProblems = false;
         if (this.editButton != null) {
             this.editButton.active = entry != null;
-            this.editButton.setMessage(Text.translatable(entry == null || RestrictionOverrides.SOURCE.equals(entry.file()) ? "editor.levelz.edit" : "editor.levelz.override"));
+            this.editButton.setMessage(Component.translatable(entry == null || RestrictionOverrides.SOURCE.equals(entry.file()) ? "editor.levelz.edit" : "editor.levelz.override"));
         }
         this.updateDetail();
     }
 
     public void onResult(EditorResultPacket result) {
-        this.status = Text.translatable(result.message(), result.arguments().toArray()).formatted(result.success() ? Formatting.GREEN : Formatting.RED);
+        this.status = Component.translatable(result.message(), result.arguments().toArray()).withStyle(result.success() ? ChatFormatting.GREEN : ChatFormatting.RED);
     }
 
     private void updateDetail() {
         this.detailLines.clear();
         this.detailScroll = 0.0D;
-        List<Text> lines = new ArrayList<>();
+        List<Component> lines = new ArrayList<>();
         if (this.showProblems) {
-            lines.add(Text.translatable("editor.levelz.problems.title").formatted(Formatting.BOLD));
+            lines.add(Component.translatable("editor.levelz.problems.title").withStyle(ChatFormatting.BOLD));
             if (EditorClientData.PROBLEMS.isEmpty()) {
-                lines.add(Text.translatable("editor.levelz.no_problems").formatted(Formatting.GREEN));
+                lines.add(Component.translatable("editor.levelz.no_problems").withStyle(ChatFormatting.GREEN));
             }
             for (String problem : EditorClientData.PROBLEMS) {
-                lines.add(Text.literal(problem).formatted(Formatting.RED));
+                lines.add(Component.literal(problem).withStyle(ChatFormatting.RED));
             }
         } else if (this.selectedEntry == null) {
-            lines.add(Text.translatable(EditorClientData.ENTRIES.isEmpty() ? "editor.levelz.no_entries" : "editor.levelz.select_entry").formatted(Formatting.GRAY));
+            lines.add(Component.translatable(EditorClientData.ENTRIES.isEmpty() ? "editor.levelz.no_entries" : "editor.levelz.select_entry").withStyle(ChatFormatting.GRAY));
         } else {
             addEntryLines(this.selectedEntry, lines);
         }
-        for (Text line : lines) {
+        for (Component line : lines) {
             if (line.getString().isEmpty()) {
-                this.detailLines.add(OrderedText.EMPTY);
+                this.detailLines.add(FormattedCharSequence.EMPTY);
             } else {
-                this.detailLines.addAll(this.textRenderer.wrapLines(line, this.detailWidth - 8));
+                this.detailLines.addAll(this.font.split(line, this.detailWidth - 8));
             }
         }
     }
 
-    private static void addEntryLines(RestrictionEntry entry, List<Text> lines) {
-        lines.add(Text.literal(entry.key()).formatted(Formatting.BOLD));
-        lines.add(Text.translatable("editor.levelz.source", entry.file()).formatted(Formatting.GRAY));
+    private static void addEntryLines(RestrictionEntry entry, List<Component> lines) {
+        lines.add(Component.literal(entry.key()).withStyle(ChatFormatting.BOLD));
+        lines.add(Component.translatable("editor.levelz.source", entry.file()).withStyle(ChatFormatting.GRAY));
 
         JsonElement element;
         try {
@@ -167,62 +167,62 @@ public class RestrictionEditorScreen extends Screen {
             element = null;
         }
         if (element == null || !element.isJsonObject()) {
-            lines.add(Text.translatable("editor.levelz.invalid_entry").formatted(Formatting.RED));
-            lines.add(Text.literal(entry.json()));
+            lines.add(Component.translatable("editor.levelz.invalid_entry").withStyle(ChatFormatting.RED));
+            lines.add(Component.literal(entry.json()));
         } else {
             JsonObject jsonObject = element.getAsJsonObject();
             if (isTrue(jsonObject, "remove")) {
-                lines.add(Text.translatable("editor.levelz.remove").formatted(Formatting.GOLD));
+                lines.add(Component.translatable("editor.levelz.remove").withStyle(ChatFormatting.GOLD));
             }
             if (isTrue(jsonObject, "replace")) {
-                lines.add(Text.translatable("editor.levelz.replace").formatted(Formatting.GOLD));
+                lines.add(Component.translatable("editor.levelz.replace").withStyle(ChatFormatting.GOLD));
             }
             if (jsonObject.has("skills") && jsonObject.get("skills").isJsonObject()) {
-                lines.add(Text.empty());
-                lines.add(Text.translatable("editor.levelz.skills").formatted(Formatting.YELLOW));
+                lines.add(Component.empty());
+                lines.add(Component.translatable("editor.levelz.skills").withStyle(ChatFormatting.YELLOW));
                 for (Map.Entry<String, JsonElement> skill : jsonObject.getAsJsonObject("skills").entrySet()) {
-                    Formatting formatting = EditorClientData.SKILLS.contains(skill.getKey()) ? Formatting.WHITE : Formatting.RED;
-                    lines.add(Text.literal("  " + skill.getKey() + " " + skill.getValue()).formatted(formatting));
+                    ChatFormatting formatting = EditorClientData.SKILLS.contains(skill.getKey()) ? ChatFormatting.WHITE : ChatFormatting.RED;
+                    lines.add(Component.literal("  " + skill.getKey() + " " + skill.getValue()).withStyle(formatting));
                 }
             }
             for (String category : CATEGORIES) {
                 if (jsonObject.has(category)) {
-                    lines.add(Text.empty());
-                    lines.add(Text.translatable("editor.levelz.category." + category).formatted(Formatting.YELLOW));
+                    lines.add(Component.empty());
+                    lines.add(Component.translatable("editor.levelz.category." + category).withStyle(ChatFormatting.YELLOW));
                     addValueLines(jsonObject.get(category), lines);
                 }
             }
             List<String> otherKeys = jsonObject.keySet().stream().filter(key -> !CATEGORIES.contains(key) && !FLAGS.contains(key)).toList();
             if (!otherKeys.isEmpty()) {
-                lines.add(Text.empty());
-                lines.add(Text.translatable("editor.levelz.other").formatted(Formatting.YELLOW));
+                lines.add(Component.empty());
+                lines.add(Component.translatable("editor.levelz.other").withStyle(ChatFormatting.YELLOW));
                 for (String key : otherKeys) {
-                    lines.add(Text.literal("  " + key + ": " + jsonObject.get(key)).formatted(Formatting.GRAY));
+                    lines.add(Component.literal("  " + key + ": " + jsonObject.get(key)).withStyle(ChatFormatting.GRAY));
                 }
             }
         }
 
         List<String> problems = getProblems(entry);
         if (!problems.isEmpty()) {
-            lines.add(Text.empty());
-            lines.add(Text.translatable("editor.levelz.entry_problems").formatted(Formatting.RED, Formatting.BOLD));
+            lines.add(Component.empty());
+            lines.add(Component.translatable("editor.levelz.entry_problems").withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
             for (String problem : problems) {
-                lines.add(Text.literal(problem).formatted(Formatting.RED));
+                lines.add(Component.literal(problem).withStyle(ChatFormatting.RED));
             }
         }
     }
 
-    private static void addValueLines(JsonElement element, List<Text> lines) {
+    private static void addValueLines(JsonElement element, List<Component> lines) {
         if (element.isJsonArray()) {
             for (JsonElement value : element.getAsJsonArray()) {
-                lines.add(Text.literal("  " + (value.isJsonPrimitive() ? value.getAsString() : value.toString())));
+                lines.add(Component.literal("  " + (value.isJsonPrimitive() ? value.getAsString() : value.toString())));
             }
         } else if (element.isJsonObject()) {
             for (Map.Entry<String, JsonElement> value : element.getAsJsonObject().entrySet()) {
-                lines.add(Text.literal("  " + value.getKey() + " " + value.getValue()));
+                lines.add(Component.literal("  " + value.getKey() + " " + value.getValue()));
             }
         } else {
-            lines.add(Text.literal("  " + element).formatted(Formatting.RED));
+            lines.add(Component.literal("  " + element).withStyle(ChatFormatting.RED));
         }
     }
 
@@ -236,17 +236,17 @@ public class RestrictionEditorScreen extends Screen {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-        context.drawTextWithShadow(this.textRenderer, Language.getInstance().reorder(this.textRenderer.trimToWidth(this.status, this.detailWidth)), this.detailX, 28, 0xFFFFFF);
+        context.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+        context.drawString(this.font, Language.getInstance().getVisualOrder(this.font.substrByWidth(this.status, this.detailWidth)), this.detailX, 28, 0xFFFFFF);
 
         context.fill(this.detailX, this.detailY, this.detailX + this.detailWidth, this.detailY + this.detailHeight, 0x80000000);
         context.enableScissor(this.detailX, this.detailY, this.detailX + this.detailWidth, this.detailY + this.detailHeight);
         int y = this.detailY + 4 - (int) this.detailScroll;
-        for (OrderedText line : this.detailLines) {
+        for (FormattedCharSequence line : this.detailLines) {
             if (y > this.detailY - 10 && y < this.detailY + this.detailHeight) {
-                context.drawTextWithShadow(this.textRenderer, line, this.detailX + 4, y, 0xFFFFFF);
+                context.drawString(this.font, line, this.detailX + 4, y, 0xFFFFFF);
             }
             y += 10;
         }
@@ -257,15 +257,15 @@ public class RestrictionEditorScreen extends Screen {
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         if (mouseX >= this.detailX && mouseX < this.detailX + this.detailWidth && mouseY >= this.detailY && mouseY < this.detailY + this.detailHeight) {
             int maxScroll = Math.max(0, this.detailLines.size() * 10 + 8 - this.detailHeight);
-            this.detailScroll = MathHelper.clamp(this.detailScroll - verticalAmount * 20.0D, 0.0D, maxScroll);
+            this.detailScroll = Mth.clamp(this.detailScroll - verticalAmount * 20.0D, 0.0D, maxScroll);
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
-    private class EntryList extends AlwaysSelectedEntryListWidget<EntryRow> {
+    private class EntryList extends ObjectSelectionList<EntryRow> {
 
-        public EntryList(MinecraftClient client, int width, int height, int y, int itemHeight) {
+        public EntryList(Minecraft client, int width, int height, int y, int itemHeight) {
             super(client, width, height, y, itemHeight);
         }
 
@@ -294,12 +294,12 @@ public class RestrictionEditorScreen extends Screen {
         }
 
         @Override
-        protected int getScrollbarX() {
+        protected int getScrollbarPosition() {
             return this.getX() + this.width - 6;
         }
     }
 
-    private class EntryRow extends AlwaysSelectedEntryListWidget.Entry<EntryRow> {
+    private class EntryRow extends ObjectSelectionList.Entry<EntryRow> {
 
         private final RestrictionEntry entry;
         private final boolean hasProblems;
@@ -310,18 +310,18 @@ public class RestrictionEditorScreen extends Screen {
         }
 
         @Override
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             int color = RestrictionOverrides.SOURCE.equals(this.entry.file()) ? 0xFFD37F : 0xFFFFFF;
             int textWidth = entryWidth - (this.hasProblems ? 12 : 4);
-            context.drawTextWithShadow(RestrictionEditorScreen.this.textRenderer, RestrictionEditorScreen.this.textRenderer.trimToWidth(this.entry.key(), textWidth), x + 2, y + 1, color);
+            context.drawString(RestrictionEditorScreen.this.font, RestrictionEditorScreen.this.font.plainSubstrByWidth(this.entry.key(), textWidth), x + 2, y + 1, color);
             if (this.hasProblems) {
-                context.drawTextWithShadow(RestrictionEditorScreen.this.textRenderer, Text.literal("!").formatted(Formatting.RED), x + entryWidth - 8, y + 1, 0xFFFFFF);
+                context.drawString(RestrictionEditorScreen.this.font, Component.literal("!").withStyle(ChatFormatting.RED), x + entryWidth - 8, y + 1, 0xFFFFFF);
             }
         }
 
         @Override
-        public Text getNarration() {
-            return Text.literal(this.entry.key());
+        public Component getNarration() {
+            return Component.literal(this.entry.key());
         }
 
         @Override

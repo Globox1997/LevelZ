@@ -10,40 +10,39 @@ import net.levelz.level.LevelManager;
 import net.levelz.level.Skill;
 import net.levelz.level.SkillAttribute;
 import net.levelz.level.SkillBonus;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import java.io.InputStreamReader;
 import java.util.*;
 
 public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
-    public static final Identifier ID = LevelzMain.identifierOf("skill");
+    public static final ResourceLocation ID = LevelzMain.identifierOf("skill");
 
     private static final List<Integer> skillList = new ArrayList<>();
 
     @Override
-    public Identifier getFabricId() {
+    public ResourceLocation getFabricId() {
         return ID;
     }
 
     @Override
-    public void reload(ResourceManager manager) {
+    public void onResourceManagerReload(ResourceManager manager) {
         DatapackErrors.clear();
         LevelManager.SKILLS.clear();
         LevelManager.BONUSES.clear();
         skillList.clear();
 
-        manager.findResources("skill", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+        manager.listResources("skill", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
             if (!ConfigInit.CONFIG.defaultSkills && id.getPath().endsWith("/default.json")) {
                 return;
             }
             JsonObject data;
-            try (InputStreamReader reader = new InputStreamReader(resourceRef.getInputStream())) {
+            try (InputStreamReader reader = new InputStreamReader(resourceRef.open())) {
                 data = JsonParser.parseReader(reader).getAsJsonObject();
             } catch (Exception e) {
                 DatapackErrors.report("Skill file {} is not valid json: {}", id, e.getMessage());
@@ -154,18 +153,18 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
             }
         }
         String type = attributeJsonObject.get("type").getAsString();
-        Identifier attributeIdentifier = Identifier.tryParse(type);
-        Optional<RegistryEntry.Reference<EntityAttribute>> entityAttribute = attributeIdentifier != null ? Registries.ATTRIBUTE.getEntry(attributeIdentifier) : Optional.empty();
+        ResourceLocation attributeIdentifier = ResourceLocation.tryParse(type);
+        Optional<Holder.Reference<Attribute>> entityAttribute = attributeIdentifier != null ? BuiltInRegistries.ATTRIBUTE.getHolder(attributeIdentifier) : Optional.empty();
         if (entityAttribute.isEmpty()) {
             DatapackErrors.report("Skill {} contains the unknown attribute {}.", source, type);
             return null;
         }
         String operationName = attributeJsonObject.get("operation").getAsString();
-        EntityAttributeModifier.Operation operation;
+        AttributeModifier.Operation operation;
         try {
-            operation = EntityAttributeModifier.Operation.valueOf(operationName.toUpperCase(Locale.ROOT));
+            operation = AttributeModifier.Operation.valueOf(operationName.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
-            DatapackErrors.report("Skill {} contains the unknown attribute operation {}. Valid operations: {}", source, operationName, Arrays.toString(EntityAttributeModifier.Operation.values()));
+            DatapackErrors.report("Skill {} contains the unknown attribute operation {}. Valid operations: {}", source, operationName, Arrays.toString(AttributeModifier.Operation.values()));
             return null;
         }
         int attributeId = attributeJsonObject.has("id") ? attributeJsonObject.get("id").getAsInt() : -1;

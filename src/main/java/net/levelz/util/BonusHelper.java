@@ -7,28 +7,28 @@ import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.SkillBonus;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.FoodComponent;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContextParameterSet;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,47 +36,47 @@ import java.util.Optional;
 
 public class BonusHelper {
 
-    public static void bowBonus(LivingEntity shooter, ProjectileEntity projectile) {
-        if (shooter instanceof PlayerEntity playerEntity && projectile instanceof PersistentProjectileEntity persistentProjectileEntity) {
+    public static void bowBonus(LivingEntity shooter, Projectile projectile) {
+        if (shooter instanceof Player playerEntity && projectile instanceof AbstractArrow persistentProjectileEntity) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             if (LevelManager.BONUSES.containsKey("bowDamage")) {
                 SkillBonus skillBonus = LevelManager.BONUSES.get("bowDamage");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel()) {
-                    persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage() + ConfigInit.CONFIG.bowDamageBonus * level);
+                    persistentProjectileEntity.setBaseDamage(persistentProjectileEntity.getBaseDamage() + ConfigInit.CONFIG.bowDamageBonus * level);
                 }
             }
             if (LevelManager.BONUSES.containsKey("bowDoubleDamageChance")) {
                 SkillBonus skillBonus = LevelManager.BONUSES.get("bowDoubleDamageChance");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= ConfigInit.CONFIG.bowDoubleDamageChanceBonus) {
-                    persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage() * 2D);
+                    persistentProjectileEntity.setBaseDamage(persistentProjectileEntity.getBaseDamage() * 2D);
                 }
             }
         }
     }
 
-    public static void crossbowBonus(LivingEntity shooter, ProjectileEntity projectile) {
-        if (shooter instanceof PlayerEntity playerEntity && projectile instanceof PersistentProjectileEntity persistentProjectileEntity) {
+    public static void crossbowBonus(LivingEntity shooter, Projectile projectile) {
+        if (shooter instanceof Player playerEntity && projectile instanceof AbstractArrow persistentProjectileEntity) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             if (LevelManager.BONUSES.containsKey("crossbowDamage")) {
                 SkillBonus skillBonus = LevelManager.BONUSES.get("crossbowDamage");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel()) {
-                    persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage() + ConfigInit.CONFIG.crossbowDamageBonus * level);
+                    persistentProjectileEntity.setBaseDamage(persistentProjectileEntity.getBaseDamage() + ConfigInit.CONFIG.crossbowDamageBonus * level);
                 }
             }
             if (LevelManager.BONUSES.containsKey("crossbowDoubleDamageChance")) {
                 SkillBonus skillBonus = LevelManager.BONUSES.get("crossbowDoubleDamageChance");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= ConfigInit.CONFIG.crossbowDoubleDamageChanceBonus) {
-                    persistentProjectileEntity.setDamage(persistentProjectileEntity.getDamage() * 2D);
+                    persistentProjectileEntity.setBaseDamage(persistentProjectileEntity.getBaseDamage() * 2D);
                 }
             }
         }
     }
 
-    public static boolean itemDamageChanceBonus(@Nullable PlayerEntity playerEntity) {
+    public static boolean itemDamageChanceBonus(@Nullable Player playerEntity) {
         if (playerEntity != null && LevelManager.BONUSES.containsKey("itemDamageChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("itemDamageChance");
@@ -88,38 +88,38 @@ public class BonusHelper {
         return false;
     }
 
-    public static StatusEffectInstance potionEffectChanceBonus(@Nullable PlayerEntity playerEntity, StatusEffectInstance statusEffectInstance) {
+    public static MobEffectInstance potionEffectChanceBonus(@Nullable Player playerEntity, MobEffectInstance statusEffectInstance) {
         if (playerEntity != null && LevelManager.BONUSES.containsKey("potionEffectChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("potionEffectChance");
             int level = levelManager.getSkillLevel(skillBonus.getId());
             if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= ConfigInit.CONFIG.potionEffectChanceBonus) {
-                return new StatusEffectInstance(statusEffectInstance.getEffectType(), statusEffectInstance.getDuration(),
+                return new MobEffectInstance(statusEffectInstance.getEffect(), statusEffectInstance.getDuration(),
                         statusEffectInstance.getAmplifier() + 1, statusEffectInstance.isAmbient(),
-                        statusEffectInstance.shouldShowParticles(), statusEffectInstance.shouldShowIcon());
+                        statusEffectInstance.isVisible(), statusEffectInstance.showIcon());
             }
         }
         return statusEffectInstance;
     }
 
-    public static void breedTwinChanceBonus(ServerWorld world, PlayerEntity playerEntity, PassiveEntity animalEntity, PassiveEntity otherAnimalEntity) {
+    public static void breedTwinChanceBonus(ServerLevel world, Player playerEntity, AgeableMob animalEntity, AgeableMob otherAnimalEntity) {
         if (LevelManager.BONUSES.containsKey("breedTwinChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("breedTwinChance");
             int level = levelManager.getSkillLevel(skillBonus.getId());
             if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= ConfigInit.CONFIG.twinBreedChanceBonus) {
-                PassiveEntity extraPassiveEntity = animalEntity.createChild(world, otherAnimalEntity);
+                AgeableMob extraPassiveEntity = animalEntity.getBreedOffspring(world, otherAnimalEntity);
                 if (extraPassiveEntity == null) {
                     return;
                 }
                 extraPassiveEntity.setBaby(true);
-                extraPassiveEntity.refreshPositionAndAngles(animalEntity.getX(), animalEntity.getY(), animalEntity.getZ(), playerEntity.getRandom().nextFloat() * 360F, 0.0F);
-                world.spawnEntityAndPassengers(extraPassiveEntity);
+                extraPassiveEntity.moveTo(animalEntity.getX(), animalEntity.getY(), animalEntity.getZ(), playerEntity.getRandom().nextFloat() * 360F, 0.0F);
+                world.addFreshEntityWithPassengers(extraPassiveEntity);
             }
         }
     }
 
-    public static float fallDamageReductionBonus(PlayerEntity playerEntity) {
+    public static float fallDamageReductionBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("fallDamageReduction")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("fallDamageReduction");
@@ -131,16 +131,16 @@ public class BonusHelper {
         return 0.0f;
     }
 
-    public static boolean deathGraceChanceBonus(PlayerEntity playerEntity) {
+    public static boolean deathGraceChanceBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("deathGraceChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("deathGraceChance");
             int level = levelManager.getSkillLevel(skillBonus.getId());
             if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= ConfigInit.CONFIG.deathGraceChanceBonus) {
                 playerEntity.setHealth(1.0F);
-                playerEntity.clearStatusEffects();
-                playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
-                playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 600, 0));
+                playerEntity.removeAllEffects();
+                playerEntity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
+                playerEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 0));
                 return true;
             }
         }
@@ -148,7 +148,7 @@ public class BonusHelper {
         return false;
     }
 
-    public static float tntStrengthBonus(PlayerEntity playerEntity) {
+    public static float tntStrengthBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("tntStrength")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("tntStrength");
@@ -160,8 +160,8 @@ public class BonusHelper {
         return 0.0f;
     }
 
-    public static float priceDiscountBonus(PlayerEntity playerEntity) {
-        if (playerEntity.hasStatusEffect(StatusEffects.HERO_OF_THE_VILLAGE)) {
+    public static float priceDiscountBonus(Player playerEntity) {
+        if (playerEntity.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) {
             return 1.0f;
         }
         if (LevelManager.BONUSES.containsKey("priceDiscount")) {
@@ -175,7 +175,7 @@ public class BonusHelper {
         return 1.0f;
     }
 
-    public static void tradeXpBonus(ServerWorld serverWorld, @Nullable PlayerEntity playerEntity, MerchantEntity merchantEntity, int amount) {
+    public static void tradeXpBonus(ServerLevel serverWorld, @Nullable Player playerEntity, AbstractVillager merchantEntity, int amount) {
         amount = (int) (amount * ConfigInit.CONFIG.tradingXPMultiplier);
         if (amount > 0) {
             if (playerEntity != null) {
@@ -188,13 +188,13 @@ public class BonusHelper {
                     }
                 }
             }
-            LevelExperienceOrbEntity.spawn(serverWorld, merchantEntity.getPos().add(0.0D, 0.5D, 0.0D), amount);
+            LevelExperienceOrbEntity.spawn(serverWorld, merchantEntity.position().add(0.0D, 0.5D, 0.0D), amount);
             // Todo: HERE
             // ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) lastCustomer).getPlayerStatsManager().getOverallLevel()
         }
     }
 
-    public static boolean merchantImmuneBonus(PlayerEntity playerEntity) {
+    public static boolean merchantImmuneBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("merchantImmune")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("merchantImmune");
@@ -206,33 +206,33 @@ public class BonusHelper {
         return false;
     }
 
-    public static void miningDropChanceBonus(PlayerEntity playerEntity, BlockState state, BlockPos pos, LootContextParameterSet.Builder builder) {
-        if (state.isIn(ConventionalBlockTags.ORES) && EnchantmentHelper.getEquipmentLevel(playerEntity.getRegistryManager().get(RegistryKeys.ENCHANTMENT).entryOf(Enchantments.SILK_TOUCH), playerEntity) <= 0) {
+    public static void miningDropChanceBonus(Player playerEntity, BlockState state, BlockPos pos, LootParams.Builder builder) {
+        if (state.is(ConventionalBlockTags.ORES) && EnchantmentHelper.getEnchantmentLevel(playerEntity.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH), playerEntity) <= 0) {
             if (LevelManager.BONUSES.containsKey("miningDropChance")) {
                 LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
                 SkillBonus skillBonus = LevelManager.BONUSES.get("miningDropChance");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= level * ConfigInit.CONFIG.miningDropChanceBonus) {
-                    List<ItemStack> list = state.getDroppedStacks(builder);
+                    List<ItemStack> list = state.getDrops(builder);
                     if (!list.isEmpty()) {
-                        Block.dropStack(playerEntity.getWorld(), pos, list.getFirst().copyWithCount(1));
+                        Block.popResource(playerEntity.level(), pos, list.getFirst().copyWithCount(1));
                     }
                 }
             }
         }
     }
 
-    public static void plantDropChanceBonus(PlayerEntity playerEntity, BlockState state, BlockPos pos) {
-        if (EnchantmentHelper.getEquipmentLevel(playerEntity.getRegistryManager().get(RegistryKeys.ENCHANTMENT).entryOf(Enchantments.SILK_TOUCH), playerEntity) <= 0) {
+    public static void plantDropChanceBonus(Player playerEntity, BlockState state, BlockPos pos) {
+        if (EnchantmentHelper.getEnchantmentLevel(playerEntity.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH), playerEntity) <= 0) {
             if (LevelManager.BONUSES.containsKey("plantDropChance")) {
                 LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
                 SkillBonus skillBonus = LevelManager.BONUSES.get("plantDropChance");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= level * ConfigInit.CONFIG.plantDropChanceBonus) {
-                    List<ItemStack> list = Block.getDroppedStacks(state, (ServerWorld) playerEntity.getWorld(), pos, null);
+                    List<ItemStack> list = Block.getDrops(state, (ServerLevel) playerEntity.level(), pos, null);
                     for (ItemStack itemStack : list) {
-                        if (itemStack.isIn(ConventionalItemTags.CROPS)) {
-                            Block.dropStack(playerEntity.getWorld(), pos, itemStack);
+                        if (itemStack.is(ConventionalItemTags.CROPS)) {
+                            Block.popResource(playerEntity.level(), pos, itemStack);
                             break;
                         }
                     }
@@ -241,7 +241,7 @@ public class BonusHelper {
         }
     }
 
-    public static boolean anvilXpCapBonus(PlayerEntity playerEntity) {
+    public static boolean anvilXpCapBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("anvilXpCap")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("anvilXpCap");
@@ -253,7 +253,7 @@ public class BonusHelper {
         return false;
     }
 
-    public static int anvilXpDiscountBonus(PlayerEntity playerEntity, int levelCost) {
+    public static int anvilXpDiscountBonus(Player playerEntity, int levelCost) {
         if (levelCost > ConfigInit.CONFIG.anvilXpCap && anvilXpCapBonus(playerEntity)) {
             return ConfigInit.CONFIG.anvilXpCap;
         }
@@ -268,7 +268,7 @@ public class BonusHelper {
         return levelCost;
     }
 
-    public static boolean anvilXpChanceBonus(PlayerEntity playerEntity) {
+    public static boolean anvilXpChanceBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("anvilXpChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("anvilXpChance");
@@ -280,7 +280,7 @@ public class BonusHelper {
         return false;
     }
 
-    public static void healthRegenBonus(PlayerEntity playerEntity) {
+    public static void healthRegenBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("healthRegen")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("healthRegen");
@@ -291,7 +291,7 @@ public class BonusHelper {
         }
     }
 
-    public static void healthAbsorptionBonus(PlayerEntity playerEntity) {
+    public static void healthAbsorptionBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("healthAbsorption")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("healthAbsorption");
@@ -302,7 +302,7 @@ public class BonusHelper {
         }
     }
 
-    public static float exhaustionReductionBonus(PlayerEntity playerEntity) {
+    public static float exhaustionReductionBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("exhaustionReduction")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("exhaustionReduction");
@@ -314,7 +314,7 @@ public class BonusHelper {
         return 1.0f;
     }
 
-    public static boolean meleeKnockbackAttackChanceBonus(PlayerEntity playerEntity) {
+    public static boolean meleeKnockbackAttackChanceBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("meleeKockbackAttackChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("meleeKockbackAttackChance");
@@ -326,7 +326,7 @@ public class BonusHelper {
         return false;
     }
 
-    public static boolean meleeCriticalAttackChanceBonus(PlayerEntity playerEntity) {
+    public static boolean meleeCriticalAttackChanceBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("meleeCriticalAttackChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("meleeCriticalAttackChance");
@@ -338,7 +338,7 @@ public class BonusHelper {
         return false;
     }
 
-    public static float meleeCriticalDamageBonus(PlayerEntity playerEntity) {
+    public static float meleeCriticalDamageBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("meleeCriticalAttackDamage")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("meleeCriticalAttackDamage");
@@ -350,7 +350,7 @@ public class BonusHelper {
         return 0.0f;
     }
 
-    public static boolean meleeDoubleDamageBonus(PlayerEntity playerEntity) {
+    public static boolean meleeDoubleDamageBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("meleeDoubleAttackDamageChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("meleeDoubleAttackDamageChance");
@@ -362,22 +362,22 @@ public class BonusHelper {
         return false;
     }
 
-    public static void foodIncreasionBonus(PlayerEntity playerEntity, ItemStack itemStack) {
-        if (LevelManager.BONUSES.containsKey("foodIncreasion") && itemStack.get(DataComponentTypes.FOOD) != null) {
+    public static void foodIncreasionBonus(Player playerEntity, ItemStack itemStack) {
+        if (LevelManager.BONUSES.containsKey("foodIncreasion") && itemStack.get(DataComponents.FOOD) != null) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("foodIncreasion");
             int level = levelManager.getSkillLevel(skillBonus.getId());
             if (level >= skillBonus.getLevel()) {
-                FoodComponent foodComponent = itemStack.get(DataComponentTypes.FOOD);
+                FoodProperties foodComponent = itemStack.get(DataComponents.FOOD);
                 float multiplier = level * ConfigInit.CONFIG.foodIncreasionBonus;
-                playerEntity.getHungerManager().eat(new FoodComponent((int) (foodComponent.nutrition() * multiplier), foodComponent.saturation() * multiplier, true, 0.0f, Optional.empty(), List.of()));
+                playerEntity.getFoodData().eat(new FoodProperties((int) (foodComponent.nutrition() * multiplier), foodComponent.saturation() * multiplier, true, 0.0f, Optional.empty(), List.of()));
             }
         }
     }
 
-    public static void damageReflectionBonus(PlayerEntity playerEntity, DamageSource source, float amount) {
-        Entity attacker = source.getAttacker();
-        if (attacker != null && attacker != playerEntity && !source.isOf(DamageTypes.THORNS) && LevelManager.BONUSES.containsKey("damageReflection") && LevelManager.BONUSES.containsKey("damageReflectionChance")) {
+    public static void damageReflectionBonus(Player playerEntity, DamageSource source, float amount) {
+        Entity attacker = source.getEntity();
+        if (attacker != null && attacker != playerEntity && !source.is(DamageTypes.THORNS) && LevelManager.BONUSES.containsKey("damageReflection") && LevelManager.BONUSES.containsKey("damageReflectionChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("damageReflectionChance");
             int level = levelManager.getSkillLevel(skillBonus.getId());
@@ -385,13 +385,13 @@ public class BonusHelper {
                 skillBonus = LevelManager.BONUSES.get("damageReflection");
                 level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel()) {
-                    attacker.damage(playerEntity.getDamageSources().thorns(playerEntity), amount * level * ConfigInit.CONFIG.damageReflectionBonus);
+                    attacker.hurt(playerEntity.damageSources().thorns(playerEntity), amount * level * ConfigInit.CONFIG.damageReflectionBonus);
                 }
             }
         }
     }
 
-    public static boolean evadingDamageBonus(PlayerEntity playerEntity) {
+    public static boolean evadingDamageBonus(Player playerEntity) {
         if (LevelManager.BONUSES.containsKey("evadingDamageChance")) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("evadingDamageChance");

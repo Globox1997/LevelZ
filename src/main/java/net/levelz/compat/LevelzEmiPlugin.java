@@ -6,7 +6,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.recipe.EmiBrewingRecipe;
 import net.levelz.LevelzMain;
 import net.levelz.init.ItemInit;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Items;
 
 public class LevelzEmiPlugin implements EmiPlugin {
 

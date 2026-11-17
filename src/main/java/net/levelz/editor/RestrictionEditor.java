@@ -11,10 +11,10 @@ import net.levelz.level.Skill;
 import net.levelz.network.packet.EditorDataPacket;
 import net.levelz.network.packet.EditorResultPacket;
 import net.minecraft.SharedConstants;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.level.storage.LevelResource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,11 +27,11 @@ public class RestrictionEditor {
 
     private static final Logger LOGGER = LogManager.getLogger("LevelZ");
 
-    public static boolean canEdit(ServerPlayerEntity serverPlayerEntity) {
-        return serverPlayerEntity.hasPermissionLevel(2);
+    public static boolean canEdit(ServerPlayer serverPlayerEntity) {
+        return serverPlayerEntity.hasPermissions(2);
     }
 
-    public static void sendEditorData(ServerPlayerEntity serverPlayerEntity, boolean openScreen) {
+    public static void sendEditorData(ServerPlayer serverPlayerEntity, boolean openScreen) {
         if (!canEdit(serverPlayerEntity)) {
             return;
         }
@@ -39,7 +39,7 @@ public class RestrictionEditor {
         ServerPlayNetworking.send(serverPlayerEntity, new EditorDataPacket(List.copyOf(RestrictionLoader.ENTRIES), skills, DatapackErrors.getErrors(), openScreen));
     }
 
-    public static void save(ServerPlayerEntity serverPlayerEntity, String key, String json, int baseHash) {
+    public static void save(ServerPlayer serverPlayerEntity, String key, String json, int baseHash) {
         if (!canEdit(serverPlayerEntity)) {
             return;
         }
@@ -71,7 +71,7 @@ public class RestrictionEditor {
         writeAndReload(serverPlayerEntity, key, overrides, "editor.levelz.saved");
     }
 
-    public static void delete(ServerPlayerEntity serverPlayerEntity, String key, int baseHash) {
+    public static void delete(ServerPlayer serverPlayerEntity, String key, int baseHash) {
         if (!canEdit(serverPlayerEntity)) {
             return;
         }
@@ -92,7 +92,7 @@ public class RestrictionEditor {
         writeAndReload(serverPlayerEntity, key, overrides, "editor.levelz.deleted");
     }
 
-    private static void writeAndReload(ServerPlayerEntity serverPlayerEntity, String key, JsonObject overrides, String message) {
+    private static void writeAndReload(ServerPlayer serverPlayerEntity, String key, JsonObject overrides, String message) {
         MinecraftServer server = serverPlayerEntity.getServer();
         try {
             RestrictionOverrides.write(server, overrides);
@@ -109,7 +109,7 @@ public class RestrictionEditor {
         sendEditorData(serverPlayerEntity, false);
     }
 
-    public static void export(ServerPlayerEntity serverPlayerEntity) {
+    public static void export(ServerPlayer serverPlayerEntity) {
         if (!canEdit(serverPlayerEntity)) {
             return;
         }
@@ -129,9 +129,9 @@ public class RestrictionEditor {
                 exported.add(entry.getKey(), value);
             }
         }
-        Path root = server.getSavePath(WorldSavePath.ROOT).resolve("levelz").resolve("export").resolve("levelz_export").normalize();
+        Path root = server.getWorldPath(LevelResource.ROOT).resolve("levelz").resolve("export").resolve("levelz_export").normalize();
         JsonObject packInfo = new JsonObject();
-        packInfo.addProperty("pack_format", SharedConstants.getGameVersion().getResourceVersion(ResourceType.SERVER_DATA));
+        packInfo.addProperty("pack_format", SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
         packInfo.addProperty("description", "LevelZ restrictions");
         JsonObject packMeta = new JsonObject();
         packMeta.add("pack", packInfo);
@@ -147,7 +147,7 @@ public class RestrictionEditor {
         ServerPlayNetworking.send(serverPlayerEntity, new EditorResultPacket("", true, "editor.levelz.exported", List.of(root.toString(), String.valueOf(skipped)), List.of()));
     }
 
-    private static void sendResult(ServerPlayerEntity serverPlayerEntity, String key, boolean success, String message) {
+    private static void sendResult(ServerPlayer serverPlayerEntity, String key, boolean success, String message) {
         ServerPlayNetworking.send(serverPlayerEntity, new EditorResultPacket(key, success, message, List.of(), List.of()));
     }
 
