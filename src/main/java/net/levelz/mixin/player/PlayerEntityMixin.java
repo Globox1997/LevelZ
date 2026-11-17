@@ -1,5 +1,6 @@
 package net.levelz.mixin.player;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.access.PlayerDropAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
@@ -63,17 +64,17 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
         return original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/item/Item;getAttackDamageBonus(Lnet/minecraft/world/entity/Entity;FLnet/minecraft/world/damagesource/DamageSource;)F"), ordinal = 0)
-    private boolean attackKnockbackkMixin(boolean original) {
-        if (!original && BonusHelper.meleeKnockbackAttackChanceBonus(this.playerEntity)) {
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/item/Item;getAttackDamageBonus(Lnet/minecraft/world/entity/Entity;FLnet/minecraft/world/damagesource/DamageSource;)F"), ordinal = 1)
+    private boolean attackKnockbackkMixin(boolean original, @Local(ordinal = 0) boolean fullStrengthAttack) {
+        if (!original && fullStrengthAttack && BonusHelper.meleeKnockbackAttackChanceBonus(this.playerEntity)) {
             return true;
         }
         return original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/item/Item;getAttackDamageBonus(Lnet/minecraft/world/entity/Entity;FLnet/minecraft/world/damagesource/DamageSource;)F"), ordinal = 1)
-    private boolean attackCriticalMixin(boolean original) {
-        if (!original && BonusHelper.meleeCriticalAttackChanceBonus(this.playerEntity)) {
+    @ModifyVariable(method = "attack", at = @At("STORE"), ordinal = 2)
+    private boolean attackCriticalMixin(boolean original, @Local(ordinal = 0) boolean fullStrengthAttack) {
+        if (!original && fullStrengthAttack && BonusHelper.meleeCriticalAttackChanceBonus(this.playerEntity)) {
             return true;
         }
         return original;
@@ -90,9 +91,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
         return original;
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;playServerSideSound(Lnet/minecraft/sounds/SoundEvent;)V", ordinal = 0), ordinal = 0)
-    private float attackCriticalDamageMixin(float original) {
-        original += BonusHelper.meleeCriticalDamageBonus(this.playerEntity);
+    @ModifyVariable(method = "attack", at = @At("STORE"), ordinal = 3)
+    private float attackCriticalDamageMixin(float original, @Local(ordinal = 2) boolean criticalAttack) {
+        if (criticalAttack) {
+            original += BonusHelper.meleeCriticalDamageBonus(this.playerEntity);
+        }
         return original;
     }
 

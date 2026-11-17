@@ -108,7 +108,7 @@ public class LineWidget {
                     if (this.customStacks.containsKey(entry.getKey())) {
                         drawContext.item(this.customStacks.get(entry.getKey()), x + separator, y);
                     } else {
-                        drawContext.blit(RenderPipelines.GUI_TEXTURED, this.customImages.get(entry.getKey()), x + separator, y, 0, 0, 16, 16, 256, 256);
+                        drawContext.blit(RenderPipelines.GUI_TEXTURED, this.customImages.get(entry.getKey()), x + separator, y, 0, 0, 16, 16, 16, 16);
                     }
                 } else {// if (this.code == 3) {
                     ItemStack stack = this.customStacks.get(entry.getKey());
