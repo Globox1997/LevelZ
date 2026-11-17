@@ -7,7 +7,7 @@
     "attributes": [
       {
         "id": 0,
-        "type": "generic.max_health",
+        "type": "max_health",
         "base": 8,
         "operation": "ADD_VALUE",
         "value": 1
@@ -28,17 +28,17 @@
     "attributes": [
       {
         "id": 1,
-        "type": "generic.attack_damage",
+        "type": "attack_damage",
         "operation": "ADD_VALUE",
         "value": 0.2
       },
       {
-        "type": "generic.attack_knockback",
+        "type": "attack_knockback",
         "operation": "ADD_VALUE",
         "value": 0.05
       },
       {
-        "type": "player.sweeping_damage_ratio",
+        "type": "sweeping_damage_ratio",
         "base": 0,
         "operation": "ADD_VALUE",
         "value": 0.03
@@ -63,12 +63,12 @@
     "attributes": [
       {
         "id": 2,
-        "type": "generic.armor",
+        "type": "armor",
         "operation": "ADD_VALUE",
         "value": 0.25
       },
       {
-        "type": "generic.knockback_resistance",
+        "type": "knockback_resistance",
         "operation": "ADD_VALUE",
         "value": 0.05
       }
@@ -87,12 +87,12 @@
     "level": 20,
     "attributes": [
       {
-        "type": "player.block_interaction_range",
+        "type": "block_interaction_range",
         "operation": "ADD_VALUE",
         "value": 0.1
       },
       {
-        "type": "generic.follow_range",
+        "type": "follow_range",
         "operation": "ADD_VALUE",
         "value": 1
       }
@@ -124,30 +124,30 @@
     "attributes": [
       {
         "id": 3,
-        "type": "generic.movement_speed",
+        "type": "movement_speed",
         "base": 0.09,
         "operation": "ADD_VALUE",
         "value": 0.001
       },
       {
-        "type": "player.sneaking_speed",
+        "type": "sneaking_speed",
         "base": 0.2,
         "operation": "ADD_VALUE",
         "value": 0.01
       },
       {
         "id": 4,
-        "type": "generic.oxygen_bonus",
+        "type": "oxygen_bonus",
         "operation": "ADD_VALUE",
         "value": 0.2
       },
       {
-        "type": "player.submerged_mining_speed",
+        "type": "submerged_mining_speed",
         "operation": "ADD_VALUE",
         "value": 0.04
       },
       {
-        "type": "generic.water_movement_efficiency",
+        "type": "water_movement_efficiency",
         "operation": "ADD_VALUE",
         "value": 0.02
       }
@@ -195,14 +195,14 @@
     "level": 20,
     "attributes": [
       {
-        "type": "player.block_break_speed",
+        "type": "block_break_speed",
         "base": 0.5,
         "operation": "ADD_VALUE",
         "value": 0.05
       },
       {
         "id": 5,
-        "type": "player.mining_efficiency",
+        "type": "mining_efficiency",
         "base": 0,
         "operation": "ADD_VALUE",
         "value": 0.05
@@ -222,12 +222,12 @@
     "level": 20,
     "attributes": [
       {
-        "type": "generic.burning_time",
+        "type": "burning_time",
         "operation": "ADD_VALUE",
         "value": -0.05
       },
       {
-        "type": "generic.explosion_knockback_resistance",
+        "type": "explosion_knockback_resistance",
         "operation": "ADD_VALUE",
         "value": 0.05
       }
@@ -310,7 +310,7 @@
     "attributes": [
       {
         "id": 6,
-        "type": "generic.luck",
+        "type": "luck",
         "base": -1,
         "operation": "ADD_VALUE",
         "value": 0.15

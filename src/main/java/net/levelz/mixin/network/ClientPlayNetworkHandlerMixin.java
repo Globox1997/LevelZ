@@ -31,7 +31,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonPacketLi
 
     @Override
     public void onLevelExperienceOrbSpawn(OrbPacket packet) {
-        PacketUtils.ensureRunningOnSameThread(packet, (ClientPacketListener) (Object) this, this.minecraft);
+        PacketUtils.ensureRunningOnSameThread(packet, (ClientPacketListener) (Object) this, this.minecraft.packetProcessor());
         double d = packet.getX();
         double e = packet.getY();
         double f = packet.getZ();

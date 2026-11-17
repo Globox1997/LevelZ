@@ -8,8 +8,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 
 import net.levelz.access.MobEntityAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 @Mixin(Mob.class)
 public abstract class MobEntityMixin implements MobEntityAccess {
@@ -18,12 +19,12 @@ public abstract class MobEntityMixin implements MobEntityAccess {
     private boolean spawnerMob = false;
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
-    private void readCustomDataFromNbtMixin(CompoundTag nbt, CallbackInfo info) {
-        this.spawnerMob = nbt.getBoolean("SpawnerMob");
+    private void readCustomDataFromNbtMixin(ValueInput nbt, CallbackInfo info) {
+        this.spawnerMob = nbt.getBooleanOr("SpawnerMob", false);
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
-    private void writeCustomDataToNbtMixin(CompoundTag nbt, CallbackInfo info) {
+    private void writeCustomDataToNbtMixin(ValueOutput nbt, CallbackInfo info) {
         nbt.putBoolean("SpawnerMob", this.spawnerMob);
     }
 

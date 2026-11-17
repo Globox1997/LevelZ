@@ -4,7 +4,6 @@ import net.levelz.access.ServerPlayerSyncAccess;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.EntityInit;
 import net.levelz.network.packet.OrbPacket;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,11 +26,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import com.mojang.serialization.Codec;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import java.util.Optional;
 
 // Improvements inspiried by Clumps made by jaredlll08 which is licensed under MIT and can be found here:
 // https://github.com/jaredlll08/Clumps/blob/1.19/Common/src/main/java/com/blamejared/clumps/mixin/MixinExperienceOrb.java
 
 public class LevelExperienceOrbEntity extends Entity {
+
+    private static final Codec<Map<String, Integer>> CLUMPED_MAP_CODEC = Codec.unboundedMap(Codec.STRING, Codec.INT);
 
     private int orbAge;
     private int health = 5;
@@ -172,12 +177,14 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+    public boolean hurtClient(DamageSource source) {
+        return !this.isInvulnerableToBase(source);
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (this.isInvulnerableToBase(source)) {
             return false;
-        }
-        if (this.level().isClientSide()) {
-            return true;
         }
         this.markHurt();
         this.health = (int) ((float) this.health - amount);
@@ -188,29 +195,29 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
+    public void addAdditionalSaveData(ValueOutput nbt) {
         nbt.putShort("Health", (short) this.health);
         nbt.putShort("Age", (short) this.orbAge);
         nbt.putShort("Value", (short) this.amount);
         nbt.putInt("Count", this.pickingCount);
 
-        CompoundTag map = new CompoundTag();
-        getClumpedMap().forEach((value, count) -> map.putInt(value + "", count));
-        nbt.put("clumpedMap", map);
+        Map<String, Integer> map = new HashMap<>();
+        getClumpedMap().forEach((value, count) -> map.put(value + "", count));
+        nbt.store("clumpedMap", CLUMPED_MAP_CODEC, map);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        this.health = nbt.getShort("Health");
-        this.orbAge = nbt.getShort("Age");
-        this.amount = nbt.getShort("Value");
-        this.pickingCount = Math.max(nbt.getInt("Count"), 1);
+    public void readAdditionalSaveData(ValueInput nbt) {
+        this.health = nbt.getShortOr("Health", (short) 5);
+        this.orbAge = nbt.getShortOr("Age", (short) 0);
+        this.amount = nbt.getShortOr("Value", (short) 0);
+        this.pickingCount = Math.max(nbt.getIntOr("Count", 1), 1);
 
         Map<Integer, Integer> map = new HashMap<>();
-        if (nbt.contains("clumpedMap")) {
-            CompoundTag clumpedMap = nbt.getCompound("clumpedMap");
-            for (String s : clumpedMap.getAllKeys()) {
-                map.put(Integer.parseInt(s), clumpedMap.getInt(s));
+        Optional<Map<String, Integer>> clumpedMap = nbt.read("clumpedMap", CLUMPED_MAP_CODEC);
+        if (clumpedMap.isPresent()) {
+            for (Map.Entry<String, Integer> entry : clumpedMap.get().entrySet()) {
+                map.put(Integer.parseInt(entry.getKey()), entry.getValue());
             }
         } else {
             map.put(this.amount, this.pickingCount);

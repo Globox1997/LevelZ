@@ -1,5 +1,6 @@
 package net.levelz.mixin.entity;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
@@ -18,7 +19,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(EnderDragon.class)
 public abstract class EnderDragonEntityMixin extends Mob {
@@ -31,8 +31,8 @@ public abstract class EnderDragonEntityMixin extends Mob {
         super(entityType, world);
     }
 
-    @Inject(method = "tickDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
-    protected void updatePostDeathMixin(CallbackInfo info, boolean f, int g) {
+    @Inject(method = "tickDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V", ordinal = 0))
+    protected void updatePostDeathMixin(CallbackInfo info, @Local int g) {
         if (ConfigInit.CONFIG.dragonXPMultiplier > 0.0F) {
             LevelExperienceOrbEntity.spawn((ServerLevel) this.level(), this.position(),
                     Mth.floor((float) g * 0.08f * ConfigInit.CONFIG.dragonXPMultiplier
@@ -42,8 +42,8 @@ public abstract class EnderDragonEntityMixin extends Mob {
         }
     }
 
-    @Inject(method = "tickDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
-    protected void updatePostDeathXPMixin(CallbackInfo info, boolean f, int g) {
+    @Inject(method = "tickDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V", ordinal = 1))
+    protected void updatePostDeathXPMixin(CallbackInfo info, @Local int g) {
         if (ConfigInit.CONFIG.dragonXPMultiplier > 0.0F) {
             LevelExperienceOrbEntity.spawn((ServerLevel) this.level(), this.position(),
                     Mth.floor((float) g * 0.2f * ConfigInit.CONFIG.dragonXPMultiplier

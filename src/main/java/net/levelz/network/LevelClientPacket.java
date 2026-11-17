@@ -18,7 +18,7 @@ import net.levelz.screen.RestrictionEditorScreen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.enchantment.Enchantment;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,7 +139,7 @@ public class LevelClientPacket {
             context.client().execute(() -> {
                 LevelManager levelManager = ((LevelManagerAccess) context.player()).getLevelManager();
                 levelManager.setSkillLevel(id, level);
-                if (context.client().screen instanceof LevelScreen levelScreen) {
+                if (context.client().gui.screen() instanceof LevelScreen levelScreen) {
                     levelScreen.updateLevelButtons();
                 }
             });
@@ -149,10 +149,10 @@ public class LevelClientPacket {
             context.client().execute(() -> {
                 EditorClientData.update(payload.entries(), payload.skills(), payload.problems());
                 if (payload.openScreen()) {
-                    context.client().setScreen(new RestrictionEditorScreen());
-                } else if (context.client().screen instanceof RestrictionEditorScreen restrictionEditorScreen) {
+                    context.client().gui.setScreen(new RestrictionEditorScreen());
+                } else if (context.client().gui.screen() instanceof RestrictionEditorScreen restrictionEditorScreen) {
                     restrictionEditorScreen.refresh();
-                } else if (context.client().screen instanceof RestrictionEditScreen restrictionEditScreen) {
+                } else if (context.client().gui.screen() instanceof RestrictionEditScreen restrictionEditScreen) {
                     restrictionEditScreen.onDataRefreshed();
                 }
             });
@@ -161,9 +161,9 @@ public class LevelClientPacket {
         ClientPlayNetworking.registerGlobalReceiver(EditorResultPacket.PACKET_ID, (payload, context) -> {
             context.client().execute(() -> {
                 EditorClientData.lastResult = payload;
-                if (context.client().screen instanceof RestrictionEditScreen restrictionEditScreen) {
+                if (context.client().gui.screen() instanceof RestrictionEditScreen restrictionEditScreen) {
                     restrictionEditScreen.onResult(payload);
-                } else if (context.client().screen instanceof RestrictionEditorScreen restrictionEditorScreen) {
+                } else if (context.client().gui.screen() instanceof RestrictionEditorScreen restrictionEditorScreen) {
                     restrictionEditorScreen.onResult(payload);
                 }
             });
@@ -180,10 +180,10 @@ public class LevelClientPacket {
                 }
                 EnchantmentRegistry.clear();
 
-                Registry<Enchantment> registry = context.player().level().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+                Registry<Enchantment> registry = context.player().level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
                 for (int i = 0; i < keys.size(); i++) {
                     int key = keys.get(i);
-                    Holder<Enchantment> entry = registry.getHolder(ResourceLocation.parse(ids.get(i))).get();
+                    Holder<Enchantment> entry = registry.get(Identifier.parse(ids.get(i))).get();
                     int level = levels.get(i);
                     EnchantmentRegistry.ENCHANTMENTS.put(key, new EnchantmentZ(entry, level));
                 }

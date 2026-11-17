@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.serialization.DynamicOps;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -16,7 +18,7 @@ import net.levelz.network.packet.EditorResultPacket;
 import net.levelz.network.packet.EditorSavePacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.CycleButton;
@@ -24,19 +26,27 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.locale.Language;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
@@ -44,7 +54,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -126,7 +135,7 @@ public class RestrictionEditScreen extends Screen {
             if (!options.contains(skill.key)) {
                 options.add(skill.key);
             }
-            this.addRenderableWidget(CycleButton.<String>builder(Component::literal).withValues(options).withInitialValue(skill.key).displayOnlyValue()
+            this.addRenderableWidget(CycleButton.<String>builder(Component::literal, skill.key).withValues(options).displayOnlyValue()
                     .create(10, y, 110, 20, Component.translatable("editor.levelz.skill"), (button, value) -> skill.key = value));
             EditBox levelField = new EditBox(this.font, 124, y + 1, 36, 18, Component.translatable("editor.levelz.level"));
             levelField.setValue(skill.level);
@@ -147,8 +156,8 @@ public class RestrictionEditScreen extends Screen {
         this.inventoryY = y + 36;
         this.inventoryRows = Mth.clamp((this.height - 48 - this.inventoryY) / SLOT_SIZE, 0, 4);
 
-        this.addRenderableWidget(CycleButton.<String>builder(category -> Component.translatable("editor.levelz.category." + category)).withValues(RestrictionEditorScreen.CATEGORIES)
-                .withInitialValue(this.category).create(this.columnX, 46, Math.min(200, columnWidth), 20, Component.translatable("editor.levelz.category"), (button, value) -> {
+        this.addRenderableWidget(CycleButton.<String>builder(category -> Component.translatable("editor.levelz.category." + category), this.category).withValues(RestrictionEditorScreen.CATEGORIES)
+                .create(this.columnX, 46, Math.min(200, columnWidth), 20, Component.translatable("editor.levelz.category"), (button, value) -> {
                     this.category = value;
                     this.addText = "";
                     this.rebuildWidgets();
@@ -296,11 +305,11 @@ public class RestrictionEditScreen extends Screen {
     }
 
     private void confirmDelete() {
-        this.minecraft.setScreen(new ConfirmScreen(confirmed -> {
+        this.minecraft.gui.setScreen(new ConfirmScreen(confirmed -> {
             if (confirmed) {
                 ClientPlayNetworking.send(new EditorDeletePacket(this.key, this.baseHash));
             }
-            this.minecraft.setScreen(this);
+            this.minecraft.gui.setScreen(this);
         }, Component.translatable("editor.levelz.delete_confirm", this.key), Component.translatable("editor.levelz.delete_confirm_message")));
     }
 
@@ -309,7 +318,7 @@ public class RestrictionEditScreen extends Screen {
             return;
         }
         if (result.success() && result.message().equals("editor.levelz.deleted")) {
-            this.minecraft.setScreen(this.parent);
+            this.minecraft.gui.setScreen(this.parent);
             this.parent.onResult(result);
             return;
         }
@@ -373,8 +382,9 @@ public class RestrictionEditScreen extends Screen {
                 }
             }
             case "entities" -> {
-                if (stack.getItem() instanceof SpawnEggItem spawnEggItem) {
-                    this.addValue(BuiltInRegistries.ENTITY_TYPE.getKey(spawnEggItem.getType(stack)).toString());
+                EntityType<?> spawnEggType = stack.getItem() instanceof SpawnEggItem ? SpawnEggItem.getType(stack) : null;
+                if (spawnEggType != null) {
+                    this.addValue(BuiltInRegistries.ENTITY_TYPE.getKey(spawnEggType).toString());
                 } else {
                     this.setStatus(Component.translatable("editor.levelz.not_a_spawn_egg").withStyle(ChatFormatting.RED));
                 }
@@ -383,7 +393,7 @@ public class RestrictionEditScreen extends Screen {
                 if (stack.getComponentsPatch().isEmpty()) {
                     this.setStatus(Component.translatable("editor.levelz.no_components").withStyle(ChatFormatting.RED));
                 } else {
-                    this.addValue(new ItemInput(stack.getItemHolder(), stack.getComponentsPatch()).serialize(this.minecraft.level.registryAccess()));
+                    this.addValue(serializeStack(stack, this.minecraft.level.registryAccess()));
                 }
             }
             case "enchantments" -> {
@@ -425,22 +435,46 @@ public class RestrictionEditScreen extends Screen {
         }
         boolean tag = query.startsWith("#");
         String search = tag ? query.substring(1) : query;
-        Stream<ResourceLocation> ids = switch (this.category) {
+        Stream<Identifier> ids = switch (this.category) {
             case "items", "crafting", "components" -> getIds(BuiltInRegistries.ITEM, tag && !this.category.equals("components"));
             case "blocks", "mining" -> getIds(BuiltInRegistries.BLOCK, tag);
             case "entities" -> getIds(BuiltInRegistries.ENTITY_TYPE, tag);
-            case "enchantments" -> getIds(this.minecraft.level.registryAccess().registryOrThrow(Registries.ENCHANTMENT), tag);
-            case "dimensions" -> tag || this.minecraft.getConnection() == null ? Stream.empty() : this.minecraft.getConnection().levels().stream().map(ResourceKey::location);
+            case "enchantments" -> getIds(this.minecraft.level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT), tag);
+            case "dimensions" -> tag || this.minecraft.getConnection() == null ? Stream.empty() : this.minecraft.getConnection().levels().stream().map(ResourceKey::identifier);
             default -> Stream.empty();
         };
-        return ids.map(ResourceLocation::toString).filter(id -> id.contains(search))
+        return ids.map(Identifier::toString).filter(id -> id.contains(search))
                 .sorted(Comparator.comparing((String id) -> !id.startsWith(search) && !id.contains(":" + search)).thenComparing(Comparator.naturalOrder()))
                 .limit(MAX_SUGGESTIONS).map(id -> tag ? "#" + id : id).toList();
     }
 
-    private static Stream<ResourceLocation> getIds(Registry<?> registry, boolean tag) {
+    private static String serializeStack(ItemStack stack, HolderLookup.Provider registries) {
+        StringBuilder builder = new StringBuilder(stack.typeHolder().getRegisteredName());
+        DynamicOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        DataComponentPatch.SplitResult split = stack.getComponentsPatch().split();
+        List<String> parts = new ArrayList<>();
+        for (TypedDataComponent<?> component : split.added()) {
+            Identifier id = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(component.type());
+            Optional<Tag> value = component.encodeValue(ops).result();
+            if (id != null && value.isPresent()) {
+                parts.add(id + "=" + value.get());
+            }
+        }
+        for (DataComponentType<?> type : split.removed()) {
+            Identifier id = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(type);
+            if (id != null) {
+                parts.add("!" + id);
+            }
+        }
+        if (!parts.isEmpty()) {
+            builder.append('[').append(String.join(",", parts)).append(']');
+        }
+        return builder.toString();
+    }
+
+    private static Stream<Identifier> getIds(Registry<?> registry, boolean tag) {
         if (tag) {
-            return registry.getTagNames().map(TagKey::location);
+            return registry.listTagIds().map(TagKey::location);
         }
         return registry.keySet().stream();
     }
@@ -480,7 +514,9 @@ public class RestrictionEditScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
         int slot = this.getInventorySlot(mouseX, mouseY);
         if (slot >= 0) {
             ItemStack stack = this.minecraft.player.getInventory().getItem(slot);
@@ -489,17 +525,17 @@ public class RestrictionEditScreen extends Screen {
             }
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
         if (this.addField != null && this.addField.isFocused()) {
-            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+            if (event.isConfirmation()) {
                 this.addValue(this.addField.getValue());
                 return true;
             }
-            if (keyCode == GLFW.GLFW_KEY_TAB) {
+            if (event.key() == InputConstants.KEY_TAB) {
                 List<String> suggestions = this.getSuggestions(this.addText);
                 if (!suggestions.isEmpty()) {
                     this.addField.setValue(suggestions.getFirst());
@@ -507,22 +543,22 @@ public class RestrictionEditScreen extends Screen {
                 }
             }
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.parent);
+        this.minecraft.gui.setScreen(this.parent);
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
-        context.drawString(this.font, Component.translatable("editor.levelz.skills"), 10, 48, 0xFFFF55);
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(context, mouseX, mouseY, delta);
+        context.centeredText(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
+        context.text(this.font, Component.translatable("editor.levelz.skills"), 10, 48, 0xFFFFFF55);
 
         if (this.inventoryRows > 0 && this.minecraft.player != null) {
-            context.drawString(this.font, Component.translatable("editor.levelz.inventory_hint"), this.inventoryX, this.inventoryY - 11, 0xFFFF55);
+            context.text(this.font, Component.translatable("editor.levelz.inventory_hint"), this.inventoryX, this.inventoryY - 11, 0xFFFFFF55);
             ItemStack hoveredStack = ItemStack.EMPTY;
             for (int row = 0; row < this.inventoryRows; row++) {
                 for (int column = 0; column < 9; column++) {
@@ -532,26 +568,26 @@ public class RestrictionEditScreen extends Screen {
                     boolean hovered = mouseX >= x && mouseX < x + SLOT_SIZE && mouseY >= y && mouseY < y + SLOT_SIZE;
                     context.fill(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0xFF373737);
                     context.fill(x + 1, y + 1, x + SLOT_SIZE - 1, y + SLOT_SIZE - 1, hovered ? 0xFFC5C5C5 : 0xFF8B8B8B);
-                    context.renderItem(stack, x + 1, y + 1);
-                    context.renderItemDecorations(this.font, stack, x + 1, y + 1);
+                    context.item(stack, x + 1, y + 1);
+                    context.itemDecorations(this.font, stack, x + 1, y + 1);
                     if (hovered) {
                         hoveredStack = stack;
                     }
                 }
             }
             if (!hoveredStack.isEmpty()) {
-                context.renderTooltip(this.font, hoveredStack, mouseX, mouseY);
+                context.setTooltipForNextFrame(this.font, hoveredStack, mouseX, mouseY);
             }
         }
 
         int statusWidth = this.columnX - 20;
-        context.drawString(this.font, Language.getInstance().getVisualOrder(this.font.substrByWidth(this.status, statusWidth)), 10, this.height - 40, 0xFFFFFF);
+        context.text(this.font, Language.getInstance().getVisualOrder(this.font.substrByWidth(this.status, statusWidth)), 10, this.height - 40, 0xFFFFFFFF);
         if (!this.problems.isEmpty() && mouseX >= 10 && mouseX < 10 + statusWidth && mouseY >= this.height - 42 && mouseY < this.height - 30) {
             List<FormattedCharSequence> lines = new ArrayList<>();
             for (String problem : this.problems) {
                 lines.addAll(this.font.split(Component.literal(problem).withStyle(ChatFormatting.RED), 300));
             }
-            context.renderTooltip(this.font, lines, mouseX, mouseY);
+            context.setTooltipForNextFrame(this.font, lines, mouseX, mouseY);
         }
     }
 
@@ -585,7 +621,7 @@ public class RestrictionEditScreen extends Screen {
         }
 
         @Override
-        protected int getScrollbarPosition() {
+        protected int scrollBarX() {
             return this.getX() + this.width - 6;
         }
     }
@@ -599,10 +635,13 @@ public class RestrictionEditScreen extends Screen {
         }
 
         @Override
-        public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            context.drawString(RestrictionEditScreen.this.font, RestrictionEditScreen.this.font.plainSubstrByWidth(this.value, entryWidth - 14), x + 2, y + 1, 0xFFFFFF);
+        public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            int x = this.getContentX();
+            int y = this.getContentY();
+            int entryWidth = this.getContentWidth();
+            context.text(RestrictionEditScreen.this.font, RestrictionEditScreen.this.font.plainSubstrByWidth(this.value, entryWidth - 14), x + 2, y + 1, 0xFFFFFFFF);
             boolean removeHovered = hovered && mouseX >= x + entryWidth - 10;
-            context.drawString(RestrictionEditScreen.this.font, Component.translatable("editor.levelz.remove_short"), x + entryWidth - 8, y + 1, removeHovered ? 0xFF5555 : 0xAA0000);
+            context.text(RestrictionEditScreen.this.font, Component.translatable("editor.levelz.remove_short"), x + entryWidth - 8, y + 1, removeHovered ? 0xFFFF5555 : 0xFFAA0000);
         }
 
         @Override
@@ -611,9 +650,9 @@ public class RestrictionEditScreen extends Screen {
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            if (mouseX >= RestrictionEditScreen.this.valueList.getRowRight() - 10) {
-                RestrictionEditScreen.this.minecraft.tell(() -> RestrictionEditScreen.this.removeValue(this.value));
+        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+            if (event.x() >= RestrictionEditScreen.this.valueList.getRowRight() - 10) {
+                RestrictionEditScreen.this.minecraft.schedule(() -> RestrictionEditScreen.this.removeValue(this.value));
                 return true;
             }
             RestrictionEditScreen.this.valueList.setSelected(this);

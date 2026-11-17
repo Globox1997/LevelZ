@@ -31,9 +31,7 @@ public class CommandInit {
 
     public static void init() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
-            dispatcher.register((Commands.literal("level").requires((serverCommandSource) -> {
-                return serverCommandSource.hasPermission(2);
-            })).then(Commands.argument("targets", EntityArgument.players())
+            dispatcher.register((Commands.literal("level").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))).then(Commands.argument("targets", EntityArgument.players())
                     // Add values
                     .then(Commands.literal("add").then(Commands.literal("level").then(Commands.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> {
                         return executeSkillCommand(commandContext.getSource(), EntityArgument.getPlayers(commandContext, "targets"), "level",
@@ -88,7 +86,7 @@ public class CommandInit {
                     })).then(Commands.literal("experience").executes((commandContext) -> {
                         return executeSkillCommand(commandContext.getSource(), EntityArgument.getPlayers(commandContext, "targets"), "experience", 0, 3);
                     })))));
-            dispatcher.register(Commands.literal("levelz").requires(serverCommandSource -> serverCommandSource.hasPermission(2))
+            dispatcher.register(Commands.literal("levelz").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                     .then(Commands.literal("editor").executes(commandContext -> {
                         RestrictionEditor.sendEditorData(commandContext.getSource().getPlayerOrException(), true);
                         return 1;
@@ -175,8 +173,8 @@ public class CommandInit {
                 } else if (skillKey.equals("level")) {
                     levelManager.setOverallLevel(playerSkillLevel);
                     final int level = playerSkillLevel;
-                    serverPlayerEntity.getScoreboard().forAllObjectives(CriteriaInit.LEVELZ, serverPlayerEntity, score -> score.set(level));
-                    serverPlayerEntity.server.getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
+                    serverPlayerEntity.level().getScoreboard().forAllObjectives(CriteriaInit.LEVELZ, serverPlayerEntity, score -> score.set(level));
+                    serverPlayerEntity.level().getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
                 } else {
                     levelManager.setSkillLevel(skill.getId(), playerSkillLevel);
                     if (!skill.getAttributes().isEmpty()) {

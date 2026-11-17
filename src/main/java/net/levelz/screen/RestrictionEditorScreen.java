@@ -14,11 +14,12 @@ import net.levelz.network.packet.EditorRequestPacket;
 import net.levelz.network.packet.EditorResultPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -80,11 +81,11 @@ public class RestrictionEditorScreen extends Screen {
         this.addRenderableWidget(this.entryList);
 
         int editButtonY = this.height - 52;
-        this.addRenderableWidget(Button.builder(Component.translatable("editor.levelz.new"), button -> this.minecraft.setScreen(new RestrictionEditScreen(this, null)))
+        this.addRenderableWidget(Button.builder(Component.translatable("editor.levelz.new"), button -> this.minecraft.gui.setScreen(new RestrictionEditScreen(this, null)))
                 .bounds(this.width / 2 - 155, editButtonY, 100, 20).build());
         this.editButton = this.addRenderableWidget(Button.builder(Component.translatable("editor.levelz.edit"), button -> {
             if (this.selectedEntry != null) {
-                this.minecraft.setScreen(new RestrictionEditScreen(this, this.selectedEntry));
+                this.minecraft.gui.setScreen(new RestrictionEditScreen(this, this.selectedEntry));
             }
         }).bounds(this.width / 2 - 50, editButtonY, 100, 20).build());
         this.addRenderableWidget(Button.builder(Component.translatable("editor.levelz.export"), button -> ClientPlayNetworking.send(new EditorExportPacket()))
@@ -236,17 +237,17 @@ public class RestrictionEditorScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
-        context.drawString(this.font, Language.getInstance().getVisualOrder(this.font.substrByWidth(this.status, this.detailWidth)), this.detailX, 28, 0xFFFFFF);
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(context, mouseX, mouseY, delta);
+        context.centeredText(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
+        context.text(this.font, Language.getInstance().getVisualOrder(this.font.substrByWidth(this.status, this.detailWidth)), this.detailX, 28, 0xFFFFFFFF);
 
         context.fill(this.detailX, this.detailY, this.detailX + this.detailWidth, this.detailY + this.detailHeight, 0x80000000);
         context.enableScissor(this.detailX, this.detailY, this.detailX + this.detailWidth, this.detailY + this.detailHeight);
         int y = this.detailY + 4 - (int) this.detailScroll;
         for (FormattedCharSequence line : this.detailLines) {
             if (y > this.detailY - 10 && y < this.detailY + this.detailHeight) {
-                context.drawString(this.font, line, this.detailX + 4, y, 0xFFFFFF);
+                context.text(this.font, line, this.detailX + 4, y, 0xFFFFFFFF);
             }
             y += 10;
         }
@@ -294,7 +295,7 @@ public class RestrictionEditorScreen extends Screen {
         }
 
         @Override
-        protected int getScrollbarPosition() {
+        protected int scrollBarX() {
             return this.getX() + this.width - 6;
         }
     }
@@ -310,12 +311,15 @@ public class RestrictionEditorScreen extends Screen {
         }
 
         @Override
-        public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            int color = RestrictionOverrides.SOURCE.equals(this.entry.file()) ? 0xFFD37F : 0xFFFFFF;
+        public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            int x = this.getContentX();
+            int y = this.getContentY();
+            int entryWidth = this.getContentWidth();
+            int color = RestrictionOverrides.SOURCE.equals(this.entry.file()) ? 0xFFFFD37F : 0xFFFFFFFF;
             int textWidth = entryWidth - (this.hasProblems ? 12 : 4);
-            context.drawString(RestrictionEditorScreen.this.font, RestrictionEditorScreen.this.font.plainSubstrByWidth(this.entry.key(), textWidth), x + 2, y + 1, color);
+            context.text(RestrictionEditorScreen.this.font, RestrictionEditorScreen.this.font.plainSubstrByWidth(this.entry.key(), textWidth), x + 2, y + 1, color);
             if (this.hasProblems) {
-                context.drawString(RestrictionEditorScreen.this.font, Component.literal("!").withStyle(ChatFormatting.RED), x + entryWidth - 8, y + 1, 0xFFFFFF);
+                context.text(RestrictionEditorScreen.this.font, Component.literal("!").withStyle(ChatFormatting.RED), x + entryWidth - 8, y + 1, 0xFFFFFFFF);
             }
         }
 
@@ -325,7 +329,7 @@ public class RestrictionEditorScreen extends Screen {
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
             RestrictionEditorScreen.this.entryList.setSelected(this);
             return true;
         }

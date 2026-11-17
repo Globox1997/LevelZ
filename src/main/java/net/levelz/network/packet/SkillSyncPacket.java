@@ -7,9 +7,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import java.util.ArrayList;
@@ -21,12 +22,25 @@ public record SkillSyncPacket(List<Integer> skillIds, List<String> skillKeys, Li
     public static final CustomPacketPayload.Type<SkillSyncPacket> PACKET_ID = new CustomPacketPayload.Type<>(LevelzMain.identifierOf("skill_sync_packet"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SkillSyncPacket> PACKET_CODEC = StreamCodec.ofMember((value, buf) -> {
-        buf.writeCollection(value.skillIds, FriendlyByteBuf::writeInt);
-        buf.writeCollection(value.skillKeys, FriendlyByteBuf::writeUtf);
-        buf.writeCollection(value.skillMaxLevels, FriendlyByteBuf::writeInt);
-        buf.writeCollection(value.skillAttributes, (bufx, list) -> new SkillAttributesRecord(list.skillAttributes()).write(bufx));
+        ByteBufCodecs.INT.apply(ByteBufCodecs.list()).encode(buf, value.skillIds);
+        ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).encode(buf, value.skillKeys);
+        ByteBufCodecs.INT.apply(ByteBufCodecs.list()).encode(buf, value.skillMaxLevels);
+        buf.writeVarInt(value.skillAttributes.size());
+        for (SkillAttributesRecord skillAttributesRecord : value.skillAttributes) {
+            skillAttributesRecord.write(buf);
+        }
         value.skillBonuses.write(buf);
-    }, buf -> new SkillSyncPacket(buf.readList(FriendlyByteBuf::readInt), buf.readList(FriendlyByteBuf::readUtf), buf.readList(FriendlyByteBuf::readInt), buf.readList(SkillAttributesRecord::read), SkillBonusesRecord.read(buf)));
+    }, buf -> {
+        List<Integer> skillIds = ByteBufCodecs.INT.apply(ByteBufCodecs.list()).decode(buf);
+        List<String> skillKeys = ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).decode(buf);
+        List<Integer> skillMaxLevels = ByteBufCodecs.INT.apply(ByteBufCodecs.list()).decode(buf);
+        List<SkillAttributesRecord> skillAttributes = new ArrayList<>();
+        int size = buf.readVarInt();
+        for (int i = 0; i < size; i++) {
+            skillAttributes.add(SkillAttributesRecord.read(buf));
+        }
+        return new SkillSyncPacket(skillIds, skillKeys, skillMaxLevels, skillAttributes, SkillBonusesRecord.read(buf));
+    });
 
 
     public record SkillAttributesRecord(List<SkillAttribute> skillAttributes) {
@@ -49,7 +63,7 @@ public record SkillSyncPacket(List<Integer> skillIds, List<String> skillKeys, Li
             int size = buf.readInt();
             for (int i = 0; i < size; i++) {
                 int id = buf.readInt();
-                Holder<Attribute> attibute = BuiltInRegistries.ATTRIBUTE.getHolder(ResourceLocation.parse(buf.readUtf())).get();
+                Holder<Attribute> attibute = BuiltInRegistries.ATTRIBUTE.get(Identifier.parse(buf.readUtf())).get();
                 float baseValue = buf.readFloat();
                 float levelValue = buf.readFloat();
                 AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(buf.readUtf().toUpperCase());

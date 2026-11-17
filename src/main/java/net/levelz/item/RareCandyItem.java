@@ -4,7 +4,7 @@ import net.levelz.access.LevelManagerAccess;
 import net.levelz.access.ServerPlayerSyncAccess;
 import net.levelz.level.LevelManager;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +18,7 @@ public class RareCandyItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
         ItemStack stack = user.getItemInHand(hand);
         if (!world.isClientSide()) {
             if (!user.isCreative()) {
@@ -28,7 +28,7 @@ public class RareCandyItem extends Item {
             ((ServerPlayerSyncAccess) user)
                     .addLevelExperience(levelManager.getNextLevelExperience() - ((int) (levelManager.getLevelProgress() * levelManager.getNextLevelExperience())));
         }
-        return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
 }

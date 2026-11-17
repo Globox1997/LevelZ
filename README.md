@@ -54,7 +54,7 @@ A skill requires:
     "level": 20,
     "attributes": [
       {
-        "type": "generic.max_health",
+        "type": "max_health",
         "base": 10,
         "operation": "ADD_VALUE",
         "value": 1
@@ -73,37 +73,37 @@ A skill requires:
 ```
 
 ##### Attribute Types
-- `generic.armor`
-- `generic.armor_toughness`
-- `generic.attack_damage`
-- `generic.attack_knockback`
-- `generic.attack_speed`
-- `player.block_break_speed`
-- `player.block_interaction_range`
-- `generic.burning_time`
-- `generic.explosion_knockback_resistance`
-- `player.entity_interaction_range`
-- `generic.fall_damage_multiplier`
-- `generic.flying_speed`
-- `generic.follow_range`
-- `generic.gravity`
-- `generic.jump_strength`
-- `generic.knockback_resistance`
-- `generic.luck`
-- `generic.max_absorption`
-- `generic.max_health`
-- `player.mining_efficiency`
-- `generic.movement_efficiency`
-- `generic.movement_speed`
-- `generic.oxygen_bonus`
-- `generic.safe_fall_distance`
-- `generic.scale`
-- `player.sneaking_speed`
-- `zombie.spawn_reinforcements`
-- `generic.step_height`
-- `player.submerged_mining_speed`
-- `player.sweeping_damage_ratio`
-- `generic.water_movement_efficiency`
+- `armor`
+- `armor_toughness`
+- `attack_damage`
+- `attack_knockback`
+- `attack_speed`
+- `block_break_speed`
+- `block_interaction_range`
+- `burning_time`
+- `explosion_knockback_resistance`
+- `entity_interaction_range`
+- `fall_damage_multiplier`
+- `flying_speed`
+- `follow_range`
+- `gravity`
+- `jump_strength`
+- `knockback_resistance`
+- `luck`
+- `max_absorption`
+- `max_health`
+- `mining_efficiency`
+- `movement_efficiency`
+- `movement_speed`
+- `oxygen_bonus`
+- `safe_fall_distance`
+- `scale`
+- `sneaking_speed`
+- `spawn_reinforcements`
+- `step_height`
+- `submerged_mining_speed`
+- `sweeping_damage_ratio`
+- `water_movement_efficiency`
 
 ##### Bonuses
 - `bowDamage`: Each level grants +bowDamage on arrow damage

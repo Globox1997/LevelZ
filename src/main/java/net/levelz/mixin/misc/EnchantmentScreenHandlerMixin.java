@@ -59,18 +59,18 @@ public abstract class EnchantmentScreenHandlerMixin {
 
         List<EnchantmentInstance> list = new ArrayList<>();
         for (EnchantmentInstance enchantmentLevelEntry : original) {
-            if (levelManager.hasRequiredEnchantmentLevel(enchantmentLevelEntry.enchantment, enchantmentLevelEntry.level)) {
+            if (levelManager.hasRequiredEnchantmentLevel(enchantmentLevelEntry.enchantment(), enchantmentLevelEntry.level())) {
                 list.add(enchantmentLevelEntry);
             }
         }
         if (list.isEmpty()) {
-            Optional<HolderSet.Named<Enchantment>> optional = registryManager.registryOrThrow(Registries.ENCHANTMENT).getTag(EnchantmentTags.IN_ENCHANTING_TABLE);
+            Optional<HolderSet.Named<Enchantment>> optional = registryManager.lookupOrThrow(Registries.ENCHANTMENT).get(EnchantmentTags.IN_ENCHANTING_TABLE);
             // rng solution not good :/
             // since mojang changed the enchantment system - this is the most compatible solution which came to my mind
             for (int i = 0; i < 50; i++) {
                 List<EnchantmentInstance> enchantmentRng = EnchantmentHelper.selectEnchantment(this.playerEntity.getRandom(), stack, level, ((HolderSet.Named) optional.get()).stream());
                 for (EnchantmentInstance enchantmentLevelEntry : enchantmentRng) {
-                    if (levelManager.hasRequiredEnchantmentLevel(enchantmentLevelEntry.enchantment, enchantmentLevelEntry.level)) {
+                    if (levelManager.hasRequiredEnchantmentLevel(enchantmentLevelEntry.enchantment(), enchantmentLevelEntry.level())) {
                         list.add(enchantmentLevelEntry);
                         break;
                     }
@@ -84,7 +84,7 @@ public abstract class EnchantmentScreenHandlerMixin {
     }
 
 
-    @Inject(method = "method_17411", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
+    @Inject(method = "lambda$slotsChanged$0", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
     private void method_17411Mixin(ItemStack itemStack, Level world, BlockPos pos, CallbackInfo ci, @Local(ordinal = 1) int j, @Local List<EnchantmentInstance> list) {
         if (list.isEmpty()) {
             this.costs[j] = 0;

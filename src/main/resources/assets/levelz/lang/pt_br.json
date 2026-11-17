@@ -3,7 +3,7 @@
   "commands.playerstats.printProgress": "%s XP: %s / %s",
   "commands.playerstats.printLevel": "%s %s %s",
 
-  "category.levelz.keybind": "LevelZ Atalhos",
+  "key.category.levelz.keybind": "LevelZ Atalhos",
   "key.levelz.openskillscreen": "Tela de Habilidades",
   "key.levelz.dev": "Dev Key",
 

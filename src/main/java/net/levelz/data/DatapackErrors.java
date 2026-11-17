@@ -9,6 +9,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 
 public class DatapackErrors {
 
@@ -42,8 +43,8 @@ public class DatapackErrors {
     }
 
     public static void notify(ServerPlayer serverPlayerEntity) {
-        if (!ERRORS.isEmpty() && serverPlayerEntity.hasPermissions(2)) {
-            serverPlayerEntity.displayClientMessage(Component.translatable("text.levelz.datapack_errors", ERRORS.size()).withStyle(ChatFormatting.RED), false);
+        if (!ERRORS.isEmpty() && serverPlayerEntity.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
+            serverPlayerEntity.sendSystemMessage(Component.translatable("text.levelz.datapack_errors", ERRORS.size()).withStyle(ChatFormatting.RED));
         }
     }
 

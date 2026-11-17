@@ -17,7 +17,7 @@ import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.PacketType;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import java.util.List;
 
@@ -26,22 +26,22 @@ public class LevelServerPacket {
     public static final PacketType<OrbPacket> ADD_LEVEL_EXPERIENCE_ORB = s2c("add_level_experience_orb");
 
     public static void init() {
-        PayloadTypeRegistry.playS2C().register(SkillSyncPacket.PACKET_ID, SkillSyncPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(PlayerSkillSyncPacket.PACKET_ID, PlayerSkillSyncPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(LevelPacket.PACKET_ID, LevelPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(RestrictionPacket.PACKET_ID, RestrictionPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(EnchantmentZPacket.PACKET_ID, EnchantmentZPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SkillSyncPacket.PACKET_ID, SkillSyncPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(PlayerSkillSyncPacket.PACKET_ID, PlayerSkillSyncPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(LevelPacket.PACKET_ID, LevelPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(RestrictionPacket.PACKET_ID, RestrictionPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(EnchantmentZPacket.PACKET_ID, EnchantmentZPacket.PACKET_CODEC);
 
-        PayloadTypeRegistry.playS2C().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(AttributeSyncPacket.PACKET_ID, AttributeSyncPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(StatPacket.PACKET_ID, StatPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(AttributeSyncPacket.PACKET_ID, AttributeSyncPacket.PACKET_CODEC);
 
-        PayloadTypeRegistry.playS2C().register(EditorDataPacket.PACKET_ID, EditorDataPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(EditorResultPacket.PACKET_ID, EditorResultPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(EditorRequestPacket.PACKET_ID, EditorRequestPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(EditorSavePacket.PACKET_ID, EditorSavePacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(EditorDeletePacket.PACKET_ID, EditorDeletePacket.PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(EditorExportPacket.PACKET_ID, EditorExportPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(EditorDataPacket.PACKET_ID, EditorDataPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(EditorResultPacket.PACKET_ID, EditorResultPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(EditorRequestPacket.PACKET_ID, EditorRequestPacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(EditorSavePacket.PACKET_ID, EditorSavePacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(EditorDeletePacket.PACKET_ID, EditorDeletePacket.PACKET_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(EditorExportPacket.PACKET_ID, EditorExportPacket.PACKET_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(EditorRequestPacket.PACKET_ID, (payload, context) -> {
             context.server().execute(() -> RestrictionEditor.sendEditorData(context.player(), false));
@@ -109,6 +109,6 @@ public class LevelServerPacket {
     }
 
     private static <T extends Packet<ClientGamePacketListener>> PacketType<T> s2c(String id) {
-        return new PacketType<>(PacketFlow.CLIENTBOUND, ResourceLocation.withDefaultNamespace(id));
+        return new PacketType<>(PacketFlow.CLIENTBOUND, Identifier.withDefaultNamespace(id));
     }
 }

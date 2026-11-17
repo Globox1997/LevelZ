@@ -3,7 +3,7 @@ package net.levelz;
 import net.fabricmc.api.ModInitializer;
 import net.levelz.init.*;
 import net.levelz.network.LevelServerPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class LevelzMain implements ModInitializer {
 
@@ -21,8 +21,8 @@ public class LevelzMain implements ModInitializer {
         ItemInit.init();
     }
 
-    public static ResourceLocation identifierOf(String name) {
-        return ResourceLocation.fromNamespaceAndPath("levelz", name);
+    public static Identifier identifierOf(String name) {
+        return Identifier.fromNamespaceAndPath("levelz", name);
     }
 }
 

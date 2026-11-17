@@ -4,7 +4,7 @@
   "commands.level.printProgress": "%s XP: %s / %s",
   "commands.level.printLevel": "%s %s %s",
 
-  "category.levelz.keybind": "Teclas de LevelZ",
+  "key.category.levelz.keybind": "Teclas de LevelZ",
   "key.levelz.openskillscreen": "Pantalla de Habilidades",
   "key.levelz.dev": "Tecla de Desarrollador",
 

@@ -1,35 +1,38 @@
 package net.levelz.mixin.player;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.access.ClientPlayerAccess;
 import net.levelz.access.ClientPlayerListAccess;
 import net.levelz.init.ConfigInit;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.scores.PlayerTeam;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
-@Mixin(PlayerRenderer.class)
+@Mixin(AvatarRenderer.class)
 public class PlayerEntityRendererMixin {
 
-    @WrapOperation(method = "renderNameTag(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/network/chat/Component;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/player/PlayerRenderer;renderNameTag(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/network/chat/Component;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IF)V"))
-    private void renderLabelIfPresentMixin(PlayerRenderer instance, AbstractClientPlayer abstractClientPlayerEntity, Component text, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i, float f, Operation<Void> original) {
-        if (!((ClientPlayerAccess) abstractClientPlayerEntity).shouldRenderClientName()) {
+    @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V", at = @At("TAIL"))
+    private void extractRenderStateMixin(Avatar avatar, AvatarRenderState state, float partialTicks, CallbackInfo info) {
+        if (!(avatar instanceof AbstractClientPlayer abstractClientPlayerEntity)) {
             return;
         }
-        if (ConfigInit.CONFIG.showLevel) {
-            original.call(instance, abstractClientPlayerEntity, PlayerTeam.formatNameForTeam(abstractClientPlayerEntity.getTeam(),
-                    Component.translatable("text.levelz.scoreboard", ((ClientPlayerListAccess) abstractClientPlayerEntity).getLevel(), abstractClientPlayerEntity.getName())), matrixStack, vertexConsumerProvider, i, f);
-        } else {
-            original.call(instance, abstractClientPlayerEntity, text, matrixStack, vertexConsumerProvider, i, f);
+        if (!((ClientPlayerAccess) abstractClientPlayerEntity).shouldRenderClientName()) {
+            state.nameTag = null;
+            state.scoreText = null;
+            return;
+        }
+        if (ConfigInit.CONFIG.showLevel && state.nameTag != null) {
+            state.nameTag = PlayerTeam.formatNameForTeam(abstractClientPlayerEntity.getTeam(),
+                    Component.translatable("text.levelz.scoreboard", ((ClientPlayerListAccess) abstractClientPlayerEntity).getLevel(), abstractClientPlayerEntity.getName()));
         }
     }
 

@@ -18,9 +18,9 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
+import net.levelz.mixin.entity.AbstractArrowAccessor;
 
 public class BonusHelper {
 
@@ -43,14 +43,14 @@ public class BonusHelper {
                 SkillBonus skillBonus = LevelManager.BONUSES.get("bowDamage");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel()) {
-                    persistentProjectileEntity.setBaseDamage(persistentProjectileEntity.getBaseDamage() + ConfigInit.CONFIG.bowDamageBonus * level);
+                    persistentProjectileEntity.setBaseDamage(((AbstractArrowAccessor) persistentProjectileEntity).getLevelzBaseDamage() + ConfigInit.CONFIG.bowDamageBonus * level);
                 }
             }
             if (LevelManager.BONUSES.containsKey("bowDoubleDamageChance")) {
                 SkillBonus skillBonus = LevelManager.BONUSES.get("bowDoubleDamageChance");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= ConfigInit.CONFIG.bowDoubleDamageChanceBonus) {
-                    persistentProjectileEntity.setBaseDamage(persistentProjectileEntity.getBaseDamage() * 2D);
+                    persistentProjectileEntity.setBaseDamage(((AbstractArrowAccessor) persistentProjectileEntity).getLevelzBaseDamage() * 2D);
                 }
             }
         }
@@ -63,14 +63,14 @@ public class BonusHelper {
                 SkillBonus skillBonus = LevelManager.BONUSES.get("crossbowDamage");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel()) {
-                    persistentProjectileEntity.setBaseDamage(persistentProjectileEntity.getBaseDamage() + ConfigInit.CONFIG.crossbowDamageBonus * level);
+                    persistentProjectileEntity.setBaseDamage(((AbstractArrowAccessor) persistentProjectileEntity).getLevelzBaseDamage() + ConfigInit.CONFIG.crossbowDamageBonus * level);
                 }
             }
             if (LevelManager.BONUSES.containsKey("crossbowDoubleDamageChance")) {
                 SkillBonus skillBonus = LevelManager.BONUSES.get("crossbowDoubleDamageChance");
                 int level = levelManager.getSkillLevel(skillBonus.getId());
                 if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= ConfigInit.CONFIG.crossbowDoubleDamageChanceBonus) {
-                    persistentProjectileEntity.setBaseDamage(persistentProjectileEntity.getBaseDamage() * 2D);
+                    persistentProjectileEntity.setBaseDamage(((AbstractArrowAccessor) persistentProjectileEntity).getLevelzBaseDamage() * 2D);
                 }
             }
         }
@@ -113,7 +113,7 @@ public class BonusHelper {
                     return;
                 }
                 extraPassiveEntity.setBaby(true);
-                extraPassiveEntity.moveTo(animalEntity.getX(), animalEntity.getY(), animalEntity.getZ(), playerEntity.getRandom().nextFloat() * 360F, 0.0F);
+                extraPassiveEntity.snapTo(animalEntity.getX(), animalEntity.getY(), animalEntity.getZ(), playerEntity.getRandom().nextFloat() * 360F, 0.0F);
                 world.addFreshEntityWithPassengers(extraPassiveEntity);
             }
         }
@@ -207,7 +207,7 @@ public class BonusHelper {
     }
 
     public static void miningDropChanceBonus(Player playerEntity, BlockState state, BlockPos pos, LootParams.Builder builder) {
-        if (state.is(ConventionalBlockTags.ORES) && EnchantmentHelper.getEnchantmentLevel(playerEntity.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH), playerEntity) <= 0) {
+        if (state.is(ConventionalBlockTags.ORES) && EnchantmentHelper.getEnchantmentLevel(playerEntity.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SILK_TOUCH), playerEntity) <= 0) {
             if (LevelManager.BONUSES.containsKey("miningDropChance")) {
                 LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
                 SkillBonus skillBonus = LevelManager.BONUSES.get("miningDropChance");
@@ -223,7 +223,7 @@ public class BonusHelper {
     }
 
     public static void plantDropChanceBonus(Player playerEntity, BlockState state, BlockPos pos) {
-        if (EnchantmentHelper.getEnchantmentLevel(playerEntity.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SILK_TOUCH), playerEntity) <= 0) {
+        if (EnchantmentHelper.getEnchantmentLevel(playerEntity.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SILK_TOUCH), playerEntity) <= 0) {
             if (LevelManager.BONUSES.containsKey("plantDropChance")) {
                 LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
                 SkillBonus skillBonus = LevelManager.BONUSES.get("plantDropChance");
@@ -370,7 +370,7 @@ public class BonusHelper {
             if (level >= skillBonus.getLevel()) {
                 FoodProperties foodComponent = itemStack.get(DataComponents.FOOD);
                 float multiplier = level * ConfigInit.CONFIG.foodIncreasionBonus;
-                playerEntity.getFoodData().eat(new FoodProperties((int) (foodComponent.nutrition() * multiplier), foodComponent.saturation() * multiplier, true, 0.0f, Optional.empty(), List.of()));
+                playerEntity.getFoodData().eat(new FoodProperties((int) (foodComponent.nutrition() * multiplier), foodComponent.saturation() * multiplier, true));
             }
         }
     }

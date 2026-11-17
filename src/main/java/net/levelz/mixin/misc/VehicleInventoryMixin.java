@@ -13,7 +13,7 @@ import net.minecraft.world.entity.vehicle.ContainerEntity;
 @Mixin(ContainerEntity.class)
 public interface VehicleInventoryMixin {
 
-    @Inject(method = "unpackChestVehicleLootTable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/ContainerEntity;setLootTable(Lnet/minecraft/resources/ResourceKey;)V"))
+    @Inject(method = "unpackChestVehicleLootTable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/ContainerEntity;setContainerLootTable(Lnet/minecraft/resources/ResourceKey;)V"))
     default void generateInventoryLootMixin(@Nullable Player player, CallbackInfo info) {
         if (player != null) {
             ((PlayerDropAccess) player).resetKilledMobStat();

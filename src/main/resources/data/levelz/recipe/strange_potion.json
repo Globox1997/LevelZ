@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:brewing",
+  "input": {
+    "item": "minecraft:dragon_breath"
+  },
+  "output": {
+    "id": "levelz:strange_potion"
+  },
+  "reagent": {
+    "item": "minecraft:nether_star"
+  }
+}

@@ -1,17 +1,19 @@
 package net.levelz.mixin.block;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.TagInit;
-import net.minecraft.resources.ResourceLocation;
+import net.levelz.mixin.misc.SingleItemRecipeAccessor;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +35,7 @@ public class AbstractFurnaceBlockEntityMixin {
     @Mutable
     @Final
     @Shadow
-    private Object2IntOpenHashMap<ResourceLocation> recipesUsed;
+    private Reference2IntOpenHashMap<ResourceKey<Recipe<?>>> recipesUsed;
 
     @Inject(method = "awardUsedRecipesAndPopExperience", at = @At(value = "HEAD"))
     private void dropExperienceForRecipesUsedMixin(ServerPlayer player, CallbackInfo info) {
@@ -46,13 +48,13 @@ public class AbstractFurnaceBlockEntityMixin {
     }
 
     @Inject(method = "getRecipesToAwardAndPopExperience", at = @At(value = "TAIL"))
-    private void getRecipesUsedAndDropExperienceMixin(ServerLevel world, Vec3 pos, CallbackInfoReturnable<List<Recipe<?>>> info) {
+    private void getRecipesUsedAndDropExperienceMixin(ServerLevel world, Vec3 pos, CallbackInfoReturnable<List<RecipeHolder<?>>> info) {
         if (ConfigInit.CONFIG.furnaceXPMultiplier > 0.0F) {
-            for (Object2IntMap.Entry<ResourceLocation> entry : this.recipesUsed.object2IntEntrySet()) {
-                world.getRecipeManager().byKey(entry.getKey()).ifPresent(recipe -> {
-                    if (!recipe.value().getResultItem(world.registryAccess()).is(TagInit.RESTRICTED_FURNACE_EXPERIENCE_ITEMS)) {
-                        int i = Mth.floor((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe.value()).getExperience());
-                        float f = Mth.frac((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe.value()).getExperience());
+            for (Reference2IntMap.Entry<ResourceKey<Recipe<?>>> entry : this.recipesUsed.reference2IntEntrySet()) {
+                world.recipeAccess().byKey(entry.getKey()).ifPresent(recipe -> {
+                    if (!((SingleItemRecipeAccessor) recipe.value()).callResult().item().is(TagInit.RESTRICTED_FURNACE_EXPERIENCE_ITEMS)) {
+                        int i = Mth.floor((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe.value()).experience());
+                        float f = Mth.frac((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe.value()).experience());
                         if (f != 0.0f && Math.random() < (double) f) {
                             ++i;
                         }

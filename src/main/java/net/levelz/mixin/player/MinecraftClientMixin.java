@@ -49,7 +49,7 @@ public class MinecraftClientMixin {
             if (item != null && !item.equals(Items.AIR)) {
                 LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                 if (!levelManager.hasRequiredStackLevel(player.getMainHandItem())) {
-                    player.displayClientMessage(Component.translatable("item.levelz.locked.tooltip").withStyle(ChatFormatting.RED), true);
+                    player.sendOverlayMessage(Component.translatable("item.levelz.locked.tooltip").withStyle(ChatFormatting.RED));
                     return true;
                 }
             }

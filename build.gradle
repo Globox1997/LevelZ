@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.17-SNAPSHOT'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
     id 'maven-publish'
 }
 
@@ -23,65 +23,64 @@ loom {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // LibZ
-    modApi ('maven.modrinth:libz:1.0.3+1.21.1') {
+    api ("maven.modrinth:libz:${project.libz_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // Cloth
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+    implementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // ModMenu
-    modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") {
+    compileOnly runtimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
     // Wthit
-    modCompileOnly ('maven.modrinth:wthit:fabric-12.10.2') {
+    compileOnly ('maven.modrinth:wthit:fabric-21.0.0') {
         exclude(group: "net.fabricmc.fabric-api")
     }
 	// Jade
-    modCompileOnly ('maven.modrinth:jade:15.8.2+fabric') {
+    compileOnly ('maven.modrinth:jade:26.3.5+fabric') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // DragonLoot
-	modCompileOnly ('maven.modrinth:dragonloot:1.1.7+1.21.1') {
+	compileOnly ('maven.modrinth:dragonloot:1.2.0+26.3-fabric') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
     // REI
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:16.0.788"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-fabric:26.3.824"
     // EMI
-    modCompileOnly ('maven.modrinth:emi:1.1.22+1.21.1+fabric') {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    //    compileOnly ('maven.modrinth:emi:1.1.22+1.21.1+fabric') {
+    //        exclude(group: "net.fabricmc.fabric-api")
+    //    }
 
     // PlaceHolder
-    modCompileOnly ("eu.pb4:placeholder-api:2.4.1+1.21")
+    compileOnly ("eu.pb4:placeholder-api:3.2.0+26.3")
     // Inmis
-    modCompileOnly ('maven.modrinth:inmis:2.8.1-1.21.1') {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    //    compileOnly ('maven.modrinth:inmis:2.8.1-1.21.1') {
+    //        exclude(group: "net.fabricmc.fabric-api")
+    //    }
     // Accessories
-    modCompileOnly ('maven.modrinth:accessories:j6K4uRb7') {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    //    compileOnly ('maven.modrinth:accessories:j6K4uRb7') {
+    //        exclude(group: "net.fabricmc.fabric-api")
+    //    }
     // CosmeticArmor
     //    modCompileOnly ('maven.modrinth:cosmetic-armor:1.5.0') {
     //		exclude(group: "net.fabricmc.fabric-api")
     //	}
     // TreeChop
-    modCompileOnly ('maven.modrinth:treechop:0.19.2') {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+    //    compileOnly ('maven.modrinth:treechop:0.19.2') {
+    //		exclude(group: "net.fabricmc.fabric-api")
+    //	}
     // Alloygery
     //    modCompileOnly ('maven.modrinth:alloygery:2.5.5+1.19.2') {
     //		exclude(group: "net.fabricmc.fabric-api")
     //	}
     // Spell-Engine
-    modCompileOnly ('maven.modrinth:spell-engine:1.1.2+1.21.1') {
+    compileOnly ('maven.modrinth:spell-engine:1.10.9+26.3-fabric') {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 }
@@ -96,14 +95,14 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
+    it.options.release = 25
 }
 
 java {
     withSourcesJar()
 
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.levelz.access.LevelManagerAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.levelz.access.ClientPlayerListAccess;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
 
 @Mixin(ClientboundPlayerInfoUpdatePacket.class)
 public abstract class ClientPlayerListS2CPacketMixin implements ClientPlayerListAccess {
@@ -39,12 +40,12 @@ public abstract class ClientPlayerListS2CPacketMixin implements ClientPlayerList
 
     @Inject(method = "<init>(Lnet/minecraft/network/RegistryFriendlyByteBuf;)V", at = @At("TAIL"))
     public void playerListS2CPacketMixin(RegistryFriendlyByteBuf buf, CallbackInfo info) {
-        this.levelMap = buf.readMap((bufx -> bufx.readUUID()), FriendlyByteBuf::readInt);
+        this.levelMap = ByteBufCodecs.map(HashMap::new, UUIDUtil.STREAM_CODEC, ByteBufCodecs.INT).decode(buf);
     }
 
     @Inject(method = "write", at = @At("TAIL"))
     private void writeMixin(RegistryFriendlyByteBuf buf, CallbackInfo info) {
-        buf.writeMap(this.levelMap, ((bufx, value) -> bufx.writeUUID(value)), FriendlyByteBuf::writeInt);
+        ByteBufCodecs.map(HashMap::new, UUIDUtil.STREAM_CODEC, ByteBufCodecs.INT).encode(buf, new HashMap<>(this.levelMap));
     }
 
     @Override

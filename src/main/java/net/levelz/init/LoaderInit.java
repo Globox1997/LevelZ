@@ -3,6 +3,7 @@ package net.levelz.init;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.levelz.data.DatapackErrors;
 import net.levelz.data.RestrictionLoader;
 import net.levelz.access.LevelManagerAccess;
@@ -23,6 +24,7 @@ public class LoaderInit {
     public static void init() {
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new SkillLoader());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(RestrictionLoader.ID, RestrictionLoader::new);
+        ResourceLoader.get(PackType.SERVER_DATA).addListenerOrdering(SkillLoader.ID, RestrictionLoader.ID);
         CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
             if (!client) {
                 RestrictionLoader.onTagsLoaded(registries);

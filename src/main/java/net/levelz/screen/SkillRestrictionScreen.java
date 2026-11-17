@@ -10,12 +10,15 @@ import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.screen.widget.LineWidget;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -26,7 +29,7 @@ import java.util.stream.Collectors;
 @Environment(EnvType.CLIENT)
 public class SkillRestrictionScreen extends Screen implements Tab {
 
-    public static final ResourceLocation BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_info_background.png");
+    public static final Identifier BACKGROUND_TEXTURE = LevelzMain.identifierOf("textures/gui/skill_info_background.png");
 
     private final int backgroundWidth = 200;
     private final int backgroundHeight = 215;
@@ -69,10 +72,10 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(context, mouseX, mouseY, delta);
 
-        context.drawString(this.font, this.title, this.x + 7, this.y + 7, 0x3F3F3F, false);
+        context.text(this.font, this.title, this.x + 7, this.y + 7, 0xFF3F3F3F, false);
 
         for (int i = 0; i < 10; i++) {
             if (this.lines.size() <= i) {
@@ -85,43 +88,45 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     }
 
     @Override
-    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        renderTransparentBackground(context);
-        context.blit(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
+    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        extractTransparentBackground(context);
+        context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight, 256, 256);
 
         if (this.lines.size() > 10) {
             int scrollLevels = this.lines.size() - 10;
             int sliderY = this.lineIndex * 156 / scrollLevels;
-            context.blit(BACKGROUND_TEXTURE, this.x + 186, this.y + 20 + sliderY, 200, 0, 6, 31);
+            context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.x + 186, this.y + 20 + sliderY, 200, 0, 6, 31, 256, 256);
         } else {
-            context.blit(BACKGROUND_TEXTURE, this.x + 186, this.y + 20, 206, 0, 6, 31);
+            context.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND_TEXTURE, this.x + 186, this.y + 20, 206, 0, 6, 31, 256, 256);
         }
         int sortU = LevelScreen.isPointWithinBounds(this.x + 179, this.y + 4, 14, 14, mouseX, mouseY) ? 14 : 0;
         int sortV = this.sortAlphabetical ? 180 : 166;
-        context.blit(LevelScreen.ICON_TEXTURE, this.x + 179, this.y + 4, sortU, sortV, 14, 14);
+        context.blit(RenderPipelines.GUI_TEXTURED, LevelScreen.ICON_TEXTURE, this.x + 179, this.y + 4, sortU, sortV, 14, 14, 256, 256);
 
         DrawTabHelper.drawTab(minecraft, context, this, this.x, this.y, mouseX, mouseY);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+    public boolean keyPressed(KeyEvent event) {
+        if (this.minecraft.options.keyInventory.matches(event)) {
             if (ConfigInit.CONFIG.switchScreen) {
-                this.minecraft.setScreen(new LevelScreen());
+                this.minecraft.gui.setScreen(new LevelScreen());
             } else {
                 this.onClose();
             }
             return true;
 
-        } else if (KeyInit.screenKey.matches(keyCode, scanCode)) {
-            this.minecraft.setScreen(new LevelScreen());
+        } else if (KeyInit.screenKey.matches(event)) {
+            this.minecraft.gui.setScreen(new LevelScreen());
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        double mouseX = event.x();
+        double mouseY = event.y();
         DrawTabHelper.onTabButtonClick(minecraft, this, this.x, this.y, mouseX, mouseY, false);
         if (this.lines.size() > 10 && LevelScreen.isPointWithinBounds(this.x + 186, this.y + 20, 6, 187, mouseX, mouseY)) {
             this.draggingScrollbar = true;
@@ -134,7 +139,7 @@ public class SkillRestrictionScreen extends Screen implements Tab {
             this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
@@ -154,18 +159,19 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+        double mouseY = event.y();
         if (this.draggingScrollbar) {
             updateScrollFromMouse(mouseY);
             return true;
         }
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return super.mouseDragged(event, deltaX, deltaY);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         this.draggingScrollbar = false;
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(event);
     }
 
     private void sortRestrictions() {
@@ -173,8 +179,8 @@ public class SkillRestrictionScreen extends Screen implements Tab {
             if (this.sortAlphabetical) {
                 this.restrictions = this.restrictions.entrySet().stream()
                         .sorted((entry1, entry2) -> {
-                            String itemName1 = BuiltInRegistries.ITEM.byId(entry1.getKey()).getDescription().getString();
-                            String itemName2 = BuiltInRegistries.ITEM.byId(entry2.getKey()).getDescription().getString();
+                            String itemName1 = Component.translatable(BuiltInRegistries.ITEM.byId(entry1.getKey()).getDescriptionId()).getString();
+                            String itemName2 = Component.translatable(BuiltInRegistries.ITEM.byId(entry2.getKey()).getDescriptionId()).getString();
                             return itemName1.compareToIgnoreCase(itemName2);
                         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
             } else {

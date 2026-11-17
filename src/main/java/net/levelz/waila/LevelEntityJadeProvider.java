@@ -5,7 +5,7 @@ import net.levelz.init.RenderInit;
 import net.levelz.level.LevelManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import snownee.jade.api.EntityAccessor;
 import snownee.jade.api.IEntityComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -17,7 +17,7 @@ public enum LevelEntityJadeProvider implements IEntityComponentProvider {
     INSTANCE;
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return RenderInit.MINEABLE_INFO;
     }
 

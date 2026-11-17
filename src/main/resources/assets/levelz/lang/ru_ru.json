@@ -1,7 +1,7 @@
 {
     "commands.playerstats.changed": "stats got changed",
   
-    "category.levelz.keybind": "LevelZ горячие клавиши",
+    "key.category.levelz.keybind": "LevelZ горячие клавиши",
     "key.levelz.openskillscreen": "Skill Screen",
   
     "text.autoconfig.levelz.title": "LevelZ конфигурация",

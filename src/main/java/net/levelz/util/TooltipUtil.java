@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.init.ConfigInit;
@@ -15,13 +13,12 @@ import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.registry.EnchantmentRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +29,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 public class TooltipUtil {
 
@@ -120,9 +116,10 @@ public class TooltipUtil {
                     }
                 }
             }
-            if (stack.getItem() instanceof SpawnEggItem spawnEggItem) {
-                if (isCreative || !levelManager.hasRequiredEntityLevel(spawnEggItem.getType(stack))) {
-                    int entityId = BuiltInRegistries.ENTITY_TYPE.getId(spawnEggItem.getType(stack));
+            EntityType<?> spawnEggType = stack.getItem() instanceof SpawnEggItem ? SpawnEggItem.getType(stack) : null;
+            if (spawnEggType != null) {
+                if (isCreative || !levelManager.hasRequiredEntityLevel(spawnEggType)) {
+                    int entityId = BuiltInRegistries.ENTITY_TYPE.getId(spawnEggType);
                     if (LevelManager.ENTITY_RESTRICTIONS.containsKey(entityId)) {
                         PlayerRestriction playerRestriction = LevelManager.ENTITY_RESTRICTIONS.get(entityId);
                         lines.add(Component.translatable("restriction.levelz.usable.tooltip"));
@@ -138,7 +135,7 @@ public class TooltipUtil {
     }
 
     // Recommend to play with https://www.curseforge.com/minecraft/mc-mods/health-overlay-fabric
-    public static void renderTooltip(Minecraft client, GuiGraphics context) {
+    public static void renderTooltip(Minecraft client, GuiGraphicsExtractor context) {
         if (client.hitResult != null && ConfigInit.CONFIG.showLockedBlockInfo) {
 
             HitResult hitResult = client.hitResult;
@@ -188,7 +185,7 @@ public class TooltipUtil {
         }
     }
 
-    private static void renderTooltip(Minecraft client, GuiGraphics context, List<Component> textList, @Nullable ResourceLocation identifier, int x, int y) {
+    private static void renderTooltip(Minecraft client, GuiGraphicsExtractor context, List<Component> textList, @Nullable Identifier identifier, int x, int y) {
         int maxTextWidth = 0;
         for (int i = 0; i < textList.size(); i++) {
             if (client.font.width(textList.get(i)) > maxTextWidth) {
@@ -200,7 +197,7 @@ public class TooltipUtil {
         }
         maxTextWidth += 5;
 
-        context.pose().pushPose();
+        context.pose().pushMatrix();
 
         int colorStart = 0xBF191919; // background
         int colorTwo = 0xBF7F0200; // light border
@@ -208,25 +205,23 @@ public class TooltipUtil {
 
         render(context, x - maxTextWidth / 2 - 3, y + 4, maxTextWidth, textList.size() * 10 + 11, 400, colorStart, colorTwo, colorThree);
 
-        context.pose().translate(0.0, 0.0, 400.0);
-
         int i = 9;
         for (Component text : textList) {
             if (i == 9) {
-                context.drawString(client.font, text, x - maxTextWidth / 2 + (identifier != null ? 20 : 0), y + i, 0xFFFFFF, false);
+                context.text(client.font, text, x - maxTextWidth / 2 + (identifier != null ? 20 : 0), y + i, 0xFFFFFFFF, false);
             } else {
-                context.drawString(client.font, text, x - maxTextWidth / 2, y + i + 8, 0xFFFFFF, false);
+                context.text(client.font, text, x - maxTextWidth / 2, y + i + 8, 0xFFFFFFFF, false);
             }
             i += 10;
         }
 
         if (identifier != null) {
-            context.renderItem(BuiltInRegistries.ITEM.get(identifier).getDefaultInstance(), x - maxTextWidth / 2, y + 5);
+            context.item(BuiltInRegistries.ITEM.getValue(identifier).getDefaultInstance(), x - maxTextWidth / 2, y + 5);
         }
-        context.pose().popPose();
+        context.pose().popMatrix();
     }
 
-    public static void render(GuiGraphics context, int x, int y, int width, int height, int z, int background, int borderColorStart, int borderColorEnd) {
+    public static void render(GuiGraphicsExtractor context, int x, int y, int width, int height, int z, int background, int borderColorStart, int borderColorEnd) {
         int i = x - 3;
         int j = y - 3;
         int k = width + 3 + 3;
@@ -244,53 +239,35 @@ public class TooltipUtil {
         renderHorizontalLine(context, z, x + 3 + width / 2, y + 19, x + 3 + width, y + 20, 0xBF7F0200, 0x007F0200);
     }
 
-    private static void renderBorder(GuiGraphics context, int x, int y, int width, int height, int z, int startColor, int endColor) {
+    private static void renderBorder(GuiGraphicsExtractor context, int x, int y, int width, int height, int z, int startColor, int endColor) {
         renderVerticalLine(context, x, y, height - 2, z, startColor, endColor);
         renderVerticalLine(context, x + width - 1, y, height - 2, z, startColor, endColor);
         renderHorizontalLine(context, x, y - 1, width, z, startColor);
         renderHorizontalLine(context, x, y - 1 + height - 1, width, z, endColor);
     }
 
-    private static void renderVerticalLine(GuiGraphics context, int x, int y, int height, int z, int color) {
-        context.fill(x, y, x + 1, y + height, z, color);
+    private static void renderVerticalLine(GuiGraphicsExtractor context, int x, int y, int height, int z, int color) {
+        context.fill(x, y, x + 1, y + height, color);
     }
 
-    private static void renderVerticalLine(GuiGraphics context, int x, int y, int height, int z, int startColor, int endColor) {
-        context.fillGradient(x, y, x + 1, y + height, z, startColor, endColor);
+    private static void renderVerticalLine(GuiGraphicsExtractor context, int x, int y, int height, int z, int startColor, int endColor) {
+        context.fillGradient(x, y, x + 1, y + height, startColor, endColor);
     }
 
-    private static void renderHorizontalLine(GuiGraphics context, int x, int y, int width, int z, int color) {
-        context.fill(x, y, x + width, y + 1, z, color);
+    private static void renderHorizontalLine(GuiGraphicsExtractor context, int x, int y, int width, int z, int color) {
+        context.fill(x, y, x + width, y + 1, color);
     }
 
-    private static void renderRectangle(GuiGraphics context, int x, int y, int width, int height, int z, int color) {
-        context.fill(x, y, x + width, y + height, z, color);
+    private static void renderRectangle(GuiGraphicsExtractor context, int x, int y, int width, int height, int z, int color) {
+        context.fill(x, y, x + width, y + height, color);
     }
 
-    public static void renderHorizontalLine(GuiGraphics context, int zLevel, int left, int top, int right, int bottom, int startColor, int endColor) {
-        float endAlpha = (float) (endColor >> 24 & 255) / 255.0F;
-        float endRed = (float) (endColor >> 16 & 255) / 255.0F;
-        float endGreen = (float) (endColor >> 8 & 255) / 255.0F;
-        float endBlue = (float) (endColor & 255) / 255.0F;
-        float startAlpha = (float) (startColor >> 24 & 255) / 255.0F;
-        float startRed = (float) (startColor >> 16 & 255) / 255.0F;
-        float startGreen = (float) (startColor >> 8 & 255) / 255.0F;
-        float startBlue = (float) (startColor & 255) / 255.0F;
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        VertexConsumer vertexConsumer = context.bufferSource().getBuffer(RenderType.gui());
-        Matrix4f matrix4f = context.pose().last().pose();
-
-        vertexConsumer.addVertex(matrix4f, right, top, zLevel).setColor(endRed, endGreen, endBlue, endAlpha);
-        vertexConsumer.addVertex(matrix4f, left, top, zLevel).setColor(startRed, startGreen, startBlue, startAlpha);
-        vertexConsumer.addVertex(matrix4f, left, bottom, zLevel).setColor(startRed, startGreen, startBlue, startAlpha);
-        vertexConsumer.addVertex(matrix4f, right, bottom, zLevel).setColor(endRed, endGreen, endBlue, endAlpha);
-        context.flush();
-        RenderSystem.disableBlend();
+    public static void renderHorizontalLine(GuiGraphicsExtractor context, int zLevel, int left, int top, int right, int bottom, int startColor, int endColor) {
+        int width = right - left;
+        for (int i = 0; i < width; i++) {
+            float delta = width > 1 ? (float) i / (float) (width - 1) : 0.0F;
+            context.fill(left + i, top, left + i + 1, bottom, ARGB.srgbLerp(delta, startColor, endColor));
+        }
     }
 
 }

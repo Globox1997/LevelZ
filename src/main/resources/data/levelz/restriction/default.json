@@ -287,8 +287,18 @@
     "blocks": [],
     "crafting": [],
     "entities": [
-      "minecraft:boat",
-      "minecraft:chest_boat"
+      "#minecraft:boat",
+      "minecraft:oak_chest_boat",
+      "minecraft:spruce_chest_boat",
+      "minecraft:birch_chest_boat",
+      "minecraft:jungle_chest_boat",
+      "minecraft:acacia_chest_boat",
+      "minecraft:cherry_chest_boat",
+      "minecraft:dark_oak_chest_boat",
+      "minecraft:pale_oak_chest_boat",
+      "minecraft:mangrove_chest_boat",
+      "minecraft:poplar_chest_boat",
+      "minecraft:bamboo_chest_raft"
     ],
     "items": [],
     "mining": []
@@ -913,7 +923,7 @@
       "minecraft:iron_door",
       "minecraft:iron_trapdoor",
       "minecraft:heavy_weighted_pressure_plate",
-      "minecraft:chain"
+      "minecraft:iron_chain"
     ]
   },
   "mining_9": {

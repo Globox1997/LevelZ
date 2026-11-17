@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.scores.ScoreAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,12 +37,12 @@ public abstract class ServerPlayerEntityMixin extends Player implements ServerPl
     @Unique
     private int syncedLevelExperience = -99999999;
 
-    public ServerPlayerEntityMixin(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
-        super(world, pos, yaw, gameProfile);
+    public ServerPlayerEntityMixin(Level world, GameProfile gameProfile) {
+        super(world, gameProfile);
     }
 
-    @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
-    private void teleportToMixin(DimensionTransition teleportTarget, CallbackInfoReturnable<Entity> info) {
+    @Inject(method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;", at = @At("HEAD"), cancellable = true)
+    private void teleportToMixin(TeleportTransition teleportTarget, CallbackInfoReturnable<Entity> info) {
         if (this.isCreative() || this.isSpectator() || teleportTarget.newLevel() == this.level()) {
             return;
         }
@@ -57,7 +57,7 @@ public abstract class ServerPlayerEntityMixin extends Player implements ServerPl
                     requirements.append(Component.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()));
                 }
             }
-            this.displayClientMessage(Component.translatable("restriction.levelz.dimension.locked", requirements).withStyle(ChatFormatting.RED), true);
+            this.sendOverlayMessage(Component.translatable("restriction.levelz.dimension.locked", requirements).withStyle(ChatFormatting.RED));
             info.setReturnValue(null);
         }
     }
@@ -77,8 +77,8 @@ public abstract class ServerPlayerEntityMixin extends Player implements ServerPl
 
                 PacketHelper.updateLevels(serverPlayerEntity);
                 CriteriaInit.LEVEL_UP.trigger(serverPlayerEntity);
-                serverPlayerEntity.getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
-                serverPlayerEntity.getScoreboard().forAllObjectives(CriteriaInit.LEVELZ, serverPlayerEntity, ScoreAccess::increment);
+                serverPlayerEntity.level().getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
+                serverPlayerEntity.level().getScoreboard().forAllObjectives(CriteriaInit.LEVELZ, serverPlayerEntity, ScoreAccess::increment);
                 if (levelManager.getOverallLevel() > 0) {
                     serverPlayerEntity.level().playSound(null, serverPlayerEntity.getX(), serverPlayerEntity.getY(), serverPlayerEntity.getZ(), SoundEvents.PLAYER_LEVELUP, serverPlayerEntity.getSoundSource(), 1.0F, 1.0F);
                 }

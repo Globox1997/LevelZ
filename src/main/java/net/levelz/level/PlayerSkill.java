@@ -1,6 +1,7 @@
 package net.levelz.level;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class PlayerSkill {
 
@@ -12,16 +13,14 @@ public class PlayerSkill {
         this.level = level;
     }
 
-    public PlayerSkill(CompoundTag nbt) {
-        this.id = nbt.getInt("Id");
-        this.level = nbt.getInt("Level");
+    public PlayerSkill(ValueInput nbt) {
+        this.id = nbt.getIntOr("Id", 0);
+        this.level = nbt.getIntOr("Level", 0);
     }
 
-    public CompoundTag writeDataToNbt() {
-        CompoundTag nbt = new CompoundTag();
+    public void writeDataToNbt(ValueOutput nbt) {
         nbt.putInt("Id", this.id);
         nbt.putInt("Level", this.level);
-        return nbt;
     }
 
     public int getId() {

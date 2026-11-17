@@ -5,9 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.levelz.access.LevelManagerAccess;
 import net.levelz.level.LevelManager;
 import net.levelz.level.Skill;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import java.util.Optional;
 
@@ -22,11 +22,11 @@ public class SkillCriterion extends SimpleCriterionTrigger<SkillCriterion.Condit
         this.trigger(player, conditions -> conditions.matches(player, skillName, skillLevel));
     }
 
-    public record Conditions(Optional<ContextAwarePredicate> player, String skillName, int skillLevel) implements SimpleCriterionTrigger.SimpleInstance {
+    public record Conditions(Optional<Holder<LootItemCondition>> player, String skillName, int skillLevel) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<SkillCriterion.Conditions> CODEC = RecordCodecBuilder
                 .create(instance -> instance
-                        .group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(SkillCriterion.Conditions::player),
+                        .group(LootItemCondition.CODEC.optionalFieldOf("player").forGetter(SkillCriterion.Conditions::player),
                                 Codec.STRING.fieldOf("skill_name").forGetter(SkillCriterion.Conditions::skillName), Codec.INT.fieldOf("skill_level").forGetter(SkillCriterion.Conditions::skillLevel))
                         .apply(instance, SkillCriterion.Conditions::new));
 

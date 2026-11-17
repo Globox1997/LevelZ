@@ -12,7 +12,7 @@ import net.levelz.level.SkillAttribute;
 import net.levelz.level.SkillBonus;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -21,12 +21,12 @@ import java.util.*;
 
 public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
-    public static final ResourceLocation ID = LevelzMain.identifierOf("skill");
+    public static final Identifier ID = LevelzMain.identifierOf("skill");
 
     private static final List<Integer> skillList = new ArrayList<>();
 
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return ID;
     }
 
@@ -153,8 +153,8 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
             }
         }
         String type = attributeJsonObject.get("type").getAsString();
-        ResourceLocation attributeIdentifier = ResourceLocation.tryParse(type);
-        Optional<Holder.Reference<Attribute>> entityAttribute = attributeIdentifier != null ? BuiltInRegistries.ATTRIBUTE.getHolder(attributeIdentifier) : Optional.empty();
+        Identifier attributeIdentifier = Identifier.tryParse(type);
+        Optional<Holder.Reference<Attribute>> entityAttribute = attributeIdentifier != null ? BuiltInRegistries.ATTRIBUTE.get(attributeIdentifier) : Optional.empty();
         if (entityAttribute.isEmpty()) {
             DatapackErrors.report("Skill {} contains the unknown attribute {}.", source, type);
             return null;

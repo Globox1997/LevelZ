@@ -9,11 +9,8 @@ import net.levelz.util.LevelHelper;
 import net.levelz.util.PacketHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class LevelManager {
 
@@ -37,7 +36,7 @@ public class LevelManager {
     public static final Map<Integer, PlayerRestriction> MINING_RESTRICTIONS = new HashMap<>();
     public static final Map<Integer, PlayerRestriction> ENCHANTMENT_RESTRICTIONS = new HashMap<>();
     public static final Map<Integer, List<ComponentRestriction>> COMPONENT_RESTRICTIONS = new HashMap<>();
-    public static final Map<ResourceLocation, PlayerRestriction> DIMENSION_RESTRICTIONS = new HashMap<>();
+    public static final Map<Identifier, PlayerRestriction> DIMENSION_RESTRICTIONS = new HashMap<>();
     public static final Map<String, SkillBonus> BONUSES = new HashMap<>();
 
     private final Player playerEntity;
@@ -48,6 +47,7 @@ public class LevelManager {
     private int totalLevelExperience;
     private float levelProgress;
     private int skillPoints;
+    private boolean loadedData = false;
 
     public LevelManager(Player playerEntity) {
         this.playerEntity = playerEntity;
@@ -72,15 +72,15 @@ public class LevelManager {
         return playerEntity;
     }
 
-    public void readNbt(CompoundTag nbt) {
-        this.overallLevel = nbt.getInt("Level");
-        this.levelProgress = nbt.getFloat("LevelProgress");
-        this.totalLevelExperience = nbt.getInt("TotalLevelExperience");
-        this.skillPoints = nbt.getInt("SkillPoints");
+    public void readNbt(ValueInput nbt) {
+        this.loadedData = true;
+        this.overallLevel = nbt.getIntOr("Level", 0);
+        this.levelProgress = nbt.getFloatOr("LevelProgress", 0.0F);
+        this.totalLevelExperience = nbt.getIntOr("TotalLevelExperience", 0);
+        this.skillPoints = nbt.getIntOr("SkillPoints", 0);
 
-        ListTag skills = nbt.getList("Skills", Tag.TAG_COMPOUND);
-        for (int i = 0; i < skills.size(); i++) {
-            PlayerSkill skill = new PlayerSkill(skills.getCompound(i));
+        for (ValueInput skillInput : nbt.childrenListOrEmpty("Skills")) {
+            PlayerSkill skill = new PlayerSkill(skillInput);
             if (!SKILLS.containsKey(skill.getId())) {
                 continue;
             }
@@ -92,17 +92,20 @@ public class LevelManager {
         this.refreshSkills();
     }
 
-    public void writeNbt(CompoundTag nbt) {
+    public boolean hasLoadedData() {
+        return this.loadedData;
+    }
+
+    public void writeNbt(ValueOutput nbt) {
         nbt.putInt("Level", this.overallLevel);
         nbt.putFloat("LevelProgress", this.levelProgress);
         nbt.putInt("TotalLevelExperience", this.totalLevelExperience);
         nbt.putInt("SkillPoints", this.skillPoints);
 
-        ListTag skills = new ListTag();
+        ValueOutput.ValueOutputList skills = nbt.childrenList("Skills");
         for (PlayerSkill skill : this.playerSkills.values()) {
-            skills.add(skill.writeDataToNbt());
+            skill.writeDataToNbt(skills.addChild());
         }
-        nbt.put("Skills", skills);
     }
 
     public Map<Integer, PlayerSkill> getPlayerSkills() {
@@ -322,12 +325,12 @@ public class LevelManager {
     }
 
     public boolean hasRequiredDimensionLevel(ResourceKey<Level> dimension) {
-        PlayerRestriction playerRestriction = DIMENSION_RESTRICTIONS.get(dimension.location());
+        PlayerRestriction playerRestriction = DIMENSION_RESTRICTIONS.get(dimension.identifier());
         return playerRestriction == null || this.hasRequiredSkillLevels(playerRestriction.getSkillLevelRestrictions());
     }
 
     public Map<Integer, Integer> getRequiredDimensionLevel(ResourceKey<Level> dimension) {
-        PlayerRestriction playerRestriction = DIMENSION_RESTRICTIONS.get(dimension.location());
+        PlayerRestriction playerRestriction = DIMENSION_RESTRICTIONS.get(dimension.identifier());
         return playerRestriction != null ? playerRestriction.getSkillLevelRestrictions() : Map.of();
     }
 

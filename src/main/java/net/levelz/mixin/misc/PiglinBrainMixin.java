@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import net.minecraft.world.item.component.SwingAnimation;
 
 @Mixin(PiglinAi.class)
 public class PiglinBrainMixin {
@@ -28,9 +29,9 @@ public class PiglinBrainMixin {
         }
         LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
         if (!levelManager.hasRequiredEntityLevel(piglin.getType())) {
-            player.displayClientMessage(Component.translatable("item.levelz.locked.tooltip").withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("item.levelz.locked.tooltip").withStyle(ChatFormatting.RED));
             if (!items.isEmpty()) {
-                piglin.swing(InteractionHand.OFF_HAND);
+                piglin.swing(InteractionHand.OFF_HAND, SwingAnimation.DEFAULT);
                 BehaviorUtils.throwItem(piglin, new ItemStack(Items.GOLD_INGOT), player.position().add(0.0, 1.0, 0.0));
             }
             info.cancel();

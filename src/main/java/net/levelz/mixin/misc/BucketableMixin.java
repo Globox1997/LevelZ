@@ -6,7 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Bucketable;
+import net.minecraft.world.entity.Bucketable;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +26,7 @@ public interface BucketableMixin {
         }
         LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
         if (!levelManager.hasRequiredStackLevel(player.getItemInHand(hand))) {
-            player.displayClientMessage(Component.translatable("item.levelz.locked.tooltip").withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("item.levelz.locked.tooltip").withStyle(ChatFormatting.RED));
             info.setReturnValue(Optional.empty());
         }
     }

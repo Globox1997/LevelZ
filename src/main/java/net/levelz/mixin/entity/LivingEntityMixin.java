@@ -32,11 +32,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LivingEntityMixin extends Entity {
 
     @Shadow
-    protected int lastHurtByPlayerTime;
+    protected int lastHurtByPlayerMemoryTime;
 
     @Shadow
     @Nullable
-    protected Player lastHurtByPlayer;
+    public abstract Player getLastHurtByPlayer();
 
     public LivingEntityMixin(EntityType<?> type, Level world) {
         super(type, world);
@@ -51,7 +51,7 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @ModifyVariable(method = "checkTotemDeathProtection", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/LivingEntity;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;", ordinal = 0))
+    @ModifyVariable(method = "checkTotemDeathProtection", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/LivingEntity;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;", ordinal = 0), ordinal = 1)
     private ItemStack tryUseTotemMixin(ItemStack original) {
         if ((Object) this instanceof Player playerEntity && original.is(Items.TOTEM_OF_UNDYING)) {
             if (playerEntity.isCreative()) {
@@ -74,7 +74,8 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "dropAllDeathLoot", at = @At(value = "HEAD"), cancellable = true)
     protected void dropMixin(ServerLevel world, DamageSource damageSource, CallbackInfo info) {
-        if (!((Object) this instanceof Player) && lastHurtByPlayer != null && this.lastHurtByPlayerTime > 0 && ConfigInit.CONFIG.disableMobFarms
+        Player lastHurtByPlayer = this.getLastHurtByPlayer();
+        if (!((Object) this instanceof Player) && lastHurtByPlayer != null && this.lastHurtByPlayerMemoryTime > 0 && ConfigInit.CONFIG.disableMobFarms
                 && !((PlayerDropAccess) lastHurtByPlayer).allowMobDrop()) {
             info.cancel();
         }
@@ -82,7 +83,8 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dropAllDeathLoot(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;)V"))
     private void onDeathMixin(DamageSource source, CallbackInfo info) {
-        if (lastHurtByPlayer != null && this.lastHurtByPlayerTime > 0 && ConfigInit.CONFIG.disableMobFarms) {
+        Player lastHurtByPlayer = this.getLastHurtByPlayer();
+        if (lastHurtByPlayer != null && this.lastHurtByPlayerMemoryTime > 0 && ConfigInit.CONFIG.disableMobFarms) {
             ((PlayerDropAccess) lastHurtByPlayer).increaseKilledMobStat(this.level().getChunk(this.blockPosition()));
         }
     }
@@ -90,19 +92,20 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"))
     protected void dropXpMixin(CallbackInfo info) {
         if (ConfigInit.CONFIG.mobXPMultiplier > 0.0F) {
-            if ((!ConfigInit.CONFIG.spawnerMobXP && (Object) this instanceof Mob mobEntity && ((MobEntityAccess) mobEntity).isSpawnerMob()) || ((Object) this instanceof LivingEntity livingEntity && livingEntity.getType().is(TagInit.RESTRICTED_ENTITY_EXPERIENCE_ENTITIES))) {
+            if ((!ConfigInit.CONFIG.spawnerMobXP && (Object) this instanceof Mob mobEntity && ((MobEntityAccess) mobEntity).isSpawnerMob()) || ((Object) this instanceof LivingEntity livingEntity && livingEntity.is(TagInit.RESTRICTED_ENTITY_EXPERIENCE_ENTITIES))) {
             } else {
+                Player lastHurtByPlayer = this.getLastHurtByPlayer();
                 LevelExperienceOrbEntity.spawn((ServerLevel) this.level(), this.position(),
-                        (int) (this.getBaseExperienceReward() * ConfigInit.CONFIG.mobXPMultiplier
-                                * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.lastHurtByPlayer != null
-                                ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) this.lastHurtByPlayer).getLevelManager().getOverallLevel()
+                        (int) (this.getBaseExperienceReward((ServerLevel) this.level()) * ConfigInit.CONFIG.mobXPMultiplier
+                                * (ConfigInit.CONFIG.dropXPbasedOnLvl && lastHurtByPlayer != null
+                                ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) lastHurtByPlayer).getLevelManager().getOverallLevel()
                                 : 1.0F)));
             }
         }
     }
 
     @Shadow
-    protected int getBaseExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 0;
     }
 

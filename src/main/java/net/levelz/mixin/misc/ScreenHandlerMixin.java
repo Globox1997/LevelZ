@@ -4,7 +4,7 @@ import net.levelz.util.RestrictionHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
@@ -26,7 +26,7 @@ public class ScreenHandlerMixin {
     public NonNullList<Slot> slots = NonNullList.create();
 
     @Inject(method = "doClick", at = @At("HEAD"), cancellable = true)
-    private void internalOnSlotClickMixin(int slotIndex, int button, ClickType actionType, Player player, CallbackInfo info) {
+    private void internalOnSlotClickMixin(int slotIndex, int button, ContainerInput actionType, Player player, CallbackInfo info) {
         if (player.isCreative()) {
             return;
         }

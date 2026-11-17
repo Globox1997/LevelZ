@@ -1,6 +1,6 @@
 package net.levelz.init;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -20,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.ItemStack;
 import java.util.Map;
 
@@ -38,7 +37,7 @@ public class EventInit {
             DatapackErrors.notify(handler.getPlayer());
         });
 
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
+        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> {
             PacketHelper.updatePlayerSkills(player, null);
             PacketHelper.updateLevels(player);
         });
@@ -103,7 +102,7 @@ public class EventInit {
 
                 newLevelManager.setOverallLevel(retainedLevel);
                 PacketHelper.updateLevels(newPlayer);
-                newPlayer.getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE, newPlayer));
+                newPlayer.level().getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE, newPlayer));
             } else {
                 PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
 
@@ -127,11 +126,11 @@ public class EventInit {
                 if (!levelManager.hasRequiredStackLevel(player.getItemInHand(hand))) {
                     // player.sendMessage(Text.translatable("item.levelz." + customList.get(customList.indexOf(string) + 1) +
                     // ".tooltip", customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED), true);
-                    player.displayClientMessage(Component.translatable("restriction.levelz.locked.tooltip").withStyle(ChatFormatting.RED), true);
-                    return InteractionResultHolder.fail(player.getItemInHand(hand));
+                    player.sendOverlayMessage(Component.translatable("restriction.levelz.locked.tooltip").withStyle(ChatFormatting.RED));
+                    return InteractionResult.FAIL;
                 }
             }
-            return InteractionResultHolder.pass(ItemStack.EMPTY);
+            return InteractionResult.PASS;
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, result) -> {
@@ -140,8 +139,8 @@ public class EventInit {
                 if (world.mayInteract(player, blockPos)) {
                     LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                     if (!levelManager.hasRequiredBlockLevel(world.getBlockState(blockPos).getBlock())) {
-                        player.displayClientMessage(Component.translatable("restriction.levelz.locked.tooltip").withStyle(ChatFormatting.RED), true);
-                        return InteractionResult.sidedSuccess(false);
+                        player.sendOverlayMessage(Component.translatable("restriction.levelz.locked.tooltip").withStyle(ChatFormatting.RED));
+                        return InteractionResult.CONSUME;
                     }
                 }
             }
@@ -153,8 +152,8 @@ public class EventInit {
                 if (!entity.hasControllingPassenger() || !((EntityAccessor) entity).callCanAddPassenger(player)) {
                     LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                     if (!levelManager.hasRequiredEntityLevel(entity.getType())) {
-                        player.displayClientMessage(Component.translatable("restriction.levelz.locked.tooltip").withStyle(ChatFormatting.RED), true);
-                        return InteractionResult.sidedSuccess(false);
+                        player.sendOverlayMessage(Component.translatable("restriction.levelz.locked.tooltip").withStyle(ChatFormatting.RED));
+                        return InteractionResult.CONSUME;
                     }
                 }
             }

@@ -22,13 +22,18 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.server.permissions.Permissions;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.util.InclusiveRange;
 
 public class RestrictionEditor {
 
     private static final Logger LOGGER = LogManager.getLogger("LevelZ");
 
     public static boolean canEdit(ServerPlayer serverPlayerEntity) {
-        return serverPlayerEntity.hasPermissions(2);
+        return serverPlayerEntity.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
     }
 
     public static void sendEditorData(ServerPlayer serverPlayerEntity, boolean openScreen) {
@@ -58,7 +63,7 @@ public class RestrictionEditor {
             sendResult(serverPlayerEntity, key, false, "editor.levelz.invalid_json");
             return;
         }
-        JsonObject overrides = RestrictionOverrides.read(serverPlayerEntity.getServer());
+        JsonObject overrides = RestrictionOverrides.read(serverPlayerEntity.level().getServer());
         if (overrides == null) {
             sendResult(serverPlayerEntity, key, false, "editor.levelz.invalid_file");
             return;
@@ -75,7 +80,7 @@ public class RestrictionEditor {
         if (!canEdit(serverPlayerEntity)) {
             return;
         }
-        JsonObject overrides = RestrictionOverrides.read(serverPlayerEntity.getServer());
+        JsonObject overrides = RestrictionOverrides.read(serverPlayerEntity.level().getServer());
         if (overrides == null) {
             sendResult(serverPlayerEntity, key, false, "editor.levelz.invalid_file");
             return;
@@ -93,7 +98,7 @@ public class RestrictionEditor {
     }
 
     private static void writeAndReload(ServerPlayer serverPlayerEntity, String key, JsonObject overrides, String message) {
-        MinecraftServer server = serverPlayerEntity.getServer();
+        MinecraftServer server = serverPlayerEntity.level().getServer();
         try {
             RestrictionOverrides.write(server, overrides);
         } catch (IOException e) {
@@ -113,7 +118,7 @@ public class RestrictionEditor {
         if (!canEdit(serverPlayerEntity)) {
             return;
         }
-        MinecraftServer server = serverPlayerEntity.getServer();
+        MinecraftServer server = serverPlayerEntity.level().getServer();
         JsonObject overrides = RestrictionOverrides.read(server);
         if (overrides == null) {
             sendResult(serverPlayerEntity, "", false, "editor.levelz.invalid_file");
@@ -130,11 +135,9 @@ public class RestrictionEditor {
             }
         }
         Path root = server.getWorldPath(LevelResource.ROOT).resolve("levelz").resolve("export").resolve("levelz_export").normalize();
-        JsonObject packInfo = new JsonObject();
-        packInfo.addProperty("pack_format", SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA));
-        packInfo.addProperty("description", "LevelZ restrictions");
+        PackMetadataSection packMetadata = new PackMetadataSection(Component.literal("LevelZ restrictions"), new InclusiveRange<>(SharedConstants.getCurrentVersion().packVersion(PackType.SERVER_DATA)));
         JsonObject packMeta = new JsonObject();
-        packMeta.add("pack", packInfo);
+        packMeta.add("pack", PackMetadataSection.SERVER_TYPE.codec().encodeStart(JsonOps.INSTANCE, packMetadata).getOrThrow());
         try {
             RestrictionOverrides.writeJson(root.resolve("pack.mcmeta"), packMeta);
             RestrictionOverrides.writeJson(root.resolve("data").resolve("levelz_export").resolve("restriction").resolve("restrictions.json"), exported);

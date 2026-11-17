@@ -3,7 +3,7 @@
  "commands.playerstats.printProgress": "%s XP: %s / %s",
  "commands.playerstats.printLevel": "%s %s %s",
 
- "category.levelz.keybind": "LevelZ 按键绑定",
+ "key.category.levelz.keybind": "LevelZ 按键绑定",
  "key.levelz.openskillscreen": "打开技能界面",
  "key.levelz.dev": "开发模式",
 

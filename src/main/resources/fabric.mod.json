@@ -25,9 +25,6 @@
     "modmenu": [
       "net.levelz.config.ModMenuIntegration"
     ],
-    "emi": [
-      "net.levelz.compat.LevelzEmiPlugin"
-    ],
     "rei_client": [
       "net.levelz.compat.LevelzReiPlugin"
     ],
@@ -40,7 +37,7 @@
   ],
   "accessWidener": "levelz.accesswidener",
   "depends": {
-    "java": ">=21",
+    "java": ">=25",
     "minecraft": ">=${minecraft_version}",
     "fabric-api": ">=${fabric_version}",
     "fabricloader": ">=${loader_version}",

@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 public class EnchantmentRegistry {
@@ -21,7 +21,7 @@ public class EnchantmentRegistry {
         return getId(enchantment, level) >= 0;
     }
 
-    public static boolean containsId(ResourceLocation identifier, int level) {
+    public static boolean containsId(Identifier identifier, int level) {
         return containsId(identifier.toString(), level);
     }
 
@@ -55,7 +55,7 @@ public class EnchantmentRegistry {
         ID_CACHE.clear();
     }
 
-    public static int getId(ResourceLocation identifier, int level) {
+    public static int getId(Identifier identifier, int level) {
         return getId(identifier.toString(), level);
     }
 
@@ -76,7 +76,7 @@ public class EnchantmentRegistry {
 
     public static void updateEnchantments(HolderLookup.Provider wrapperLookup) {
         clear();
-        Optional<HolderLookup.RegistryLookup<Enchantment>> wrapper = wrapperLookup.lookup(Registries.ENCHANTMENT);
+        Optional<? extends HolderLookup.RegistryLookup<Enchantment>> wrapper = wrapperLookup.lookup(Registries.ENCHANTMENT);
         for (HolderLookup.RegistryLookup<Enchantment> enchantmentImpl : wrapper.stream().toList()) {
             for (Holder.Reference<Enchantment> enchantment : enchantmentImpl.listElements().toList()) {
                 for (int i = 1; i <= enchantment.value().getMaxLevel(); i++) {

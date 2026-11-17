@@ -23,7 +23,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -32,10 +32,11 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Consumer;
+import net.minecraft.commands.arguments.item.ItemInput;
 
 public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements SimpleSynchronousResourceReloadListener {
 
-    public static final ResourceLocation ID = LevelzMain.identifierOf("restriction");
+    public static final Identifier ID = LevelzMain.identifierOf("restriction");
 
     public static final List<RestrictionEntry> ENTRIES = new ArrayList<>();
 
@@ -45,7 +46,7 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
     private static final Set<Integer> itemList = new HashSet<>();
     private static final Set<Integer> miningList = new HashSet<>();
     private static final Set<Integer> enchantmentList = new HashSet<>();
-    private static final Set<ResourceLocation> dimensionList = new HashSet<>();
+    private static final Set<Identifier> dimensionList = new HashSet<>();
     private static final List<Consumer<RegistryAccess>> TAG_TASKS = new ArrayList<>();
 
     private enum Mode {
@@ -57,12 +58,12 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
     }
 
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return ID;
     }
 
     @Override
-    public Collection<ResourceLocation> getFabricDependencies() {
+    public Collection<Identifier> getFabricDependencies() {
         return List.of(SkillLoader.ID);
     }
 
@@ -228,7 +229,7 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
         for (JsonElement entryElement : restrictionJsonObject.getAsJsonArray(type)) {
             String entry = entryElement.getAsString();
             if (entry.startsWith("#")) {
-                ResourceLocation tagIdentifier = ResourceLocation.tryParse(entry.substring(1));
+                Identifier tagIdentifier = Identifier.tryParse(entry.substring(1));
                 if (tagIdentifier == null) {
                     DatapackErrors.report("Restriction {} contains the invalid tag {} in \"{}\".", source, entry, type);
                     continue;
@@ -246,12 +247,12 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
                 });
                 continue;
             }
-            ResourceLocation identifier = ResourceLocation.tryParse(entry);
+            Identifier identifier = Identifier.tryParse(entry);
             if (identifier == null || !registry.containsKey(identifier)) {
                 DatapackErrors.report("Restriction {} contains the unknown id {} in \"{}\".", source, entry, type);
                 continue;
             }
-            action.accept(registry.getId(registry.get(identifier)), false);
+            action.accept(registry.getId(registry.getValue(identifier)), false);
         }
     }
 
@@ -267,7 +268,7 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
         for (String enchantment : enchantmentObject.keySet()) {
             int level = enchantmentObject.get(enchantment).getAsInt();
             if (enchantment.startsWith("#")) {
-                ResourceLocation tagIdentifier = ResourceLocation.tryParse(enchantment.substring(1));
+                Identifier tagIdentifier = Identifier.tryParse(enchantment.substring(1));
                 if (tagIdentifier == null) {
                     DatapackErrors.report("Restriction {} contains the invalid enchantment tag {}.", source, enchantment);
                     continue;
@@ -275,7 +276,7 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
                 TagKey<Enchantment> tagKey = TagKey.create(Registries.ENCHANTMENT, tagIdentifier);
                 TAG_TASKS.add(registries -> {
                     boolean found = false;
-                    for (Holder<Enchantment> tagEntry : registries.registryOrThrow(Registries.ENCHANTMENT).getTagOrEmpty(tagKey)) {
+                    for (Holder<Enchantment> tagEntry : registries.lookupOrThrow(Registries.ENCHANTMENT).getTagOrEmpty(tagKey)) {
                         found = true;
                         if (EnchantmentRegistry.containsId(tagEntry, level)) {
                             action.accept(EnchantmentRegistry.getId(tagEntry, level), true);
@@ -287,7 +288,7 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
                 });
                 continue;
             }
-            ResourceLocation enchantmentIdentifier = ResourceLocation.tryParse(enchantment);
+            Identifier enchantmentIdentifier = Identifier.tryParse(enchantment);
             if (enchantmentIdentifier != null && EnchantmentRegistry.containsId(enchantmentIdentifier, level)) {
                 action.accept(EnchantmentRegistry.getId(enchantmentIdentifier, level), false);
             } else {
@@ -311,7 +312,7 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
         for (JsonElement element : componentElement.getAsJsonArray()) {
             String itemString = element.getAsString();
             try {
-                ItemParser.ItemResult itemResult = itemStringReader.parse(new StringReader(itemString));
+                ItemInput itemResult = itemStringReader.parse(new StringReader(itemString));
                 if (itemResult.components().isEmpty()) {
                     DatapackErrors.report("Restriction {} contains {} in \"components\" without any component, use \"items\" instead.", source, itemString);
                     continue;
@@ -339,7 +340,7 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
             return;
         }
         for (JsonElement dimensionElement : restrictionJsonObject.getAsJsonArray("dimensions")) {
-            ResourceLocation dimensionIdentifier = ResourceLocation.tryParse(dimensionElement.getAsString());
+            Identifier dimensionIdentifier = Identifier.tryParse(dimensionElement.getAsString());
             if (dimensionIdentifier == null) {
                 DatapackErrors.report("Restriction {} contains the invalid dimension id {}.", source, dimensionElement.getAsString());
                 continue;
@@ -357,7 +358,7 @@ public record RestrictionLoader(HolderLookup.Provider wrapperLookup) implements 
                 }
             }
             LevelManager.DIMENSION_RESTRICTIONS.put(dimensionIdentifier, new PlayerRestriction(0, skillLevelRestrictions));
-            TAG_TASKS.add(registries -> registries.registry(Registries.LEVEL_STEM).ifPresent(registry -> {
+            TAG_TASKS.add(registries -> registries.lookup(Registries.LEVEL_STEM).ifPresent(registry -> {
                 if (!registry.containsKey(dimensionIdentifier)) {
                     DatapackErrors.report("Restriction {} contains the dimension {} which does not exist.", source, dimensionIdentifier);
                 }
